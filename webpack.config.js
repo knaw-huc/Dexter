@@ -8,7 +8,7 @@ module.exports = {
 		},
 		host: 'localhost',
 		hot: true,
-		port: 3000,
+		port: 3001,
 		proxy: {
 		},
 	},
