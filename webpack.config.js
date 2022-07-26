@@ -46,7 +46,7 @@ module.exports = {
 
 	plugins: [
 		new HtmlWebpackPlugin({
-			title: 'Textannoviz',
+			title: 'Dexter',
 			template: 'index.template.html',
 		})
 	],
