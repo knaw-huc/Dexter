@@ -1,36 +1,40 @@
 import React from "react"
 import { getCollections } from "./API"
+import { Collections } from "../Model/DexterModel"
+import { NewCollection } from "./NewCollection"
 
 export function CollectionList() {
-    const [collections, setCollections] = React.useState(null)
+    const [collections, setCollections] = React.useState<Collections[]>(null)
 
-    React.useEffect(() => {
-        const doGetUsers = async () => {
+    const doGetCollections = React.useCallback(async () => {
+        try {
             const result = await getCollections()
             setCollections(result)
             console.log(result)
+        } catch(error) {
+            console.log(error)
         }
-
-        doGetUsers()
     }, [])
 
-    console.log(collections)
+    React.useEffect(() => {
+        doGetCollections()
+    }, [doGetCollections])
 
-    if (!collections) {
-        return null
+    const refetchCollections = async () => {
+        await doGetCollections()
     }
 
     return(
         <div>
+            <NewCollection refetch={refetchCollections} />
             <ul>
-                {collections.map((collection: any) => {
+                {collections ? collections.map((collection: any, index: React.Key) => {
                     return (
-                        <li key={collection.id}>
-                            {collection.id}
-                            {collection.title}
+                        <li key={index}>
+                            {collection.id} {collection.title}
                         </li>
                     )
-                })}
+                }) : "Loading..."}
             </ul>
         </div>
     )

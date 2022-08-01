@@ -3,6 +3,11 @@ import { useForm, SubmitHandler } from "react-hook-form"
 import Modal from "react-bootstrap/Modal"
 import Button from "react-bootstrap/Button"
 import styled from "styled-components"
+import { createCollection } from "./API"
+
+type NewCollectionProps = {
+    refetch: any
+}
 
 enum AccessEnum {
     open = "open",
@@ -61,15 +66,19 @@ const Select = styled.select`
     margin-bottom: 10px;
 `
 
-export function NewCollection() {
+export function NewCollection(props: NewCollectionProps) {
     const [show, setShow] = React.useState(false)
     const { register, handleSubmit, reset } = useForm<IFormInput>()
-    const onSubmit: SubmitHandler<IFormInput> = data => {
+    const onSubmit: SubmitHandler<IFormInput> = async data => {
         data.lastupdated = new Date()
         data.user = "test"
         data.creation = new Date()
-        localStorage.setItem("form", JSON.stringify(data))
-        console.log(JSON.parse(localStorage.getItem("form")))
+        try {
+            await createCollection(data)
+            await props.refetch()
+        } catch(error) {
+            console.log(error)
+        }
     }
 
     const handleClose = () => {

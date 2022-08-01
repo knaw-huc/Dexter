@@ -1,11 +1,8 @@
-import { v4 as uuidv4 } from "uuid"
+import { Collections } from "../Model/DexterModel"
 
-const idOne = uuidv4()
-const idTwo = uuidv4()
-
-let collections = {
-    [idOne]: {
-        id: idOne,
+let collections: Collections = {
+    [1]: {
+        id: 1,
         title: "My test collection",
         description: "This is my test collection",
         mainorsub: "maincollection",
@@ -18,8 +15,8 @@ let collections = {
         temporal: "1920-1960",
         language: "Turkish"
     },
-    [idTwo]: {
-        id: idTwo,
+    [2]: {
+        id: 2,
         title: "My test collection 2",
         description: "This is my test collection 2",
         mainorsub: "subcollection",
@@ -35,7 +32,7 @@ let collections = {
 }
 
 export const getCollections = () => 
-    new Promise((resolve, reject) => {
+    new Promise<Collections[]>((resolve, reject) => {
         if (!collections) {
             return setTimeout(
                 () => reject(new Error("Collections not found")),
@@ -49,9 +46,10 @@ export const getCollections = () =>
 
 export const createCollection = (data: any) => 
     new Promise((resolve) => {
-        const id = uuidv4()
+        const id = Object.keys(collections).length + 1
         const newCollection = { id, ...data }
         collections = { ...collections, [id]: newCollection }
 
         setTimeout(() => resolve(true), 250)
+        console.log(collections)
     })
