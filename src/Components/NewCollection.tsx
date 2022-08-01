@@ -11,6 +11,7 @@ enum AccessEnum {
 }
 
 interface IFormInput {
+    id: string,
     title: string,
     description: string,
     mainorsub: {

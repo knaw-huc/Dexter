@@ -14,11 +14,13 @@
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.33.1",
     "react-router-dom": "^6.3.0",
-    "styled-components": "^5.3.5"
+    "styled-components": "^5.3.5",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@types/react-dom": "^18.0.6",
     "@types/styled-components": "^5.1.25",
+    "@types/uuid": "^8.3.4",
     "@types/webpack": "^5.28.0",
     "@types/webpack-dev-server": "^4.7.2",
     "@typescript-eslint/eslint-plugin": "^5.30.7",
