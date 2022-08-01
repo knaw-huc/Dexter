@@ -2,6 +2,7 @@ import React from "react"
 import { getCollections } from "./API"
 import { Collections } from "../Model/DexterModel"
 import { NewCollection } from "./NewCollection"
+import { CollectionItem } from "./CollectionItem"
 
 export function CollectionList() {
     const [collections, setCollections] = React.useState<Collections[]>(null)
@@ -24,18 +25,16 @@ export function CollectionList() {
         await doGetCollections()
     }
 
-    return(
-        <div>
+    return (
+        <>
             <NewCollection refetch={refetchCollections} />
-            <ul>
-                {collections ? collections.map((collection: any, index: React.Key) => {
-                    return (
-                        <li key={index}>
-                            {collection.id} {collection.title}
-                        </li>
-                    )
-                }) : "Loading..."}
-            </ul>
-        </div>
+            {collections ? collections.map((collection: Collections, index: number) => (
+                <CollectionItem
+                    key={index}
+                    collectionId={index}
+                    collection={collection}
+                />
+            )) : "Loading" }
+        </>
     )
 }

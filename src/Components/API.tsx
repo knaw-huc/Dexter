@@ -1,35 +1,32 @@
 import { Collections } from "../Model/DexterModel"
 
-let collections: Collections = {
-    [1]: {
-        id: 1,
-        title: "My test collection",
-        description: "This is my test collection",
-        mainorsub: "maincollection",
-        creator: "Sebastiaan",
-        subject: "Oral history",
-        rights: "Closed",
-        access: "Closed",
-        created: "27 July 2022",
-        spatial: "Turkey",
-        temporal: "1920-1960",
-        language: "Turkish"
-    },
-    [2]: {
-        id: 2,
-        title: "My test collection 2",
-        description: "This is my test collection 2",
-        mainorsub: "subcollection",
-        creator: "Sebastiaan",
-        subject: "Oral history",
-        rights: "Closed",
-        access: "Closed",
-        created: "27 July 2022",
-        spatial: "Tunisia",
-        temporal: "1800-1950",
-        language: "Berber"
-    }
-}
+let collections: Collections[] = [{
+    "id": 1,
+    "title": "My test collection",
+    "description": "This is my test collection",
+    "mainorsub": "maincollection",
+    "creator": "Sebastiaan",
+    "subject": "Oral history",
+    "rights": "Closed",
+    "access": "Closed",
+    "created": "27 July 2022",
+    "spatial": "Turkey",
+    "temporal": "1920-1960",
+    "language": "Turkish"
+}, {
+    "id": 2,
+    "title": "My test collection 2",
+    "description": "This is my test collection 2",
+    "mainorsub": "subcollection",
+    "creator": "Sebastiaan",
+    "subject": "Oral history",
+    "rights": "Closed",
+    "access": "Closed",
+    "created": "27 July 2022",
+    "spatial": "Tunisia",
+    "temporal": "1800-1950",
+    "language": "Berber"
+}]
 
 export const getCollections = () => 
     new Promise<Collections[]>((resolve, reject) => {

@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"
 import { App } from "./App"
 import { Collections } from "./Components/Collections"
 import { Resources } from "./Components/Resources"
+//import { CollectionItemContent } from "./Components/CollectionItemContent"
 
 const container = document.getElementById("container")
 
@@ -16,8 +17,11 @@ root.render(
     <BrowserRouter>
         <Routes>
             <Route path="/" element={<App />}>
-                <Route path="collections" element={<Collections />} />
+                <Route path="collections" element={<Collections />}>
+                    {/* <Route path=":collectionId" element={<CollectionItemContent />} /> */}
+                </Route>
                 <Route path="resources" element={<Resources />} />
+                <Route path="*" element={<p>There is nothing here</p>} />
             </Route>
         </Routes>
     </BrowserRouter>
