@@ -17,9 +17,7 @@ root.render(
     <BrowserRouter>
         <Routes>
             <Route path="/" element={<App />}>
-                <Route path="collections" element={<Collections />}>
-                    {/* <Route path=":collectionId" element={<CollectionItemContent />} /> */}
-                </Route>
+                <Route path="/collections/*" element={<Collections />} />
                 <Route path="resources" element={<Resources />} />
                 <Route path="*" element={<p>There is nothing here</p>} />
             </Route>
