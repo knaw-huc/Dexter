@@ -1,8 +1,14 @@
 import React from "react"
 import { Collections } from "../Model/DexterModel"
-import { Route, Routes, useNavigate } from "react-router-dom"
-import { CollectionItemContent } from "./CollectionItemContent"
+import { Link } from "react-router-dom"
 import styled from "styled-components"
+
+type CollectionItemProps = {
+    collectionId: React.Key,
+    collection: Collections,
+    selected: boolean,
+    onSelect: (selected: Collections | undefined) => void
+}
 
 const Clickable = styled.div`
     cursor: pointer;
@@ -13,38 +19,27 @@ const Clickable = styled.div`
     }
 `
 
-type CollectionItemProps = {
-    collectionId: React.Key,
-    collection: Collections
-}
-
 export function CollectionItem(props: CollectionItemProps) {
-    const [isOpen, setOpen] = React.useState(false)
-    const navigate = useNavigate()
+    const [clicked, setClicked] = React.useState(false)
+    const { onSelect, collection } = props
 
-    function toggleOpen() {
-        setOpen(!isOpen)
-        navigate(`/collections/${props.collection.id}`)   
+    const toggleClick = () => {
+        setClicked(!clicked)
+        console.log(props.collection.id)
+        onSelect(collection)
     }
 
     return (
         <>
-            <Clickable onClick={toggleOpen}>
-                <ul>
-                    <li key={props.collectionId}>
-                        {props.collection.id} {props.collection.title}
-                    </li>
-                </ul>
-            </Clickable>
-            {isOpen &&
-                <Routes>
-                    <Route path=":collectionId" element={<CollectionItemContent item={props.collection} />} />
-                </Routes>}
-            {/* {isOpen && <CollectionItemContent item={props.collection} />} */}
+            <Link to={`/collections/${props.collection.id}`} key={props.collectionId}>
+                <Clickable onClick={toggleClick}>
+                    <ul>
+                        <li key={props.collectionId}>
+                            {props.collection.id} {props.collection.title}
+                        </li>
+                    </ul>
+                </Clickable>
+            </Link>
         </>
     )
 }
-
-{/* <Link style={{ display: "block", margin: "1rem 0" }} to={`/collections/${props.collectionId}`} key={props.collectionId}>
-        
-</Link> */}

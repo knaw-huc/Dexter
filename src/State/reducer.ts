@@ -1,13 +1,14 @@
 import React from "react"
-import { getCollections } from "../Components/API"
 import { Collections } from "../Model/DexterModel"
 
 export interface AppState {
-    collections: Collections[]
+    collections: Collections[],
+    selectedCollection: Collections | undefined
 }
 
 export const initAppState: AppState = {
-    collections: null
+    collections: null,
+    selectedCollection: undefined
 }
 
 interface SetCollections {
@@ -15,25 +16,15 @@ interface SetCollections {
     collections: Collections[]
 }
 
-export type AppAction = SetCollections
+interface SetSelectedCollection {
+    type: "SET_SELECTEDCOLLECTION",
+    selectedCollection: Collections | undefined
+}
+
+export type AppAction = SetCollections | SetSelectedCollection
 
 export function useAppState(): [AppState, React.Dispatch<AppAction>] {
     const [state, dispatch] = React.useReducer(reducer, initAppState)
-
-    React.useEffect(() => {
-        async function fetchCollections() {
-            try {
-                const result = await getCollections()
-                dispatch({
-                    type: "SET_COLLECTIONS",
-                    collections: result
-                })
-            } catch(error) {
-                console.log(error)
-            }
-        }
-        fetchCollections()
-    }, [])
 
     return [state, dispatch]
 }
@@ -43,6 +34,8 @@ function reducer(state: AppState, action: AppAction): AppState {
     switch (action.type) {
     case "SET_COLLECTIONS":
         return setCollections(state, action)
+    case "SET_SELECTEDCOLLECTION":
+        return setSelectedCollection(state, action)
     default:
         break
     }
@@ -54,5 +47,12 @@ function setCollections(state: AppState, action: SetCollections) {
     return {
         ...state,
         collections: action.collections
+    }
+}
+
+function setSelectedCollection(state: AppState, action: SetSelectedCollection) {
+    return {
+        ...state,
+        selectedCollection: action.selectedCollection
     }
 }

@@ -1,27 +1,25 @@
 import React from "react"
-//import { useParams } from "react-router-dom"
-import { Collections } from "../Model/DexterModel"
+import { appContext } from "../State/context"
 
-type CollectionItemContentProps = {
-    item: Collections
-}
-
-export function CollectionItemContent(props: CollectionItemContentProps) {
-    //const params = useParams()
-    //TODO: Make this its own page via react-router-dom
+export function CollectionItemContent() {
+    const { state } = React.useContext(appContext)
     return (
         <div>
-            <p>Title: {props.item.title}</p>
-            <p>Description: {props.item.description}</p>
-            <p>Main or sub collection: {props.item.mainorsub}</p>
-            <p>Creator: {props.item.creator}</p>
-            <p>Subject: {props.item.subject}</p>
-            <p>Rights: {props.item.rights}</p>
-            <p>Access: {props.item.access}</p>
-            <p>Created: {props.item.created}</p>
-            <p>Spatial: {props.item.spatial}</p>
-            <p>Temporal: {props.item.temporal}</p>
-            <p>Language: {props.item.language}</p>
+            {state.selectedCollection &&
+                <>
+                    <p>Title: {state.selectedCollection.title}</p>
+                    <p>Description: {state.selectedCollection.description}</p>
+                    <p>Main or sub collection: {state.selectedCollection.mainorsub}</p>
+                    <p>Creator: {state.selectedCollection.creator}</p>
+                    <p>Subject: {state.selectedCollection.subject}</p>
+                    <p>Rights: {state.selectedCollection.rights}</p>
+                    <p>Access: {state.selectedCollection.access}</p>
+                    <p>Created: {state.selectedCollection.created}</p>
+                    <p>Spatial: {state.selectedCollection.spatial}</p>
+                    <p>Temporal: {state.selectedCollection.temporal}</p>
+                    <p>Language: {state.selectedCollection.language}</p>
+                </>
+            }
         </div>
     )
 }

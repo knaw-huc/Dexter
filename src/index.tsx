@@ -1,11 +1,7 @@
 import React from "react"
 import { createRoot } from "react-dom/client"
-import { BrowserRouter, Routes, Route } from "react-router-dom"
-
+import { BrowserRouter } from "react-router-dom"
 import { App } from "./App"
-import { Collections } from "./Components/Collections"
-import { Resources } from "./Components/Resources"
-//import { CollectionItemContent } from "./Components/CollectionItemContent"
 
 const container = document.getElementById("container")
 
@@ -15,12 +11,6 @@ const root = createRoot(container!)
 
 root.render(
     <BrowserRouter>
-        <Routes>
-            <Route path="/" element={<App />}>
-                <Route path="/collections/*" element={<Collections />} />
-                <Route path="resources" element={<Resources />} />
-                <Route path="*" element={<p>There is nothing here</p>} />
-            </Route>
-        </Routes>
+        <App />
     </BrowserRouter>
 )
