@@ -40,6 +40,19 @@ export const getCollections = () =>
         setTimeout(() => resolve(Object.values(collections)), 250)
     })
 
+export const getCollectionById = (id: number) => 
+    new Promise((resolve, reject) => {
+        const collection = collections[id - 1]
+
+        if (!collection) {
+            return setTimeout(
+                () => reject(new Error("Collection not found")),
+                250
+            )
+        }
+
+        setTimeout(() => resolve(collections[id - 1]), 250)
+    })
 
 export const createCollection = (data: any) => 
     new Promise((resolve) => {

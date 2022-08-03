@@ -6,13 +6,12 @@ import { CollectionItem } from "./CollectionItem"
 import { appContext } from "../State/context"
 
 export function CollectionList() {
-    const [collections, setCollections] = React.useState<Collections[]>(null)
     const { state, dispatch } = React.useContext(appContext)
 
     const doGetCollections = React.useCallback(async () => {
         try {
             const result = await getCollections()
-            setCollections(result)
+            dispatch({type: "SET_COLLECTIONS", collections: result})
         } catch (error) {
             console.log(error)
         }
@@ -34,7 +33,7 @@ export function CollectionList() {
     return (
         <>
             <NewCollection refetch={refetchCollections} />
-            {collections ? collections.map((collection: Collections, index: number) => (
+            {state.collections ? state.collections.map((collection: Collections, index: number) => (
                 <CollectionItem
                     key={index}
                     collectionId={index}

@@ -1,23 +1,34 @@
 import React from "react"
-import { appContext } from "../State/context"
+import { getCollectionById } from "./API"
+import { useParams } from "react-router-dom"
+import { Collections } from "../Model/DexterModel"
 
 export function CollectionItemContent() {
-    const { state } = React.useContext(appContext)
+    const [collection, setCollection] = React.useState<Collections>(null)
+    const params = useParams()
+
+    const doGetCollectionById = async (id: number) => {
+        const response: any = await getCollectionById(id)
+        setCollection(response)
+    }
+
+    doGetCollectionById(parseInt(params.collectionId))
+
     return (
         <div>
-            {state.selectedCollection &&
+            {collection &&
                 <>
-                    <p>Title: {state.selectedCollection.title}</p>
-                    <p>Description: {state.selectedCollection.description}</p>
-                    <p>Main or sub collection: {state.selectedCollection.mainorsub}</p>
-                    <p>Creator: {state.selectedCollection.creator}</p>
-                    <p>Subject: {state.selectedCollection.subject}</p>
-                    <p>Rights: {state.selectedCollection.rights}</p>
-                    <p>Access: {state.selectedCollection.access}</p>
-                    <p>Created: {state.selectedCollection.created}</p>
-                    <p>Spatial: {state.selectedCollection.spatial}</p>
-                    <p>Temporal: {state.selectedCollection.temporal}</p>
-                    <p>Language: {state.selectedCollection.language}</p>
+                    <p>Title: {collection.title}</p>
+                    <p>Description: {collection.description}</p>
+                    <p>Main or sub collection: {collection.mainorsub}</p>
+                    <p>Creator: {collection.creator}</p>
+                    <p>Subject: {collection.subject}</p>
+                    <p>Rights: {collection.rights}</p>
+                    <p>Access: {collection.access}</p>
+                    <p>Created: {collection.created}</p>
+                    <p>Spatial: {collection.spatial}</p>
+                    <p>Temporal: {collection.temporal}</p>
+                    <p>Language: {collection.language}</p>
                 </>
             }
         </div>
