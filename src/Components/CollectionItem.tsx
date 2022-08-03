@@ -20,11 +20,9 @@ const Clickable = styled.div`
 `
 
 export function CollectionItem(props: CollectionItemProps) {
-    const [clicked, setClicked] = React.useState(false)
     const { onSelect, collection } = props
 
     const toggleClick = () => {
-        setClicked(!clicked)
         console.log(props.collection.id)
         onSelect(collection)
     }
@@ -35,7 +33,8 @@ export function CollectionItem(props: CollectionItemProps) {
                 <Clickable onClick={toggleClick}>
                     <ul>
                         <li key={props.collectionId}>
-                            {props.collection.id} {props.collection.title}
+                            {props.collection.id} {props.collection.title} <button>Edit</button>
+                            {/* TODO: Add logic in NewCollection component to support editting collection. See: https://stackblitz.com/edit/react-hook-form-crud-example for some inspiration */}
                         </li>
                     </ul>
                 </Clickable>
