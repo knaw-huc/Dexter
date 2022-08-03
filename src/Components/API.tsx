@@ -58,7 +58,7 @@ export const createCollection = (data: any) =>
     new Promise((resolve) => {
         const id = Object.keys(collections).length + 1
         const newCollection = { id, ...data }
-        collections = { ...collections, [id]: newCollection }
+        collections = { ...collections, [id - 1]: newCollection }
 
         setTimeout(() => resolve(true), 250)
         console.log(collections)
