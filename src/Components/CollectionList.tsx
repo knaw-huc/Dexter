@@ -4,9 +4,11 @@ import { Collections } from "../Model/DexterModel"
 import { NewCollection } from "./NewCollection"
 import { CollectionItem } from "./CollectionItem"
 import { appContext } from "../State/context"
+import { Button } from "react-bootstrap"
 
 export function CollectionList() {
     const { state, dispatch } = React.useContext(appContext)
+    const [showForm, setShowForm] = React.useState(false)
 
     const doGetCollections = React.useCallback(async () => {
         try {
@@ -30,9 +32,18 @@ export function CollectionList() {
         return dispatch({ type: "SET_SELECTEDCOLLECTION", selectedCollection: selected })
     }
 
+    const formShowHandler = () => {
+        setShowForm(true)
+    }
+
+    const formCloseHandler = () => {
+        setShowForm(false)
+    }
+
     return (
         <>
-            <NewCollection refetch={refetchCollections} />
+            {showForm && <NewCollection show={showForm} onClose={formCloseHandler} refetch={refetchCollections} />}
+            <Button onClick={formShowHandler}>Add new collection</Button>
             {state.collections ? state.collections.map((collection: Collections, index: number) => (
                 <CollectionItem
                     key={index}
@@ -40,6 +51,7 @@ export function CollectionList() {
                     collection={collection}
                     selected={state.selectedCollection?.id === collection.id}
                     onSelect={handleSelected}
+                    refetch={refetchCollections}
                 />
             )) : "Loading"}
         </>

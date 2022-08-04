@@ -3,11 +3,16 @@ import { useForm, SubmitHandler } from "react-hook-form"
 import Modal from "react-bootstrap/Modal"
 import Button from "react-bootstrap/Button"
 import styled from "styled-components"
-import { createCollection } from "./API"
+import { createCollection, getCollectionById, updateCollection } from "./API"
 import { IFormInput } from "../Model/DexterModel"
 
 type NewCollectionProps = {
-    refetch: any
+    refetch?: any,
+    show?: any,
+    onClose?: any,
+    edit?: any,
+    colToEdit?: any,
+    onEdit?: any
 }
 
 const Input = styled.input`
@@ -41,32 +46,64 @@ const Select = styled.select`
 `
 
 export function NewCollection(props: NewCollectionProps) {
-    const [show, setShow] = React.useState(false)
-    const { register, handleSubmit, reset } = useForm<IFormInput>()
+    const { register, handleSubmit, reset, setValue } = useForm<IFormInput>()
     const onSubmit: SubmitHandler<IFormInput> = async data => {
-        data.lastupdated = new Date()
-        data.user = "test"
-        data.creation = new Date()
-        try {
-            await createCollection(data)
-            await props.refetch()
-        } catch(error) {
-            console.log(error)
+        if (!props.edit) {
+            data.lastupdated = new Date()
+            data.user = "test"
+            data.creation = new Date()
+            try {
+                await createCollection(data)
+                await props.refetch()
+            } catch (error) {
+                console.log(error)
+            }
+        } else {
+            const doUpdateCollection = async (id: any, updatedData: any) => {
+                try {
+                    const result = await updateCollection(id, updatedData)
+                    console.log(result)
+                    await props.refetch()
+                } catch (error) {
+                    console.log(error)
+                }
+            }
+            doUpdateCollection(props.colToEdit.id - 1, data)
+            props.onClose()
         }
     }
 
+    React.useEffect(() => {
+        const doGetCollectionById = async (id: number) => {
+            const response: any = await getCollectionById(id)
+            console.log(response)
+            const fields = ["title", "description", "mainorsub", "creator", "subject", "rights", "access", "created", "spatial", "temporal", "language"]
+            fields.map((field: any) => {
+                setValue(field, response[field])
+            })
+        }
+
+        if (props.edit) {
+            doGetCollectionById(props.colToEdit.id)
+
+        } else {
+            return
+        }
+    }, [props.colToEdit.id, props.edit, setValue])
+
     const handleClose = () => {
-        setShow(false)
+        props.onClose()
+
+        if (props.edit) {
+            props.onEdit(false)
+        }
+        
         reset() //Should later be moved to a useEffect
     }
-    const handleShow = () => setShow(true)
 
     return (
         <>
-            <Button variant="primary" onClick={handleShow}>
-                Create new collection
-            </Button>
-            <Modal size="lg" show={show} onHide={handleClose}>
+            <Modal size="lg" show={props.show} onHide={handleClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>Create new collection</Modal.Title>
                 </Modal.Header>
@@ -108,9 +145,9 @@ export function NewCollection(props: NewCollectionProps) {
                     <Button variant="secondary" onClick={handleClose}>
                         Close
                     </Button>
-                    <Button type="submit" onClick={handleClose}>
+                    {/* <Button type="submit" onClick={handleClose}>
                         Submit
-                    </Button>
+                    </Button> */}
                 </Modal.Footer>
             </Modal>
         </>
