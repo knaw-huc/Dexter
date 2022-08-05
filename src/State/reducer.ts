@@ -1,19 +1,21 @@
 import React from "react"
-import { Collections } from "../Model/DexterModel"
+import { Collections, Sources } from "../Model/DexterModel"
 import { ACTIONS } from "./actions"
 
 export interface AppState {
     collections: Collections[],
     selectedCollection: Collections | undefined,
     editColMode: boolean,
-    toEditCol: Collections | undefined
+    toEditCol: Collections | undefined,
+    sources: Sources[]
 }
 
 export const initAppState: AppState = {
     collections: null,
     selectedCollection: undefined,
     editColMode: false,
-    toEditCol: undefined
+    toEditCol: undefined,
+    sources: null
 }
 
 interface SetCollections {
@@ -36,7 +38,12 @@ interface SetToEditCol {
     toEditCol: Collections | undefined
 }
 
-export type AppAction = SetCollections | SetSelectedCollection | SetEditColMode | SetToEditCol
+interface SetSources {
+    type: ACTIONS.SET_SOURCES,
+    sources: Sources[]
+}
+
+export type AppAction = SetCollections | SetSelectedCollection | SetEditColMode | SetToEditCol | SetSources
 
 export function useAppState(): [AppState, React.Dispatch<AppAction>] {
     const [state, dispatch] = React.useReducer(reducer, initAppState)
@@ -55,6 +62,8 @@ function reducer(state: AppState, action: AppAction): AppState {
         return setEditColMode(state, action)
     case ACTIONS.SET_TOEDITCOL:
         return setToEditCol(state, action)
+    case ACTIONS.SET_SOURCES:
+        return setSources(state, action)
     default:
         break
     }
@@ -87,5 +96,12 @@ function setToEditCol(state: AppState, action: SetToEditCol) {
     return {
         ...state,
         toEditCol: action.toEditCol
+    }
+}
+
+function setSources(state: AppState, action: SetSources) {
+    return {
+        ...state,
+        sources: action.sources
     }
 }

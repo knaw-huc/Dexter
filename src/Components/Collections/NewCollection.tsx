@@ -4,7 +4,7 @@ import Modal from "react-bootstrap/Modal"
 import Button from "react-bootstrap/Button"
 import styled from "styled-components"
 import { createCollection, getCollectionById, updateCollection } from "../API"
-import { IFormInput } from "../../Model/DexterModel"
+import { IFormInputCollections } from "../../Model/DexterModel"
 
 // TODO: Extract form from this component and put in its own component. Then create 2 seperate components: AddCollection and EditCollection
 
@@ -49,8 +49,8 @@ const Select = styled.select`
 `
 
 export function NewCollection(props: NewCollectionProps) {
-    const { register, handleSubmit, reset, setValue } = useForm<IFormInput>()
-    const onSubmit: SubmitHandler<IFormInput> = async data => {
+    const { register, handleSubmit, reset, setValue } = useForm<IFormInputCollections>()
+    const onSubmit: SubmitHandler<IFormInputCollections> = async data => {
         if (!props.edit) {
             data.lastupdated = new Date()
             data.user = "test"

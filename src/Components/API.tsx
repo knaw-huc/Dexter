@@ -1,4 +1,4 @@
-import { Collections } from "../Model/DexterModel"
+import { Collections, Sources } from "../Model/DexterModel"
 
 let collections: Collections[] = [{
     "id": 1,
@@ -26,6 +26,32 @@ let collections: Collections[] = [{
     "spatial": "Tunisia",
     "temporal": "1800-1950",
     "language": "Berber"
+}]
+
+let sources: Sources[] = [{
+    "id": 1,
+    "title": "My test source",
+    "description": "This is my test source",
+    "creator": "Sebastiaan",
+    "subject": "Morocco",
+    "rights": "Open",
+    "access": "Closed",
+    "created": "5 August 2022",
+    "spatial": "Morocco",
+    "temporal": "1940",
+    "language": "Arabic"
+}, {
+    "id": 2,
+    "title": "My test source 2",
+    "description": "This is my test source 2",
+    "creator": "Sebastiaan",
+    "subject": "Tunisia",
+    "rights": "Closed",
+    "access": "Closed",
+    "created": "5 August 2022",
+    "spatial": "Tunisia",
+    "temporal": "1820",
+    "language": "Arabic"
 }]
 
 export const getCollections = () => 
@@ -64,7 +90,7 @@ export const createCollection = (data: any) =>
         console.log(collections)
     })
 
-export const updateCollection = (id: number, updatedData: any) =>
+export const updateCollection = (id: number, updatedCollection: any) =>
     new Promise((resolve, reject) => {
         if (!collections[id]) {
             return setTimeout(
@@ -73,7 +99,54 @@ export const updateCollection = (id: number, updatedData: any) =>
             )
         }
 
-        collections[id] = { ...collections[id], ...updatedData }
+        collections[id] = { ...collections[id], ...updatedCollection }
 
+        return setTimeout(() => resolve(true), 250)
+    })
+
+export const getSources = () =>
+    new Promise<Sources[]>((resolve, reject) => {
+        if (!sources) {
+            return setTimeout(
+                () => reject(new Error("Source not found")),
+                250
+            )
+        }
+
+        setTimeout(() => resolve(Object.values(sources)), 250)
+    })
+
+export const getSourceById = (id: number) =>
+    new Promise((resolve, reject) => {
+        const source = sources[id - 1]
+        if (!source) {
+            return setTimeout(
+                () => reject(new Error("Source not found")),
+                250
+            )
+        }
+        setTimeout(() => resolve(sources[id - 1]), 250)
+    })
+
+export const createSource = (data: any) =>
+    new Promise((resolve) => {
+        const id = Object.keys(sources).length + 1
+        const newSource = { id, ...data }
+        sources = { ...sources, [id - 1]: newSource }
+
+        setTimeout(() => resolve(true), 250)
+        console.log(sources)
+    })
+
+export const updateSource = (id: number, updatedSource: any) =>
+    new Promise((resolve, reject) => {
+        if (!sources[id]) {
+            return setTimeout(
+                () => reject(new Error("Source not found")),
+                250
+            )
+        }
+
+        sources[id] = { ...sources[id], ...updatedSource }
         return setTimeout(() => resolve(true), 250)
     })

@@ -13,7 +13,21 @@ export interface Collections {
     language: string
 }
 
-export interface IFormInput {
+export interface Sources {
+    id: number,
+    title: string,
+    description: string,
+    creator: string,
+    subject: string,
+    rights: string,
+    access: string,
+    created: string,
+    spatial: string,
+    temporal: string,
+    language: string
+}
+
+export interface IFormInputCollections {
     id: string,
     title: string,
     description: string,

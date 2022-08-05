@@ -1,25 +1,39 @@
 import React from "react"
-import styled from "styled-components"
-
-const ResourcesStyled = styled.main`
-    padding: 1rem 0;
-`
+import { getSources } from "../API"
+import { Sources } from "../../Model/DexterModel"
+import { appContext } from "../../State/context"
+import { ACTIONS } from "../../State/actions"
+// import { Button } from "react-bootstrap"
+import { SourceItem } from "./SourceItem"
 
 export function SourcesList() {
+    const { state, dispatch } = React.useContext(appContext)
+
+    const doGetSources = React.useCallback(async () => {
+        try {
+            const result = await getSources()
+            dispatch({
+                type: ACTIONS.SET_SOURCES,
+                sources: result
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    }, [])
+
+    React.useEffect(() => {
+        doGetSources()
+    }, [doGetSources])
+
     return (
-        <ResourcesStyled>
-            <h2>Resources</h2>
-            <form>
-                <label>
-                    Test:
-                    <input type="text" name="test" /><br />
-                </label>
-                <label>
-                    Test2:
-                    <input type="text" name="test2" /><br />
-                </label>
-                <input type="submit" value="Submit" />
-            </form>
-        </ResourcesStyled>
+        <>
+            {state.sources ? state.sources.map((source: Sources, index: number) => (
+                <SourceItem
+                    key={index}
+                    sourceId={index}
+                    source={source}
+                />
+            )) : "Loading"}
+        </>
     )
 }
