@@ -5,6 +5,7 @@ import { NewCollection } from "./NewCollection"
 import { CollectionItem } from "./CollectionItem"
 import { appContext } from "../State/context"
 import { Button } from "react-bootstrap"
+import { ACTIONS } from "../State/actions"
 
 export function CollectionList() {
     const { state, dispatch } = React.useContext(appContext)
@@ -13,7 +14,7 @@ export function CollectionList() {
     const doGetCollections = React.useCallback(async () => {
         try {
             const result = await getCollections()
-            dispatch({type: "SET_COLLECTIONS", collections: result})
+            dispatch({type: ACTIONS.SET_COLLECTIONS, collections: result})
         } catch (error) {
             console.log(error)
         }
@@ -29,7 +30,7 @@ export function CollectionList() {
 
     const handleSelected = (selected: Collections | undefined) => {
         console.log(selected)
-        return dispatch({ type: "SET_SELECTEDCOLLECTION", selectedCollection: selected })
+        return dispatch({ type: ACTIONS.SET_SELECTEDCOLLECTION, selectedCollection: selected })
     }
 
     const formShowHandler = () => {

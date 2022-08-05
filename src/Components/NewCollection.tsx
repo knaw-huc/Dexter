@@ -6,13 +6,16 @@ import styled from "styled-components"
 import { createCollection, getCollectionById, updateCollection } from "./API"
 import { IFormInput } from "../Model/DexterModel"
 
+// TODO: Extract form from this component and put in its own component. Then create 2 seperate components: AddCollection and EditCollection
+
 type NewCollectionProps = {
     refetch?: any,
     show?: any,
     onClose?: any,
     edit?: any,
     colToEdit?: any,
-    onEdit?: any
+    onEdit?: any,
+    refetchCol?: any
 }
 
 const Input = styled.input`
@@ -61,9 +64,8 @@ export function NewCollection(props: NewCollectionProps) {
         } else {
             const doUpdateCollection = async (id: any, updatedData: any) => {
                 try {
-                    const result = await updateCollection(id, updatedData)
-                    console.log(result)
-                    await props.refetch()
+                    await updateCollection(id, updatedData)
+                    await props.refetchCol()
                 } catch (error) {
                     console.log(error)
                 }
@@ -89,7 +91,7 @@ export function NewCollection(props: NewCollectionProps) {
         } else {
             return
         }
-    }, [props.colToEdit.id, props.edit, setValue])
+    }, [props.edit, setValue])
 
     const handleClose = () => {
         props.onClose()
