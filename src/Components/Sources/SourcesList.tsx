@@ -5,7 +5,7 @@ const ResourcesStyled = styled.main`
     padding: 1rem 0;
 `
 
-export function Resources() {
+export function SourcesList() {
     return (
         <ResourcesStyled>
             <h2>Resources</h2>

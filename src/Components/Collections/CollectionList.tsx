@@ -1,11 +1,11 @@
 import React from "react"
-import { getCollections } from "./API"
-import { Collections } from "../Model/DexterModel"
+import { getCollections } from "../API"
+import { Collections } from "../..//Model/DexterModel"
 import { NewCollection } from "./NewCollection"
 import { CollectionItem } from "./CollectionItem"
-import { appContext } from "../State/context"
+import { appContext } from "../../State/context"
 import { Button } from "react-bootstrap"
-import { ACTIONS } from "../State/actions"
+import { ACTIONS } from "../../State/actions"
 
 export function CollectionList() {
     const { state, dispatch } = React.useContext(appContext)

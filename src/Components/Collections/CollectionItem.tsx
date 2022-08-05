@@ -1,5 +1,5 @@
 import React from "react"
-import { Collections } from "../Model/DexterModel"
+import { Collections } from "../../Model/DexterModel"
 import { Link } from "react-router-dom"
 
 type CollectionItemProps = {

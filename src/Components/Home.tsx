@@ -14,7 +14,7 @@ export const Home = () => {
             <NavStyled id="nav">
                 <Link to="/">Home</Link> | {" "}
                 <Link to="/collections">Collections</Link> | {" "}
-                <Link to="/resources">Resources</Link>
+                <Link to="/sources">Sources</Link>
             </NavStyled>
             <Outlet />
         </div>

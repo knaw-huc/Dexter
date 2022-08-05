@@ -1,9 +1,9 @@
 import React from "react"
-import { getCollectionById } from "./API"
+import { getCollectionById } from "../API"
 import { useParams } from "react-router-dom"
-import { Collections } from "../Model/DexterModel"
-import { appContext } from "../State/context"
-import { ACTIONS } from "../State/actions"
+import { Collections } from "../../Model/DexterModel"
+import { appContext } from "../../State/context"
+import { ACTIONS } from "../../State/actions"
 import { NewCollection } from "./NewCollection"
 
 export function CollectionItemContent() {

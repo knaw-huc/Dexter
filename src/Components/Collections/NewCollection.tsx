@@ -3,8 +3,8 @@ import { useForm, SubmitHandler } from "react-hook-form"
 import Modal from "react-bootstrap/Modal"
 import Button from "react-bootstrap/Button"
 import styled from "styled-components"
-import { createCollection, getCollectionById, updateCollection } from "./API"
-import { IFormInput } from "../Model/DexterModel"
+import { createCollection, getCollectionById, updateCollection } from "../API"
+import { IFormInput } from "../../Model/DexterModel"
 
 // TODO: Extract form from this component and put in its own component. Then create 2 seperate components: AddCollection and EditCollection
 
@@ -117,8 +117,8 @@ export function NewCollection(props: NewCollectionProps) {
                         <Textarea rows={6} {...register("description", { required: true })} />
                         <Label>Main or sub collection?</Label>
                         <Select {...register("mainorsub", { required: true })}>
-                            <option value="maincollection">Main collection</option>
-                            <option value="subcollection">Sub collection</option>
+                            <option value="Main collection">Main collection</option>
+                            <option value="Sub collection">Sub collection</option>
                         </Select>
                         <Label>Creator</Label>
                         <Input {...register("creator", { required: true })} />
@@ -128,9 +128,9 @@ export function NewCollection(props: NewCollectionProps) {
                         <Input {...register("rights", { required: true })} />
                         <Label>Access</Label>
                         <Select {...register("access", { required: true })}>
-                            <option value="open">Open</option>
-                            <option value="restricted">Restricted</option>
-                            <option value="closed">Closed</option>
+                            <option value="Open">Open</option>
+                            <option value="Restricted">Restricted</option>
+                            <option value="Closed">Closed</option>
                         </Select>
                         <Label>Created</Label>
                         <Input {...register("created", { required: true })} />
