@@ -6,6 +6,7 @@ import { CollectionList } from "./Components/Collections/CollectionList"
 import { SourcesList } from "./Components/Sources/SourcesList"
 import { Home } from "./Components/Home"
 import { CollectionItemContent } from "./Components/Collections/CollectionItemContent"
+import { SourceItemContent } from "./Components/Sources/SourceItemContent"
 
 export function App() {
     const [state, dispatch] = useAppState()
@@ -17,6 +18,7 @@ export function App() {
                     <Route path="/collections" element={<CollectionList />} />
                     <Route path="/collections/:collectionId" element={<CollectionItemContent />} />
                     <Route path="/sources" element={<SourcesList />} />
+                    <Route path="/sources/:sourceId" element={<SourceItemContent />} />
                     <Route path="*" element={<p>There is nothing here</p>} />
                 </Route>
             </Routes>

@@ -48,6 +48,23 @@ export interface IFormInputCollections {
     creation: Date
 }
 
+export interface IFormInputSources {
+    id: string,
+    title: string,
+    description: string,
+    creator: string,
+    subject: string,
+    rights: string,
+    access: AccessEnum,
+    created: Date,
+    spatial: string,
+    temporal: string,
+    language: string,
+    lastupdated: Date,
+    user: string,
+    creation: Date
+}
+
 enum AccessEnum {
     open = "open",
     restricted = "restricted",
