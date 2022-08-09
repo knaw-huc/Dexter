@@ -25,6 +25,18 @@ export function SourcesList() {
         doGetSources()
     }, [doGetSources])
 
+    const refetchSources = async () => {
+        await doGetSources()
+    }
+
+    const handleSelected = (selected: Sources | undefined) => {
+        console.log(selected)
+        return dispatch({
+            type: ACTIONS.SET_SELECTEDSOURCE,
+            selectedSource: selected
+        })
+    }
+
     return (
         <>
             {state.sources ? state.sources.map((source: Sources, index: number) => (
@@ -32,6 +44,9 @@ export function SourcesList() {
                     key={index}
                     sourceId={index}
                     source={source}
+                    selected={state.selectedSource?.id === source.id}
+                    onSelect={handleSelected}
+                    refetch={refetchSources}
                 />
             )) : "Loading"}
         </>
