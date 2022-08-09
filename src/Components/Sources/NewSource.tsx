@@ -3,10 +3,10 @@ import { useForm, SubmitHandler } from "react-hook-form"
 import Modal from "react-bootstrap/Modal"
 import Button from "react-bootstrap/Button"
 import styled from "styled-components"
-import { createCollection, getCollectionById, updateCollection } from "../API"
-import { IFormInputCollections } from "../../Model/DexterModel"
+import { createSource, getSourceById, updateSource } from "../API"
+import { IFormInputSources } from "../../Model/DexterModel"
 
-type NewCollectionProps = {
+type NewSourceProps = {
     refetch?: any,
     show?: any,
     onClose?: any,
@@ -46,45 +46,45 @@ const Select = styled.select`
     margin-bottom: 10px;
 `
 
-export function NewCollection(props: NewCollectionProps) {
-    const { register, handleSubmit, reset, setValue } = useForm<IFormInputCollections>()
-    const onSubmit: SubmitHandler<IFormInputCollections> = async data => {
+export function NewSource(props: NewSourceProps) {
+    const { register, handleSubmit, reset, setValue } = useForm<IFormInputSources>()
+    const onSubmit: SubmitHandler<IFormInputSources> = async data => {
         if (!props.edit) {
             data.lastupdated = new Date()
             data.user = "test"
             data.creation = new Date()
             try {
-                await createCollection(data)
+                await createSource(data)
                 await props.refetch()
             } catch (error) {
                 console.log(error)
             }
         } else {
-            const doUpdateCollection = async (id: any, updatedData: any) => {
+            const doUpdateSource = async (id: any, updatedData: any) => {
                 try {
-                    await updateCollection(id, updatedData)
+                    await updateSource(id, updatedData)
                     await props.refetchCol()
                 } catch (error) {
                     console.log(error)
                 }
             }
-            doUpdateCollection(props.colToEdit.id - 1, data)
+            doUpdateSource(props.colToEdit.id - 1, data)
             props.onClose()
         }
     }
 
     React.useEffect(() => {
-        const doGetCollectionById = async (id: number) => {
-            const response: any = await getCollectionById(id)
+        const doGetSourceById = async (id: number) => {
+            const response: any = await getSourceById(id)
             console.log(response)
-            const fields = ["title", "description", "mainorsub", "creator", "subject", "rights", "access", "created", "spatial", "temporal", "language"]
+            const fields = ["title", "description", "creator", "subject", "rights", "access", "created", "spatial", "temporal", "language"]
             fields.map((field: any) => {
                 setValue(field, response[field])
             })
         }
 
         if (props.edit) {
-            doGetCollectionById(props.colToEdit.id)
+            doGetSourceById(props.colToEdit.id)
 
         } else {
             return
@@ -105,7 +105,7 @@ export function NewCollection(props: NewCollectionProps) {
         <>
             <Modal size="lg" show={props.show} onHide={handleClose}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Create new collection</Modal.Title>
+                    <Modal.Title>Create new source</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <form onSubmit={handleSubmit(onSubmit)}>
@@ -113,11 +113,6 @@ export function NewCollection(props: NewCollectionProps) {
                         <Input {...register("title", { required: true })} />
                         <Label>Description</Label>
                         <Textarea rows={6} {...register("description", { required: true })} />
-                        <Label>Main or sub collection?</Label>
-                        <Select {...register("mainorsub", { required: true })}>
-                            <option value="Main collection">Main collection</option>
-                            <option value="Sub collection">Sub collection</option>
-                        </Select>
                         <Label>Creator</Label>
                         <Input {...register("creator", { required: true })} />
                         <Label>Subject</Label>

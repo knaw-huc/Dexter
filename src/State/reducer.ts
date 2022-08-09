@@ -7,7 +7,10 @@ export interface AppState {
     selectedCollection: Collections | undefined,
     editColMode: boolean,
     toEditCol: Collections | undefined,
-    sources: Sources[]
+    sources: Sources[],
+    selectedSource: Sources | undefined,
+    editSourceMode: boolean,
+    toEditSource: Sources | undefined
 }
 
 export const initAppState: AppState = {
@@ -15,7 +18,10 @@ export const initAppState: AppState = {
     selectedCollection: undefined,
     editColMode: false,
     toEditCol: undefined,
-    sources: null
+    sources: null,
+    selectedSource: undefined,
+    editSourceMode: false,
+    toEditSource: undefined
 }
 
 interface SetCollections {
@@ -43,7 +49,22 @@ interface SetSources {
     sources: Sources[]
 }
 
-export type AppAction = SetCollections | SetSelectedCollection | SetEditColMode | SetToEditCol | SetSources
+interface SetSelectedSource {
+    type: ACTIONS.SET_SELECTEDSOURCE,
+    selectedSource: Sources
+}
+
+interface SetEditSourceMode {
+    type: ACTIONS.SET_EDITSOURCEMODE,
+    editSourceMode: boolean
+}
+
+interface SetToEditSource {
+    type: ACTIONS.SET_TOEDITSOURCE,
+    toEditSource: Sources
+}
+
+export type AppAction = SetCollections | SetSelectedCollection | SetEditColMode | SetToEditCol | SetSources | SetSelectedSource | SetEditSourceMode | SetToEditSource
 
 export function useAppState(): [AppState, React.Dispatch<AppAction>] {
     const [state, dispatch] = React.useReducer(reducer, initAppState)
@@ -64,6 +85,12 @@ function reducer(state: AppState, action: AppAction): AppState {
         return setToEditCol(state, action)
     case ACTIONS.SET_SOURCES:
         return setSources(state, action)
+    case ACTIONS.SET_SELECTEDSOURCE:
+        return setSelectedSource(state, action)
+    case ACTIONS.SET_EDITSOURCEMODE:
+        return setEditSourceMode(state, action)
+    case ACTIONS.SET_TOEDITSOURCE:
+        return setToEditSource(state, action)
     default:
         break
     }
@@ -103,5 +130,26 @@ function setSources(state: AppState, action: SetSources) {
     return {
         ...state,
         sources: action.sources
+    }
+}
+
+function setSelectedSource(state: AppState, action: SetSelectedSource) {
+    return {
+        ...state,
+        selectedSource: action.selectedSource
+    }
+}
+
+function setEditSourceMode(state: AppState, action: SetEditSourceMode) {
+    return {
+        ...state,
+        editSourceMode: action.editSourceMode
+    }
+}
+
+function setToEditSource(state: AppState, action: SetToEditSource) {
+    return {
+        ...state,
+        toEditSource: action.toEditSource
     }
 }
