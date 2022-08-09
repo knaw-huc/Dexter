@@ -3,11 +3,13 @@ import { getSources } from "../API"
 import { Sources } from "../../Model/DexterModel"
 import { appContext } from "../../State/context"
 import { ACTIONS } from "../../State/actions"
-// import { Button } from "react-bootstrap"
+import { Button } from "react-bootstrap"
 import { SourceItem } from "./SourceItem"
+import { NewSource } from "./NewSource"
 
 export function SourcesList() {
     const { state, dispatch } = React.useContext(appContext)
+    const [showForm, setShowForm] = React.useState(false)
 
     const doGetSources = React.useCallback(async () => {
         try {
@@ -37,8 +39,18 @@ export function SourcesList() {
         })
     }
 
+    const formShowHandler = () => {
+        setShowForm(true)
+    }
+
+    const formCloseHandler = () => {
+        setShowForm(false)
+    }
+
     return (
         <>
+            {showForm && <NewSource show={showForm} onClose={formCloseHandler} refetch={refetchSources} />}
+            <Button onClick={formShowHandler}>Add new Source</Button>
             {state.sources ? state.sources.map((source: Sources, index: number) => (
                 <SourceItem
                     key={index}
