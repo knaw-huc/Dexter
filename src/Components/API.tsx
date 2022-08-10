@@ -1,33 +1,5 @@
 import { Collections, Sources } from "../Model/DexterModel"
 
-let collections: Collections[] = [{
-    "id": 1,
-    "title": "My test collection",
-    "description": "This is my test collection",
-    "mainorsub": "Main collection",
-    "creator": "Sebastiaan",
-    "subject": "Oral history",
-    "rights": "Open",
-    "access": "Closed",
-    "created": "27 July 2022",
-    "spatial": "Turkey",
-    "temporal": "1920-1960",
-    "language": "Turkish"
-}, {
-    "id": 2,
-    "title": "My test collection 2",
-    "description": "This is my test collection 2",
-    "mainorsub": "Sub collection",
-    "creator": "Sebastiaan",
-    "subject": "Oral history",
-    "rights": "Closed",
-    "access": "Closed",
-    "created": "27 July 2022",
-    "spatial": "Tunisia",
-    "temporal": "1800-1950",
-    "language": "Berber"
-}]
-
 let sources: Sources[] = [{
     "id": 1,
     "title": "My test source",
@@ -54,7 +26,41 @@ let sources: Sources[] = [{
     "language": "Arabic"
 }]
 
-export const getCollections = () => 
+let collections: Collections[] = [{
+    "metadata": {
+        "id": 1,
+        "title": "My test collection",
+        "description": "This is my test collection",
+        "mainorsub": "Main collection",
+        "creator": "Sebastiaan",
+        "subject": "Oral history",
+        "rights": "Open",
+        "access": "Closed",
+        "created": "27 July 2022",
+        "spatial": "Turkey",
+        "temporal": "1920-1960",
+        "language": "Turkish",
+    },
+    "sources": [sources[0]]
+}, {
+    "metadata": {
+        "id": 2,
+        "title": "My test collection 2",
+        "description": "This is my test collection 2",
+        "mainorsub": "Sub collection",
+        "creator": "Sebastiaan",
+        "subject": "Oral history",
+        "rights": "Closed",
+        "access": "Closed",
+        "created": "27 July 2022",
+        "spatial": "Tunisia",
+        "temporal": "1800-1950",
+        "language": "Berber",
+    },
+    "sources": [sources[1]]
+}]
+
+export const getCollections = () =>
     new Promise<Collections[]>((resolve, reject) => {
         if (!collections) {
             return setTimeout(
@@ -66,7 +72,7 @@ export const getCollections = () =>
         setTimeout(() => resolve(Object.values(collections)), 250)
     })
 
-export const getCollectionById = (id: number) => 
+export const getCollectionById = (id: number) =>
     new Promise((resolve, reject) => {
         const collection = collections[id - 1]
 
@@ -80,7 +86,7 @@ export const getCollectionById = (id: number) =>
         setTimeout(() => resolve(collections[id - 1]), 250)
     })
 
-export const createCollection = (data: any) => 
+export const createCollection = (data: any) =>
     new Promise((resolve) => {
         const id = Object.keys(collections).length + 1
         const newCollection = { id, ...data }
@@ -133,6 +139,8 @@ export const createSource = (data: any) =>
         const id = Object.keys(sources).length + 1
         const newSource = { id, ...data }
         sources = { ...sources, [id - 1]: newSource }
+        const collectionId = parseInt(data.partCol) - 1
+        collections[collectionId].sources.push(newSource)
 
         setTimeout(() => resolve(true), 250)
         console.log(sources)

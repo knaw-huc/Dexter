@@ -50,7 +50,7 @@ export function CollectionList() {
                     key={index}
                     collectionId={index}
                     collection={collection}
-                    selected={state.selectedCollection?.id === collection.id}
+                    selected={state.selectedCollection?.metadata.id === collection.metadata.id}
                     onSelect={handleSelected}
                     refetch={refetchCollections}
                 />

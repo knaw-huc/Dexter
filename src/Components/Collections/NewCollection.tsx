@@ -59,6 +59,7 @@ export function NewCollection(props: NewCollectionProps) {
             } catch (error) {
                 console.log(error)
             }
+            props.onClose()
         } else {
             const doUpdateCollection = async (id: any, updatedData: any) => {
                 try {

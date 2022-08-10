@@ -5,6 +5,7 @@ import Button from "react-bootstrap/Button"
 import styled from "styled-components"
 import { createSource, getSourceById, updateSource } from "../API"
 import { IFormInputSources } from "../../Model/DexterModel"
+import { appContext } from "../../State/context"
 
 type NewSourceProps = {
     refetch?: any,
@@ -47,6 +48,7 @@ const Select = styled.select`
 `
 
 export function NewSource(props: NewSourceProps) {
+    const { state } = React.useContext(appContext)
     const { register, handleSubmit, reset, setValue } = useForm<IFormInputSources>()
     const onSubmit: SubmitHandler<IFormInputSources> = async data => {
         if (!props.edit) {
@@ -59,6 +61,7 @@ export function NewSource(props: NewSourceProps) {
             } catch (error) {
                 console.log(error)
             }
+            props.onClose()
         } else {
             const doUpdateSource = async (id: any, updatedData: any) => {
                 try {
@@ -133,6 +136,12 @@ export function NewSource(props: NewSourceProps) {
                         <Input {...register("temporal")} />
                         <Label>Language</Label>
                         <Input {...register("language")} />
+                        <Label>Part of which collection?</Label>
+                        <Select {...register("partCol")}>
+                            {state.collections.map((collection, i) => {
+                                return <option value={collection.metadata.id} key={i}>{collection.metadata.id} {collection.metadata.title}</option>
+                            })}
+                        </Select>
                         <input type="submit" />
                     </form>
                 </Modal.Body>

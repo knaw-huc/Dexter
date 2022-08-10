@@ -14,7 +14,7 @@ export function CollectionItem(props: CollectionItemProps) {
     const { onSelect, collection } = props
 
     const toggleClick = () => {
-        console.log(props.collection.id)
+        console.log(props.collection.metadata.id)
         onSelect(collection)
     }
 
@@ -22,8 +22,8 @@ export function CollectionItem(props: CollectionItemProps) {
         <>
             <ul>
                 <li key={props.collectionId}>
-                    <Link to={`/collections/${props.collection.id}`} key={props.collectionId} onClick={toggleClick}>
-                        {props.collection.id} {props.collection.title}
+                    <Link to={`/collections/${props.collection.metadata.id}`} key={props.collectionId} onClick={toggleClick}>
+                        {props.collection.metadata.id} {props.collection.metadata.title}
                     </Link>
                 </li>
             </ul>
