@@ -11,9 +11,9 @@ type NewSourceProps = {
     show?: any,
     onClose?: any,
     edit?: any,
-    colToEdit?: any,
+    sourceToEdit?: any,
     onEdit?: any,
-    refetchCol?: any
+    refetchSource?: any
 }
 
 const Input = styled.input`
@@ -63,12 +63,12 @@ export function NewSource(props: NewSourceProps) {
             const doUpdateSource = async (id: any, updatedData: any) => {
                 try {
                     await updateSource(id, updatedData)
-                    await props.refetchCol()
+                    await props.refetchSource()
                 } catch (error) {
                     console.log(error)
                 }
             }
-            doUpdateSource(props.colToEdit.id - 1, data)
+            doUpdateSource(props.sourceToEdit.id - 1, data)
             props.onClose()
         }
     }
@@ -84,7 +84,7 @@ export function NewSource(props: NewSourceProps) {
         }
 
         if (props.edit) {
-            doGetSourceById(props.colToEdit.id)
+            doGetSourceById(props.sourceToEdit.id)
 
         } else {
             return
