@@ -20,10 +20,6 @@ export function CollectionList() {
         }
     }, [])
 
-    React.useEffect(() => {
-        doGetCollections()
-    }, [doGetCollections])
-
     const refetchCollections = async () => {
         await doGetCollections()
     }

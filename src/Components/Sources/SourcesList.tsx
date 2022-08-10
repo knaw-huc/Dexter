@@ -23,10 +23,6 @@ export function SourcesList() {
         }
     }, [])
 
-    React.useEffect(() => {
-        doGetSources()
-    }, [doGetSources])
-
     const refetchSources = async () => {
         await doGetSources()
     }

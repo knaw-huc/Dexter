@@ -1,6 +1,7 @@
 import React from "react"
 import { Collections, Sources } from "../Model/DexterModel"
 import { ACTIONS } from "./actions"
+import { getCollections, getSources } from "../Components/API"
 
 export interface AppState {
     collections: Collections[],
@@ -66,8 +67,36 @@ interface SetToEditSource {
 
 export type AppAction = SetCollections | SetSelectedCollection | SetEditColMode | SetToEditCol | SetSources | SetSelectedSource | SetEditSourceMode | SetToEditSource
 
+async function doGetCollections() {
+    const response = await getCollections()
+    return response
+}
+
+async function doGetSources() {
+    const response = await getSources()
+    return response
+}
+
 export function useAppState(): [AppState, React.Dispatch<AppAction>] {
     const [state, dispatch] = React.useReducer(reducer, initAppState)
+
+    React.useEffect(() => {
+        doGetCollections()
+            .then(function (collections) {
+                dispatch({
+                    type: ACTIONS.SET_COLLECTIONS,
+                    collections: collections
+                })
+            })
+
+        doGetSources()
+            .then(function (sources) {
+                dispatch({
+                    type: ACTIONS.SET_SOURCES,
+                    sources: sources
+                })
+            })
+    }, [])
 
     return [state, dispatch]
 }
