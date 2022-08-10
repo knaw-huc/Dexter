@@ -1,27 +1,38 @@
 import React from "react"
-import { getCollections } from "../API"
+//import { getCollections } from "../API"
 import { Collections } from "../..//Model/DexterModel"
 import { NewCollection } from "./NewCollection"
 import { CollectionItem } from "./CollectionItem"
 import { appContext } from "../../State/context"
 import { Button } from "react-bootstrap"
 import { ACTIONS } from "../../State/actions"
+import { doGetCollections } from "../../Utils/doGetCollections"
 
 export function CollectionList() {
     const { state, dispatch } = React.useContext(appContext)
     const [showForm, setShowForm] = React.useState(false)
 
-    const doGetCollections = React.useCallback(async () => {
-        try {
-            const result = await getCollections()
-            dispatch({type: ACTIONS.SET_COLLECTIONS, collections: result})
-        } catch (error) {
-            console.log(error)
-        }
-    }, [])
+    // const doGetCollections = React.useCallback(async () => {
+    //     try {
+    //         const result = await getCollections()
+    //         dispatch({type: ACTIONS.SET_COLLECTIONS, collections: result})
+    //     } catch (error) {
+    //         console.log(error)
+    //     }
+    // }, [])
 
-    const refetchCollections = async () => {
-        await doGetCollections()
+    // const refetchCollections = async () => {
+    //     await doGetCollections()
+    // }
+
+    const refetchCollections = () => {
+        doGetCollections()
+            .then(function (collections) {
+                dispatch({
+                    type: ACTIONS.SET_COLLECTIONS,
+                    collections: collections
+                })
+            })
     }
 
     const handleSelected = (selected: Collections | undefined) => {
@@ -46,7 +57,7 @@ export function CollectionList() {
                     key={index}
                     collectionId={index}
                     collection={collection}
-                    selected={state.selectedCollection?.metadata.id === collection.metadata.id}
+                    selected={state.selectedCollection?.id === collection.id}
                     onSelect={handleSelected}
                     refetch={refetchCollections}
                 />

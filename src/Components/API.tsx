@@ -26,37 +26,33 @@ let sources: Sources[] = [{
     "language": "Arabic"
 }]
 
-let collections: Collections[] = [{
-    "metadata": {
-        "id": 1,
-        "title": "My test collection",
-        "description": "This is my test collection",
-        "mainorsub": "Main collection",
-        "creator": "Sebastiaan",
-        "subject": "Oral history",
-        "rights": "Open",
-        "access": "Closed",
-        "created": "27 July 2022",
-        "spatial": "Turkey",
-        "temporal": "1920-1960",
-        "language": "Turkish",
-    },
+const collections: Collections[] = [{
+    "id": 1,
+    "title": "My test collection",
+    "description": "This is my test collection",
+    "mainorsub": "Main collection",
+    "creator": "Sebastiaan",
+    "subject": "Oral history",
+    "rights": "Open",
+    "access": "Closed",
+    "created": "27 July 2022",
+    "spatial": "Turkey",
+    "temporal": "1920-1960",
+    "language": "Turkish",
     "sources": [sources[0]]
 }, {
-    "metadata": {
-        "id": 2,
-        "title": "My test collection 2",
-        "description": "This is my test collection 2",
-        "mainorsub": "Sub collection",
-        "creator": "Sebastiaan",
-        "subject": "Oral history",
-        "rights": "Closed",
-        "access": "Closed",
-        "created": "27 July 2022",
-        "spatial": "Tunisia",
-        "temporal": "1800-1950",
-        "language": "Berber",
-    },
+    "id": 2,
+    "title": "My test collection 2",
+    "description": "This is my test collection 2",
+    "mainorsub": "Sub collection",
+    "creator": "Sebastiaan",
+    "subject": "Oral history",
+    "rights": "Closed",
+    "access": "Closed",
+    "created": "27 July 2022",
+    "spatial": "Tunisia",
+    "temporal": "1800-1950",
+    "language": "Berber",
     "sources": [sources[1]]
 }]
 
@@ -90,7 +86,8 @@ export const createCollection = (data: any) =>
     new Promise((resolve) => {
         const id = Object.keys(collections).length + 1
         const newCollection = { id, ...data }
-        collections = { ...collections, [id - 1]: newCollection }
+        collections.push(newCollection)
+        //collections = { ...collections, [id - 1]: newCollection }
 
         setTimeout(() => resolve(true), 250)
         console.log(collections)

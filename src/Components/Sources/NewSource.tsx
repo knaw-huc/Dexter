@@ -139,7 +139,7 @@ export function NewSource(props: NewSourceProps) {
                         <Label>Part of which collection?</Label>
                         <Select {...register("partCol")}>
                             {state.collections.map((collection, i) => {
-                                return <option value={collection.metadata.id} key={i}>{collection.metadata.id} {collection.metadata.title}</option>
+                                return <option value={collection.id}key={i}>{collection.id} {collection.title}</option>
                             })}
                         </Select>
                         <input type="submit" />

@@ -53,6 +53,7 @@ export function NewCollection(props: NewCollectionProps) {
             data.lastupdated = new Date()
             data.user = "test"
             data.creation = new Date()
+            data.sources = []
             try {
                 await createCollection(data)
                 await props.refetch()

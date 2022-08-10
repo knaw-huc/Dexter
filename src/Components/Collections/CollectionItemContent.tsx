@@ -49,17 +49,17 @@ export function CollectionItemContent() {
             {collection &&
                 <>
                     <button onClick={formShowHandler}>Edit</button>
-                    <p>Title: {collection.metadata.title}</p>
-                    <p>Description: {collection.metadata.description}</p>
-                    <p>Main or sub collection: {collection.metadata.mainorsub}</p>
-                    <p>Creator: {collection.metadata.creator}</p>
-                    <p>Subject: {collection.metadata.subject}</p>
-                    <p>Rights: {collection.metadata.rights}</p>
-                    <p>Access: {collection.metadata.access}</p>
-                    <p>Created: {collection.metadata.created}</p>
-                    <p>Spatial: {collection.metadata.spatial}</p>
-                    <p>Temporal: {collection.metadata.temporal}</p>
-                    <p>Language: {collection.metadata.language}</p>
+                    <p>Title: {collection.title}</p>
+                    <p>Description: {collection.description}</p>
+                    <p>Main or sub collection: {collection.mainorsub}</p>
+                    <p>Creator: {collection.creator}</p>
+                    <p>Subject: {collection.subject}</p>
+                    <p>Rights: {collection.rights}</p>
+                    <p>Access: {collection.access}</p>
+                    <p>Created: {collection.created}</p>
+                    <p>Spatial: {collection.spatial}</p>
+                    <p>Temporal: {collection.temporal}</p>
+                    <p>Language: {collection.language}</p>
                     Sources: {collection.sources.map((source) => {
                         return JSON.stringify(source)
                     })}

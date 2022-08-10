@@ -1,18 +1,16 @@
 export interface Collections {
-    metadata: {
-        id: number,
-        title: string,
-        description: string,
-        mainorsub: string,
-        creator: string,
-        subject: string,
-        rights: string,
-        access: string,
-        created: string,
-        spatial: string,
-        temporal: string,
-        language: string,
-    }
+    id: number,
+    title: string,
+    description: string,
+    mainorsub: string,
+    creator: string,
+    subject: string,
+    rights: string,
+    access: string,
+    created: string,
+    spatial: string,
+    temporal: string,
+    language: string,
     sources: Sources[]
 }
 
@@ -49,6 +47,7 @@ export interface IFormInputCollections {
     lastupdated: Date,
     user: string,
     creation: Date
+    sources: []
 }
 
 export interface IFormInputSources {
