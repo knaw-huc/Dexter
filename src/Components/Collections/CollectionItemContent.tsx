@@ -5,6 +5,7 @@ import { Collections } from "../../Model/DexterModel"
 import { appContext } from "../../State/context"
 import { ACTIONS } from "../../State/actions"
 import { NewCollection } from "./NewCollection"
+import { Link } from "react-router-dom"
 
 export function CollectionItemContent() {
     const [collection, setCollection] = React.useState<Collections>(null)
@@ -60,8 +61,10 @@ export function CollectionItemContent() {
                     <p>Spatial: {collection.spatial}</p>
                     <p>Temporal: {collection.temporal}</p>
                     <p>Language: {collection.language}</p>
-                    Sources: {collection.sources.map((source) => {
-                        return JSON.stringify(source)
+                    Sources: {collection.sources.map((source, i) => {
+                        return <Link to={`/sources/${source.id}`} key={i}>
+                            {JSON.stringify(source)}
+                        </Link>
                     })}
                 </>
             }

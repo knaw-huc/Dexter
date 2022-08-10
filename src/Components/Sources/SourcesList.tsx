@@ -1,30 +1,24 @@
 import React from "react"
-import { getSources } from "../API"
 import { Sources } from "../../Model/DexterModel"
 import { appContext } from "../../State/context"
 import { ACTIONS } from "../../State/actions"
 import { Button } from "react-bootstrap"
 import { SourceItem } from "./SourceItem"
 import { NewSource } from "./NewSource"
+import { doGetSources } from "../../Utils/doGetSources"
 
 export function SourcesList() {
     const { state, dispatch } = React.useContext(appContext)
     const [showForm, setShowForm] = React.useState(false)
 
-    const doGetSources = React.useCallback(async () => {
-        try {
-            const result = await getSources()
-            dispatch({
-                type: ACTIONS.SET_SOURCES,
-                sources: result
-            })
-        } catch (error) {
-            console.log(error)
-        }
-    }, [])
-
     const refetchSources = async () => {
-        await doGetSources()
+        doGetSources()
+            .then(function (sources) {
+                dispatch({
+                    type: ACTIONS.SET_SOURCES,
+                    sources: sources
+                })
+            })
     }
 
     const handleSelected = (selected: Sources | undefined) => {

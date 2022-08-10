@@ -151,7 +151,10 @@ export const updateSource = (id: number, updatedSource: any) =>
                 250
             )
         }
-
+        
         sources[id] = { ...sources[id], ...updatedSource }
+
+        //const collectionId = parseInt(updateSource.partCol) - 1
+
         return setTimeout(() => resolve(true), 250)
     })

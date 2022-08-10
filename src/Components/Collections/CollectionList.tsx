@@ -1,5 +1,4 @@
 import React from "react"
-//import { getCollections } from "../API"
 import { Collections } from "../..//Model/DexterModel"
 import { NewCollection } from "./NewCollection"
 import { CollectionItem } from "./CollectionItem"
@@ -11,19 +10,6 @@ import { doGetCollections } from "../../Utils/doGetCollections"
 export function CollectionList() {
     const { state, dispatch } = React.useContext(appContext)
     const [showForm, setShowForm] = React.useState(false)
-
-    // const doGetCollections = React.useCallback(async () => {
-    //     try {
-    //         const result = await getCollections()
-    //         dispatch({type: ACTIONS.SET_COLLECTIONS, collections: result})
-    //     } catch (error) {
-    //         console.log(error)
-    //     }
-    // }, [])
-
-    // const refetchCollections = async () => {
-    //     await doGetCollections()
-    // }
 
     const refetchCollections = () => {
         doGetCollections()
