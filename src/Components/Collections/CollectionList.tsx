@@ -6,10 +6,27 @@ import { appContext } from "../../State/context"
 import { Button } from "react-bootstrap"
 import { ACTIONS } from "../../State/actions"
 import { doGetCollections } from "../../Utils/doGetCollections"
+import { CollectionFilter } from "./CollectionFilter"
 
 export function CollectionList() {
     const { state, dispatch } = React.useContext(appContext)
     const [showForm, setShowForm] = React.useState(false)
+    const [filteredSubject, setFilteredSubject] = React.useState("No filter")
+
+    React.useEffect(() => {
+        if (state.collections) {
+            const filteredCollections = state.collections.filter((collection) => {
+                return collection.subject === filteredSubject
+            })
+            console.log(filteredCollections)
+            dispatch({
+                type: ACTIONS.SET_FILTEREDCOLLECTIONS,
+                filteredCollections: filteredCollections
+            })
+        } else {
+            return
+        }
+    }, [filteredSubject])
 
     const refetchCollections = () => {
         doGetCollections()
@@ -34,11 +51,20 @@ export function CollectionList() {
         setShowForm(false)
     }
 
+    const filterChangeHandler = (selectedSubject: any) => {
+        setFilteredSubject(selectedSubject)
+    }
+
+    // const filteredCollections = state.collections.filter((collection) => {
+    //     return collection.subject === filteredSubject
+    // })
+
     return (
         <>
+            <CollectionFilter selected={filteredSubject} onChangeFilter={filterChangeHandler} />
             {showForm && <NewCollection show={showForm} onClose={formCloseHandler} refetch={refetchCollections} />}
             <Button onClick={formShowHandler}>Add new collection</Button>
-            {state.collections ? state.collections.map((collection: Collections, index: number) => (
+            {filteredSubject != "No filter" ? state.filteredCollections && state.filteredCollections.map((collection: Collections, index: number) => (
                 <CollectionItem
                     key={index}
                     collectionId={index}
@@ -47,7 +73,16 @@ export function CollectionList() {
                     onSelect={handleSelected}
                     refetch={refetchCollections}
                 />
-            )) : "Loading"}
+            )) : state.collections && state.collections.map((collection: Collections, index: number) => (
+                <CollectionItem
+                    key={index}
+                    collectionId={index}
+                    collection={collection}
+                    selected={state.selectedCollection?.id === collection.id}
+                    onSelect={handleSelected}
+                    refetch={refetchCollections}
+                />
+            ))}
         </>
     )
 }

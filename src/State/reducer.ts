@@ -6,6 +6,7 @@ import { doGetCollections } from "../Utils/doGetCollections"
 
 export interface AppState {
     collections: Collections[],
+    filteredCollections: Collections[]
     selectedCollection: Collections | undefined,
     editColMode: boolean,
     toEditCol: Collections | undefined,
@@ -17,6 +18,7 @@ export interface AppState {
 
 export const initAppState: AppState = {
     collections: null,
+    filteredCollections: null,
     selectedCollection: undefined,
     editColMode: false,
     toEditCol: undefined,
@@ -29,6 +31,11 @@ export const initAppState: AppState = {
 interface SetCollections {
     type: ACTIONS.SET_COLLECTIONS,
     collections: Collections[]
+}
+
+interface SetFilteredCollections {
+    type: ACTIONS.SET_FILTEREDCOLLECTIONS,
+    filteredCollections: Collections[]
 }
 
 interface SetSelectedCollection {
@@ -66,7 +73,7 @@ interface SetToEditSource {
     toEditSource: Sources
 }
 
-export type AppAction = SetCollections | SetSelectedCollection | SetEditColMode | SetToEditCol | SetSources | SetSelectedSource | SetEditSourceMode | SetToEditSource
+export type AppAction = SetCollections | SetSelectedCollection | SetEditColMode | SetToEditCol | SetSources | SetSelectedSource | SetEditSourceMode | SetToEditSource | SetFilteredCollections
 
 export function useAppState(): [AppState, React.Dispatch<AppAction>] {
     const [state, dispatch] = React.useReducer(reducer, initAppState)
@@ -97,6 +104,8 @@ function reducer(state: AppState, action: AppAction): AppState {
     switch (action.type) {
     case ACTIONS.SET_COLLECTIONS:
         return setCollections(state, action)
+    case ACTIONS.SET_FILTEREDCOLLECTIONS:
+        return setFilteredCollections(state, action)
     case ACTIONS.SET_SELECTEDCOLLECTION:
         return setSelectedCollection(state, action)
     case ACTIONS.SET_EDITCOLMODE:
@@ -171,5 +180,12 @@ function setToEditSource(state: AppState, action: SetToEditSource) {
     return {
         ...state,
         toEditSource: action.toEditSource
+    }
+}
+
+function setFilteredCollections(state: AppState, action: SetFilteredCollections) {
+    return {
+        ...state,
+        filteredCollections: action.filteredCollections
     }
 }

@@ -32,7 +32,7 @@ const collections: Collections[] = [{
     "description": "This is my test collection",
     "mainorsub": "Main collection",
     "creator": "Sebastiaan",
-    "subject": "Oral history",
+    "subject": "Ancient history",
     "rights": "Open",
     "access": "Closed",
     "created": "27 July 2022",
