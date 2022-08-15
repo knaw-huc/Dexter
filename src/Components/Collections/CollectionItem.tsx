@@ -5,9 +5,7 @@ import { Link } from "react-router-dom"
 type CollectionItemProps = {
     collectionId: React.Key,
     collection: Collections,
-    selected: boolean,
     onSelect: (selected: Collections | undefined) => void,
-    refetch: any
 }
 
 export function CollectionItem(props: CollectionItemProps) {

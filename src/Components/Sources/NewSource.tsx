@@ -4,17 +4,17 @@ import Modal from "react-bootstrap/Modal"
 import Button from "react-bootstrap/Button"
 import styled from "styled-components"
 import { createSource, getSourceById, updateSource } from "../API"
-import { IFormInputSources } from "../../Model/DexterModel"
+import { Sources } from "../../Model/DexterModel"
 import { appContext } from "../../State/context"
 
 type NewSourceProps = {
-    refetch?: any,
-    show?: any,
-    onClose?: any,
-    edit?: any,
-    sourceToEdit?: any,
-    onEdit?: any,
-    refetchSource?: any
+    refetch?: () => void,
+    show?: boolean,
+    onClose?: () => void,
+    edit?: boolean,
+    sourceToEdit?: Sources,
+    onEdit?: (boolean: boolean) => void,
+    refetchSource?: () => void
 }
 
 const Input = styled.input`
@@ -49,8 +49,8 @@ const Select = styled.select`
 
 export function NewSource(props: NewSourceProps) {
     const { state } = React.useContext(appContext)
-    const { register, handleSubmit, reset, setValue } = useForm<IFormInputSources>()
-    const onSubmit: SubmitHandler<IFormInputSources> = async data => {
+    const { register, handleSubmit, reset, setValue } = useForm<Sources>()
+    const onSubmit: SubmitHandler<Sources> = async data => {
         if (!props.edit) {
             data.lastupdated = new Date()
             data.user = "test"
@@ -63,7 +63,7 @@ export function NewSource(props: NewSourceProps) {
             }
             props.onClose()
         } else {
-            const doUpdateSource = async (id: any, updatedData: any) => {
+            const doUpdateSource = async (id: number, updatedData: Sources) => {
                 try {
                     await updateSource(id, updatedData)
                     await props.refetchSource()
@@ -79,7 +79,7 @@ export function NewSource(props: NewSourceProps) {
     React.useEffect(() => {
         const doGetSourceById = async (id: number) => {
             const response: any = await getSourceById(id)
-            console.log(response)
+            console.log(response as Sources)
             const fields = ["title", "description", "creator", "subject", "rights", "access", "created", "spatial", "temporal", "language"]
             fields.map((field: any) => {
                 setValue(field, response[field])

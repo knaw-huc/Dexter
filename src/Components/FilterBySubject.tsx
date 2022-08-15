@@ -3,14 +3,14 @@ import { appContext } from "../State/context"
 
 type FilterBySubjectProps = {
     selected: string,
-    onChangeFilter: any,
-    type: "Collections" | "Sources"
+    onChangeFilter: (selectedSubject: string) => void,
+    toFilter: "Collections" | "Sources"
 }
 
 export const FilterBySubject = (props: FilterBySubjectProps) => {
     const { state } = React.useContext(appContext)
 
-    const dropdownChangeHandler = (event: any) => {
+    const dropdownChangeHandler = (event: { target: { value: string } }) => {
         props.onChangeFilter(event.target.value)
         console.log(event.target.value)
     }
@@ -24,7 +24,7 @@ export const FilterBySubject = (props: FilterBySubjectProps) => {
             <label>Filter by subject</label>
             <select value={props.selected} onChange={dropdownChangeHandler}>
                 <option value={undefined}>No filter</option>
-                {props.type === "Collections" ? state.collections && state.collections.map((collection, i) => {
+                {props.toFilter === "Collections" ? state.collections && state.collections.map((collection, i) => {
                     return (
                         <option value={collection.subject} key={i}>
                             {collection.subject}

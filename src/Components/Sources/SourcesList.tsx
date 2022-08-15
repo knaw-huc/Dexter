@@ -14,7 +14,7 @@ export function SourcesList() {
     const [filteredSubject, setFilteredSubject] = React.useState("No filter")
 
     React.useEffect(() => {
-        if (state.sources) {
+        if (state.sources && filteredSubject != "No filter") {
             const filteredSources = state.sources.filter((source) => {
                 return source.subject === filteredSubject
             })
@@ -54,13 +54,13 @@ export function SourcesList() {
         setShowForm(false)
     }
 
-    const filterChangeHandler = (selectedSubject: any) => {
+    const filterChangeHandler = (selectedSubject: string) => {
         setFilteredSubject(selectedSubject)
     }
 
     return (
         <>
-            <FilterBySubject selected={filteredSubject} onChangeFilter={filterChangeHandler} type="Sources" />
+            <FilterBySubject selected={filteredSubject} onChangeFilter={filterChangeHandler} toFilter="Sources" />
             {showForm && <NewSource show={showForm} onClose={formCloseHandler} refetch={refetchSources} />}
             <Button onClick={formShowHandler}>Add new Source</Button>
             {filteredSubject != "No filter" ? state.filteredSources && state.filteredSources.map((source: Sources, index: number) => (
@@ -68,18 +68,14 @@ export function SourcesList() {
                     key={index}
                     sourceId={index}
                     source={source}
-                    selected={state.selectedSource?.id === source.id}
                     onSelect={handleSelected}
-                    refetch={refetchSources}
                 />
             )) : state.sources && state.sources.map((source: Sources, index: number) => (
                 <SourceItem
                     key={index}
                     sourceId={index}
                     source={source}
-                    selected={state.selectedSource?.id === source.id}
                     onSelect={handleSelected}
-                    refetch={refetchSources}
                 />
             ))}
         </>

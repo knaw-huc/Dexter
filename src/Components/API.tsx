@@ -8,10 +8,17 @@ let sources: Sources[] = [{
     "subject": "Morocco",
     "rights": "Open",
     "access": "Closed",
-    "created": "5 August 2022",
+    "created": new Date(),
     "spatial": "Morocco",
     "temporal": "1940",
-    "language": "Arabic"
+    "language": "Arabic",
+    "lastupdated": new Date(),
+    "user": "Sebastiaan",
+    "creation": new Date(),
+    "partCol": {
+        "id": 1,
+        "title": "My test collection"
+    }
 }, {
     "id": 2,
     "title": "My test source 2",
@@ -20,10 +27,17 @@ let sources: Sources[] = [{
     "subject": "Tunisia",
     "rights": "Closed",
     "access": "Closed",
-    "created": "5 August 2022",
+    "created": new Date(),
     "spatial": "Tunisia",
     "temporal": "1820",
-    "language": "Arabic"
+    "language": "Arabic",
+    "lastupdated": new Date(),
+    "user": "Sebastiaan",
+    "creation": new Date(),
+    "partCol": {
+        "id": 2,
+        "title": "My test collection 2"
+    }
 }]
 
 const collections: Collections[] = [{
@@ -35,10 +49,13 @@ const collections: Collections[] = [{
     "subject": "Ancient history",
     "rights": "Open",
     "access": "Closed",
-    "created": "27 July 2022",
+    "created": new Date(),
     "spatial": "Turkey",
     "temporal": "1920-1960",
     "language": "Turkish",
+    "lastupdated": new Date(),
+    "user": "Sebastiaan",
+    "creation": new Date(),
     "sources": [sources[0]]
 }, {
     "id": 2,
@@ -49,10 +66,13 @@ const collections: Collections[] = [{
     "subject": "Oral history",
     "rights": "Closed",
     "access": "Closed",
-    "created": "27 July 2022",
+    "created": new Date(),
     "spatial": "Tunisia",
     "temporal": "1800-1950",
     "language": "Berber",
+    "lastupdated": new Date(),
+    "user": "Sebastiaan",
+    "creation": new Date(),
     "sources": [sources[1]]
 }]
 
@@ -82,10 +102,11 @@ export const getCollectionById = (id: number) =>
         setTimeout(() => resolve(collections[id - 1]), 250)
     })
 
-export const createCollection = (data: any) =>
+export const createCollection = (data: Collections) =>
     new Promise((resolve) => {
         const id = Object.keys(collections).length + 1
-        const newCollection = { id, ...data }
+        const newCollection: Collections = { id, ...data }
+        console.log(newCollection)
         collections.push(newCollection)
         //collections = { ...collections, [id - 1]: newCollection }
 
@@ -93,7 +114,7 @@ export const createCollection = (data: any) =>
         console.log(collections)
     })
 
-export const updateCollection = (id: number, updatedCollection: any) =>
+export const updateCollection = (id: number, updatedCollection: Collections) =>
     new Promise((resolve, reject) => {
         if (!collections[id]) {
             return setTimeout(
@@ -131,19 +152,19 @@ export const getSourceById = (id: number) =>
         setTimeout(() => resolve(sources[id - 1]), 250)
     })
 
-export const createSource = (data: any) =>
+export const createSource = (data: Sources) =>
     new Promise((resolve) => {
         const id = Object.keys(sources).length + 1
         const newSource = { id, ...data }
         sources = { ...sources, [id - 1]: newSource }
-        const collectionId = parseInt(data.partCol) - 1
+        const collectionId = data.partCol.id - 1
         collections[collectionId].sources.push(newSource)
 
         setTimeout(() => resolve(true), 250)
         console.log(sources)
     })
 
-export const updateSource = (id: number, updatedSource: any) =>
+export const updateSource = (id: number, updatedSource: Sources) =>
     new Promise((resolve, reject) => {
         if (!sources[id]) {
             return setTimeout(

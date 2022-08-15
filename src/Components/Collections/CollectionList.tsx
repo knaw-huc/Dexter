@@ -14,7 +14,7 @@ export function CollectionList() {
     const [filteredSubject, setFilteredSubject] = React.useState("No filter")
 
     React.useEffect(() => {
-        if (state.collections) {
+        if (state.collections && filteredSubject != "No filter") {
             const filteredCollections = state.collections.filter((collection) => {
                 return collection.subject === filteredSubject
             })
@@ -51,8 +51,8 @@ export function CollectionList() {
         setShowForm(false)
     }
 
-    const filterChangeHandler = (selectedSubject: any) => {
-        setFilteredSubject(selectedSubject)
+    const filterChangeHandler = (selectedSubject: string) => {
+        return setFilteredSubject(selectedSubject)
     }
 
     // const filteredCollections = state.collections.filter((collection) => {
@@ -61,7 +61,7 @@ export function CollectionList() {
 
     return (
         <>
-            <FilterBySubject selected={filteredSubject} onChangeFilter={filterChangeHandler} type="Collections" />
+            <FilterBySubject selected={filteredSubject} onChangeFilter={filterChangeHandler} toFilter="Collections" />
             {showForm && <NewCollection show={showForm} onClose={formCloseHandler} refetch={refetchCollections} />}
             <Button onClick={formShowHandler}>Add new collection</Button>
             {filteredSubject != "No filter" ? state.filteredCollections && state.filteredCollections.map((collection: Collections, index: number) => (
@@ -69,18 +69,14 @@ export function CollectionList() {
                     key={index}
                     collectionId={index}
                     collection={collection}
-                    selected={state.selectedCollection?.id === collection.id}
                     onSelect={handleSelected}
-                    refetch={refetchCollections}
                 />
             )) : state.collections && state.collections.map((collection: Collections, index: number) => (
                 <CollectionItem
                     key={index}
                     collectionId={index}
                     collection={collection}
-                    selected={state.selectedCollection?.id === collection.id}
                     onSelect={handleSelected}
-                    refetch={refetchCollections}
                 />
             ))}
         </>

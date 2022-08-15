@@ -9,7 +9,6 @@ import { Link } from "react-router-dom"
 import styled from "styled-components"
 
 const Wrapper = styled.div`
-    display: inline-flex;
     overflow: auto
 `
 
@@ -41,8 +40,8 @@ export function CollectionItemContent() {
     }
 
     const doGetCollectionById = async (id: number) => {
-        const response: any = await getCollectionById(id)
-        setCollection(response)
+        const response = await getCollectionById(id)
+        setCollection(response as Collections)
     }
 
     doGetCollectionById(parseInt(params.collectionId))
@@ -63,7 +62,7 @@ export function CollectionItemContent() {
                     <p>Subject: {collection.subject}</p>
                     <p>Rights: {collection.rights}</p>
                     <p>Access: {collection.access}</p>
-                    <p>Created: {collection.created}</p>
+                    <p>Created: {collection.created.toDateString()}</p>
                     <p>Spatial: {collection.spatial}</p>
                     <p>Temporal: {collection.temporal}</p>
                     <p>Language: {collection.language}</p>

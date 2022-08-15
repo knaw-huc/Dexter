@@ -34,8 +34,8 @@ export const SourceItemContent = () => {
     }
 
     const doGetSourceById = async (id: number) => {
-        const response: any = await getSourceById(id)
-        setSource(response)
+        const response = await getSourceById(id)
+        setSource(response as Sources)
     }
 
     doGetSourceById(parseInt(params.sourceId))
@@ -55,7 +55,7 @@ export const SourceItemContent = () => {
                     <p>Subject: {source.subject}</p>
                     <p>Rights: {source.rights}</p>
                     <p>Access: {source.access}</p>
-                    <p>Created: {source.created}</p>
+                    <p>Created: {source.created.toDateString()}</p>
                     <p>Spatial: {source.spatial}</p>
                     <p>Temporal: {source.temporal}</p>
                     <p>Language: {source.language}</p>

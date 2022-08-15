@@ -4,16 +4,16 @@ import Modal from "react-bootstrap/Modal"
 import Button from "react-bootstrap/Button"
 import styled from "styled-components"
 import { createCollection, getCollectionById, updateCollection } from "../API"
-import { IFormInputCollections } from "../../Model/DexterModel"
+import { Collections } from "../../Model/DexterModel"
 
 type NewCollectionProps = {
-    refetch?: any,
-    show?: any,
-    onClose?: any,
-    edit?: any,
-    colToEdit?: any,
-    onEdit?: any,
-    refetchCol?: any
+    refetch?: () => void,
+    show?: boolean,
+    onClose?: () => void,
+    edit?: boolean,
+    colToEdit?: Collections,
+    onEdit?: (boolean: boolean) => void,
+    refetchCol?: () => void
 }
 
 const Input = styled.input`
@@ -47,11 +47,11 @@ const Select = styled.select`
 `
 
 export function NewCollection(props: NewCollectionProps) {
-    const { register, handleSubmit, reset, setValue } = useForm<IFormInputCollections>()
-    const onSubmit: SubmitHandler<IFormInputCollections> = async data => {
+    const { register, handleSubmit, reset, setValue } = useForm<Collections>()
+    const onSubmit: SubmitHandler<Collections> = async data => {
         if (!props.edit) {
             data.lastupdated = new Date()
-            data.user = "test"
+            data.user = "Sebastiaan"
             data.creation = new Date()
             data.sources = []
             try {
@@ -62,8 +62,9 @@ export function NewCollection(props: NewCollectionProps) {
             }
             props.onClose()
         } else {
-            const doUpdateCollection = async (id: any, updatedData: any) => {
+            const doUpdateCollection = async (id: number, updatedData: Collections) => {
                 try {
+                    updatedData.lastupdated = new Date()
                     await updateCollection(id, updatedData)
                     await props.refetchCol()
                 } catch (error) {

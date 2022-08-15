@@ -5,9 +5,7 @@ import { Link } from "react-router-dom"
 type SourceItemProps = {
     sourceId: React.Key,
     source: Sources,
-    selected: boolean,
     onSelect: (selected: Sources | undefined) => void,
-    refetch: any
 }
 
 export const SourceItem = (props: SourceItemProps) => {
