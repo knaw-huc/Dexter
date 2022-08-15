@@ -11,6 +11,7 @@ export interface AppState {
     editColMode: boolean,
     toEditCol: Collections | undefined,
     sources: Sources[],
+    filteredSources: Sources[]
     selectedSource: Sources | undefined,
     editSourceMode: boolean,
     toEditSource: Sources | undefined
@@ -23,6 +24,7 @@ export const initAppState: AppState = {
     editColMode: false,
     toEditCol: undefined,
     sources: null,
+    filteredSources: null,
     selectedSource: undefined,
     editSourceMode: false,
     toEditSource: undefined
@@ -58,6 +60,11 @@ interface SetSources {
     sources: Sources[]
 }
 
+interface SetFilteredSources {
+    type: ACTIONS.SET_FILTEREDSOURCES,
+    filteredSources: Sources[]
+}
+
 interface SetSelectedSource {
     type: ACTIONS.SET_SELECTEDSOURCE,
     selectedSource: Sources
@@ -73,7 +80,7 @@ interface SetToEditSource {
     toEditSource: Sources
 }
 
-export type AppAction = SetCollections | SetSelectedCollection | SetEditColMode | SetToEditCol | SetSources | SetSelectedSource | SetEditSourceMode | SetToEditSource | SetFilteredCollections
+export type AppAction = SetCollections | SetSelectedCollection | SetEditColMode | SetToEditCol | SetSources | SetSelectedSource | SetEditSourceMode | SetToEditSource | SetFilteredCollections | SetFilteredSources
 
 export function useAppState(): [AppState, React.Dispatch<AppAction>] {
     const [state, dispatch] = React.useReducer(reducer, initAppState)
@@ -114,6 +121,8 @@ function reducer(state: AppState, action: AppAction): AppState {
         return setToEditCol(state, action)
     case ACTIONS.SET_SOURCES:
         return setSources(state, action)
+    case ACTIONS.SET_FILTEREDSOURCES:
+        return setFilteredSources(state, action)
     case ACTIONS.SET_SELECTEDSOURCE:
         return setSelectedSource(state, action)
     case ACTIONS.SET_EDITSOURCEMODE:
@@ -187,5 +196,12 @@ function setFilteredCollections(state: AppState, action: SetFilteredCollections)
     return {
         ...state,
         filteredCollections: action.filteredCollections
+    }
+}
+
+function setFilteredSources(state: AppState, action: SetFilteredSources) {
+    return {
+        ...state,
+        filteredSources: action.filteredSources
     }
 }

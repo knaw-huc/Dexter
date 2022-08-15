@@ -6,10 +6,27 @@ import { Button } from "react-bootstrap"
 import { SourceItem } from "./SourceItem"
 import { NewSource } from "./NewSource"
 import { doGetSources } from "../../Utils/doGetSources"
+import { FilterBySubject } from "../FilterBySubject"
 
 export function SourcesList() {
     const { state, dispatch } = React.useContext(appContext)
     const [showForm, setShowForm] = React.useState(false)
+    const [filteredSubject, setFilteredSubject] = React.useState("No filter")
+
+    React.useEffect(() => {
+        if (state.sources) {
+            const filteredSources = state.sources.filter((source) => {
+                return source.subject === filteredSubject
+            })
+            console.log(filteredSources)
+            dispatch({
+                type: ACTIONS.SET_FILTEREDSOURCES,
+                filteredSources: filteredSources
+            })
+        } else {
+            return
+        }
+    }, [filteredSubject])
 
     const refetchSources = async () => {
         doGetSources()
@@ -37,11 +54,16 @@ export function SourcesList() {
         setShowForm(false)
     }
 
+    const filterChangeHandler = (selectedSubject: any) => {
+        setFilteredSubject(selectedSubject)
+    }
+
     return (
         <>
+            <FilterBySubject selected={filteredSubject} onChangeFilter={filterChangeHandler} type="Sources" />
             {showForm && <NewSource show={showForm} onClose={formCloseHandler} refetch={refetchSources} />}
             <Button onClick={formShowHandler}>Add new Source</Button>
-            {state.sources ? state.sources.map((source: Sources, index: number) => (
+            {filteredSubject != "No filter" ? state.filteredSources && state.filteredSources.map((source: Sources, index: number) => (
                 <SourceItem
                     key={index}
                     sourceId={index}
@@ -50,7 +72,16 @@ export function SourcesList() {
                     onSelect={handleSelected}
                     refetch={refetchSources}
                 />
-            )) : "Loading"}
+            )) : state.sources && state.sources.map((source: Sources, index: number) => (
+                <SourceItem
+                    key={index}
+                    sourceId={index}
+                    source={source}
+                    selected={state.selectedSource?.id === source.id}
+                    onSelect={handleSelected}
+                    refetch={refetchSources}
+                />
+            ))}
         </>
     )
 }

@@ -6,7 +6,7 @@ import { appContext } from "../../State/context"
 import { Button } from "react-bootstrap"
 import { ACTIONS } from "../../State/actions"
 import { doGetCollections } from "../../Utils/doGetCollections"
-import { CollectionFilter } from "./CollectionFilter"
+import { FilterBySubject } from "../FilterBySubject"
 
 export function CollectionList() {
     const { state, dispatch } = React.useContext(appContext)
@@ -61,7 +61,7 @@ export function CollectionList() {
 
     return (
         <>
-            <CollectionFilter selected={filteredSubject} onChangeFilter={filterChangeHandler} />
+            <FilterBySubject selected={filteredSubject} onChangeFilter={filterChangeHandler} type="Collections" />
             {showForm && <NewCollection show={showForm} onClose={formCloseHandler} refetch={refetchCollections} />}
             <Button onClick={formShowHandler}>Add new collection</Button>
             {filteredSubject != "No filter" ? state.filteredCollections && state.filteredCollections.map((collection: Collections, index: number) => (
