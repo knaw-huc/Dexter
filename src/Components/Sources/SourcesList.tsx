@@ -2,11 +2,11 @@ import React from "react"
 import { Sources } from "../../Model/DexterModel"
 import { appContext } from "../../State/context"
 import { ACTIONS } from "../../State/actions"
-import { Button } from "react-bootstrap"
 import { SourceItem } from "./SourceItem"
 import { NewSource } from "./NewSource"
 import { doGetSources } from "../../Utils/doGetSources"
 import { FilterBySubject } from "../FilterBySubject"
+import Button from "react-bootstrap/Button"
 
 export function SourcesList() {
     const { state, dispatch } = React.useContext(appContext)
@@ -62,7 +62,7 @@ export function SourcesList() {
         <>
             <FilterBySubject selected={filteredSubject} onChangeFilter={filterChangeHandler} toFilter="Sources" />
             {showForm && <NewSource show={showForm} onClose={formCloseHandler} refetch={refetchSources} />}
-            <Button onClick={formShowHandler}>Add new Source</Button>
+            <Button onClick={formShowHandler}>Add new source</Button> 
             {filteredSubject != "No filter" ? state.filteredSources && state.filteredSources.map((source: Sources, index: number) => (
                 <SourceItem
                     key={index}
