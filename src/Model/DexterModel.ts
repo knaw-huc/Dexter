@@ -7,7 +7,7 @@ export interface Collections {
     subject: string,
     rights: string,
     access: string,
-    created: Date,
+    created: string,
     spatial: string,
     temporal: string,
     language: string,
@@ -25,15 +25,12 @@ export interface Sources {
     subject: string,
     rights: string,
     access: string,
-    created: Date,
+    created: string,
     spatial: string,
     temporal: string,
     language: string,
     lastupdated: Date,
     user: string,
     creation: Date,
-    partCol: {
-        id: number,
-        title: string
-    }
+    partCol: number
 }

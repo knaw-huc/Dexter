@@ -62,7 +62,7 @@ export function CollectionItemContent() {
                     <p>Subject: {collection.subject}</p>
                     <p>Rights: {collection.rights}</p>
                     <p>Access: {collection.access}</p>
-                    <p>Created: {collection.created.toDateString()}</p>
+                    <p>Created: {collection.created}</p>
                     <p>Spatial: {collection.spatial}</p>
                     <p>Temporal: {collection.temporal}</p>
                     <p>Language: {collection.language}</p>

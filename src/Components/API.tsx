@@ -8,17 +8,14 @@ let sources: Sources[] = [{
     "subject": "Morocco",
     "rights": "Open",
     "access": "Closed",
-    "created": new Date(),
+    "created": "27 July 2022",
     "spatial": "Morocco",
     "temporal": "1940",
     "language": "Arabic",
     "lastupdated": new Date(),
     "user": "Sebastiaan",
     "creation": new Date(),
-    "partCol": {
-        "id": 1,
-        "title": "My test collection"
-    }
+    "partCol": 1
 }, {
     "id": 2,
     "title": "My test source 2",
@@ -27,17 +24,14 @@ let sources: Sources[] = [{
     "subject": "Tunisia",
     "rights": "Closed",
     "access": "Closed",
-    "created": new Date(),
+    "created": "29 July 2022",
     "spatial": "Tunisia",
     "temporal": "1820",
     "language": "Arabic",
     "lastupdated": new Date(),
     "user": "Sebastiaan",
     "creation": new Date(),
-    "partCol": {
-        "id": 2,
-        "title": "My test collection 2"
-    }
+    "partCol": 2
 }]
 
 const collections: Collections[] = [{
@@ -49,7 +43,7 @@ const collections: Collections[] = [{
     "subject": "Ancient history",
     "rights": "Open",
     "access": "Closed",
-    "created": new Date(),
+    "created": "3 August 2022",
     "spatial": "Turkey",
     "temporal": "1920-1960",
     "language": "Turkish",
@@ -66,7 +60,7 @@ const collections: Collections[] = [{
     "subject": "Oral history",
     "rights": "Closed",
     "access": "Closed",
-    "created": new Date(),
+    "created": "1 August 2022",
     "spatial": "Tunisia",
     "temporal": "1800-1950",
     "language": "Berber",
@@ -157,7 +151,7 @@ export const createSource = (data: Sources) =>
         const id = Object.keys(sources).length + 1
         const newSource = { id, ...data }
         sources = { ...sources, [id - 1]: newSource }
-        const collectionId = data.partCol.id - 1
+        const collectionId = data.partCol - 1
         collections[collectionId].sources.push(newSource)
 
         setTimeout(() => resolve(true), 250)

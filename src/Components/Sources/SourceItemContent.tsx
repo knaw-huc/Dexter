@@ -55,7 +55,7 @@ export const SourceItemContent = () => {
                     <p>Subject: {source.subject}</p>
                     <p>Rights: {source.rights}</p>
                     <p>Access: {source.access}</p>
-                    <p>Created: {source.created.toDateString()}</p>
+                    <p>Created: {source.created}</p>
                     <p>Spatial: {source.spatial}</p>
                     <p>Temporal: {source.temporal}</p>
                     <p>Language: {source.language}</p>
