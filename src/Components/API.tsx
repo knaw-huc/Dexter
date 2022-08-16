@@ -1,6 +1,6 @@
 import { Collections, Sources } from "../Model/DexterModel"
 
-let sources: Sources[] = [{
+const sources: Sources[] = [{
     "id": 1,
     "title": "My test source",
     "description": "This is my test source",
@@ -75,51 +75,51 @@ export const getCollections = () =>
         if (!collections) {
             return setTimeout(
                 () => reject(new Error("Collections not found")),
-                250
+                100
             )
         }
 
-        setTimeout(() => resolve(Object.values(collections)), 250)
+        setTimeout(() => resolve(Object.values(collections)), 100)
     })
 
 export const getCollectionById = (id: number) =>
-    new Promise((resolve, reject) => {
+    new Promise<Collections>((resolve, reject) => {
         const collection = collections[id - 1]
 
         if (!collection) {
             return setTimeout(
                 () => reject(new Error("Collection not found")),
-                250
+                100
             )
         }
 
-        setTimeout(() => resolve(collections[id - 1]), 250)
+        setTimeout(() => resolve(collections[id - 1]), 100)
     })
 
 export const createCollection = (data: Collections) =>
-    new Promise((resolve) => {
+    new Promise<boolean>((resolve) => {
         const id = Object.keys(collections).length + 1
         const newCollection: Collections = { id, ...data }
         console.log(newCollection)
         collections.push(newCollection)
         //collections = { ...collections, [id - 1]: newCollection }
 
-        setTimeout(() => resolve(true), 250)
+        setTimeout(() => resolve(true), 100)
         console.log(collections)
     })
 
 export const updateCollection = (id: number, updatedCollection: Collections) =>
-    new Promise((resolve, reject) => {
+    new Promise<boolean>((resolve, reject) => {
         if (!collections[id]) {
             return setTimeout(
                 () => reject(new Error("Collection not found")),
-                250
+                100
             )
         }
 
         collections[id] = { ...collections[id], ...updatedCollection }
 
-        return setTimeout(() => resolve(true), 250)
+        return setTimeout(() => resolve(true), 100)
     })
 
 export const getSources = () =>
@@ -127,43 +127,43 @@ export const getSources = () =>
         if (!sources) {
             return setTimeout(
                 () => reject(new Error("Source not found")),
-                250
+                100
             )
         }
 
-        setTimeout(() => resolve(Object.values(sources)), 250)
+        setTimeout(() => resolve(Object.values(sources)), 100)
     })
 
 export const getSourceById = (id: number) =>
-    new Promise((resolve, reject) => {
+    new Promise<Sources>((resolve, reject) => {
         const source = sources[id - 1]
         if (!source) {
             return setTimeout(
                 () => reject(new Error("Source not found")),
-                250
+                100
             )
         }
-        setTimeout(() => resolve(sources[id - 1]), 250)
+        setTimeout(() => resolve(sources[id - 1]), 100)
     })
 
 export const createSource = (data: Sources) =>
-    new Promise((resolve) => {
+    new Promise<boolean>((resolve) => {
         const id = Object.keys(sources).length + 1
         const newSource = { id, ...data }
-        sources = { ...sources, [id - 1]: newSource }
+        sources.push(newSource)
         const collectionId = data.partCol - 1
         collections[collectionId].sources.push(newSource)
 
-        setTimeout(() => resolve(true), 250)
+        setTimeout(() => resolve(true), 100)
         console.log(sources)
     })
 
 export const updateSource = (id: number, updatedSource: Sources) =>
-    new Promise((resolve, reject) => {
+    new Promise<boolean>((resolve, reject) => {
         if (!sources[id]) {
             return setTimeout(
                 () => reject(new Error("Source not found")),
-                250
+                100
             )
         }
         
@@ -171,5 +171,5 @@ export const updateSource = (id: number, updatedSource: Sources) =>
 
         //const collectionId = parseInt(updateSource.partCol) - 1
 
-        return setTimeout(() => resolve(true), 250)
+        return setTimeout(() => resolve(true), 100)
     })
