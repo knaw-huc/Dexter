@@ -1,7 +1,7 @@
 import React from "react"
 import { useParams } from "react-router-dom"
 import { Sources } from "../../Model/DexterModel"
-import { appContext } from "../../State/context"
+import { sourcesContext } from "../../State/Sources/sourcesContext"
 import { getSourceById } from "../API"
 import { ACTIONS } from "../../State/actions"
 import { NewSource } from "./NewSource"
@@ -10,11 +10,11 @@ export const SourceItemContent = () => {
     const [source, setSource] = React.useState<Sources>(null)
     const params = useParams()
 
-    const { state, dispatch } = React.useContext(appContext)
+    const { sourcesState, sourcesDispatch } = React.useContext(sourcesContext)
     const [showForm, setShowForm] = React.useState(false)
 
     const formShowHandler = () => {
-        dispatch({
+        sourcesDispatch({
             type: ACTIONS.SET_TOEDITSOURCE,
             toEditSource: source
         })
@@ -27,7 +27,7 @@ export const SourceItemContent = () => {
     }
 
     const editHandler = (boolean: boolean) => {
-        dispatch({
+        sourcesDispatch({
             type: ACTIONS.SET_EDITSOURCEMODE,
             editSourceMode: boolean
         })
@@ -61,7 +61,7 @@ export const SourceItemContent = () => {
                     <p>Language: {source.language}</p>
                 </>
             }
-            {state.editSourceMode && <NewSource show={showForm} onEdit={editHandler} edit={state.editSourceMode} sourceToEdit={state.toEditSource} onClose={formCloseHandler} refetchSource={refetchSource} />}
+            {sourcesState.editSourceMode && <NewSource show={showForm} onEdit={editHandler} edit={sourcesState.editSourceMode} sourceToEdit={sourcesState.toEditSource} onClose={formCloseHandler} refetchSource={refetchSource} />}
         </div>
     )
 }

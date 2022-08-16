@@ -1,6 +1,6 @@
 import React from "react"
 import { Sources } from "../../Model/DexterModel"
-import { appContext } from "../../State/context"
+import { sourcesContext } from "../../State/Sources/sourcesContext"
 import { ACTIONS } from "../../State/actions"
 import { SourceItem } from "./SourceItem"
 import { NewSource } from "./NewSource"
@@ -9,17 +9,17 @@ import { FilterBySubject } from "../FilterBySubject"
 import Button from "react-bootstrap/Button"
 
 export function SourcesList() {
-    const { state, dispatch } = React.useContext(appContext)
+    const { sourcesState, sourcesDispatch } = React.useContext(sourcesContext)
     const [showForm, setShowForm] = React.useState(false)
     const [filteredSubject, setFilteredSubject] = React.useState("No filter")
 
     React.useEffect(() => {
-        if (state.sources && filteredSubject != "No filter") {
-            const filteredSources = state.sources.filter((source) => {
+        if (sourcesState.sources && filteredSubject != "No filter") {
+            const filteredSources = sourcesState.sources.filter((source) => {
                 return source.subject === filteredSubject
             })
             console.log(filteredSources)
-            dispatch({
+            sourcesDispatch({
                 type: ACTIONS.SET_FILTEREDSOURCES,
                 filteredSources: filteredSources
             })
@@ -31,7 +31,7 @@ export function SourcesList() {
     const refetchSources = async () => {
         doGetSources()
             .then(function (sources) {
-                dispatch({
+                sourcesDispatch({
                     type: ACTIONS.SET_SOURCES,
                     sources: sources
                 })
@@ -40,7 +40,7 @@ export function SourcesList() {
 
     const handleSelected = (selected: Sources | undefined) => {
         console.log(selected)
-        return dispatch({
+        return sourcesDispatch({
             type: ACTIONS.SET_SELECTEDSOURCE,
             selectedSource: selected
         })
@@ -63,14 +63,14 @@ export function SourcesList() {
             <FilterBySubject selected={filteredSubject} onChangeFilter={filterChangeHandler} toFilter="Sources" />
             {showForm && <NewSource show={showForm} onClose={formCloseHandler} refetch={refetchSources} />}
             <Button onClick={formShowHandler}>Add new source</Button> 
-            {filteredSubject != "No filter" ? state.filteredSources && state.filteredSources.map((source: Sources, index: number) => (
+            {filteredSubject != "No filter" ? sourcesState.filteredSources && sourcesState.filteredSources.map((source: Sources, index: number) => (
                 <SourceItem
                     key={index}
                     sourceId={index}
                     source={source}
                     onSelect={handleSelected}
                 />
-            )) : state.sources && state.sources.map((source: Sources, index: number) => (
+            )) : sourcesState.sources && sourcesState.sources.map((source: Sources, index: number) => (
                 <SourceItem
                     key={index}
                     sourceId={index}
