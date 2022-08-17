@@ -5,6 +5,7 @@ import Button from "react-bootstrap/Button"
 import styled from "styled-components"
 import { createCollection, getCollectionById, updateCollection } from "../API"
 import { Collections } from "../../Model/DexterModel"
+import { collectionsContext } from "../../State/Collections/collectionContext"
 
 type NewCollectionProps = {
     refetch?: () => void,
@@ -47,13 +48,15 @@ const Select = styled.select`
 `
 
 export function NewCollection(props: NewCollectionProps) {
-    const { register, handleSubmit, reset, setValue } = useForm<Collections>()
+    const { collectionsState } = React.useContext(collectionsContext)
+    const { register, handleSubmit, reset, setValue, watch } = useForm<Collections>()
     const onSubmit: SubmitHandler<Collections> = async data => {
         if (!props.edit) {
             data.lastupdated = new Date()
             data.user = "Sebastiaan"
             data.creation = new Date()
             data.sources = []
+            data.subCollections = []
             try {
                 await createCollection(data)
                 await props.refetch()
@@ -104,6 +107,8 @@ export function NewCollection(props: NewCollectionProps) {
         reset() //Should later be moved to a useEffect
     }
 
+    const mainOrSub = watch("mainorsub")
+
     return (
         <>
             <Modal size="lg" show={props.show} onHide={handleClose}>
@@ -121,6 +126,16 @@ export function NewCollection(props: NewCollectionProps) {
                             <option value="Main collection">Main collection</option>
                             <option value="Sub collection">Sub collection</option>
                         </Select>
+                        {mainOrSub === "Sub collection" && (
+                            <>
+                                <Label>Part of which collection?</Label>
+                                <Select {...register("subCollections")}>
+                                    {collectionsState.collections.map((collection, i) => {
+                                        return <option value={collection.id} key={i}>{collection.id} {collection.title}</option>
+                                    })}
+                                </Select>
+                            </>
+                        )}
                         <Label>Creator</Label>
                         <Input {...register("creator", { required: true })} />
                         <Label>Subject</Label>

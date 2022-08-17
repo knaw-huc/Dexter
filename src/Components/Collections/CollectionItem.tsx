@@ -9,11 +9,10 @@ type CollectionItemProps = {
 }
 
 export function CollectionItem(props: CollectionItemProps) {
-    const { onSelect, collection } = props
 
     const toggleClick = () => {
         console.log(props.collection.id)
-        onSelect(collection)
+        props.onSelect(props.collection)
     }
 
     return (

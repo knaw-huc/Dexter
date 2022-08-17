@@ -50,7 +50,8 @@ const collections: Collections[] = [{
     "lastupdated": new Date(),
     "user": "Sebastiaan",
     "creation": new Date(),
-    "sources": [sources[0]]
+    "sources": [sources[0]],
+    "subCollections": []
 }, {
     "id": 2,
     "title": "My test collection 2",
@@ -67,7 +68,8 @@ const collections: Collections[] = [{
     "lastupdated": new Date(),
     "user": "Sebastiaan",
     "creation": new Date(),
-    "sources": [sources[1]]
+    "sources": [sources[1]],
+    "subCollections": [1]
 }]
 
 export const getCollections = () =>

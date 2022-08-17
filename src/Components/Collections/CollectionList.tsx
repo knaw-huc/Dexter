@@ -26,7 +26,7 @@ export function CollectionList() {
         } else {
             return
         }
-    }, [filteredSubject])
+    }, [collectionsDispatch, collectionsState.collections, filteredSubject])
 
     const refetchCollections = () => {
         doGetCollections()

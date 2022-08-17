@@ -14,7 +14,8 @@ export interface Collections {
     lastupdated: Date,
     user: string,
     creation: Date,
-    sources: Sources[]
+    sources: Sources[],
+    subCollections: number[]
 }
 
 export interface Sources {

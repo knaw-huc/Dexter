@@ -58,6 +58,11 @@ export function CollectionItemContent() {
                     <p>Title: {collection.title}</p>
                     <p>Description: {collection.description}</p>
                     <p>Main or sub collection: {collection.mainorsub}</p>
+                    Part of collection: {collection.subCollections.map((subCollection, i) => {
+                        return <Link to={`/collections/${subCollection}`} key={i}>
+                            {JSON.stringify(subCollection)}
+                        </Link>
+                    })}
                     <p>Creator: {collection.creator}</p>
                     <p>Subject: {collection.subject}</p>
                     <p>Rights: {collection.rights}</p>
