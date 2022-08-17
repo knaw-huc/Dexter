@@ -1,7 +1,5 @@
 import React from "react"
 import { Routes, Route } from "react-router-dom"
-import { useAppState } from "./State/reducer"
-import { appContext } from "./State/context"
 import { CollectionList } from "./Components/Collections/CollectionList"
 import { SourcesList } from "./Components/Sources/SourcesList"
 import { Home } from "./Components/Home"
@@ -9,14 +7,16 @@ import { CollectionItemContent } from "./Components/Collections/CollectionItemCo
 import { SourceItemContent } from "./Components/Sources/SourceItemContent"
 import { useSourcesState } from "./State/Sources/sourcesReducer"
 import { sourcesContext } from "./State/Sources/sourcesContext"
+import { collectionsContext } from "./State/Collections/collectionContext"
+import { useCollectionsState } from "./State/Collections/collectionReducer"
 
 export function App() {
-    const [state, dispatch] = useAppState()
     const [sourcesState, sourcesDispatch] = useSourcesState()
+    const [collectionsState, collectionsDispatch] = useCollectionsState()
 
     return (
         <sourcesContext.Provider value={{ sourcesState, sourcesDispatch }}>
-            <appContext.Provider value={{ state, dispatch }}>
+            <collectionsContext.Provider value={{ collectionsState, collectionsDispatch }}>
                 <Routes>
                     <Route path="/" element={<Home />}>
                         <Route path="/collections" element={<CollectionList />} />
@@ -26,7 +26,7 @@ export function App() {
                         <Route path="*" element={<p>There is nothing here</p>} />
                     </Route>
                 </Routes>
-            </appContext.Provider>
+            </collectionsContext.Provider>
         </sourcesContext.Provider>
     )
 }

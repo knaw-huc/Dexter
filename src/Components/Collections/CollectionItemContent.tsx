@@ -2,7 +2,7 @@ import React from "react"
 import { getCollectionById } from "../API"
 import { useParams } from "react-router-dom"
 import { Collections } from "../../Model/DexterModel"
-import { appContext } from "../../State/context"
+import { collectionsContext } from "../../State/Collections/collectionContext"
 import { ACTIONS } from "../../State/actions"
 import { NewCollection } from "./NewCollection"
 import { Link } from "react-router-dom"
@@ -16,11 +16,11 @@ export function CollectionItemContent() {
     const [collection, setCollection] = React.useState<Collections>(null)
     const params = useParams()
 
-    const { state, dispatch } = React.useContext(appContext)
+    const { collectionsState, collectionsDispatch } = React.useContext(collectionsContext)
     const [showForm, setShowForm] = React.useState(false)
 
     const formShowHandler = () => {
-        dispatch({
+        collectionsDispatch({
             type: ACTIONS.SET_TOEDITCOL,
             toEditCol: collection
         })
@@ -33,7 +33,7 @@ export function CollectionItemContent() {
     }
 
     const editHandler = (boolean: boolean) => {
-        dispatch({
+        collectionsDispatch({
             type: ACTIONS.SET_EDITCOLMODE,
             editColMode: boolean
         })
@@ -73,7 +73,7 @@ export function CollectionItemContent() {
                     })}
                 </>
             }
-            {state.editColMode && <NewCollection show={showForm} onEdit={editHandler} edit={state.editColMode} colToEdit={state.toEditCol} onClose={formCloseHandler} refetchCol={refetchCollection} />}
+            {collectionsState.editColMode && <NewCollection show={showForm} onEdit={editHandler} edit={collectionsState.editColMode} colToEdit={collectionsState.toEditCol} onClose={formCloseHandler} refetchCol={refetchCollection} />}
         </Wrapper>
     )
 }

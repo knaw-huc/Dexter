@@ -2,24 +2,24 @@ import React from "react"
 import { Collections } from "../..//Model/DexterModel"
 import { NewCollection } from "./NewCollection"
 import { CollectionItem } from "./CollectionItem"
-import { appContext } from "../../State/context"
+import { collectionsContext } from "../../State/Collections/collectionContext"
 import { Button } from "react-bootstrap"
 import { ACTIONS } from "../../State/actions"
 import { doGetCollections } from "../../Utils/doGetCollections"
 import { FilterBySubject } from "../FilterBySubject"
 
 export function CollectionList() {
-    const { state, dispatch } = React.useContext(appContext)
+    const { collectionsState, collectionsDispatch } = React.useContext(collectionsContext)
     const [showForm, setShowForm] = React.useState(false)
     const [filteredSubject, setFilteredSubject] = React.useState("No filter")
 
     React.useEffect(() => {
-        if (state.collections && filteredSubject != "No filter") {
-            const filteredCollections = state.collections.filter((collection) => {
+        if (collectionsState.collections && filteredSubject != "No filter") {
+            const filteredCollections = collectionsState.collections.filter((collection) => {
                 return collection.subject === filteredSubject
             })
             console.log(filteredCollections)
-            dispatch({
+            collectionsDispatch({
                 type: ACTIONS.SET_FILTEREDCOLLECTIONS,
                 filteredCollections: filteredCollections
             })
@@ -31,7 +31,7 @@ export function CollectionList() {
     const refetchCollections = () => {
         doGetCollections()
             .then(function (collections) {
-                dispatch({
+                collectionsDispatch({
                     type: ACTIONS.SET_COLLECTIONS,
                     collections: collections
                 })
@@ -40,7 +40,7 @@ export function CollectionList() {
 
     const handleSelected = (selected: Collections | undefined) => {
         console.log(selected)
-        return dispatch({ type: ACTIONS.SET_SELECTEDCOLLECTION, selectedCollection: selected })
+        return collectionsDispatch({ type: ACTIONS.SET_SELECTEDCOLLECTION, selectedCollection: selected })
     }
 
     const formShowHandler = () => {
@@ -55,7 +55,7 @@ export function CollectionList() {
         return setFilteredSubject(selectedSubject)
     }
 
-    // const filteredCollections = state.collections.filter((collection) => {
+    // const filteredCollections = collectionsState.collections.filter((collection) => {
     //     return collection.subject === filteredSubject
     // })
 
@@ -64,14 +64,14 @@ export function CollectionList() {
             <FilterBySubject selected={filteredSubject} onChangeFilter={filterChangeHandler} toFilter="Collections" />
             {showForm && <NewCollection show={showForm} onClose={formCloseHandler} refetch={refetchCollections} />}
             <Button onClick={formShowHandler}>Add new collection</Button>
-            {filteredSubject != "No filter" ? state.filteredCollections && state.filteredCollections.map((collection: Collections, index: number) => (
+            {filteredSubject != "No filter" ? collectionsState.filteredCollections && collectionsState.filteredCollections.map((collection: Collections, index: number) => (
                 <CollectionItem
                     key={index}
                     collectionId={index}
                     collection={collection}
                     onSelect={handleSelected}
                 />
-            )) : state.collections && state.collections.map((collection: Collections, index: number) => (
+            )) : collectionsState.collections && collectionsState.collections.map((collection: Collections, index: number) => (
                 <CollectionItem
                     key={index}
                     collectionId={index}

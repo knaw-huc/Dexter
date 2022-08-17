@@ -1,5 +1,6 @@
 import React from "react"
-import { appContext } from "../State/context"
+import { collectionsContext } from "../State/Collections/collectionContext"
+import { sourcesContext } from "../State/Sources/sourcesContext"
 import Button from "react-bootstrap/Button"
 import styled from "styled-components"
 
@@ -18,7 +19,8 @@ const SelectStyled = styled.select`
 `
 
 export const FilterBySubject = (props: FilterBySubjectProps) => {
-    const { state } = React.useContext(appContext)
+    const { collectionsState } = React.useContext(collectionsContext)
+    const { sourcesState } = React.useContext(sourcesContext)
 
     const dropdownChangeHandler = (event: { target: { value: string } }) => {
         props.onChangeFilter(event.target.value)
@@ -34,13 +36,13 @@ export const FilterBySubject = (props: FilterBySubjectProps) => {
             <label>Filter by subject:</label>
             <SelectStyled value={props.selected} onChange={dropdownChangeHandler}>
                 <option value={undefined}>No filter</option>
-                {props.toFilter === "Collections" ? state.collections && state.collections.map((collection, i) => {
+                {props.toFilter === "Collections" ? collectionsState.collections && collectionsState.collections.map((collection, i) => {
                     return (
                         <option value={collection.subject} key={i}>
                             {collection.subject}
                         </option>
                     )
-                }) : state.sources && state.sources.map((source, i) => {
+                }) : sourcesState.sources && sourcesState.sources.map((source, i) => {
                     return (
                         <option value={source.subject} key={i}>
                             {source.subject}

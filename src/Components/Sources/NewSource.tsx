@@ -5,7 +5,7 @@ import Button from "react-bootstrap/Button"
 import styled from "styled-components"
 import { createSource, getSourceById, updateSource } from "../API"
 import { Sources } from "../../Model/DexterModel"
-import { appContext } from "../../State/context"
+import { collectionsContext } from "../../State/Collections/collectionContext"
 
 type NewSourceProps = {
     refetch?: () => void,
@@ -48,7 +48,7 @@ const Select = styled.select`
 `
 
 export function NewSource(props: NewSourceProps) {
-    const { state } = React.useContext(appContext)
+    const { collectionsState } = React.useContext(collectionsContext)
     const { register, handleSubmit, reset, setValue } = useForm<Sources>()
     const onSubmit: SubmitHandler<Sources> = async data => {
         if (!props.edit) {
@@ -138,7 +138,7 @@ export function NewSource(props: NewSourceProps) {
                         <Input {...register("language")} />
                         <Label>Part of which collection?</Label>
                         <Select {...register("partCol")}>
-                            {state.collections.map((collection, i) => {
+                            {collectionsState.collections.map((collection, i) => {
                                 return <option value={collection.id}key={i}>{collection.id} {collection.title}</option>
                             })}
                         </Select>
