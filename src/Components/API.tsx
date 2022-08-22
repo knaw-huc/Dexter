@@ -51,7 +51,7 @@ const collections: Collections[] = [{
     "user": "Sebastiaan",
     "creation": new Date(),
     "sources": [sources[0]],
-    "subCollections": []
+    "subCollections": [2]
 }, {
     "id": 2,
     "title": "My test collection 2",
