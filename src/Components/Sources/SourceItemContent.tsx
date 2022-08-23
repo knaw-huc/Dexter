@@ -1,5 +1,5 @@
 import React from "react"
-import { useParams } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 import { Sources } from "../../Model/DexterModel"
 import { sourcesContext } from "../../State/Sources/sourcesContext"
 import { getSourceById } from "../API"
@@ -59,6 +59,11 @@ export const SourceItemContent = () => {
                     <p>Spatial: {source.spatial}</p>
                     <p>Temporal: {source.temporal}</p>
                     <p>Language: {source.language}</p>
+                    <p>Part of collection: {source.partCol.map((col, i) => {
+                        return <Link to={`/collections/${col}`} key={i}>
+                            {JSON.stringify(col)}
+                        </Link>
+                    })}</p>
                 </>
             }
             {sourcesState.editSourceMode && <NewSource show={showForm} onEdit={editHandler} edit={sourcesState.editSourceMode} sourceToEdit={sourcesState.toEditSource} onClose={formCloseHandler} refetchSource={refetchSource} />}

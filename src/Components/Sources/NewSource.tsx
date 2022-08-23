@@ -137,7 +137,7 @@ export function NewSource(props: NewSourceProps) {
                         <Label>Language</Label>
                         <Input {...register("language")} />
                         <Label>Part of which collection?</Label>
-                        <Select {...register("partCol")}>
+                        <Select {...register("partCol", {setValueAs: v => v.split()})}>
                             {collectionsState.collections.map((collection, i) => {
                                 return <option value={collection.id}key={i}>{collection.id} {collection.title}</option>
                             })}

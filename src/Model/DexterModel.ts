@@ -33,5 +33,5 @@ export interface Sources {
     lastupdated: Date,
     user: string,
     creation: Date,
-    partCol: number
+    partCol: number[]
 }

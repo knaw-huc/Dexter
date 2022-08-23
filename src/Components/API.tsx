@@ -15,7 +15,7 @@ const sources: Sources[] = [{
     "lastupdated": new Date(),
     "user": "Sebastiaan",
     "creation": new Date(),
-    "partCol": 1
+    "partCol": [1]
 }, {
     "id": 2,
     "title": "My test source 2",
@@ -31,7 +31,7 @@ const sources: Sources[] = [{
     "lastupdated": new Date(),
     "user": "Sebastiaan",
     "creation": new Date(),
-    "partCol": 2
+    "partCol": [2]
 }]
 
 const collections: Collections[] = [{
@@ -104,6 +104,9 @@ export const createCollection = (data: Collections) =>
         const newCollection: Collections = { id, ...data }
         console.log(newCollection)
         collections.push(newCollection)
+        const colId = data.subCollections[0] - 1
+        collections[colId].subCollections.push(id)
+
         //collections = { ...collections, [id - 1]: newCollection }
 
         setTimeout(() => resolve(true), 100)
@@ -153,7 +156,7 @@ export const createSource = (data: Sources) =>
         const id = Object.keys(sources).length + 1
         const newSource = { id, ...data }
         sources.push(newSource)
-        const collectionId = data.partCol - 1
+        const collectionId = data.partCol[0] - 1
         collections[collectionId].sources.push(newSource)
 
         setTimeout(() => resolve(true), 100)
