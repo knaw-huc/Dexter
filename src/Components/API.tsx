@@ -104,8 +104,11 @@ export const createCollection = (data: Collections) =>
         const newCollection: Collections = { id, ...data }
         console.log(newCollection)
         collections.push(newCollection)
-        const colId = data.subCollections[0] - 1
-        collections[colId].subCollections.push(id)
+
+        if (data.subCollections.length > 0) {
+            const colId = data.subCollections[0] - 1
+            collections[colId].subCollections.push(id)
+        }
 
         //collections = { ...collections, [id - 1]: newCollection }
 

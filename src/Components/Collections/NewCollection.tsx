@@ -56,6 +56,9 @@ export function NewCollection(props: NewCollectionProps) {
             data.user = "Sebastiaan"
             data.creation = new Date()
             data.sources = []
+            if (data.mainorsub === "Main collection") {
+                data.subCollections = []
+            }
             try {
                 await createCollection(data)
                 await props.refetch()

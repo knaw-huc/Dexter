@@ -15,7 +15,7 @@ export interface Collections {
     user: string,
     creation: Date,
     sources: Sources[],
-    subCollections: number[]
+    subCollections: number[] | undefined
 }
 
 export interface Sources {

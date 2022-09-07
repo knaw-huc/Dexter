@@ -77,7 +77,9 @@ export function CollectionItemContent() {
                     <p>Language: {collection.language}</p>
                     Sources: {collection.sources.map((source, i) => {
                         return <Link to={`/sources/${source.id}`} key={i}>
-                            {JSON.stringify(source)}
+                            <ul>
+                                <li>ID: {source.id}, Title: {source.title}</li>
+                            </ul>
                         </Link>
                     })}
                 </>
