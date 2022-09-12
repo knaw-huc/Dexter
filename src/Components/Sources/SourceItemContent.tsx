@@ -5,6 +5,7 @@ import { sourcesContext } from "../../State/Sources/sourcesContext"
 import { getSourceById } from "../API"
 import { ACTIONS } from "../../State/actions"
 import { NewSource } from "./NewSource"
+import { Button } from "react-bootstrap"
 
 export const SourceItemContent = () => {
     const [source, setSource] = React.useState<Sources>(null)
@@ -48,7 +49,7 @@ export const SourceItemContent = () => {
         <div>
             {source &&
                 <>
-                    <button onClick={formShowHandler}>Edit</button>
+                    <Button onClick={formShowHandler}>Edit</Button>
                     <p>Title: {source.title}</p>
                     <p>Description: {source.description}</p>
                     <p>Creator: {source.creator}</p>

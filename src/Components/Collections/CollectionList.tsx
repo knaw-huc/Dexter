@@ -7,6 +7,12 @@ import { Button } from "react-bootstrap"
 import { ACTIONS } from "../../State/actions"
 import { doGetCollections } from "../../Utils/doGetCollections"
 import { FilterBySubject } from "../FilterBySubject"
+import styled from "styled-components"
+
+const FilterRow = styled.div`
+    display: flex;
+    flex-direction: row;
+`
 
 export function CollectionList() {
     const { collectionsState, collectionsDispatch } = React.useContext(collectionsContext)
@@ -61,9 +67,11 @@ export function CollectionList() {
 
     return (
         <>
-            <FilterBySubject selected={filteredSubject} onChangeFilter={filterChangeHandler} toFilter="Collections" />
+            <FilterRow>
+                <FilterBySubject selected={filteredSubject} onChangeFilter={filterChangeHandler} toFilter="Collections" />
+                <Button style={{marginLeft:"10px"}} onClick={formShowHandler}>Add new collection</Button>
+            </FilterRow>
             {showForm && <NewCollection show={showForm} onClose={formCloseHandler} refetch={refetchCollections} />}
-            <Button onClick={formShowHandler}>Add new collection</Button>
             {filteredSubject != "No filter" ? collectionsState.filteredCollections && collectionsState.filteredCollections.map((collection: Collections, index: number) => (
                 <CollectionItem
                     key={index}

@@ -158,7 +158,7 @@ export function NewCollection(props: NewCollectionProps) {
                         <Input {...register("temporal")} />
                         <Label>Language</Label>
                         <Input {...register("language")} />
-                        <input type="submit" />
+                        <Button type="submit">Submit</Button>
                     </form>
                 </Modal.Body>
                 <Modal.Footer>

@@ -7,6 +7,7 @@ import { ACTIONS } from "../../State/actions"
 import { NewCollection } from "./NewCollection"
 import { Link } from "react-router-dom"
 import styled from "styled-components"
+import { Button } from "react-bootstrap"
 
 const Wrapper = styled.div`
     overflow: auto
@@ -54,7 +55,7 @@ export function CollectionItemContent() {
         <Wrapper>
             {collection &&
                 <>
-                    <button onClick={formShowHandler}>Edit</button>
+                    <Button onClick={formShowHandler}>Edit</Button>
                     <p>Title: {collection.title}</p>
                     <p>Description: {collection.description}</p>
                     <p>Main or sub collection: {collection.mainorsub}</p>

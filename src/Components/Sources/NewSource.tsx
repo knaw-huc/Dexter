@@ -142,7 +142,7 @@ export function NewSource(props: NewSourceProps) {
                                 return <option value={collection.id}key={i}>{collection.id} {collection.title}</option>
                             })}
                         </Select>
-                        <input type="submit" />
+                        <Button type="submit">Submit</Button>
                     </form>
                 </Modal.Body>
                 <Modal.Footer>
