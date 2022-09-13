@@ -131,7 +131,7 @@ export function NewCollection(props: NewCollectionProps) {
                         {mainOrSub === "Sub collection" && (
                             <>
                                 <Label>Part of which collection?</Label>
-                                <Select {...register("subCollections", {setValueAs: v => v.split()})}>
+                                <Select {...register("subCollections")}>
                                     {collectionsState.collections.map((collection, i) => {
                                         return <option value={collection.id} key={i}>{collection.id} {collection.title}</option>
                                     })}

@@ -124,15 +124,18 @@ export const updateCollection = (id: number, updatedCollection: Collections) =>
                 100
             )
         }
+        console.log(updatedCollection)
 
         if (updatedCollection.subCollections.length > 0) {
             const colId = updatedCollection.subCollections[0] - 1
 
-            if (collections[colId].subCollections[0] === colId) {
-                null
-            } else {
-                collections[colId].subCollections.push(id + 1)
-            }
+            collections[colId].subCollections.map((subCol) => {
+                if (subCol !== colId) {
+                    collections[colId].subCollections.push(id + 1)
+                } else {
+                    null
+                }
+            })
         }
 
         collections[id] = { ...collections[id], ...updatedCollection }

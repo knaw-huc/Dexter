@@ -11,7 +11,6 @@ type CollectionItemProps = {
 export function CollectionItem(props: CollectionItemProps) {
 
     const toggleClick = () => {
-        console.log(props.collection.id)
         props.onSelect(props.collection)
     }
 
