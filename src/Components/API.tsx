@@ -127,7 +127,12 @@ export const updateCollection = (id: number, updatedCollection: Collections) =>
 
         if (updatedCollection.subCollections.length > 0) {
             const colId = updatedCollection.subCollections[0] - 1
-            collections[colId].subCollections.push(id + 1)
+
+            if (collections[colId].subCollections[0] === colId) {
+                null
+            } else {
+                collections[colId].subCollections.push(id + 1)
+            }
         }
 
         collections[id] = { ...collections[id], ...updatedCollection }
