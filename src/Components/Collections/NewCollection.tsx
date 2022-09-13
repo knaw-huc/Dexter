@@ -85,7 +85,7 @@ export function NewCollection(props: NewCollectionProps) {
         const doGetCollectionById = async (id: number) => {
             const response: any = await getCollectionById(id)
             console.log(response)
-            const fields = ["title", "description", "mainorsub", "creator", "subject", "rights", "access", "created", "spatial", "temporal", "language"]
+            const fields = ["title", "description", "mainorsub", "creator", "subject", "rights", "access", "created", "spatial", "temporal", "language", "subCollections"]
             fields.map((field: any) => {
                 setValue(field, response[field])
             })
