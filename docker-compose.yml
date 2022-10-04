@@ -13,7 +13,7 @@ services:
       - "8000:8000"
     depends_on:
       - frontend
-      - backend
+      # - backend
 
   frontend:
     container_name: dexter_frontend
@@ -31,8 +31,14 @@ services:
     command: npm start
     expose:
       - 3001
+    
+  backend:
+    container_name: dexter_backend
+    image: dockercloud/hello-world:latest
+    networks:
+      - backend_network
+    
 
 networks:
   frontend_network:
   backend_network:
-    external: true
