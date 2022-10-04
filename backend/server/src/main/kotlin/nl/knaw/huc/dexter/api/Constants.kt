@@ -1,6 +1,6 @@
 package nl.knaw.huc.dexter.api
 
-object DexConst {
+object Constants {
     const val APP_NAME = "Dexter"
 
     enum class EnvironmentVariable {

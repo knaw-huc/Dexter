@@ -8,8 +8,8 @@ import io.dropwizard.configuration.SubstitutingSourceProvider
 import io.dropwizard.jdbi3.bundles.JdbiExceptionsBundle
 import io.dropwizard.setup.Bootstrap
 import io.dropwizard.setup.Environment
-import nl.knaw.huc.dexter.api.DexConst
-import nl.knaw.huc.dexter.api.DexConst.APP_NAME
+import nl.knaw.huc.dexter.api.Constants
+import nl.knaw.huc.dexter.api.Constants.APP_NAME
 import nl.knaw.huc.dexter.config.DexterConfiguration
 import nl.knaw.huc.dexter.resources.AboutResource
 import org.slf4j.LoggerFactory
@@ -35,7 +35,7 @@ class DexterApplication : Application<DexterConfiguration?>() {
     override fun run(configuration: DexterConfiguration?, environment: Environment) {
         log.info(
                 "DEX_ environment variables:\n\n" +
-                        DexConst.EnvironmentVariable.values()
+                        Constants.EnvironmentVariable.values()
                                 .joinToString("\n") { ev ->
                                     "  {$ev.name}:\t${System.getenv(ev.name) ?: "(not set, using default)"}"
                                 } +
