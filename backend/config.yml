@@ -3,6 +3,8 @@ server:
     - type: http
       port: ${DEX_SERVER_PORT:-8080}
 
+externalBaseUrl: ${DEX_EXTERNAL_BASE_URL:-http://localhost:8080}
+
 logging:
   level: INFO
   loggers:
