@@ -1,6 +1,12 @@
+# Backend
+.idea
+target
+*.iml
+
+# Frontend
 frontend/node_modules
 frontend/dist
 frontend/build
+
+# Macos
 .DS_Store
-.idea
-target
