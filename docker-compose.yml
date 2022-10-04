@@ -24,6 +24,8 @@ services:
       - ./frontend/src:/dexter/src
       - ./frontend/tsconfig.json:/dexter/tsconfig.json
       - ./frontend/webpack.config.js:/dexter/webpack.config.js
+      - ./frontend/index.template.html:/dexter/index.template.html
+      - ./frontend/.eslintrc.json:/dexter/.eslintrc.json
     networks:
       - frontend_network
     environment:
@@ -37,8 +39,9 @@ services:
     image: dockercloud/hello-world:latest
     networks:
       - backend_network
+    expose:
+      - 80
     
-
 networks:
   frontend_network:
   backend_network:

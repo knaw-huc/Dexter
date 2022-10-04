@@ -6,7 +6,7 @@ module.exports = {
 		historyApiFallback: {
 			disableDotRule: true
 		},
-		host: 'localhost',
+		host: '0.0.0.0',
 		hot: true,
 		port: 3001,
 		proxy: {

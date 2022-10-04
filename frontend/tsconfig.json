@@ -28,5 +28,5 @@
 		"./dist",
 		"./node_modules"
 	],
-	"files": ["src/Index.tsx"]
+	"files": ["src/index.tsx"]
 }

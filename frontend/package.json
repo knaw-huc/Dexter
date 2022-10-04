@@ -4,7 +4,8 @@
   "description": "",
   "private": true,
   "scripts": {
-    "start": "webpack serve"
+    "start": "webpack serve",
+    "build": "webpack build --config ./webpack.config.js"
   },
   "author": "",
   "license": "GPL-3.0-or-later",
