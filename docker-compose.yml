@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  nginx:
+    container_name: dexter_nginx
+    image: nginx:1.23
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - frontend_network
+      - backend_network
+    ports:
+      - "8000:8000"
+    depends_on:
+      - frontend
+      - backend
+
+  frontend:
+    container_name: dexter_frontend
+    image: dexter-frontend:latest
+    build: ./frontend
+    volumes:
+      - ./frontend/public:/dexter/public
+      - ./frontend/src:/dexter/src
+      - ./frontend/tsconfig.json:/dexter/tsconfig.json
+      - ./frontend/webpack.config.js:/dexter/webpack.config.js
+    networks:
+      - frontend_network
+    environment:
+      REACT_APP_BACKEND_HOST: http://localhost:8000/backend
+    command: npm start
+    expose:
+      - 3001
+
+networks:
+  frontend_network:
+  backend_network:
+    external: true
