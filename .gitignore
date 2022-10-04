@@ -2,6 +2,7 @@
 .idea
 target
 *.iml
+dependency-reduced-pom.xml
 
 # Frontend
 frontend/node_modules
