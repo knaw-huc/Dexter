@@ -22,4 +22,4 @@ export default class Config {
 
 }
 
-Config.init()
+//Config.init()
