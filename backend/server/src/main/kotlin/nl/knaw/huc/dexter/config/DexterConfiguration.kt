@@ -3,12 +3,18 @@ package nl.knaw.huc.dexter.config
 import com.fasterxml.jackson.annotation.JsonProperty
 import `in`.vectorpro.dropwizard.swagger.SwaggerBundleConfiguration
 import io.dropwizard.Configuration
+import io.dropwizard.db.DataSourceFactory
 import nl.knaw.huc.dexter.api.Constants
 import nl.knaw.huc.dexter.resources.AboutResource
 import javax.validation.Valid
 import javax.validation.constraints.NotNull
 
 class DexterConfiguration : Configuration() {
+
+    @Valid
+    @NotNull
+    @JsonProperty("database")
+    var database = DataSourceFactory()
 
     @Valid
     @NotNull
@@ -33,5 +39,4 @@ class DexterConfiguration : Configuration() {
         contactUrl = "https://github.com/knaw-huc/annorepo"
         contact = Constants.APP_NAME
     }
-
 }
