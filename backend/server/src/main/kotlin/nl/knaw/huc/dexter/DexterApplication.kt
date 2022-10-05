@@ -37,7 +37,7 @@ class DexterApplication : Application<DexterConfiguration?>() {
                 "DEX_ environment variables:\n\n" +
                         Constants.EnvironmentVariable.values()
                                 .joinToString("\n") { ev ->
-                                    "  {$ev.name}:\t${System.getenv(ev.name) ?: "(not set, using default)"}"
+                                    "  ${ev.name}:\t${System.getenv(ev.name) ?: "(not set, using default)"}"
                                 } +
                         "\n"
         )
