@@ -1,0 +1,18 @@
+FROM maven:3.8.6 as builder
+
+WORKDIR /build/
+COPY ./server /build/server
+COPY ./pom.xml /build/
+RUN mvn --projects server --no-transfer-progress --batch-mode --update-snapshots --also-make package
+
+FROM openjdk:18.0.2-slim-buster
+
+WORKDIR /apps/dexter
+
+COPY --from=builder /build/server/target/dexter-server-*.jar /apps/dexter/dexter-server.jar
+COPY ./deploy/dexter-server/entrypoint.sh entrypoint.sh
+COPY ./config.yml config.yml
+
+EXPOSE 8080
+
+ENTRYPOINT ["./entrypoint.sh"]
