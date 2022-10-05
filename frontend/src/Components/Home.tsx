@@ -8,10 +8,12 @@ const NavStyled = styled.nav`
     padding-bottom: 1rem;
 `
 
-fetch("http://backend:80")
+console.log(process.env.REACT_APP_BACKEND_HOST)
+
+fetch(process.env.REACT_APP_BACKEND_HOST)
     .then(function(response) {
         if (!response.ok) {
-            console.log("Server niet gevonden")
+            console.log("Server niet gevonden!!!")
         } else {
             console.log(response)
         }

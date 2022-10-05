@@ -18,7 +18,9 @@ services:
   frontend:
     container_name: dexter_frontend
     image: dexter-frontend:latest
-    build: ./frontend
+    build:
+      context: ./frontend/deploy
+      dockerfile: Dockerfile-dev
     volumes:
       - ./frontend/public:/dexter/public
       - ./frontend/src:/dexter/src
