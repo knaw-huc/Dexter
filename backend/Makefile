@@ -10,7 +10,7 @@ VERSION = $(shell cat .make/.version)
 .make/.version: .make pom.xml
 	mvn help:evaluate -Dexpression=project.version -q -DforceStdout > .make/.version
 
-server/target/dexter-server-$(VERSION): .make/.version $(shelld find server/src -type f) pom.xml server/pom.xml
+server/target/dexter-server-$(VERSION).jar: .make/.version $(shell find server/src -type f) pom.xml server/pom.xml
 	mvn --projects server --also-make package
 
 .POHNY: build
