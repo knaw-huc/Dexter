@@ -77,6 +77,12 @@
             <version>${jackson-module-kotlin.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>${flyway.version}</version>
+        </dependency>
+
         <!-- test dependencies -->
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
