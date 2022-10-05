@@ -1,11 +1,15 @@
 {
   "name": "dexter",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "",
   "private": true,
   "scripts": {
     "start": "webpack serve",
-    "build": "webpack build"
+    "build": "webpack build",
+    "docker:build": "./docker-build.sh",
+    "docker:tag": "./docker-tag.sh",
+    "docker:push": "./docker-push.sh",
+    "docker:all": "./docker-all.sh"
   },
   "author": "",
   "license": "GPL-3.0-or-later",

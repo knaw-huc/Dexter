@@ -1,5 +1,5 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin")
-const path = require("path")
+const webpack = require("webpack")
 
 module.exports = {
     devServer: {
@@ -49,6 +49,11 @@ module.exports = {
         new HtmlWebpackPlugin({
             title: "Dexter",
             template: "index.template.html",
+        }),
+        new webpack.DefinePlugin({
+            "process.env": {
+                REACT_APP_BACKEND_HOST: JSON.stringify(process.env.REACT_APP_BACKEND_HOST)
+            }
         })
     ],
 
@@ -59,5 +64,9 @@ module.exports = {
 
     watchOptions: {
         ignored: /node_modules/,
+    },
+
+    cache: {
+        type: "filesystem"
     }
 }
