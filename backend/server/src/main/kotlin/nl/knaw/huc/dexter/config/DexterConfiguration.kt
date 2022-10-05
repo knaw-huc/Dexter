@@ -17,6 +17,11 @@ class DexterConfiguration : Configuration() {
 
     @Valid
     @NotNull
+    @JsonProperty("flyway")
+    var flyway = FlywayConfiguration()
+
+    @Valid
+    @NotNull
     @JsonProperty("swagger")
     val swaggerBundleConfiguration = SwaggerBundleConfiguration().apply {
         contextRoot = "${externalBaseUrl}/backend"
