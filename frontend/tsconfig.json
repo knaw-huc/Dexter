@@ -21,7 +21,6 @@
 		"removeComments": true,
 		"resolveJsonModule": true,
 		"target": "esnext",
-		"types": []
 	},
 	"exclude": [
 		"./build",

@@ -1,15 +1,16 @@
 {
   "name": "dexter",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "",
   "private": true,
   "scripts": {
     "start": "webpack serve",
-    "build": "webpack build --config ./webpack.config.js"
+    "build": "webpack build --config ./webpack.config.js --stats verbose"
   },
   "author": "",
   "license": "GPL-3.0-or-later",
   "dependencies": {
+    "@types/node": "^18.8.1",
     "react": "^18.2.0",
     "react-bootstrap": "^2.4.0",
     "react-dom": "^18.2.0",
