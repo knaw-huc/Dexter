@@ -8,10 +8,14 @@ const NavStyled = styled.nav`
     padding-bottom: 1rem;
 `
 
-// fetch(Config.BACKEND_HOST)
-//     .then(function(response) {
-//         console.log(response)
-//     })
+fetch("http://backend:80")
+    .then(function(response) {
+        if (!response.ok) {
+            console.log("Server niet gevonden")
+        } else {
+            console.log(response)
+        }
+    })
 
 export const Home = () => {
     return (
