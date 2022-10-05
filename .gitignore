@@ -1,5 +1,6 @@
 # Backend
 .idea
+.make
 target
 *.iml
 dependency-reduced-pom.xml
