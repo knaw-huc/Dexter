@@ -14,7 +14,7 @@ class DexterConfiguration : Configuration() {
     @Valid
     @NotNull
     @JsonProperty("database")
-    var database = DataSourceFactory()
+    var datasourceFactory = DataSourceFactory()
 
     @Valid
     @NotNull

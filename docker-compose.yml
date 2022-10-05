@@ -1,6 +1,24 @@
 version: '3.8'
 
 services:
+  postgres:
+    container_name: dexter_postgres
+    environment:
+      PGDATA: /var/lib/dexter/data
+      POSTGRES_DB: ${POSTGRES_DB:-dexter}
+      POSTGRES_HOST: ${POSTGRES_HOST:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dexter}
+      POSTGRES_PORT: ${POSTGRES_PORT:-5432}
+      POSTGRES_USER: ${POSTGRES_USER:-dexter}
+    image: postgres:11-alpine
+    networks:
+      - backend_network
+    ports:
+      - "5432:5432"
+    shm_size: 1g
+    volumes:
+      - postgres_data:/var/lib/dexter/data
+
   nginx:
     container_name: dexter_nginx
     image: nginx:1.23
@@ -38,12 +56,18 @@ services:
     
   backend:
     container_name: dexter_backend
-    image: dockercloud/hello-world:latest
+    build:
+      context: ./backend
+      dockerfile: deploy/dexter-server/Dockerfile-multistage
     networks:
       - backend_network
     expose:
-      - 80
+      - 8080
     
 networks:
   frontend_network:
   backend_network:
+
+volumes:
+  postgres_data:
+    driver: local
