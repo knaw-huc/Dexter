@@ -1,6 +1,54 @@
 version: '3.8'
 
 services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: deploy/dexter-server/Dockerfile-multistage
+    container_name: dexter_backend
+    depends_on:
+      - postgres
+    expose:
+      - 8080
+    networks:
+      - backend_network
+      - postgres_network
+
+  frontend:
+    container_name: dexter_frontend
+    build:
+      context: ./frontend/deploy
+      dockerfile: Dockerfile-dev
+    command: npm start
+    environment:
+      REACT_APP_BACKEND_HOST: http://localhost:8000/api
+    expose:
+      - 3001
+    image: dexter-frontend:latest
+    networks:
+      - frontend_network
+    volumes:
+      - ./frontend/public:/dexter/public
+      - ./frontend/src:/dexter/src
+      - ./frontend/tsconfig.json:/dexter/tsconfig.json
+      - ./frontend/webpack.config.js:/dexter/webpack.config.js
+      - ./frontend/index.template.html:/dexter/index.template.html
+      - ./frontend/.eslintrc.json:/dexter/.eslintrc.json
+    
+  nginx:
+    container_name: dexter_nginx
+    depends_on:
+      - frontend
+      - backend
+    image: nginx:1.23
+    networks:
+      - frontend_network
+      - backend_network
+    ports:
+      - "8000:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+
   postgres:
     container_name: dexter_postgres
     environment:
@@ -10,63 +58,19 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dexter}
       POSTGRES_PORT: ${POSTGRES_PORT:-5432}
       POSTGRES_USER: ${POSTGRES_USER:-dexter}
+    expose:
+      - 5432
     image: postgres:11-alpine
     networks:
-      - backend_network
-    ports:
-      - "5432:5432"
+      - postgres_network
     shm_size: 1g
     volumes:
       - postgres_data:/var/lib/dexter/data
 
-  nginx:
-    container_name: dexter_nginx
-    image: nginx:1.23
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-    networks:
-      - frontend_network
-      - backend_network
-    ports:
-      - "8000:8000"
-    depends_on:
-      - frontend
-      # - backend
-
-  frontend:
-    container_name: dexter_frontend
-    image: dexter-frontend:latest
-    build:
-      context: ./frontend/deploy
-      dockerfile: Dockerfile-dev
-    volumes:
-      - ./frontend/public:/dexter/public
-      - ./frontend/src:/dexter/src
-      - ./frontend/tsconfig.json:/dexter/tsconfig.json
-      - ./frontend/webpack.config.js:/dexter/webpack.config.js
-      - ./frontend/index.template.html:/dexter/index.template.html
-      - ./frontend/.eslintrc.json:/dexter/.eslintrc.json
-    networks:
-      - frontend_network
-    environment:
-      REACT_APP_BACKEND_HOST: http://localhost:8000/api
-    command: npm start
-    expose:
-      - 3001
-    
-  backend:
-    container_name: dexter_backend
-    build:
-      context: ./backend
-      dockerfile: deploy/dexter-server/Dockerfile-multistage
-    networks:
-      - backend_network
-    expose:
-      - 8080
-    
 networks:
-  frontend_network:
   backend_network:
+  frontend_network:
+  postgres_network:
 
 volumes:
   postgres_data:
