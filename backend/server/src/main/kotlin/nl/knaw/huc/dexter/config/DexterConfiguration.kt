@@ -30,7 +30,7 @@ class DexterConfiguration : Configuration() {
     @NotNull
     @JsonProperty("swagger")
     val swaggerBundleConfiguration = SwaggerBundleConfiguration().apply {
-        contextRoot = "${externalBaseUrl}/backend"
+        contextRoot = "${externalBaseUrl}/api"
         resourcePackage = AboutResource::class.java.getPackage().name
         version = javaClass.getPackage().implementationVersion
         title = Constants.APP_NAME
