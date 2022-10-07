@@ -38,8 +38,8 @@ services:
   nginx:
     container_name: dexter_nginx
     depends_on:
-      - frontend
       - backend
+      - frontend
     image: nginx:1.23
     networks:
       - frontend_network
