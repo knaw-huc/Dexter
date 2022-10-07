@@ -15,11 +15,11 @@ services:
       - postgres_network
 
   frontend:
-    container_name: dexter_frontend
     build:
       context: ./frontend/deploy
       dockerfile: Dockerfile-dev
     command: npm start
+    container_name: dexter_frontend
     environment:
       REACT_APP_BACKEND_HOST: http://localhost:8000/api
     expose:
