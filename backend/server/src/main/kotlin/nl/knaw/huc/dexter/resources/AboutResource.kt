@@ -32,7 +32,7 @@ class AboutResource(
     @Operation(description = "Get server info")
     @Timed
     @GET
-    fun getAboutInfo(@HeaderParam("Authorization") auth: String): AboutInfo {
+    fun getAboutInfo(@HeaderParam("Authorization") auth: String?): AboutInfo {
         log.info("auth: $auth")
         return about
     }
