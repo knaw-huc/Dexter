@@ -42,8 +42,8 @@ services:
       - frontend
     image: nginx:1.23
     networks:
-      - frontend_network
       - backend_network
+      - frontend_network
     ports:
       - "8000:80"
     volumes:
