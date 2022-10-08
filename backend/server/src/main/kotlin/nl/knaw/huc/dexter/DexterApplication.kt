@@ -48,8 +48,10 @@ class DexterApplication : Application<DexterConfiguration>() {
                         "\n"
         )
 
-        val jdbi = createJdbi(environment, configuration.datasourceFactory)
-        val uuid = UUID.randomUUID()
+        migrateDatabase(configuration.dataSourceFactory, configuration.flyway)
+
+        val jdbi = createJdbi(environment, configuration.dataSourceFactory)
+//        val uuid = UUID.randomUUID()
 //        jdbi.useHandle<Exception> { it.execute("insert into users (id,name) values ('$uuid', 'bolke')") }
 //        jdbi.useHandle<Exception> { log.info("${it.execute("select * from users")}") }
 
