@@ -53,7 +53,7 @@ help:
 	@echo "make-tools for $(TAG)"
 	@echo "Please use 'make <target>' where <target> is one of:"
 	@echo "  build           to test and build the project"
-	@echo "  build-server    to test and build the project"
+	@echo "  build-server    to test and build just the server"
 	@echo "  run-server      to start the server app (hit ^C to stop server)"
 	@echo "  docker-image    to build the docker image of the app"
 	@echo "  push            to push the linux/amd64 docker image to $(DOCKER_REGISTRY)"
