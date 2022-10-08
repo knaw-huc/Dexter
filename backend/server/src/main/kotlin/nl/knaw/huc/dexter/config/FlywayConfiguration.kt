@@ -6,6 +6,14 @@ import javax.validation.constraints.NotNull
 class FlywayConfiguration {
     @Valid
     @NotNull
+    var baselineOnMigrate: Boolean = false
+
+    @Valid
+    @NotNull
+    var baselineVersion: String = "1"
+
+    @Valid
+    @NotNull
     var cleanDisabled: Boolean = true
 
     @Valid

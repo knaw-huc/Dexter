@@ -13,8 +13,10 @@ database:
   evictionInterval: ${DEX_DATABASE_EVICTION_INTERVAL:-10s}
 
 flyway:
+  baselineOnMigrate: ${DEX_FLYWAY_BASELINE_ON_MIGRATE:-false}
+  baselineVersion: ${DEX_FLYWAY_BASELINE_VERSION:-'0'}
   cleanDisabled: ${DEX_FLYWAY_CLEAN_DISABLED:-true}
-  locations: ${DEX_FLYWAY_LOCATIONS:-['filesystem:backend/db']}
+  locations: ${DEX_FLYWAY_LOCATIONS:-['filesystem:db/migration']}
 
 externalBaseUrl: ${DEX_EXTERNAL_BASE_URL:-http://localhost:8080}
 
