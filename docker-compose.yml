@@ -16,8 +16,8 @@ services:
 
   frontend:
     build:
-      context: ./frontend/deploy
-      dockerfile: Dockerfile-dev
+      context: ./frontend
+      dockerfile: deploy/Dockerfile-dev
     command: npm start
     container_name: dexter_frontend
     environment:
@@ -34,6 +34,7 @@ services:
       - ./frontend/webpack.config.js:/dexter/webpack.config.js
       - ./frontend/index.template.html:/dexter/index.template.html
       - ./frontend/.eslintrc.json:/dexter/.eslintrc.json
+      - ./frontend/favicon-32x32.png:/dexter/favicon-32x32.png
     
   nginx:
     container_name: dexter_nginx
