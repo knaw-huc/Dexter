@@ -9,6 +9,7 @@ dependency-reduced-pom.xml
 frontend/node_modules
 frontend/dist
 frontend/build
+frontend/.env*
 
 # Macos
 .DS_Store
