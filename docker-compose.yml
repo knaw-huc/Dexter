@@ -35,9 +35,7 @@ services:
       - ./frontend/tsconfig.json:/dexter/tsconfig.json
       - ./frontend/webpack.config.js:/dexter/webpack.config.js
       - ./frontend/index.template.html:/dexter/index.template.html
-      - ./frontend/.eslintrc.json:/dexter/.eslintrc.json
-      - ./frontend/favicon-32x32.png:/dexter/favicon-32x32.png
-    
+      - ./frontend/.eslintrc.json:/dexter/.eslintrc.json    
   nginx:
     container_name: dexter_nginx
     depends_on:

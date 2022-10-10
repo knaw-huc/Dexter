@@ -49,7 +49,7 @@ module.exports = {
         new HtmlWebpackPlugin({
             title: "Dexter's Lab",
             template: "index.template.html",
-            favicon: "favicon-32x32.png"
+            favicon: "src/assets/favicon-32x32.png"
         }),
         new webpack.DefinePlugin({
             "process.env": {
