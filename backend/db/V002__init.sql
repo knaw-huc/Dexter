@@ -56,7 +56,7 @@ create table corpora (
     created_by uuid not null,
     created_at timestamp not null default now(),
     updated_at timestamp not null default now(),
-    constraint corpora_parent_id_fkey foreign key (parent_id) references corpora (parent_id)
+    constraint corpora_parent_id_fkey foreign key (parent_id) references corpora (id)
 );
 
 create trigger set_corpora_updated_at
