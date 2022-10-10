@@ -42,7 +42,7 @@ create trigger set_sources_updated_at
 
 create table corpora (
     id uuid primary key,
-    parent_id uuid unique,
+    parent_id uuid,
     title text not null,
     description text not null,
     rights text not null,
