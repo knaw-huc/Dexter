@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-java -jar dexter-server.jar server config.yml
+exec java -jar dexter-server.jar server config.yml
