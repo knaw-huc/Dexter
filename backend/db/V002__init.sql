@@ -4,7 +4,7 @@ create type access_type as enum (
     'closed'
 );
 
-create or replace function trigger_set_updated_at()
+create function trigger_set_updated_at()
     returns trigger as $$
 begin
     new.updated_at = now();
@@ -12,13 +12,13 @@ begin
 end;
 $$ language plpgsql;
 
-create table if not exists users (
+create table users (
     id uuid primary key,
     login text not null unique,
     name text not null
 );
 
-create table if not exists sources (
+create table sources (
   id uuid primary key,
   external_id text,
   title text not null,
@@ -40,7 +40,7 @@ create trigger set_sources_updated_at
     for each row
     execute procedure trigger_set_updated_at();
 
-create table if not exists corpora (
+create table corpora (
     id uuid primary key,
     parent_id uuid unique,
     title text not null,
