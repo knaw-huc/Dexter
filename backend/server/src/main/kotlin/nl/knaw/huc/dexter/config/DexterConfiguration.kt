@@ -14,17 +14,17 @@ class DexterConfiguration : Configuration() {
     @Valid
     @NotNull
     @JsonProperty("database")
-    var dataSourceFactory = DataSourceFactory()
+    val dataSourceFactory = DataSourceFactory()
 
     @Valid
     @NotNull
     @JsonProperty
-    var externalBaseUrl = ""
+    val externalBaseUrl = ""
 
     @Valid
     @NotNull
-    @JsonProperty("flyway")
-    var flyway = FlywayConfiguration()
+    @JsonProperty
+    val flyway = FlywayConfiguration()
 
     @Valid
     @NotNull
@@ -41,7 +41,7 @@ class DexterConfiguration : Configuration() {
         title = Constants.APP_NAME
         license = "Apache 2.0"
         licenseUrl = "http://www.apache.org/licenses/"
-        contactUrl = "https://github.com/knaw-huc/annorepo"
+        contactUrl = "https://github.com/knaw-huc/Dexter"
         contact = Constants.APP_NAME
     }
 }
