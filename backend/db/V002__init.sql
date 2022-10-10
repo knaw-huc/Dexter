@@ -25,6 +25,10 @@ create table if not exists sources (
   description text not null,
   rights text not null,
   access access_type not null,
+  location text,
+  earliest date,
+  latest date,
+  language text, -- multiple languages
   notes text,
   created_by uuid not null,
   created_at timestamp not null default now(),
