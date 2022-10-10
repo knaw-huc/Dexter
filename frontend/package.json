@@ -11,7 +11,7 @@
     "docker:push": "./docker-push.sh",
     "docker:all": "./docker-all.sh"
   },
-  "author": "",
+  "author": "Sebastiaan van Daalen",
   "license": "GPL-3.0-or-later",
   "dependencies": {
     "@types/node": "^18.8.1",

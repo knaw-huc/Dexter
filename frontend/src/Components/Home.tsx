@@ -11,14 +11,13 @@ const NavStyled = styled.nav`
 console.log("Hoi allemaal!")
 //console.log(process.env.REACT_APP_BACKEND_HOST)
 
-fetch("backend/about")
-    .then(function(response) {
-        if (!response.ok) {
-            console.log("Server niet gevonden!!!")
-        } else {
-            console.log(response.json())
-        }
-    })
+async function testFetch() {
+    const response = await fetch("api/about")
+    const json = await response.json()
+    console.log(json)
+}
+
+testFetch()
 
 export const Home = () => {
     return (
