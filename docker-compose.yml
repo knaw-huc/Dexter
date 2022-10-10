@@ -27,6 +27,8 @@ services:
     image: dexter-frontend:latest
     networks:
       - frontend_network
+    ports:
+      - "3001:3001" # needed in dev to get WebSocket access
     volumes:
       - ./frontend/public:/dexter/public
       - ./frontend/src:/dexter/src
