@@ -3,6 +3,9 @@ package nl.knaw.huc.dexter
 import `in`.vectorpro.dropwizard.swagger.SwaggerBundle
 import `in`.vectorpro.dropwizard.swagger.SwaggerBundleConfiguration
 import io.dropwizard.Application
+import io.dropwizard.auth.AuthDynamicFeature
+import io.dropwizard.auth.AuthValueFactoryProvider
+import io.dropwizard.auth.basic.BasicCredentialAuthFilter
 import io.dropwizard.configuration.EnvironmentVariableSubstitutor
 import io.dropwizard.configuration.SubstitutingSourceProvider
 import io.dropwizard.db.DataSourceFactory
@@ -12,10 +15,15 @@ import io.dropwizard.setup.Bootstrap
 import io.dropwizard.setup.Environment
 import nl.knaw.huc.dexter.api.Constants
 import nl.knaw.huc.dexter.api.Constants.APP_NAME
+import nl.knaw.huc.dexter.auth.DexterAuthenticator
+import nl.knaw.huc.dexter.auth.DexterAuthorizer
+import nl.knaw.huc.dexter.auth.DexterUser
 import nl.knaw.huc.dexter.config.DexterConfiguration
 import nl.knaw.huc.dexter.config.FlywayConfiguration
 import nl.knaw.huc.dexter.resources.AboutResource
+import nl.knaw.huc.dexter.resources.AdminResource
 import org.flywaydb.core.Flyway
+import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.postgres.PostgresPlugin
 import org.jdbi.v3.sqlobject.SqlObjectPlugin
@@ -58,7 +66,18 @@ class DexterApplication : Application<DexterConfiguration>() {
 
         val appVersion = javaClass.getPackage().implementationVersion
         environment.jersey().apply {
+            register(AuthDynamicFeature(
+                BasicCredentialAuthFilter.Builder<DexterUser>()
+                    .setAuthenticator(DexterAuthenticator(configuration.root))
+                    .setAuthorizer(DexterAuthorizer())
+                    .setRealm("Dexter's Lab")
+                    .buildAuthFilter()
+
+            ))
+            register(RolesAllowedDynamicFeature::class.java)
+            register(AuthValueFactoryProvider.Binder(DexterUser::class.java))
             register(AboutResource(configuration, name, appVersion))
+            register(AdminResource())
         }
     }
 

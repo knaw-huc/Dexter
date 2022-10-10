@@ -64,6 +64,8 @@ services:
     image: postgres:11-alpine
     networks:
       - postgres_network
+    ports:
+      - "5432:5432"
     shm_size: 1g
     volumes:
       - postgres_data:/var/lib/dexter/data

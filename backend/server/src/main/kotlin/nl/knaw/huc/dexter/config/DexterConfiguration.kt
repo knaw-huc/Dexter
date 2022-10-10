@@ -28,6 +28,11 @@ class DexterConfiguration : Configuration() {
 
     @Valid
     @NotNull
+    @JsonProperty
+    val root: RootConfig = RootConfig()
+
+    @Valid
+    @NotNull
     @JsonProperty("swagger")
     val swaggerBundleConfiguration = SwaggerBundleConfiguration().apply {
         contextRoot = "${externalBaseUrl}/api"
@@ -40,3 +45,5 @@ class DexterConfiguration : Configuration() {
         contact = Constants.APP_NAME
     }
 }
+
+data class RootConfig(val user: String = "", val pass: String = "")

@@ -27,6 +27,10 @@ logging:
     org: WARN
     org.glassfish: ERROR
 
+root:
+  user: ${DEX_ROOT_USER:-root}
+  pass: ${DEX_ROOT_PASS:-d33d33}
+
 server:
   applicationConnectors:
     - type: http

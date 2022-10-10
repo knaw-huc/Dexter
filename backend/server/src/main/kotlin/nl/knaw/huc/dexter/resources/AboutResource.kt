@@ -1,9 +1,12 @@
 package nl.knaw.huc.dexter.resources
 
 import com.codahale.metrics.annotation.Timed
+import io.dropwizard.auth.Auth
 import io.swagger.v3.oas.annotations.Operation
 import nl.knaw.huc.dexter.api.AboutInfo
 import nl.knaw.huc.dexter.api.ResourcePaths
+import nl.knaw.huc.dexter.auth.DexterUser
+import nl.knaw.huc.dexter.auth.RootUser
 import nl.knaw.huc.dexter.config.DexterConfiguration
 import org.slf4j.LoggerFactory
 import java.time.Instant
@@ -30,10 +33,14 @@ class AboutResource(
     )
 
     @Operation(description = "Get server info")
+//    @RolesAllowed("admin")
     @Timed
     @GET
-    fun getAboutInfo(@HeaderParam("Authorization") auth: String?): AboutInfo {
-        log.info("auth: $auth")
+    fun getAboutInfo(
+        @HeaderParam("Authorization") auth: String?,
+        @Auth user: DexterUser?
+    ): AboutInfo {
+        log.info("auth: $auth, user: $user, root: ${user is RootUser}")
         return about
     }
 }
