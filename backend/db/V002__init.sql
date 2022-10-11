@@ -23,12 +23,12 @@ create table languages (
 );
 
 create table users (
-    id uuid primary key,
+    id uuid primary key default gen_random_uuid(),
     name text not null unique
 );
 
 create table sources (
-  id uuid primary key,
+  id uuid primary key default gen_random_uuid(),
   external_ref text,
   title text not null,
   description text not null,
@@ -63,7 +63,7 @@ create table sources_languages (
 create index on sources_languages (lang_id, source_id);
 
 create table corpora (
-    id uuid primary key,
+    id uuid primary key default gen_random_uuid(),
     parent_id uuid references corpora (id),
     title text not null,
     description text not null,

@@ -1,5 +1,7 @@
 package nl.knaw.huc.dexter
 
+import com.fasterxml.jackson.databind.module.SimpleModule
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import `in`.vectorpro.dropwizard.swagger.SwaggerBundle
 import `in`.vectorpro.dropwizard.swagger.SwaggerBundleConfiguration
 import io.dropwizard.Application
@@ -22,12 +24,17 @@ import nl.knaw.huc.dexter.config.DexterConfiguration
 import nl.knaw.huc.dexter.config.FlywayConfiguration
 import nl.knaw.huc.dexter.resources.AboutResource
 import nl.knaw.huc.dexter.resources.AdminResource
+import nl.knaw.huc.dexter.resources.SourcesResource
 import org.flywaydb.core.Flyway
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature
 import org.jdbi.v3.core.Jdbi
+import org.jdbi.v3.core.kotlin.KotlinPlugin
 import org.jdbi.v3.postgres.PostgresPlugin
-import org.jdbi.v3.sqlobject.SqlObjectPlugin
+import org.jdbi.v3.sqlobject.kotlin.KotlinSqlObjectPlugin
 import org.slf4j.LoggerFactory
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.util.*
 
 class DexterApplication : Application<DexterConfiguration>() {
     private val log = LoggerFactory.getLogger(javaClass)
@@ -58,26 +65,26 @@ class DexterApplication : Application<DexterConfiguration>() {
         )
 
         migrateDatabase(configuration.dataSourceFactory, configuration.flyway)
-
-        val jdbi = createJdbi(environment, configuration.dataSourceFactory)
-//        val uuid = UUID.randomUUID()
-//        jdbi.useHandle<Exception> { it.execute("insert into users (id,name) values ('$uuid', 'bolke')") }
-//        jdbi.useHandle<Exception> { log.info("${it.execute("select * from users")}") }
+        customizeObjectMapper(environment)
+        val jdbi = setupJdbi(environment, configuration.dataSourceFactory)
 
         val appVersion = javaClass.getPackage().implementationVersion
         environment.jersey().apply {
-            register(AuthDynamicFeature(
-                BasicCredentialAuthFilter.Builder<DexterUser>()
-                    .setAuthenticator(DexterAuthenticator(configuration.root))
-                    .setAuthorizer(DexterAuthorizer())
-                    .setRealm("Dexter's Lab")
-                    .buildAuthFilter()
+            register(
+                AuthDynamicFeature(
+                    BasicCredentialAuthFilter.Builder<DexterUser>()
+                        .setAuthenticator(DexterAuthenticator(configuration.root))
+                        .setAuthorizer(DexterAuthorizer())
+                        .setRealm("Dexter's Lab")
+                        .buildAuthFilter()
 
-            ))
+                )
+            )
             register(RolesAllowedDynamicFeature::class.java)
             register(AuthValueFactoryProvider.Binder(DexterUser::class.java))
             register(AboutResource(configuration, name, appVersion))
-            register(AdminResource())
+            register(AdminResource(jdbi))
+            register(SourcesResource(jdbi))
         }
     }
 
@@ -105,11 +112,24 @@ class DexterApplication : Application<DexterConfiguration>() {
         }
     }
 
-    private fun createJdbi(environment: Environment, datasourceFactory: DataSourceFactory): Jdbi {
-        val jdbi = JdbiFactory().build(environment, datasourceFactory, "postgresql")
-        jdbi.installPlugin(SqlObjectPlugin())
-        jdbi.installPlugin(PostgresPlugin())
-        return jdbi
+    private fun setupJdbi(environment: Environment, datasourceFactory: DataSourceFactory): Jdbi {
+        return JdbiFactory().build(environment, datasourceFactory, "postgresql").apply {
+            installPlugin(PostgresPlugin())
+            installPlugin(KotlinPlugin())
+            installPlugin(KotlinSqlObjectPlugin())
+        }
+    }
+
+    private val dateFormatString = "yyyy-MM-dd'T'HH:mm:ss"
+    private fun customizeObjectMapper(environment: Environment) {
+        val module = SimpleModule().apply {
+            addSerializer(LocalDateTime::class.java, LocalDateTimeSerializer(dateFormatString))
+        }
+        environment.objectMapper.apply {
+            dateFormat = SimpleDateFormat(dateFormatString)
+            registerModule(module)
+            registerKotlinModule()
+        }
     }
 
     companion object {
