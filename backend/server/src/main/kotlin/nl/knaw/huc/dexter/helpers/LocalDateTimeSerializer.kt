@@ -1,4 +1,4 @@
-package nl.knaw.huc.dexter
+package nl.knaw.huc.dexter.helpers
 
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.JsonSerializer

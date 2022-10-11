@@ -25,6 +25,7 @@ import nl.knaw.huc.dexter.config.FlywayConfiguration
 import nl.knaw.huc.dexter.resources.AboutResource
 import nl.knaw.huc.dexter.resources.AdminResource
 import nl.knaw.huc.dexter.resources.SourcesResource
+import nl.knaw.huc.dexter.helpers.LocalDateTimeSerializer
 import org.flywaydb.core.Flyway
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature
 import org.jdbi.v3.core.Jdbi
