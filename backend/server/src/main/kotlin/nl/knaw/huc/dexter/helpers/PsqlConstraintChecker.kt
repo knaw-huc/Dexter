@@ -26,10 +26,11 @@ enum class PsqlConstraintChecker(private val constraint: String, private val msg
             } catch (ex: JdbiException) {
                 val cause = ex.cause
                 if (cause is PSQLException) {
-                    val violatedConstraint = cause.serverErrorMessage?.constraint
-                    values()
-                        .find { it.constraint == violatedConstraint }
-                        ?.let { throw BadRequestException(it.msg) }
+                    cause.serverErrorMessage?.constraint.let { violatedConstraint ->
+                        values()
+                            .find { it.constraint == violatedConstraint }
+                            ?.let { throw BadRequestException(it.msg) }
+                    }
                 }
                 throw ex
             }
