@@ -80,7 +80,7 @@ create table corpora (
     created_by uuid not null references users (id),
     created_at timestamp not null default now(),
     updated_at timestamp not null default now(),
-    constraint corpora_earliest_before_equal_latest check (earliest <= latest)
+    constraint corpus_earliest_before_equal_latest check (earliest <= latest)
 );
 
 create trigger set_corpora_updated_at

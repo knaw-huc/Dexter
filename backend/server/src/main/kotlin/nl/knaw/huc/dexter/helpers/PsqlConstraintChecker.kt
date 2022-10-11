@@ -10,8 +10,8 @@ enum class PsqlConstraintChecker(private val constraint: String, private val msg
         "source_earliest_before_equal_latest",
         "'earliest' MUST be less than or equal to 'latest"
     ),
-    CORPORA_DATE_ORDER(
-        "corpora_earliest_before_equal_latest",
+    CORPUS_DATE_ORDER_CONSTRAINT(
+        "corpus_earliest_before_equal_latest",
         "'earliest' MUST be less than or equal to 'latest"
     );
 
