@@ -29,7 +29,7 @@ create table users (
 
 create table sources (
   id uuid primary key,
-  external_id text,
+  external_ref text,
   title text not null,
   description text not null,
   rights text not null,
