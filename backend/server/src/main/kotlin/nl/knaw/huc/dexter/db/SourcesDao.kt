@@ -23,7 +23,7 @@ interface SourcesDao {
 
 
     @SqlQuery("select * from sources where id = :id")
-    fun find(id: UUID): ResultSource
+    fun find(id: UUID): ResultSource?
 
     @SqlQuery(
         "update sources " +
