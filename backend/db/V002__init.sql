@@ -1,3 +1,5 @@
+-- noinspection SqlResolveForFile @ routine/"gen_random_uuid"
+
 create type access_type as enum (
     'open',
     'restricted',
@@ -40,7 +42,8 @@ create table sources (
   notes text,
   created_by uuid not null references users (id),
   created_at timestamp not null default now(),
-  updated_at timestamp not null default now()
+  updated_at timestamp not null default now(),
+  check (earliest <= latest)
 );
 
 create trigger set_sources_updated_at
@@ -76,7 +79,8 @@ create table corpora (
     notes text,
     created_by uuid not null references users (id),
     created_at timestamp not null default now(),
-    updated_at timestamp not null default now()
+    updated_at timestamp not null default now(),
+    check (earliest <= latest)
 );
 
 create trigger set_corpora_updated_at
