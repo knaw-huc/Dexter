@@ -36,7 +36,12 @@ class SourcesResource(private val jdbi: Jdbi) {
     @Path("/{id}")
     fun updateSource(@PathParam("id") sourceId: UUID, formSource: FormSource, @Auth user: DexterUser): ResultSource {
         log.info("updateSource[${user.name}: sourceId=[$sourceId], formSource=[$formSource]")
-        return checkConstraintViolations { sources().update(sourceId, formSource) }
+        sources().find(sourceId)?.let {
+            // TODO: could check for changes and not do anything if already equals here
+            // TODO: or ... upsert instead?
+            return checkConstraintViolations { sources().update(sourceId, formSource) }
+        }
+        throw NotFoundException("Source not found: $sourceId")
     }
 
     private fun sources(): SourcesDao = jdbi.onDemand(SourcesDao::class.java)
