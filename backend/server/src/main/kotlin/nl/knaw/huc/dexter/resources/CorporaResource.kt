@@ -52,7 +52,7 @@ class CorporaResource(private val jdbi: Jdbi) {
     fun deleteCorpus(@PathParam("id") corpusId: UUID, @Auth user: DexterUser): Response {
         log.info("deleteCorpus[${user.name}]: corpusId=$corpusId")
         corpora().find(corpusId)?.let {
-            log.warn("deleting: $it")
+            log.warn("$user deleting: $it")
             checkConstraintViolations{ corpora().delete(corpusId) }
         }
         corpusNotFound(corpusId)
