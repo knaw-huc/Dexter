@@ -22,11 +22,8 @@ import nl.knaw.huc.dexter.auth.DexterAuthorizer
 import nl.knaw.huc.dexter.auth.DexterUser
 import nl.knaw.huc.dexter.config.DexterConfiguration
 import nl.knaw.huc.dexter.config.FlywayConfiguration
-import nl.knaw.huc.dexter.resources.AboutResource
-import nl.knaw.huc.dexter.resources.AdminResource
-import nl.knaw.huc.dexter.resources.SourcesResource
 import nl.knaw.huc.dexter.helpers.LocalDateTimeSerializer
-import nl.knaw.huc.dexter.resources.CorporaResource
+import nl.knaw.huc.dexter.resources.*
 import org.flywaydb.core.Flyway
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature
 import org.jdbi.v3.core.Jdbi
@@ -87,6 +84,7 @@ class DexterApplication : Application<DexterConfiguration>() {
             register(AboutResource(configuration, name, appVersion))
             register(AdminResource(jdbi))
             register(CorporaResource(jdbi))
+            register(KeywordResource(jdbi))
             register(SourcesResource(jdbi))
         }
     }
