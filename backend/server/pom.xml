@@ -13,7 +13,7 @@
     <parent>
         <groupId>nl.knaw.huc</groupId>
         <artifactId>dexter</artifactId>
-        <version>0.4.4</version>
+        <version>0.5.0</version>
     </parent>
 
     <properties>
