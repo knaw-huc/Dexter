@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory
 import java.util.*
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType.APPLICATION_JSON
+import javax.ws.rs.core.Response
 
 @Path(ResourcePaths.CORPORA)
 @Produces(APPLICATION_JSON)
@@ -42,6 +43,17 @@ class CorporaResource(private val jdbi: Jdbi) {
         log.info("updateCorpus[${user.name}]: corpusId=$corpusId, formCorpus=$formCorpus")
         corpora().find(corpusId)?.let {
             return checkConstraintViolations { corpora().update(corpusId, formCorpus) }
+        }
+        corpusNotFound(corpusId)
+    }
+
+    @DELETE
+    @Path("{id}")
+    fun deleteCorpus(@PathParam("id") corpusId: UUID, @Auth user: DexterUser): Response {
+        log.info("deleteCorpus[${user.name}]: corpusId=$corpusId")
+        corpora().find(corpusId)?.let {
+            log.warn("deleting: $it")
+            checkConstraintViolations{ corpora().delete(corpusId) }
         }
         corpusNotFound(corpusId)
     }
