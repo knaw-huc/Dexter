@@ -5,6 +5,8 @@ import nl.knaw.huc.dexter.api.FormSource
 import nl.knaw.huc.dexter.api.ResourcePaths
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PARAM
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PATH
+import nl.knaw.huc.dexter.api.ResourcePaths.KEYWORDS
+import nl.knaw.huc.dexter.api.ResultKeyword
 import nl.knaw.huc.dexter.api.ResultSource
 import nl.knaw.huc.dexter.auth.DexterUser
 import nl.knaw.huc.dexter.db.SourcesDao
@@ -41,7 +43,11 @@ class SourcesResource(private val jdbi: Jdbi) {
     @PUT
     @Consumes(APPLICATION_JSON)
     @Path(ID_PATH)
-    fun updateSource(@PathParam(ID_PARAM) sourceId: UUID, formSource: FormSource, @Auth user: DexterUser): ResultSource {
+    fun updateSource(
+        @PathParam(ID_PARAM) sourceId: UUID,
+        formSource: FormSource,
+        @Auth user: DexterUser
+    ): ResultSource {
         log.info("updateSource[${user.name}: sourceId=[$sourceId], formSource=[$formSource]")
         sources().find(sourceId)?.let {
             // TODO: could check for changes and not do anything if already equals here
@@ -59,8 +65,58 @@ class SourcesResource(private val jdbi: Jdbi) {
             log.warn("$user deleting: $it")
             checkConstraintViolations { sources().delete(sourceId) }
             return Response.noContent().build()
-        }
-        sourceNotFound(sourceId)
+        } ?: sourceNotFound(sourceId)
+    }
+
+    @GET
+    @Path("$ID_PATH/$KEYWORDS/v1")
+    fun getKeywordsV1(@PathParam(ID_PARAM) sourceId: UUID) =
+        sources().find(sourceId)?.let {
+            sources().getKeywords(sourceId)
+        } ?: sourceNotFound(sourceId)
+
+    @GET
+    @Path("$ID_PATH/$KEYWORDS/v2a")
+    fun getKeywordsV2a(@PathParam(ID_PARAM) sourceId: UUID) =
+        sources().find(sourceId)?.let {
+            sources().getKeywords(sourceId).map { it.id }
+        } ?: sourceNotFound(sourceId)
+
+    @GET
+    @Path("$ID_PATH/$KEYWORDS/v2b")
+    fun getKeywordsV2b(@PathParam(ID_PARAM) sourceId: UUID) =
+        sources().find(sourceId)?.let {
+            sources().getKeywords(sourceId).map { it.`val` }
+        } ?: sourceNotFound(sourceId)
+
+    @GET
+    @Path("$ID_PATH/$KEYWORDS/v2c")
+    fun getKeywordsV2c(@PathParam(ID_PARAM) sourceId: UUID) =
+        sources().find(sourceId)?.let {
+            sources().getKeywords(sourceId).map { mapOf(it.id to it.`val`) }
+        } ?: sourceNotFound(sourceId)
+
+    @POST
+    @Path("$ID_PATH/$KEYWORDS")
+    fun addKeyword(@PathParam(ID_PARAM) sourceId: UUID, keywordId: String): List<ResultKeyword> {
+        log.info("addKeyword: sourceId=$sourceId, keywordId=$keywordId")
+        sources().find(sourceId)?.let {
+            sources().addKeyword(sourceId, keywordId.toInt())
+            return sources().getKeywords(sourceId)
+        } ?: sourceNotFound(sourceId)
+    }
+
+    @DELETE
+    @Path("$ID_PATH/$KEYWORDS/{keywordId}")
+    fun deleteKeyword(
+        @PathParam(ID_PARAM) sourceId: UUID,
+        @PathParam("keywordId") keywordId: Int
+    ): List<ResultKeyword> {
+        log.info("deleteKeyword: sourceId=$sourceId, keywordId=$keywordId")
+        sources().find(sourceId)?.let {
+            sources().deleteKeyword(sourceId, keywordId)
+            return sources().getKeywords(sourceId)
+        } ?: sourceNotFound(sourceId)
     }
 
     private fun sourceNotFound(sourceId: UUID): Nothing = throw NotFoundException("Source not found: $sourceId")
