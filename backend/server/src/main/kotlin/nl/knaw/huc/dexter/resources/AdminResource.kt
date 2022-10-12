@@ -2,6 +2,8 @@ package nl.knaw.huc.dexter.resources
 
 import com.codahale.metrics.annotation.Timed
 import io.swagger.v3.oas.annotations.Operation
+import nl.knaw.huc.dexter.api.ResourcePaths
+import nl.knaw.huc.dexter.api.ResourcePaths.USERS
 import nl.knaw.huc.dexter.api.User
 import nl.knaw.huc.dexter.auth.RoleNames.ROOT
 import nl.knaw.huc.dexter.db.UsersDao
@@ -14,20 +16,20 @@ import javax.ws.rs.*
 import javax.ws.rs.core.MediaType.APPLICATION_JSON
 import javax.ws.rs.core.Response
 
-@Path("admin")
+@Path(ResourcePaths.ADMIN)
 @RolesAllowed(ROOT)
 class AdminResource(private val jdbi: Jdbi) {
     private val log = LoggerFactory.getLogger(javaClass)
 
     @GET
-    @Path("users")
+    @Path(USERS)
     @Produces(APPLICATION_JSON)
     fun listUsers() = users().list()
 
     @Operation(description = "Add user")
     @Timed
     @POST
-    @Path("users")
+    @Path(USERS)
     @Consumes(APPLICATION_JSON)
     fun addUsers(@NotNull users: List<Map<String, String>>): Response {
         log.info("Adding users: $users")
@@ -35,7 +37,7 @@ class AdminResource(private val jdbi: Jdbi) {
     }
 
     @GET
-    @Path("/users/{str}")
+    @Path("$USERS/{str}")
     @Produces(APPLICATION_JSON)
     fun getUser(@PathParam("str") nameOrUuid: String): User {
         log.info("getUser: [$nameOrUuid]")

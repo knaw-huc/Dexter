@@ -2,6 +2,7 @@ package nl.knaw.huc.dexter.resources
 
 import io.dropwizard.auth.Auth
 import nl.knaw.huc.dexter.api.FormSource
+import nl.knaw.huc.dexter.api.ResourcePaths
 import nl.knaw.huc.dexter.api.ResultSource
 import nl.knaw.huc.dexter.auth.DexterUser
 import nl.knaw.huc.dexter.db.SourcesDao
@@ -13,7 +14,7 @@ import java.util.*
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType.APPLICATION_JSON
 
-@Path("sources")
+@Path(ResourcePaths.SOURCES)
 @Produces(APPLICATION_JSON)
 class SourcesResource(private val jdbi: Jdbi) {
     private val log = LoggerFactory.getLogger(javaClass)
@@ -36,7 +37,7 @@ class SourcesResource(private val jdbi: Jdbi) {
 
     @PUT
     @Consumes(APPLICATION_JSON)
-    @Path("/{id}")
+    @Path("{id}")
     fun updateSource(@PathParam("id") sourceId: UUID, formSource: FormSource, @Auth user: DexterUser): ResultSource {
         log.info("updateSource[${user.name}: sourceId=[$sourceId], formSource=[$formSource]")
         sources().find(sourceId)?.let {

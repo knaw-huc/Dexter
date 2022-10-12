@@ -2,6 +2,7 @@ package nl.knaw.huc.dexter.resources
 
 import io.dropwizard.auth.Auth
 import nl.knaw.huc.dexter.api.FormCorpus
+import nl.knaw.huc.dexter.api.ResourcePaths
 import nl.knaw.huc.dexter.api.ResultCorpus
 import nl.knaw.huc.dexter.auth.DexterUser
 import nl.knaw.huc.dexter.db.CorporaDao
@@ -13,7 +14,7 @@ import java.util.*
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType.APPLICATION_JSON
 
-@Path("corpora")
+@Path(ResourcePaths.CORPORA)
 @Produces(APPLICATION_JSON)
 class CorporaResource(private val jdbi: Jdbi) {
     private val log = LoggerFactory.getLogger(javaClass)
@@ -36,7 +37,7 @@ class CorporaResource(private val jdbi: Jdbi) {
 
     @PUT
     @Consumes(APPLICATION_JSON)
-    @Path("/{id}")
+    @Path("{id}")
     fun updateCorpus(@PathParam("id") corpusId: UUID, formCorpus: FormCorpus, @Auth user: DexterUser): ResultCorpus {
         log.info("updateCorpus[${user.name}]: corpusId=$corpusId, formCorpus=$formCorpus")
         corpora().find(corpusId)?.let {
