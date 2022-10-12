@@ -54,6 +54,7 @@ class SourcesResource(private val jdbi: Jdbi) {
     fun deleteSource(@PathParam("id") sourceId: UUID, @Auth user: DexterUser): Response {
         log.info("deleteSource[${user.name}]: sourceId=$sourceId")
         sources().find(sourceId)?.let {
+            log.warn("deleting: $it")
             checkConstraintViolations { sources().delete(sourceId) }
             return Response.noContent().build()
         }
