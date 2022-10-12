@@ -19,6 +19,11 @@ import javax.ws.rs.core.Response
 class AdminResource(private val jdbi: Jdbi) {
     private val log = LoggerFactory.getLogger(javaClass)
 
+    @GET
+    @Path("users")
+    @Produces(APPLICATION_JSON)
+    fun listUsers() = users().list()
+
     @Operation(description = "Add user")
     @Timed
     @POST

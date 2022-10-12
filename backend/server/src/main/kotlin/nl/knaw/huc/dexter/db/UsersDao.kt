@@ -7,6 +7,9 @@ import org.jdbi.v3.sqlobject.statement.SqlUpdate
 import java.util.*
 
 interface UsersDao {
+    @SqlQuery("select * from users")
+    fun list(): List<User>
+
     @SqlQuery("insert into users (id,name) values (:id, :name) returning *")
     fun insert(@BindKotlin user: User): User
 
