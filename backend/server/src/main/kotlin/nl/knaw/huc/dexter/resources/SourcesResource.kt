@@ -14,16 +14,20 @@ import javax.ws.rs.*
 import javax.ws.rs.core.MediaType.APPLICATION_JSON
 
 @Path("sources")
+@Produces(APPLICATION_JSON)
 class SourcesResource(private val jdbi: Jdbi) {
     private val log = LoggerFactory.getLogger(javaClass)
 
     @GET
-    @Produces(APPLICATION_JSON)
     fun getSourceList() = sources().list()
+
+    @GET
+    @Path("{id}")
+    fun getSource(@PathParam("id") sourceId: UUID) =
+        sources().find(sourceId) ?: sourceNotFound(sourceId)
 
     @POST
     @Consumes(APPLICATION_JSON)
-    @Produces(APPLICATION_JSON)
     fun createSource(formSource: FormSource, @Auth user: DexterUser): ResultSource {
         log.info("createSource[${user.name}]: formSource=[$formSource]")
         val createdBy = users().findByName(user.name) ?: throw NotFoundException("Unknown user: $user")
@@ -32,7 +36,6 @@ class SourcesResource(private val jdbi: Jdbi) {
 
     @PUT
     @Consumes(APPLICATION_JSON)
-    @Produces(APPLICATION_JSON)
     @Path("/{id}")
     fun updateSource(@PathParam("id") sourceId: UUID, formSource: FormSource, @Auth user: DexterUser): ResultSource {
         log.info("updateSource[${user.name}: sourceId=[$sourceId], formSource=[$formSource]")
@@ -41,8 +44,10 @@ class SourcesResource(private val jdbi: Jdbi) {
             // TODO: or ... upsert instead?
             return checkConstraintViolations { sources().update(sourceId, formSource) }
         }
-        throw NotFoundException("Source not found: $sourceId")
+        sourceNotFound(sourceId)
     }
+
+    private fun sourceNotFound(sourceId: UUID): Nothing = throw NotFoundException("Source not found: $sourceId")
 
     private fun sources(): SourcesDao = jdbi.onDemand(SourcesDao::class.java)
     private fun users(): UsersDao = jdbi.onDemand(UsersDao::class.java)
