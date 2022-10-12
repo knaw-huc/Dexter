@@ -21,6 +21,11 @@ class CorporaResource(private val jdbi: Jdbi) {
     @GET
     fun getCorporaList() = corpora().list()
 
+    @GET
+    @Path("{id}")
+    fun getCorpus(@PathParam("id") corpusId: UUID): ResultCorpus =
+        corpora().find(corpusId) ?: corpusNotFound(corpusId)
+
     @POST
     @Consumes(APPLICATION_JSON)
     fun createCorpus(formCorpus: FormCorpus, @Auth user: DexterUser): ResultCorpus {
@@ -37,8 +42,10 @@ class CorporaResource(private val jdbi: Jdbi) {
         corpora().find(corpusId)?.let {
             return checkConstraintViolations { corpora().update(corpusId, formCorpus) }
         }
-        throw NotFoundException("Corpus not found: $corpusId")
+        corpusNotFound(corpusId)
     }
+
+    private fun corpusNotFound(corpusId: UUID): Nothing = throw NotFoundException("Corpus not found: $corpusId")
 
     private fun corpora(): CorporaDao = jdbi.onDemand(CorporaDao::class.java)
 
