@@ -96,6 +96,14 @@ class SourcesResource(private val jdbi: Jdbi) {
             sources().getKeywords(sourceId).map { mapOf(it.id to it.`val`) }
         } ?: sourceNotFound(sourceId)
 
+    @GET
+    @Path("$ID_PATH/$KEYWORDS/v2d")
+    fun getKeywordsV2d(@PathParam(ID_PARAM) sourceId: UUID) =
+        sources().find(sourceId)?.let {
+            sources().getKeywords(sourceId)
+                .fold(HashMap<Int,String>()) { all, kw -> all[kw.id] = kw.`val`; all}
+        } ?: sourceNotFound(sourceId)
+
     @POST
     @Path("$ID_PATH/$KEYWORDS")
     fun addKeyword(@PathParam(ID_PARAM) sourceId: UUID, keywordId: String): List<ResultKeyword> {
