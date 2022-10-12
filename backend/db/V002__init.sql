@@ -1,5 +1,3 @@
--- noinspection SqlResolveForFile @ routine/"gen_random_uuid"
-
 create type access_type as enum (
     'open',
     'restricted',
