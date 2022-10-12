@@ -54,6 +54,7 @@ class CorporaResource(private val jdbi: Jdbi) {
         corpora().find(corpusId)?.let {
             log.warn("$user deleting: $it")
             checkConstraintViolations{ corpora().delete(corpusId) }
+            return Response.noContent().build()
         }
         corpusNotFound(corpusId)
     }
