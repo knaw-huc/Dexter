@@ -4,15 +4,29 @@ import org.jdbi.v3.core.JdbiException
 import org.postgresql.util.PSQLException
 import javax.ws.rs.BadRequestException
 
-enum class PsqlConstraintChecker(private val constraint: String, private val msg: String) {
+enum class PsqlConstraintChecker(
+    private val constraint: String,
+    private val msg: String,
+    private val includeDetail: Boolean = false)
+{
     // These constraints are named postgres constraints, from "backend/db/Vxxx.sql"
-    SOURCE_DATE_ORDER_CONSTRAINT(
-        "source_earliest_before_equal_latest",
+    SOURCES_DATE_ORDER_CONSTRAINT(
+        "sources_earliest_before_equal_latest",
         "'earliest' MUST be less than or equal to 'latest"
     ),
-    CORPUS_DATE_ORDER_CONSTRAINT(
-        "corpus_earliest_before_equal_latest",
+    SOURCES_UNIQUE_TITLE_CONSTRAINT(
+        "sources_title_key",
+        "Titles MUST be unique",
+        includeDetail = true
+    ),
+    CORPORA_DATE_ORDER_CONSTRAINT(
+        "corpora_earliest_before_equal_latest",
         "'earliest' MUST be less than or equal to 'latest"
+    ),
+    CORPORA_UNIQUE_TITLE_CONSTRAINT(
+        "corpora_title_key",
+        "Titles MUST be unique",
+        includeDetail = true
     );
 
     companion object {
@@ -26,10 +40,15 @@ enum class PsqlConstraintChecker(private val constraint: String, private val msg
             } catch (ex: JdbiException) {
                 val cause = ex.cause
                 if (cause is PSQLException) {
-                    cause.serverErrorMessage?.constraint.let { violatedConstraint ->
+                    val errMsg = cause.serverErrorMessage
+                    if (errMsg != null) {
                         values()
-                            .find { it.constraint == violatedConstraint }
-                            ?.let { throw BadRequestException(it.msg) }
+                            .find { it.constraint == errMsg.constraint }
+                            ?.let {
+                                var msg = it.msg
+                                if (it.includeDetail) msg = "$msg. ${errMsg.detail}"
+                                throw BadRequestException(msg)
+                            }
                     }
                 }
                 throw ex

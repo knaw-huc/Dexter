@@ -1,0 +1,2 @@
+alter table sources rename constraint source_earliest_before_equal_latest to sources_earliest_before_equal_latest;
+alter table corpora rename constraint corpus_earliest_before_equal_latest to corpora_earliest_before_equal_latest;
