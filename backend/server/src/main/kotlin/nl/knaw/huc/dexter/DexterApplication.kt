@@ -26,6 +26,7 @@ import nl.knaw.huc.dexter.resources.AboutResource
 import nl.knaw.huc.dexter.resources.AdminResource
 import nl.knaw.huc.dexter.resources.SourcesResource
 import nl.knaw.huc.dexter.helpers.LocalDateTimeSerializer
+import nl.knaw.huc.dexter.resources.CorporaResource
 import org.flywaydb.core.Flyway
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature
 import org.jdbi.v3.core.Jdbi
@@ -85,6 +86,7 @@ class DexterApplication : Application<DexterConfiguration>() {
             register(AuthValueFactoryProvider.Binder(DexterUser::class.java))
             register(AboutResource(configuration, name, appVersion))
             register(AdminResource(jdbi))
+            register(CorporaResource(jdbi))
             register(SourcesResource(jdbi))
         }
     }
