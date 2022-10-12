@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory
 import java.util.*
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType.APPLICATION_JSON
+import javax.ws.rs.core.Response
 
 @Path(ResourcePaths.SOURCES)
 @Produces(APPLICATION_JSON)
@@ -44,6 +45,17 @@ class SourcesResource(private val jdbi: Jdbi) {
             // TODO: could check for changes and not do anything if already equals here
             // TODO: or ... upsert instead?
             return checkConstraintViolations { sources().update(sourceId, formSource) }
+        }
+        sourceNotFound(sourceId)
+    }
+
+    @DELETE
+    @Path("{id}")
+    fun deleteSource(@PathParam("id") sourceId: UUID, @Auth user: DexterUser): Response {
+        log.info("deleteSource[${user.name}]: sourceId=$sourceId")
+        sources().find(sourceId)?.let {
+            checkConstraintViolations { sources().delete(sourceId) }
+            return Response.noContent().build()
         }
         sourceNotFound(sourceId)
     }
