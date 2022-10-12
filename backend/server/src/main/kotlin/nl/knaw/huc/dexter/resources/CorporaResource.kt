@@ -3,6 +3,8 @@ package nl.knaw.huc.dexter.resources
 import io.dropwizard.auth.Auth
 import nl.knaw.huc.dexter.api.FormCorpus
 import nl.knaw.huc.dexter.api.ResourcePaths
+import nl.knaw.huc.dexter.api.ResourcePaths.ID_PARAM
+import nl.knaw.huc.dexter.api.ResourcePaths.ID_PATH
 import nl.knaw.huc.dexter.api.ResultCorpus
 import nl.knaw.huc.dexter.auth.DexterUser
 import nl.knaw.huc.dexter.db.CorporaDao
@@ -24,8 +26,8 @@ class CorporaResource(private val jdbi: Jdbi) {
     fun getCorporaList() = corpora().list()
 
     @GET
-    @Path("{id}")
-    fun getCorpus(@PathParam("id") corpusId: UUID): ResultCorpus =
+    @Path(ID_PATH)
+    fun getCorpus(@PathParam(ID_PARAM) corpusId: UUID): ResultCorpus =
         corpora().find(corpusId) ?: corpusNotFound(corpusId)
 
     @POST
@@ -38,8 +40,8 @@ class CorporaResource(private val jdbi: Jdbi) {
 
     @PUT
     @Consumes(APPLICATION_JSON)
-    @Path("{id}")
-    fun updateCorpus(@PathParam("id") corpusId: UUID, formCorpus: FormCorpus, @Auth user: DexterUser): ResultCorpus {
+    @Path(ID_PATH)
+    fun updateCorpus(@PathParam(ID_PARAM) corpusId: UUID, formCorpus: FormCorpus, @Auth user: DexterUser): ResultCorpus {
         log.info("updateCorpus[${user.name}]: corpusId=$corpusId, formCorpus=$formCorpus")
         corpora().find(corpusId)?.let {
             return checkConstraintViolations { corpora().update(corpusId, formCorpus) }
@@ -48,8 +50,8 @@ class CorporaResource(private val jdbi: Jdbi) {
     }
 
     @DELETE
-    @Path("{id}")
-    fun deleteCorpus(@PathParam("id") corpusId: UUID, @Auth user: DexterUser): Response {
+    @Path(ID_PATH)
+    fun deleteCorpus(@PathParam(ID_PARAM) corpusId: UUID, @Auth user: DexterUser): Response {
         log.info("deleteCorpus[${user.name}]: corpusId=$corpusId")
         corpora().find(corpusId)?.let {
             log.warn("$user deleting: $it")

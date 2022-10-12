@@ -14,5 +14,5 @@ object ResourcePaths {
 
     // params
     const val ID_PARAM = "id"
-    const val ID_PATH = "{${ID_PARAM}}"
+    const val ID_PATH = "{$ID_PARAM}"
 }

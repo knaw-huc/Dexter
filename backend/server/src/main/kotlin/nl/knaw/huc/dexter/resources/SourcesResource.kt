@@ -3,6 +3,8 @@ package nl.knaw.huc.dexter.resources
 import io.dropwizard.auth.Auth
 import nl.knaw.huc.dexter.api.FormSource
 import nl.knaw.huc.dexter.api.ResourcePaths
+import nl.knaw.huc.dexter.api.ResourcePaths.ID_PARAM
+import nl.knaw.huc.dexter.api.ResourcePaths.ID_PATH
 import nl.knaw.huc.dexter.api.ResultSource
 import nl.knaw.huc.dexter.auth.DexterUser
 import nl.knaw.huc.dexter.db.SourcesDao
@@ -24,8 +26,8 @@ class SourcesResource(private val jdbi: Jdbi) {
     fun getSourceList() = sources().list()
 
     @GET
-    @Path("{id}")
-    fun getSource(@PathParam("id") sourceId: UUID) =
+    @Path(ID_PATH)
+    fun getSource(@PathParam(ID_PARAM) sourceId: UUID) =
         sources().find(sourceId) ?: sourceNotFound(sourceId)
 
     @POST
@@ -38,8 +40,8 @@ class SourcesResource(private val jdbi: Jdbi) {
 
     @PUT
     @Consumes(APPLICATION_JSON)
-    @Path("{id}")
-    fun updateSource(@PathParam("id") sourceId: UUID, formSource: FormSource, @Auth user: DexterUser): ResultSource {
+    @Path(ID_PATH)
+    fun updateSource(@PathParam(ID_PARAM) sourceId: UUID, formSource: FormSource, @Auth user: DexterUser): ResultSource {
         log.info("updateSource[${user.name}: sourceId=[$sourceId], formSource=[$formSource]")
         sources().find(sourceId)?.let {
             // TODO: could check for changes and not do anything if already equals here
@@ -50,8 +52,8 @@ class SourcesResource(private val jdbi: Jdbi) {
     }
 
     @DELETE
-    @Path("{id}")
-    fun deleteSource(@PathParam("id") sourceId: UUID, @Auth user: DexterUser): Response {
+    @Path(ID_PATH)
+    fun deleteSource(@PathParam(ID_PARAM) sourceId: UUID, @Auth user: DexterUser): Response {
         log.info("deleteSource[${user.name}]: sourceId=$sourceId")
         sources().find(sourceId)?.let {
             log.warn("$user deleting: $it")
