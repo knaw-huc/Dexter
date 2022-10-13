@@ -72,17 +72,21 @@ const collections: Collections[] = [{
     "subCollections": [1]
 }]
 
-export const getCollections = () =>
-    new Promise<Collections[]>((resolve, reject) => {
-        if (!collections) {
-            return setTimeout(
-                () => reject(new Error("Collections not found")),
-                100
-            )
-        }
+const headers = {
+    "Content-Type": "application/json"
+}
 
-        setTimeout(() => resolve(Object.values(collections)), 100)
+export const getCollections = async () => {
+    const response = await fetch("/api/corpora", {
+        method: "GET",
+        headers: headers
     })
+
+    if (!response.ok) return
+
+    console.log(await response.json())
+    return await response.json()
+}
 
 export const getCollectionById = (id: number) =>
     new Promise<Collections>((resolve, reject) => {
@@ -143,17 +147,17 @@ export const updateCollection = (id: number, updatedCollection: Collections) =>
         return setTimeout(() => resolve(true), 100)
     })
 
-export const getSources = () =>
-    new Promise<Sources[]>((resolve, reject) => {
-        if (!sources) {
-            return setTimeout(
-                () => reject(new Error("Source not found")),
-                100
-            )
-        }
-
-        setTimeout(() => resolve(Object.values(sources)), 100)
+export const getSources = async () => {
+    const response = await fetch("/api/sources", {
+        method: "GET",
+        headers: headers
     })
+    console.log(response)
+    if (!response.ok) return
+
+    console.log(await response.json())
+    return await response.json()
+}
 
 export const getSourceById = (id: number) =>
     new Promise<Sources>((resolve, reject) => {
