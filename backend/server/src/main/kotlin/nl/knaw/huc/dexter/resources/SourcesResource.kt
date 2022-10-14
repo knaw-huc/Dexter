@@ -9,10 +9,12 @@ import nl.knaw.huc.dexter.api.ResourcePaths.KEYWORDS
 import nl.knaw.huc.dexter.api.ResultKeyword
 import nl.knaw.huc.dexter.api.ResultSource
 import nl.knaw.huc.dexter.auth.DexterUser
+import nl.knaw.huc.dexter.db.DaoBlock
 import nl.knaw.huc.dexter.db.SourcesDao
 import nl.knaw.huc.dexter.db.UsersDao
 import nl.knaw.huc.dexter.helpers.PsqlDiagnosticsHelper.Companion.diagnoseViolations
 import org.jdbi.v3.core.Jdbi
+import org.jdbi.v3.core.transaction.TransactionIsolationLevel.REPEATABLE_READ
 import org.slf4j.LoggerFactory
 import java.util.*
 import javax.ws.rs.*
@@ -29,106 +31,99 @@ class SourcesResource(private val jdbi: Jdbi) {
 
     @GET
     @Path(ID_PATH)
-    fun getSource(@PathParam(ID_PARAM) sourceId: UUID) =
-        sources().find(sourceId) ?: sourceNotFound(sourceId)
+    fun getSource(@PathParam(ID_PARAM) id: UUID) = sources().find(id) ?: sourceNotFound(id)
 
     @POST
     @Consumes(APPLICATION_JSON)
     fun createSource(formSource: FormSource, @Auth user: DexterUser): ResultSource {
         log.info("createSource[${user.name}]: formSource=[$formSource]")
-        val createdBy = users().findByName(user.name) ?: throw NotFoundException("Unknown user: $user")
-        return diagnoseViolations { sources().insert(formSource, createdBy.id) }
+        return jdbi.inTransaction<ResultSource, Exception>(REPEATABLE_READ) { tx ->
+            val userDao = tx.attach(UsersDao::class.java)
+            val sourceDao = tx.attach(SourcesDao::class.java)
+            val createdBy = userDao.findByName(user.name) ?: throw NotFoundException("Unknown user: $user")
+            diagnoseViolations { sourceDao.insert(formSource, createdBy.id) }
+        }
     }
 
     @PUT
     @Consumes(APPLICATION_JSON)
     @Path(ID_PATH)
     fun updateSource(
-        @PathParam(ID_PARAM) sourceId: UUID,
-        formSource: FormSource,
-        @Auth user: DexterUser
-    ): ResultSource {
-        log.info("updateSource[${user.name}: sourceId=[$sourceId], formSource=[$formSource]")
-        sources().find(sourceId)?.let {
-            // TODO: could check for changes and not do anything if already equals here
-            // TODO: or ... upsert instead?
-            return diagnoseViolations { sources().update(sourceId, formSource) }
-        }
-        sourceNotFound(sourceId)
+        @PathParam(ID_PARAM) id: UUID, formSource: FormSource, @Auth user: DexterUser
+    ): ResultSource = onExistingSource(id) { dao, src ->
+        log.info("updateSource[${user.name}: sourceId=$src.id, formSource=$formSource")
+        dao.update(id, formSource)
     }
 
     @DELETE
     @Path(ID_PATH)
-    fun deleteSource(@PathParam(ID_PARAM) sourceId: UUID, @Auth user: DexterUser): Response {
-        log.info("deleteSource[${user.name}]: sourceId=$sourceId")
-        sources().find(sourceId)?.let {
-            log.warn("$user deleting: $it")
-            diagnoseViolations { sources().delete(sourceId) }
-            return Response.noContent().build()
-        } ?: sourceNotFound(sourceId)
-    }
+    fun deleteSource(@PathParam(ID_PARAM) id: UUID, @Auth user: DexterUser): Response =
+        onExistingSource(id) { dao, src ->
+            log.info("deleteSource[${user.name}] deleting: $src")
+            dao.delete(id)
+            Response.noContent().build()
+
+        }
 
     @GET
     @Path("$ID_PATH/$KEYWORDS/v1")
-    fun getKeywordsV1(@PathParam(ID_PARAM) sourceId: UUID) =
-        sources().find(sourceId)?.let {
-            sources().getKeywords(sourceId)
-        } ?: sourceNotFound(sourceId)
+    fun getKeywordsV1(@PathParam(ID_PARAM) id: UUID) = onExistingSource(id) { dao, src ->
+        dao.getKeywords(src.id)
+    }
 
     @GET
     @Path("$ID_PATH/$KEYWORDS/v2a")
-    fun getKeywordsV2a(@PathParam(ID_PARAM) sourceId: UUID) =
-        sources().find(sourceId)?.let {
-            sources().getKeywords(sourceId).map { it.id }
-        } ?: sourceNotFound(sourceId)
+    fun getKeywordsV2a(@PathParam(ID_PARAM) id: UUID) = onExistingSource(id) { dao, src ->
+        dao.getKeywords(src.id).map { it.id }
+    }
 
     @GET
     @Path("$ID_PATH/$KEYWORDS/v2b")
-    fun getKeywordsV2b(@PathParam(ID_PARAM) sourceId: UUID) =
-        sources().find(sourceId)?.let {
-            sources().getKeywords(sourceId).map { it.`val` }
-        } ?: sourceNotFound(sourceId)
+    fun getKeywordsV2b(@PathParam(ID_PARAM) id: UUID) = onExistingSource(id) { dao, src ->
+        dao.getKeywords(src.id).map { it.`val` }
+    }
 
     @GET
     @Path("$ID_PATH/$KEYWORDS/v2c")
-    fun getKeywordsV2c(@PathParam(ID_PARAM) sourceId: UUID) =
-        sources().find(sourceId)?.let {
-            sources().getKeywords(sourceId).map { mapOf(it.id to it.`val`) }
-        } ?: sourceNotFound(sourceId)
+    fun getKeywordsV2c(@PathParam(ID_PARAM) id: UUID) = onExistingSource(id) { dao, src ->
+        dao.getKeywords(src.id).map { mapOf(it.id to it.`val`) }
+    }
 
     @GET
     @Path("$ID_PATH/$KEYWORDS/v2d")
-    fun getKeywordsV2d(@PathParam(ID_PARAM) sourceId: UUID) =
-        sources().find(sourceId)?.let {
-            sources().getKeywords(sourceId)
-                .fold(HashMap<Int,String>()) { all, kw -> all[kw.id] = kw.`val`; all}
-        } ?: sourceNotFound(sourceId)
+    fun getKeywordsV2d(@PathParam(ID_PARAM) id: UUID) = onExistingSource(id) { dao, src ->
+        dao.getKeywords(src.id).fold(HashMap<Int, String>()) { all, kw -> all[kw.id] = kw.`val`; all }
+    }
 
     @POST
     @Path("$ID_PATH/$KEYWORDS")
-    fun addKeyword(@PathParam(ID_PARAM) sourceId: UUID, keywordId: String): List<ResultKeyword> {
-        log.info("addKeyword: sourceId=$sourceId, keywordId=$keywordId")
-        sources().find(sourceId)?.let {
-            sources().addKeyword(sourceId, keywordId.toInt())
-            return sources().getKeywords(sourceId)
-        } ?: sourceNotFound(sourceId)
-    }
+    fun addKeyword(@PathParam(ID_PARAM) id: UUID, keywordId: String): List<ResultKeyword> =
+        onExistingSource(id) { dao, src ->
+            log.info("addKeyword: sourceId=$src.id, keywordId=$keywordId")
+            dao.addKeyword(src.id, keywordId.toInt())
+            dao.getKeywords(src.id)
+        }
 
     @DELETE
     @Path("$ID_PATH/$KEYWORDS/{keywordId}")
     fun deleteKeyword(
-        @PathParam(ID_PARAM) sourceId: UUID,
-        @PathParam("keywordId") keywordId: Int
-    ): List<ResultKeyword> {
-        log.info("deleteKeyword: sourceId=$sourceId, keywordId=$keywordId")
-        sources().find(sourceId)?.let {
-            sources().deleteKeyword(sourceId, keywordId)
-            return sources().getKeywords(sourceId)
-        } ?: sourceNotFound(sourceId)
+        @PathParam(ID_PARAM) id: UUID, @PathParam("keywordId") keywordId: Int
+    ): List<ResultKeyword> = onExistingSource(id) { dao, src ->
+        log.info("deleteKeyword: sourceId=$src.id, keywordId=$keywordId")
+        dao.deleteKeyword(src.id, keywordId)
+        dao.getKeywords(src.id)
     }
+
+    private fun <R> onExistingSource(id: UUID, block: DaoBlock<SourcesDao, ResultSource, R>): R =
+        jdbi.inTransaction<R, Exception>(REPEATABLE_READ) { handle ->
+            handle.attach(SourcesDao::class.java).let { dao ->
+                dao.find(id)?.let { source ->
+                    diagnoseViolations { block.execute(dao, source) }
+                } ?: sourceNotFound(id)
+            }
+        }
 
     private fun sourceNotFound(sourceId: UUID): Nothing = throw NotFoundException("Source not found: $sourceId")
 
     private fun sources(): SourcesDao = jdbi.onDemand(SourcesDao::class.java)
-    private fun users(): UsersDao = jdbi.onDemand(UsersDao::class.java)
 }
