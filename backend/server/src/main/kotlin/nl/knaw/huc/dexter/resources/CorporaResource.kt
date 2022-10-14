@@ -31,8 +31,8 @@ class CorporaResource(private val jdbi: Jdbi) {
 
     @GET
     @Path(ID_PATH)
-    fun getCorpus(@PathParam(ID_PARAM) corpusId: UUID): ResultCorpus =
-        corpora().find(corpusId) ?: corpusNotFound(corpusId)
+    fun getCorpus(@PathParam(ID_PARAM) id: UUID): ResultCorpus =
+        corpora().find(id) ?: corpusNotFound(id)
 
     @POST
     @Consumes(APPLICATION_JSON)
@@ -96,12 +96,12 @@ class CorporaResource(private val jdbi: Jdbi) {
             dao.getKeywords(corpus.id)
         }
 
-    private fun <R> onExistingCorpus(corpusId: UUID, block: DaoBlock<CorporaDao, ResultCorpus, R>): R =
+    private fun <R> onExistingCorpus(id: UUID, block: DaoBlock<CorporaDao, ResultCorpus, R>): R =
         jdbi.inTransaction<R, Exception>(REPEATABLE_READ) { handle ->
             handle.attach(CorporaDao::class.java).let { dao ->
-                dao.find(corpusId)?.let { corpus ->
+                dao.find(id)?.let { corpus ->
                     diagnoseViolations { block.execute(dao, corpus) }
-                } ?: corpusNotFound(corpusId)
+                } ?: corpusNotFound(id)
             }
         }
 
