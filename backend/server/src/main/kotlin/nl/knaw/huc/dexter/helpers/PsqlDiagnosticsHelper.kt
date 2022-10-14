@@ -41,7 +41,6 @@ enum class PsqlDiagnosticsHelper(
                 val cause = ex.cause
                 if (cause is PSQLException) {
                     cause.serverErrorMessage?.let { errMsg ->
-                        System.err.println("AAP: $errMsg")
                         val msg: String = values()
                             .find { it.constraint == errMsg.constraint }
                             ?.let {
