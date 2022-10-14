@@ -10,9 +10,11 @@ import nl.knaw.huc.dexter.api.ResultCorpus
 import nl.knaw.huc.dexter.api.ResultKeyword
 import nl.knaw.huc.dexter.auth.DexterUser
 import nl.knaw.huc.dexter.db.CorporaDao
+import nl.knaw.huc.dexter.db.DaoBlock
 import nl.knaw.huc.dexter.db.UsersDao
 import nl.knaw.huc.dexter.helpers.PsqlDiagnosticsHelper.Companion.diagnoseViolations
 import org.jdbi.v3.core.Jdbi
+import org.jdbi.v3.core.transaction.TransactionIsolationLevel.REPEATABLE_READ
 import org.slf4j.LoggerFactory
 import java.util.*
 import javax.ws.rs.*
@@ -36,8 +38,12 @@ class CorporaResource(private val jdbi: Jdbi) {
     @Consumes(APPLICATION_JSON)
     fun createCorpus(formCorpus: FormCorpus, @Auth user: DexterUser): ResultCorpus {
         log.info("createCorpus[${user.name}]: formCorpus=[$formCorpus]")
-        val createdBy = users().findByName(user.name) ?: throw NotFoundException("Unknown user: $user")
-        return diagnoseViolations { corpora().insert(formCorpus, createdBy.id) }
+        return jdbi.inTransaction<ResultCorpus, Exception>(REPEATABLE_READ) { tx ->
+            val userDao = tx.attach(UsersDao::class.java)
+            val corpusDao = tx.attach(CorporaDao::class.java)
+            val createdBy = userDao.findByName(user.name) ?: throw NotFoundException("Unknown user: $user")
+            diagnoseViolations { corpusDao.insert(formCorpus, createdBy.id) }
+        }
     }
 
     @PUT
@@ -91,20 +97,15 @@ class CorporaResource(private val jdbi: Jdbi) {
         }
 
     private fun <R> onExistingCorpus(corpusId: UUID, block: DaoBlock<CorporaDao, ResultCorpus, R>): R =
-        jdbi.inTransaction<R, Exception> { handle ->
+        jdbi.inTransaction<R, Exception>(REPEATABLE_READ) { handle ->
             handle.attach(CorporaDao::class.java).let { dao ->
                 dao.find(corpusId)?.let { corpus ->
-                    diagnoseViolations{ block.execute(dao, corpus) }
+                    diagnoseViolations { block.execute(dao, corpus) }
                 } ?: corpusNotFound(corpusId)
             }
         }
 
-    private fun interface DaoBlock<D, I, R> {
-        fun execute(dao: D, it: I): R
-    }
-
     private fun corpusNotFound(corpusId: UUID): Nothing = throw NotFoundException("Corpus not found: $corpusId")
 
     private fun corpora(): CorporaDao = jdbi.onDemand(CorporaDao::class.java)
-    private fun users(): UsersDao = jdbi.onDemand(UsersDao::class.java)
 }
