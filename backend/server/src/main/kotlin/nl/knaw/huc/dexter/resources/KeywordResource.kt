@@ -7,9 +7,11 @@ import nl.knaw.huc.dexter.api.ResourcePaths.ID_PARAM
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PATH
 import nl.knaw.huc.dexter.api.ResultKeyword
 import nl.knaw.huc.dexter.auth.DexterUser
+import nl.knaw.huc.dexter.db.DaoBlock
 import nl.knaw.huc.dexter.db.KeywordsDao
 import nl.knaw.huc.dexter.helpers.PsqlDiagnosticsHelper.Companion.diagnoseViolations
 import org.jdbi.v3.core.Jdbi
+import org.jdbi.v3.core.transaction.TransactionIsolationLevel.REPEATABLE_READ
 import org.slf4j.LoggerFactory
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType
@@ -29,31 +31,37 @@ class KeywordResource(private val jdbi: Jdbi) {
         keywords().find(keywordId) ?: keywordNotFound(keywordId)
 
     @POST
-    fun createKeyword(keyword: FormKeyword): ResultKeyword {
-        log.info("createKeyword: [$keyword]")
-        return keywords().insert(keyword)
-    }
+    fun createKeyword(keyword: FormKeyword): ResultKeyword =
+        keyword.run {
+            log.info("createKeyword: [$this]")
+            keywords().insert(this)
+        }
 
     @PUT
     @Path(ID_PATH)
-    fun updateKeyword(@PathParam(ID_PARAM) keywordId: Int, keyword: FormKeyword): ResultKeyword {
-        log.info("updateKeyword: id=$keywordId, val=$keyword")
-        keywords().find(keywordId)?.let {
-            return keywords().update(keywordId, keyword)
+    fun updateKeyword(@PathParam(ID_PARAM) id: Int, value: FormKeyword): ResultKeyword =
+        onExistingKeyword(id) { dao, kw ->
+            log.info("updateKeyword: id=$id, val=$value")
+            dao.update(kw.id, value)
         }
-        keywordNotFound(keywordId)
-    }
 
     @DELETE
     @Path(ID_PATH)
-    fun deleteKeyword(@PathParam(ID_PARAM) keywordId: Int, @Auth user: DexterUser): Response {
-        keywords().find(keywordId)?.let {
-            log.warn("$user deleting: $it")
-            diagnoseViolations { keywords().delete(keywordId) }
-            return Response.noContent().build()
+    fun deleteKeyword(@PathParam(ID_PARAM) id: Int, @Auth user: DexterUser): Response =
+        onExistingKeyword(id) { dao, kw ->
+            log.warn("deleteKeyword[${user.name}] keyword=$kw")
+            dao.delete(kw.id)
+            Response.noContent().build()
         }
-        keywordNotFound(keywordId)
-    }
+
+    private fun <R> onExistingKeyword(keywordId: Int, block: DaoBlock<KeywordsDao, ResultKeyword, R>): R =
+        jdbi.inTransaction<R, Exception>(REPEATABLE_READ) { handle ->
+            handle.attach(KeywordsDao::class.java).let { dao ->
+                dao.find(keywordId)?.let { keyword ->
+                    diagnoseViolations { block.execute(dao, keyword) }
+                } ?: keywordNotFound(keywordId)
+            }
+        }
 
     private fun keywords() = jdbi.onDemand(KeywordsDao::class.java)
 
