@@ -5,7 +5,9 @@ import nl.knaw.huc.dexter.api.FormCorpus
 import nl.knaw.huc.dexter.api.ResourcePaths
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PARAM
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PATH
+import nl.knaw.huc.dexter.api.ResourcePaths.KEYWORDS
 import nl.knaw.huc.dexter.api.ResultCorpus
+import nl.knaw.huc.dexter.api.ResultKeyword
 import nl.knaw.huc.dexter.auth.DexterUser
 import nl.knaw.huc.dexter.db.CorporaDao
 import nl.knaw.huc.dexter.db.UsersDao
@@ -41,7 +43,11 @@ class CorporaResource(private val jdbi: Jdbi) {
     @PUT
     @Consumes(APPLICATION_JSON)
     @Path(ID_PATH)
-    fun updateCorpus(@PathParam(ID_PARAM) corpusId: UUID, formCorpus: FormCorpus, @Auth user: DexterUser): ResultCorpus {
+    fun updateCorpus(
+        @PathParam(ID_PARAM) corpusId: UUID,
+        formCorpus: FormCorpus,
+        @Auth user: DexterUser
+    ): ResultCorpus {
         log.info("updateCorpus[${user.name}]: corpusId=$corpusId, formCorpus=$formCorpus")
         corpora().find(corpusId)?.let {
             return checkConstraintViolations { corpora().update(corpusId, formCorpus) }
@@ -55,15 +61,44 @@ class CorporaResource(private val jdbi: Jdbi) {
         log.info("deleteCorpus[${user.name}]: corpusId=$corpusId")
         corpora().find(corpusId)?.let {
             log.warn("$user deleting: $it")
-            checkConstraintViolations{ corpora().delete(corpusId) }
+            checkConstraintViolations { corpora().delete(corpusId) }
             return Response.noContent().build()
         }
         corpusNotFound(corpusId)
     }
 
+    @GET
+    @Path("$ID_PATH/$KEYWORDS/v1")
+    fun getKeywordsV1(@PathParam(ID_PARAM) corpusId: UUID) =
+        corpora().find(corpusId)?.let {
+            corpora().getKeywords(corpusId)
+        } ?: corpusNotFound(corpusId)
+
+    @POST
+    @Path("$ID_PATH/$KEYWORDS")
+    fun addKeyword(@PathParam(ID_PARAM) corpusId: UUID, keywordId: String): List<ResultKeyword> {
+        log.info("addKeyword: corpusId=$corpusId, keywordId=$keywordId")
+        corpora().find(corpusId)?.let {
+            corpora().addKeyword(corpusId, keywordId.toInt())
+            return corpora().getKeywords(corpusId)
+        } ?: corpusNotFound(corpusId)
+    }
+
+    @DELETE
+    @Path("$ID_PATH/$KEYWORDS/{keywordId}")
+    fun deleteKeyword(
+        @PathParam(ID_PARAM) corpusId: UUID,
+        @PathParam("keywordId") keywordId: Int
+    ) : List<ResultKeyword> {
+        log.info("deleteKeyword: corpusId=$corpusId, keywordId=$keywordId")
+        corpora().find(corpusId)?.let {
+            corpora().deleteKeyword(corpusId, keywordId)
+            return corpora().getKeywords(corpusId)
+        }?: corpusNotFound(corpusId)
+    }
+
     private fun corpusNotFound(corpusId: UUID): Nothing = throw NotFoundException("Corpus not found: $corpusId")
 
     private fun corpora(): CorporaDao = jdbi.onDemand(CorporaDao::class.java)
-
     private fun users(): UsersDao = jdbi.onDemand(UsersDao::class.java)
 }
