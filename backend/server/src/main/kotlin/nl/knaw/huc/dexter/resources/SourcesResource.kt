@@ -11,7 +11,7 @@ import nl.knaw.huc.dexter.api.ResultSource
 import nl.knaw.huc.dexter.auth.DexterUser
 import nl.knaw.huc.dexter.db.SourcesDao
 import nl.knaw.huc.dexter.db.UsersDao
-import nl.knaw.huc.dexter.helpers.PsqlConstraintChecker.Companion.checkConstraintViolations
+import nl.knaw.huc.dexter.helpers.PsqlDiagnosticsHelper.Companion.diagnoseViolations
 import org.jdbi.v3.core.Jdbi
 import org.slf4j.LoggerFactory
 import java.util.*
@@ -37,7 +37,7 @@ class SourcesResource(private val jdbi: Jdbi) {
     fun createSource(formSource: FormSource, @Auth user: DexterUser): ResultSource {
         log.info("createSource[${user.name}]: formSource=[$formSource]")
         val createdBy = users().findByName(user.name) ?: throw NotFoundException("Unknown user: $user")
-        return checkConstraintViolations { sources().insert(formSource, createdBy.id) }
+        return diagnoseViolations { sources().insert(formSource, createdBy.id) }
     }
 
     @PUT
@@ -52,7 +52,7 @@ class SourcesResource(private val jdbi: Jdbi) {
         sources().find(sourceId)?.let {
             // TODO: could check for changes and not do anything if already equals here
             // TODO: or ... upsert instead?
-            return checkConstraintViolations { sources().update(sourceId, formSource) }
+            return diagnoseViolations { sources().update(sourceId, formSource) }
         }
         sourceNotFound(sourceId)
     }
@@ -63,7 +63,7 @@ class SourcesResource(private val jdbi: Jdbi) {
         log.info("deleteSource[${user.name}]: sourceId=$sourceId")
         sources().find(sourceId)?.let {
             log.warn("$user deleting: $it")
-            checkConstraintViolations { sources().delete(sourceId) }
+            diagnoseViolations { sources().delete(sourceId) }
             return Response.noContent().build()
         } ?: sourceNotFound(sourceId)
     }

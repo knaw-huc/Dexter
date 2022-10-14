@@ -4,11 +4,11 @@ import org.jdbi.v3.core.JdbiException
 import org.postgresql.util.PSQLException
 import javax.ws.rs.BadRequestException
 
-enum class PsqlConstraintChecker(
+enum class PsqlDiagnosticsHelper(
     private val constraint: String,
     private val msg: String,
-    private val includeDetail: Boolean = false)
-{
+    private val includeDetail: Boolean = false
+) {
     // These constraints are named postgres constraints, from "backend/db/Vxxx.sql"
     SOURCES_DATE_ORDER_CONSTRAINT(
         "sources_earliest_before_equal_latest",
@@ -34,21 +34,24 @@ enum class PsqlConstraintChecker(
             fun execute(): R
         }
 
-        fun <R> checkConstraintViolations(statement: Statement<R>): R =
+        fun <R> diagnoseViolations(statement: Statement<R>): R =
             try {
                 statement.execute()
             } catch (ex: JdbiException) {
                 val cause = ex.cause
                 if (cause is PSQLException) {
-                    val errMsg = cause.serverErrorMessage
-                    if (errMsg != null) {
-                        values()
+                    cause.serverErrorMessage?.let { errMsg ->
+                        System.err.println("AAP: $errMsg")
+                        val msg: String = values()
                             .find { it.constraint == errMsg.constraint }
                             ?.let {
-                                var msg = it.msg
-                                if (it.includeDetail) msg = "$msg. ${errMsg.detail}"
-                                throw BadRequestException(msg)
+                                if (it.includeDetail) "$it.msg. ${errMsg.detail}"
+                                else it.msg
                             }
+                            ?: errMsg.detail
+                            ?: errMsg.constraint
+                            ?: errMsg.toString()
+                        throw BadRequestException(msg)
                     }
                 }
                 throw ex
