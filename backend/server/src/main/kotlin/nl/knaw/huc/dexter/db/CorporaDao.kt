@@ -37,11 +37,11 @@ interface CorporaDao {
     @SqlUpdate("delete from corpora where id = :id")
     fun delete(id: UUID)
 
-    @SqlQuery("select k.* from corpora_keywords ck join keywords on ck.key_id = k.id where corpus_id = :corpus_id")
+    @SqlQuery("select k.* from corpora_keywords ck join keywords k on ck.key_id = k.id where corpus_id = :corpusId")
     @RegisterKotlinMapper(ResultKeyword::class)
     fun getKeywords(corpusId: UUID): List<ResultKeyword>
 
-    @SqlUpdate("insert into corpora_keywords (corpus_id,key_id) values (:corpusId,:keywordId")
+    @SqlUpdate("insert into corpora_keywords (corpus_id,key_id) values (:corpusId,:keywordId)")
     fun addKeyword(corpusId: UUID, keywordId: Int)
 
     @SqlUpdate("delete from corpora_keywords where corpus_id = :corpusId and key_id = :keywordId")
