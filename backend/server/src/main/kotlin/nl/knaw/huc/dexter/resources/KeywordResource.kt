@@ -8,6 +8,7 @@ import nl.knaw.huc.dexter.api.ResourcePaths.ID_PATH
 import nl.knaw.huc.dexter.api.ResultKeyword
 import nl.knaw.huc.dexter.auth.DexterUser
 import nl.knaw.huc.dexter.db.KeywordsDao
+import nl.knaw.huc.dexter.helpers.PsqlDiagnosticsHelper.Companion.diagnoseViolations
 import org.jdbi.v3.core.Jdbi
 import org.slf4j.LoggerFactory
 import javax.ws.rs.*
@@ -48,7 +49,7 @@ class KeywordResource(private val jdbi: Jdbi) {
     fun deleteKeyword(@PathParam(ID_PARAM) keywordId: Int, @Auth user: DexterUser): Response {
         keywords().find(keywordId)?.let {
             log.warn("$user deleting: $it")
-            keywords().delete(keywordId)
+            diagnoseViolations { keywords().delete(keywordId) }
             return Response.noContent().build()
         }
         keywordNotFound(keywordId)
