@@ -85,6 +85,7 @@ class DexterApplication : Application<DexterConfiguration>() {
             register(AdminResource(jdbi))
             register(CorporaResource(jdbi))
             register(KeywordResource(jdbi))
+            register(LanguageResource(jdbi))
             register(SourcesResource(jdbi))
         }
     }
