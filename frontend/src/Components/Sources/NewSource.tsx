@@ -112,7 +112,7 @@ export function NewSource(props: NewSourceProps) {
                         <TextFieldStyled fullWidth margin="dense" {...register("latest")} />
                         <Label>Notes</Label>
                         <TextFieldStyled fullWidth margin="dense" {...register("notes")} />
-                        <Button type="submit">Submit</Button>
+                        <Button variant="contained" type="submit">Submit</Button>
                     </form>
                 </Modal.Body>
                 <Modal.Footer>
