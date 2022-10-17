@@ -14,31 +14,34 @@ import javax.annotation.security.RolesAllowed
 import javax.validation.constraints.NotNull
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType.APPLICATION_JSON
-import javax.ws.rs.core.Response
 
 @Path(ResourcePaths.ADMIN)
 @RolesAllowed(ROOT)
+@Produces(APPLICATION_JSON)
 class AdminResource(private val jdbi: Jdbi) {
     private val log = LoggerFactory.getLogger(javaClass)
 
     @GET
     @Path(USERS)
-    @Produces(APPLICATION_JSON)
     fun listUsers() = users().list()
 
-    @Operation(description = "Add user")
+    @Operation(description = "Add users")
     @Timed
     @POST
     @Path(USERS)
     @Consumes(APPLICATION_JSON)
-    fun addUsers(@NotNull users: List<Map<String, String>>): Response {
-        log.info("Adding users: $users")
-        return Response.accepted().build()
+    fun addUsers(@NotNull userNames: Set<String>): List<User> {
+        log.info("addUsers: $userNames")
+        return jdbi.inTransaction<List<User>, Exception> { handle ->
+            handle.attach(UsersDao::class.java).let { userDao ->
+                userDao.insertMany(userNames)
+                userNames.mapNotNull { userDao.findByName(it) }
+            }
+        }
     }
 
     @GET
     @Path("$USERS/{str}")
-    @Produces(APPLICATION_JSON)
     fun getUser(@PathParam("str") nameOrUuid: String): User {
         log.info("getUser: [$nameOrUuid]")
 
