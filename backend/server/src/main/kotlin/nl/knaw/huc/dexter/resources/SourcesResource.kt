@@ -136,8 +136,7 @@ class SourcesResource(private val jdbi: Jdbi) {
     fun deleteLanguage(
         @PathParam(ID_PARAM) id: UUID,
         @PathParam("languageId") languageId: String
-    ) =
-        onExistingSource(id) { dao, src ->
+    ) = onExistingSource(id) { dao, src ->
             log.info("deleteLanguage: sourceId=${src.id}, languageId=$languageId")
             dao.deleteLanguage(src.id, languageId)
             dao.getLanguages(src.id)
