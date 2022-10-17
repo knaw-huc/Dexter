@@ -82,6 +82,20 @@ export const updateCollection = async (id: string, updatedCorpus: Collections) =
     return data
 }
 
+export const deleteCollection = async (id: string) => {
+    const response = await fetch(`/api/corpora/${id}`, {
+        method: "DELETE",
+        headers: headers
+    })
+
+    console.log(response)
+
+    if (!response.ok) {
+        console.error(response)
+        return
+    }
+}
+
 export const getSources = async () => {
     const response = await fetch("/api/sources", {
         method: "GET",
@@ -159,4 +173,18 @@ export const updateSource = async (id: string, updatedSource: Sources) => {
     console.log(data)
 
     return data
+}
+
+export const deleteSource = async (id: string) => {
+    const response = await fetch(`/api/sources/${id}`, {
+        method: "DELETE",
+        headers: headers
+    })
+
+    console.log(response)
+
+    if (!response.ok) {
+        console.error(response)
+        return
+    }
 }
