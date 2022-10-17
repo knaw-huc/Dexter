@@ -2,10 +2,10 @@ import React from "react"
 import { Sources } from "../../Model/DexterModel"
 import { Link } from "react-router-dom"
 import styled from "@emotion/styled"
-import { Button } from "react-bootstrap"
 import { deleteSource, getSources } from "../API"
 import { sourcesContext } from "../../State/Sources/sourcesContext"
 import { ACTIONS } from "../../State/actions"
+import DeleteIcon from "@mui/icons-material/Delete"
 
 type SourceItemProps = {
     sourceId: React.Key,
@@ -13,8 +13,12 @@ type SourceItemProps = {
     onSelect: (selected: Sources | undefined) => void,
 }
 
-const ButtonStyled = styled(Button)`
-    margin-left: 10px;
+const DeleteIconStyled = styled(DeleteIcon)`
+    margin-left: 5px;
+    &:hover {
+        cursor: pointer;
+        color: gray;
+    }
 `
 
 export const SourceItem = (props: SourceItemProps) => {
@@ -42,7 +46,7 @@ export const SourceItem = (props: SourceItemProps) => {
                 <Link to={`/sources/${props.source.id}`} key={props.sourceId} onClick={toggleClick}>
                     {props.source.id} {props.source.title}
                 </Link>
-                <ButtonStyled onClick={() => handleDelete(props.source.id)}>Delete source</ButtonStyled>
+                <DeleteIconStyled onClick={() => handleDelete(props.source.id)}>Delete source</DeleteIconStyled>
             </li>
         </ul>
     )

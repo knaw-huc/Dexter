@@ -2,10 +2,10 @@ import React from "react"
 import { Collections } from "../../Model/DexterModel"
 import { Link } from "react-router-dom"
 import { deleteCollection, getCollections } from "../API"
-import { Button } from "react-bootstrap"
 import styled from "@emotion/styled"
 import { collectionsContext } from "../../State/Collections/collectionContext"
 import { ACTIONS } from "../../State/actions"
+import DeleteIcon from "@mui/icons-material/Delete"
 
 type CollectionItemProps = {
     collectionId: React.Key,
@@ -13,8 +13,12 @@ type CollectionItemProps = {
     onSelect: (selected: Collections | undefined) => void,
 }
 
-const ButtonStyled = styled(Button)`
-    margin-left: 10px;
+const DeleteIconStyled = styled(DeleteIcon)`
+    margin-left: 5px;
+    &:hover {
+        cursor: pointer;
+        color: gray;
+    }
 `
 
 export function CollectionItem(props: CollectionItemProps) {
@@ -33,7 +37,6 @@ export function CollectionItem(props: CollectionItemProps) {
                     collections: collections
                 })
             })
-
     }
 
     return (
@@ -43,7 +46,7 @@ export function CollectionItem(props: CollectionItemProps) {
                     <Link to={`/corpora/${props.collection.id}`} key={props.collectionId} onClick={toggleClick}>
                         {props.collection.id} {props.collection.title}
                     </Link>
-                    <ButtonStyled onClick={() => handleDelete(props.collection.id)}>Delete corpus</ButtonStyled>
+                    <DeleteIconStyled onClick={() => handleDelete(props.collection.id)}>Delete corpus</DeleteIconStyled>
                 </li>
             </ul>
         </>
