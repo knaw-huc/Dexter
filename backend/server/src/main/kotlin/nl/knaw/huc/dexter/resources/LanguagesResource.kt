@@ -12,7 +12,7 @@ import javax.ws.rs.core.MediaType.APPLICATION_JSON
 
 @Path(LANGUAGES)
 @Produces(APPLICATION_JSON)
-class LanguageResource(private val jdbi: Jdbi) {
+class LanguagesResource(private val jdbi: Jdbi) {
     @GET
     fun list() = languages().list()
 
