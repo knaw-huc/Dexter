@@ -6,8 +6,8 @@ import nl.knaw.huc.dexter.api.ResourcePaths
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PARAM
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PATH
 import nl.knaw.huc.dexter.api.ResourcePaths.KEYWORDS
+import nl.knaw.huc.dexter.api.ResourcePaths.LANGUAGES
 import nl.knaw.huc.dexter.api.ResultCorpus
-import nl.knaw.huc.dexter.api.ResultKeyword
 import nl.knaw.huc.dexter.auth.DexterUser
 import nl.knaw.huc.dexter.db.CorporaDao
 import nl.knaw.huc.dexter.db.DaoBlock
@@ -77,9 +77,9 @@ class CorporaResource(private val jdbi: Jdbi) {
 
     @POST
     @Path("$ID_PATH/$KEYWORDS")
-    fun addKeyword(@PathParam(ID_PARAM) id: UUID, keywordId: String): List<ResultKeyword> =
+    fun addKeyword(@PathParam(ID_PARAM) id: UUID, keywordId: String) =
         onExistingCorpus(id) { dao, corpus ->
-            log.info("addKeyword: corpusId=$corpus.id, keywordId=$keywordId")
+            log.info("addKeyword: corpusId=${corpus.id}, keywordId=$keywordId")
             dao.addKeyword(corpus.id, keywordId.toInt())
             dao.getKeywords(corpus.id)
         }
@@ -89,12 +89,38 @@ class CorporaResource(private val jdbi: Jdbi) {
     fun deleteKeyword(
         @PathParam(ID_PARAM) id: UUID,
         @PathParam("keywordId") keywordId: Int
-    ): List<ResultKeyword> =
+    ) = onExistingCorpus(id) { dao, corpus ->
+        log.info("deleteKeyword: corpusId=${corpus.id}, keywordId=$keywordId")
+        dao.deleteKeyword(corpus.id, keywordId)
+        dao.getKeywords(corpus.id)
+    }
+
+    @GET
+    @Path("$ID_PATH/$LANGUAGES")
+    fun getLanguages(@PathParam(ID_PARAM) id: UUID) =
         onExistingCorpus(id) { dao, corpus ->
-            log.info("deleteKeyword: corpusId=$corpus.id, keywordId=$keywordId")
-            dao.deleteKeyword(corpus.id, keywordId)
-            dao.getKeywords(corpus.id)
+            dao.getLanguages(corpus.id)
         }
+
+    @POST
+    @Path("$ID_PATH/$LANGUAGES")
+    fun addLanguage(@PathParam(ID_PARAM) id: UUID, languageId: String) =
+        onExistingCorpus(id) { dao, corpus ->
+            log.info("addLanguage: corpusId=${corpus.id}, languageId=$languageId")
+            dao.addLanguage(corpus.id, languageId)
+            dao.getLanguages(id)
+        }
+
+    @DELETE
+    @Path("$ID_PATH/$LANGUAGES/{languageId}")
+    fun deleteLanguage(
+        @PathParam(ID_PARAM) id: UUID,
+        @PathParam("languageId") languageId: String
+    ) = onExistingCorpus(id) { dao, corpus ->
+        log.info("deleteLanguage: corpusId=${corpus.id}, languageId=$languageId")
+        dao.deleteLanguage(corpus.id, languageId)
+        dao.getLanguages(corpus.id)
+    }
 
     private fun <R> onExistingCorpus(id: UUID, block: DaoBlock<CorporaDao, ResultCorpus, R>): R =
         jdbi.inTransaction<R, Exception>(REPEATABLE_READ) { handle ->

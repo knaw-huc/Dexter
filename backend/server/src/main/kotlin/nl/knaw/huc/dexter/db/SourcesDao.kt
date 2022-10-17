@@ -50,4 +50,13 @@ interface SourcesDao {
 
     @SqlUpdate("delete from sources_keywords where source_id = :sourceId and key_id = :keywordId")
     fun deleteKeyword(sourceId: UUID, keywordId: Int)
+
+    @SqlQuery("select lang_id from sources_languages where source_id = :sourceId")
+    fun getLanguages(sourceId: UUID): List<String>
+
+    @SqlUpdate("insert into sources_languages (source_id,lang_id) values (:sourceId,:languageId) on conflict do nothing")
+    fun addLanguage(sourceId: UUID, languageId: String)
+
+    @SqlUpdate("delete from sources_languages where source_id = :sourceId and lang_id = :languageId")
+    fun deleteLanguage(sourceId: UUID, languageId: String)
 }

@@ -6,6 +6,7 @@ import nl.knaw.huc.dexter.api.ResourcePaths
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PARAM
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PATH
 import nl.knaw.huc.dexter.api.ResourcePaths.KEYWORDS
+import nl.knaw.huc.dexter.api.ResourcePaths.LANGUAGES
 import nl.knaw.huc.dexter.api.ResultKeyword
 import nl.knaw.huc.dexter.api.ResultSource
 import nl.knaw.huc.dexter.auth.DexterUser
@@ -99,7 +100,7 @@ class SourcesResource(private val jdbi: Jdbi) {
     @Path("$ID_PATH/$KEYWORDS")
     fun addKeyword(@PathParam(ID_PARAM) id: UUID, keywordId: String): List<ResultKeyword> =
         onExistingSource(id) { dao, src ->
-            log.info("addKeyword: sourceId=$src.id, keywordId=$keywordId")
+            log.info("addKeyword: sourceId=${src.id}, keywordId=$keywordId")
             dao.addKeyword(src.id, keywordId.toInt())
             dao.getKeywords(src.id)
         }
@@ -109,10 +110,38 @@ class SourcesResource(private val jdbi: Jdbi) {
     fun deleteKeyword(
         @PathParam(ID_PARAM) id: UUID, @PathParam("keywordId") keywordId: Int
     ): List<ResultKeyword> = onExistingSource(id) { dao, src ->
-        log.info("deleteKeyword: sourceId=$src.id, keywordId=$keywordId")
+        log.info("deleteKeyword: sourceId=${src.id}, keywordId=$keywordId")
         dao.deleteKeyword(src.id, keywordId)
         dao.getKeywords(src.id)
     }
+
+    @GET
+    @Path("$ID_PATH/$LANGUAGES")
+    fun getLanguages(@PathParam(ID_PARAM) id: UUID) =
+        onExistingSource(id) { dao, src ->
+            dao.getLanguages(src.id)
+        }
+
+    @POST
+    @Path("$ID_PATH/$LANGUAGES")
+    fun addLanguage(@PathParam(ID_PARAM) id: UUID, languageId: String): List<String> =
+        onExistingSource(id) { dao, src ->
+            log.info("addLanguage: sourceId=${src.id}, languageId=$languageId")
+            dao.addLanguage(src.id, languageId)
+            dao.getLanguages(src.id)
+        }
+
+    @DELETE
+    @Path("$ID_PATH/$LANGUAGES/{languageId}")
+    fun deleteLanguage(
+        @PathParam(ID_PARAM) id: UUID,
+        @PathParam("languageId") languageId: String
+    ) =
+        onExistingSource(id) { dao, src ->
+            log.info("deleteLanguage: sourceId=${src.id}, languageId=$languageId")
+            dao.deleteLanguage(src.id, languageId)
+            dao.getLanguages(src.id)
+        }
 
     private fun <R> onExistingSource(id: UUID, block: DaoBlock<SourcesDao, ResultSource, R>): R =
         jdbi.inTransaction<R, Exception>(REPEATABLE_READ) { handle ->

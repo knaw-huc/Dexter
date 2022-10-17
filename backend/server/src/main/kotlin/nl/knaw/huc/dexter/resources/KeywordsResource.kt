@@ -19,7 +19,7 @@ import javax.ws.rs.core.Response
 
 @Path(ResourcePaths.KEYWORDS)
 @Produces(MediaType.APPLICATION_JSON)
-class KeywordResource(private val jdbi: Jdbi) {
+class KeywordsResource(private val jdbi: Jdbi) {
     private val log = LoggerFactory.getLogger(javaClass)
 
     @GET
