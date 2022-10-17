@@ -1,7 +1,7 @@
 import React from "react"
 import { useForm, SubmitHandler } from "react-hook-form"
 import Modal from "react-bootstrap/Modal"
-import Button from "react-bootstrap/Button"
+import Button from "@mui/material/Button"
 import styled from "@emotion/styled"
 import { createSource, getSourceById, updateSource } from "../API"
 import { Sources } from "../../Model/DexterModel"
@@ -116,7 +116,7 @@ export function NewSource(props: NewSourceProps) {
                     </form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
+                    <Button variant="contained" onClick={handleClose}>
                         Close
                     </Button>
                     {/* <Button type="submit" onClick={handleClose}>
