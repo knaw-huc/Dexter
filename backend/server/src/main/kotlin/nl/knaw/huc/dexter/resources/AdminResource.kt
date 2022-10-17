@@ -14,6 +14,7 @@ import javax.annotation.security.RolesAllowed
 import javax.validation.constraints.NotNull
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType.APPLICATION_JSON
+import javax.ws.rs.core.Response
 
 @Path(ResourcePaths.ADMIN)
 @RolesAllowed(ROOT)
@@ -52,6 +53,22 @@ class AdminResource(private val jdbi: Jdbi) {
             users().findByName(nameOrUuid)
                 ?: throw NotFoundException("No such user name: $nameOrUuid")
         }
+    }
+
+    @DELETE
+    @Path("$USERS/{str}")
+    fun deleteUser(@PathParam("str") nameOrUuid: String): Response {
+        log.info("deleteUser: [$nameOrUuid]")
+
+        try {
+            UUID.fromString(nameOrUuid).let {
+                users().deleteById(it)
+            }
+        } catch (ex: IllegalArgumentException) {
+            users().deleteByName(nameOrUuid)
+        }
+
+        return Response.accepted().build()
     }
 
     private fun users() = jdbi.onDemand(UsersDao::class.java)
