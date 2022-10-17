@@ -19,8 +19,8 @@ export function App() {
             <collectionsContext.Provider value={{ collectionsState, collectionsDispatch }}>
                 <Routes>
                     <Route path="/" element={<Home />}>
-                        <Route path="/collections" element={<CollectionList />} />
-                        <Route path="/collections/:collectionId" element={<CollectionItemContent />} />
+                        <Route path="/corpora" element={<CollectionList />} />
+                        <Route path="/corpora/:corpusId" element={<CollectionItemContent />} />
                         <Route path="/sources" element={<SourcesList />} />
                         <Route path="/sources/:sourceId" element={<SourceItemContent />} />
                         <Route path="*" element={<p>There is nothing here</p>} />

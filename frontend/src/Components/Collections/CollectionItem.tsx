@@ -18,7 +18,7 @@ export function CollectionItem(props: CollectionItemProps) {
         <>
             <ul>
                 <li key={props.collectionId}>
-                    <Link to={`/collections/${props.collection.id}`} key={props.collectionId} onClick={toggleClick}>
+                    <Link to={`/corpora/${props.collection.id}`} key={props.collectionId} onClick={toggleClick}>
                         {props.collection.id} {props.collection.title}
                     </Link>
                 </li>

@@ -25,7 +25,7 @@ export const Home = () => {
             <h1>Dexter</h1>
             <NavStyled id="nav">
                 <Link to="/">Home</Link> | {" "}
-                <Link to="/collections">Collections</Link> | {" "}
+                <Link to="/corpora">Corpora</Link> | {" "}
                 <Link to="/sources">Sources</Link>
             </NavStyled>
             <Outlet />

@@ -104,7 +104,7 @@ export function NewCollection(props: NewCollectionProps) {
         <>
             <Modal size="lg" show={props.show} onHide={handleClose}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Create new collection</Modal.Title>
+                    <Modal.Title>Create new corpus</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <form onSubmit={handleSubmit(onSubmit)}>

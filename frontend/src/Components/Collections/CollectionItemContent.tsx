@@ -46,11 +46,11 @@ export const CollectionItemContent = () => {
     }
 
     React.useEffect(() => {
-        doGetCollectionById(params.collectionId)
-    }, [])
+        doGetCollectionById(params.corpusId)
+    }, [params])
 
     const refetchCollection = async () => {
-        await doGetCollectionById(params.collectionId)
+        await doGetCollectionById(params.corpusId)
     }
 
     return (

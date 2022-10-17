@@ -69,7 +69,7 @@ export function CollectionList() {
         <>
             <FilterRow>
                 {/* <FilterBySubject selected={filteredSubject} onChangeFilter={filterChangeHandler} toFilter="Collections" /> */}
-                <Button style={{ marginLeft: "10px" }} onClick={formShowHandler}>Add new collection</Button>
+                <Button style={{ marginLeft: "10px" }} onClick={formShowHandler}>Add new corpus</Button>
             </FilterRow>
             {showForm && <NewCollection show={showForm} onClose={formCloseHandler} refetch={refetchCollections} />}
             {collectionsState.collections && collectionsState.collections.map((collection: Collections, index: number) => (
