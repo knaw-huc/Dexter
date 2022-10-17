@@ -2,7 +2,7 @@ import React from "react"
 import { collectionsContext } from "../State/Collections/collectionContext"
 import { sourcesContext } from "../State/Sources/sourcesContext"
 import Button from "react-bootstrap/Button"
-// import styled from "styled-components"
+import styled from "@emotion/styled"
 
 type FilterBySubjectProps = {
     selected: string,
@@ -10,13 +10,13 @@ type FilterBySubjectProps = {
     toFilter: "Collections" | "Sources"
 }
 
-// const ButtonStyled = styled(Button)`
-//     margin-left: 10px;
-// `
+const ButtonStyled = styled(Button)`
+    margin-left: 10px;
+`
 
-// const SelectStyled = styled.select`
-//     margin-left: 5px;
-// `
+const SelectStyled = styled.select`
+    margin-left: 5px;
+`
 
 export const FilterBySubject = (props: FilterBySubjectProps) => {
     const { collectionsState } = React.useContext(collectionsContext)
@@ -34,7 +34,7 @@ export const FilterBySubject = (props: FilterBySubjectProps) => {
     return (
         <div>
             <label>Filter by subject:</label>
-            <select value={props.selected} onChange={dropdownChangeHandler}>
+            <SelectStyled value={props.selected} onChange={dropdownChangeHandler}>
                 <option value={undefined}>No filter</option>
                 {props.toFilter === "Collections" ? collectionsState.collections && collectionsState.collections.map((collection, i) => {
                     return (
@@ -49,8 +49,8 @@ export const FilterBySubject = (props: FilterBySubjectProps) => {
                         </option>
                     )
                 })}
-            </select>
-            <Button onClick={buttonClick}>Reset filter</Button>
+            </SelectStyled>
+            <ButtonStyled onClick={buttonClick}>Reset filter</ButtonStyled>
         </div>
     )
 }

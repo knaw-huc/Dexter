@@ -19,7 +19,8 @@
     },
     "plugins": [
         "react",
-        "@typescript-eslint"
+        "@typescript-eslint",
+        "@emotion"
     ],
     "rules": {
         "indent": [
@@ -37,6 +38,10 @@
         "semi": [
             "error",
             "never"
+        ],
+        "@emotion/syntax-preference": [
+            2,
+            "string"
         ]
     }
 }
