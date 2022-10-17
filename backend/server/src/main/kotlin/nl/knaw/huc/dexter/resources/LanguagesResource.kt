@@ -1,14 +1,13 @@
 package nl.knaw.huc.dexter.resources
 
 import nl.knaw.huc.dexter.api.ResourcePaths.AUTOCOMPLETE
+import nl.knaw.huc.dexter.api.ResourcePaths.ID_PARAM
+import nl.knaw.huc.dexter.api.ResourcePaths.ID_PATH
 import nl.knaw.huc.dexter.api.ResourcePaths.LANGUAGES
 import nl.knaw.huc.dexter.api.ResultLanguage
 import nl.knaw.huc.dexter.db.LanguagesDao
 import org.jdbi.v3.core.Jdbi
-import javax.ws.rs.GET
-import javax.ws.rs.POST
-import javax.ws.rs.Path
-import javax.ws.rs.Produces
+import javax.ws.rs.*
 import javax.ws.rs.core.MediaType.APPLICATION_JSON
 
 @Path(LANGUAGES)
@@ -16,6 +15,10 @@ import javax.ws.rs.core.MediaType.APPLICATION_JSON
 class LanguageResource(private val jdbi: Jdbi) {
     @GET
     fun list() = languages().list()
+
+    @GET
+    @Path(ID_PATH)
+    fun getById(@PathParam(ID_PARAM) id: String) = languages().findById(id)
 
     @POST
     @Path(AUTOCOMPLETE)
