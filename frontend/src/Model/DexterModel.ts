@@ -1,37 +1,48 @@
 export interface Collections {
-    id: number,
+    id: string,
+    parentId: string,
     title: string,
     description: string,
-    mainorsub: string,
-    creator: string,
-    subject: string,
     rights: string,
     access: string,
-    created: string,
-    spatial: string,
-    temporal: string,
-    language: string,
-    lastupdated: Date,
-    user: string,
-    creation: Date,
-    sources: Sources[],
-    subCollections: number[] | undefined
+    location: string,
+    earliest: string,
+    latest: string,
+    contributor: string,
+    notes: string,
+    createdBy: string,
+    createdAt: string,
+    updatedAt: string
 }
 
 export interface Sources {
-    id: number,
+    id: string,
+    externalRef: string,
     title: string,
     description: string,
-    creator: string,
-    subject: string,
     rights: string,
     access: string,
-    created: string,
-    spatial: string,
-    temporal: string,
-    language: string,
-    lastupdated: Date,
-    user: string,
-    creation: Date,
-    partCol: number[]
+    location: string,
+    earliest: string,
+    latest: string,
+    notes: string,
+    createdBy: string,
+    createdAt: string,
+    updatedAt: string
+}
+
+export interface Keywords {
+    id: number,
+    val: string
+}
+
+export interface Languages {
+    id: string,
+    part2b: string,
+    part2t: string,
+    part1: string,
+    scope: string,
+    type: string,
+    refName: string,
+    comment: string
 }
