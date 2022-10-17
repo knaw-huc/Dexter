@@ -1,5 +1,5 @@
 import React from "react"
-import { Link, useParams } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import { Sources } from "../../Model/DexterModel"
 import { sourcesContext } from "../../State/Sources/sourcesContext"
 import { getSourceById } from "../API"
@@ -34,15 +34,17 @@ export const SourceItemContent = () => {
         })
     }
 
-    const doGetSourceById = async (id: number) => {
+    const doGetSourceById = async (id: string) => {
         const response = await getSourceById(id)
         setSource(response as Sources)
     }
 
-    doGetSourceById(parseInt(params.sourceId))
+    React.useEffect(() => {
+        doGetSourceById(params.sourceId)
+    }, [])
 
     const refetchSource = async () => {
-        await doGetSourceById(parseInt(params.sourceId))
+        await doGetSourceById(params.sourceId)
     }
 
     return (
@@ -50,21 +52,15 @@ export const SourceItemContent = () => {
             {source &&
                 <>
                     <Button onClick={formShowHandler}>Edit</Button>
+                    <p>External reference: {source.externalRef}</p>
                     <p>Title: {source.title}</p>
                     <p>Description: {source.description}</p>
-                    <p>Creator: {source.creator}</p>
-                    <p>Subject: {source.subject}</p>
                     <p>Rights: {source.rights}</p>
                     <p>Access: {source.access}</p>
-                    <p>Created: {source.created}</p>
-                    <p>Spatial: {source.spatial}</p>
-                    <p>Temporal: {source.temporal}</p>
-                    <p>Language: {source.language}</p>
-                    <p>Part of collection: {source.partCol.map((col, i) => {
-                        return <Link to={`/collections/${col}`} key={i}>
-                            {JSON.stringify(col)}
-                        </Link>
-                    })}</p>
+                    <p>Location: {source.location}</p>
+                    <p>Earliest: {source.earliest}</p>
+                    <p>Latest: {source.latest}</p>
+                    <p>Notes: {source.notes}</p>
                 </>
             }
             {sourcesState.editSourceMode && <NewSource show={showForm} onEdit={editHandler} edit={sourcesState.editSourceMode} sourceToEdit={sourcesState.toEditSource} onClose={formCloseHandler} refetchSource={refetchSource} />}

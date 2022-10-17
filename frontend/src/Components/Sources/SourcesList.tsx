@@ -5,7 +5,7 @@ import { ACTIONS } from "../../State/actions"
 import { SourceItem } from "./SourceItem"
 import { NewSource } from "./NewSource"
 import { doGetSources } from "../../Utils/doGetSources"
-import { FilterBySubject } from "../FilterBySubject"
+// import { FilterBySubject } from "../FilterBySubject"
 import Button from "react-bootstrap/Button"
 import styled from "@emotion/styled"
 
@@ -17,22 +17,22 @@ const FilterRow = styled.div`
 export function SourcesList() {
     const { sourcesState, sourcesDispatch } = React.useContext(sourcesContext)
     const [showForm, setShowForm] = React.useState(false)
-    const [filteredSubject, setFilteredSubject] = React.useState("No filter")
+    // const [filteredSubject, setFilteredSubject] = React.useState("No filter")
 
-    React.useEffect(() => {
-        if (sourcesState.sources && filteredSubject != "No filter") {
-            const filteredSources = sourcesState.sources.filter((source) => {
-                return source.subject === filteredSubject
-            })
-            console.log(filteredSources)
-            sourcesDispatch({
-                type: ACTIONS.SET_FILTEREDSOURCES,
-                filteredSources: filteredSources
-            })
-        } else {
-            return
-        }
-    }, [filteredSubject])
+    // React.useEffect(() => {
+    //     if (sourcesState.sources && filteredSubject != "No filter") {
+    //         const filteredSources = sourcesState.sources.filter((source) => {
+    //             return source.subject === filteredSubject
+    //         })
+    //         console.log(filteredSources)
+    //         sourcesDispatch({
+    //             type: ACTIONS.SET_FILTEREDSOURCES,
+    //             filteredSources: filteredSources
+    //         })
+    //     } else {
+    //         return
+    //     }
+    // }, [filteredSubject])
 
     const refetchSources = async () => {
         doGetSources()
@@ -60,25 +60,18 @@ export function SourcesList() {
         setShowForm(false)
     }
 
-    const filterChangeHandler = (selectedSubject: string) => {
-        setFilteredSubject(selectedSubject)
-    }
+    // const filterChangeHandler = (selectedSubject: string) => {
+    //     setFilteredSubject(selectedSubject)
+    // }
 
     return (
         <>
             <FilterRow>
-                <FilterBySubject selected={filteredSubject} onChangeFilter={filterChangeHandler} toFilter="Sources" />
+                {/* <FilterBySubject selected={filteredSubject} onChangeFilter={filterChangeHandler} toFilter="Sources" /> */}
                 <Button style={{ marginLeft: "10px" }} onClick={formShowHandler}>Add new source</Button>
             </FilterRow>
             {showForm && <NewSource show={showForm} onClose={formCloseHandler} refetch={refetchSources} />}
-            {filteredSubject != "No filter" ? sourcesState.filteredSources && sourcesState.filteredSources.map((source: Sources, index: number) => (
-                <SourceItem
-                    key={index}
-                    sourceId={index}
-                    source={source}
-                    onSelect={handleSelected}
-                />
-            )) : sourcesState.sources && sourcesState.sources.map((source: Sources, index: number) => (
+            {sourcesState.sources && sourcesState.sources.map((source: Sources, index: number) => (
                 <SourceItem
                     key={index}
                     sourceId={index}

@@ -5,7 +5,6 @@ import Button from "react-bootstrap/Button"
 import styled from "@emotion/styled"
 import { createSource, getSourceById, updateSource } from "../API"
 import { Sources } from "../../Model/DexterModel"
-import { collectionsContext } from "../../State/Collections/collectionContext"
 
 type NewSourceProps = {
     refetch?: () => void,
@@ -48,13 +47,9 @@ const Select = styled.select`
 `
 
 export function NewSource(props: NewSourceProps) {
-    const { collectionsState } = React.useContext(collectionsContext)
     const { register, handleSubmit, reset, setValue } = useForm<Sources>()
     const onSubmit: SubmitHandler<Sources> = async data => {
         if (!props.edit) {
-            data.lastupdated = new Date()
-            data.user = "test"
-            data.creation = new Date()
             try {
                 await createSource(data)
                 await props.refetch()
@@ -63,7 +58,7 @@ export function NewSource(props: NewSourceProps) {
             }
             props.onClose()
         } else {
-            const doUpdateSource = async (id: number, updatedData: Sources) => {
+            const doUpdateSource = async (id: string, updatedData: Sources) => {
                 try {
                     await updateSource(id, updatedData)
                     await props.refetchSource()
@@ -71,13 +66,13 @@ export function NewSource(props: NewSourceProps) {
                     console.log(error)
                 }
             }
-            doUpdateSource(props.sourceToEdit.id - 1, data)
+            doUpdateSource(props.sourceToEdit.id, data)
             props.onClose()
         }
     }
 
     React.useEffect(() => {
-        const doGetSourceById = async (id: number) => {
+        const doGetSourceById = async (id: string) => {
             const response: any = await getSourceById(id)
             console.log(response as Sources)
             const fields = ["title", "description", "creator", "subject", "rights", "access", "created", "spatial", "temporal", "language"]
@@ -112,14 +107,12 @@ export function NewSource(props: NewSourceProps) {
                 </Modal.Header>
                 <Modal.Body>
                     <form onSubmit={handleSubmit(onSubmit)}>
+                        <Label>External reference</Label>
+                        <Input {...register("externalRef")} />
                         <Label>Title</Label>
                         <Input {...register("title", { required: true })} />
                         <Label>Description</Label>
                         <Textarea rows={6} {...register("description", { required: true })} />
-                        <Label>Creator</Label>
-                        <Input {...register("creator", { required: true })} />
-                        <Label>Subject</Label>
-                        <Input {...register("subject", { required: true })} />
                         <Label>Rights</Label>
                         <Input {...register("rights", { required: true })} />
                         <Label>Access</Label>
@@ -128,20 +121,14 @@ export function NewSource(props: NewSourceProps) {
                             <option value="Restricted">Restricted</option>
                             <option value="Closed">Closed</option>
                         </Select>
-                        <Label>Created</Label>
-                        <Input {...register("created", { required: true })} />
-                        <Label>Spatial</Label>
-                        <Input {...register("spatial")} />
-                        <Label>Temporal</Label>
-                        <Input {...register("temporal")} />
-                        <Label>Language</Label>
-                        <Input {...register("language")} />
-                        <Label>Part of which collection?</Label>
-                        <Select {...register("partCol", { setValueAs: v => v.split() })}>
-                            {collectionsState.collections.map((collection, i) => {
-                                return <option value={collection.id} key={i}>{collection.id} {collection.title}</option>
-                            })}
-                        </Select>
+                        <Label>Location</Label>
+                        <Input {...register("location")} />
+                        <Label>Earliest</Label>
+                        <Input {...register("earliest")} />
+                        <Label>Latest</Label>
+                        <Input {...register("latest")} />
+                        <Label>Notes</Label>
+                        <Input {...register("notes")} />
                         <Button type="submit">Submit</Button>
                     </form>
                 </Modal.Body>

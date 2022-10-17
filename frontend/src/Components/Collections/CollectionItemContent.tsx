@@ -5,15 +5,14 @@ import { Collections } from "../../Model/DexterModel"
 import { collectionsContext } from "../../State/Collections/collectionContext"
 import { ACTIONS } from "../../State/actions"
 import { NewCollection } from "./NewCollection"
-import { Link } from "react-router-dom"
 import styled from "@emotion/styled"
 import { Button } from "react-bootstrap"
 
 const Wrapper = styled.div`
-    overflow: auto
+    overflow: auto;
 `
 
-export function CollectionItemContent() {
+export const CollectionItemContent = () => {
     const [collection, setCollection] = React.useState<Collections>(null)
     const params = useParams()
 
@@ -40,15 +39,18 @@ export function CollectionItemContent() {
         })
     }
 
-    const doGetCollectionById = async (id: number) => {
+    const doGetCollectionById = async (id: string) => {
+        //console.log(id)
         const response = await getCollectionById(id)
         setCollection(response as Collections)
     }
 
-    doGetCollectionById(parseInt(params.collectionId))
+    React.useEffect(() => {
+        doGetCollectionById(params.collectionId)
+    }, [])
 
     const refetchCollection = async () => {
-        await doGetCollectionById(parseInt(params.collectionId))
+        await doGetCollectionById(params.collectionId)
     }
 
     return (
@@ -56,33 +58,16 @@ export function CollectionItemContent() {
             {collection &&
                 <>
                     <Button onClick={formShowHandler}>Edit</Button>
+                    <p>Parent ID: {collection.parentId}</p>
                     <p>Title: {collection.title}</p>
                     <p>Description: {collection.description}</p>
-                    <p>Main or sub collection: {collection.mainorsub}</p>
-                    {collection.mainorsub === "Sub collection" ? <p>Part of collection: {collection.subCollections.map((subCollection, i) => {
-                        return <Link to={`/collections/${subCollection}`} key={i}>
-                            {JSON.stringify(subCollection)}
-                        </Link>
-                    })}</p> : <p>Sub collections: {collection.subCollections.map((subCollection, i) => {
-                        return <Link to={`/collections/${subCollection}`} key={i}>
-                            {JSON.stringify(subCollection)}
-                        </Link>
-                    })}</p>}
-                    <p>Creator: {collection.creator}</p>
-                    <p>Subject: {collection.subject}</p>
                     <p>Rights: {collection.rights}</p>
                     <p>Access: {collection.access}</p>
-                    <p>Created: {collection.created}</p>
-                    <p>Spatial: {collection.spatial}</p>
-                    <p>Temporal: {collection.temporal}</p>
-                    <p>Language: {collection.language}</p>
-                    Sources: {collection.sources.map((source, i) => {
-                        return <Link to={`/sources/${source.id}`} key={i}>
-                            <ul>
-                                <li>ID: {source.id}, Title: {source.title}</li>
-                            </ul>
-                        </Link>
-                    })}
+                    <p>Location: {collection.location}</p>
+                    <p>Earliest: {collection.earliest}</p>
+                    <p>Latest: {collection.latest}</p>
+                    <p>Contributor: {collection.contributor}</p>
+                    <p>Notes: {collection.notes}</p>
                 </>
             }
             {collectionsState.editColMode && <NewCollection show={showForm} onEdit={editHandler} edit={collectionsState.editColMode} colToEdit={collectionsState.toEditCol} onClose={formCloseHandler} refetchCol={refetchCollection} />}

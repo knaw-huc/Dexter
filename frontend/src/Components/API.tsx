@@ -1,77 +1,5 @@
 import { Collections, Sources } from "../Model/DexterModel"
 
-const sources: Sources[] = [{
-    "id": 1,
-    "title": "My test source",
-    "description": "This is my test source",
-    "creator": "Sebastiaan",
-    "subject": "Morocco",
-    "rights": "Open",
-    "access": "Closed",
-    "created": "27 July 2022",
-    "spatial": "Morocco",
-    "temporal": "1940",
-    "language": "Arabic",
-    "lastupdated": new Date(),
-    "user": "Sebastiaan",
-    "creation": new Date(),
-    "partCol": [1]
-}, {
-    "id": 2,
-    "title": "My test source 2",
-    "description": "This is my test source 2",
-    "creator": "Sebastiaan",
-    "subject": "Tunisia",
-    "rights": "Closed",
-    "access": "Closed",
-    "created": "29 July 2022",
-    "spatial": "Tunisia",
-    "temporal": "1820",
-    "language": "Arabic",
-    "lastupdated": new Date(),
-    "user": "Sebastiaan",
-    "creation": new Date(),
-    "partCol": [2]
-}]
-
-const collections: Collections[] = [{
-    "id": 1,
-    "title": "My test collection",
-    "description": "This is my test collection",
-    "mainorsub": "Main collection",
-    "creator": "Sebastiaan",
-    "subject": "Ancient history",
-    "rights": "Open",
-    "access": "Closed",
-    "created": "3 August 2022",
-    "spatial": "Turkey",
-    "temporal": "1920-1960",
-    "language": "Turkish",
-    "lastupdated": new Date(),
-    "user": "Sebastiaan",
-    "creation": new Date(),
-    "sources": [sources[0]],
-    "subCollections": [2]
-}, {
-    "id": 2,
-    "title": "My test collection 2",
-    "description": "This is my test collection 2",
-    "mainorsub": "Sub collection",
-    "creator": "Sebastiaan",
-    "subject": "Oral history",
-    "rights": "Closed",
-    "access": "Closed",
-    "created": "1 August 2022",
-    "spatial": "Tunisia",
-    "temporal": "1800-1950",
-    "language": "Berber",
-    "lastupdated": new Date(),
-    "user": "Sebastiaan",
-    "creation": new Date(),
-    "sources": [sources[1]],
-    "subCollections": [1]
-}]
-
 const headers = {
     "Content-Type": "application/json"
 }
@@ -82,119 +10,153 @@ export const getCollections = async () => {
         headers: headers
     })
 
-    if (!response.ok) return
+    console.log(response)
 
-    console.log(await response.json())
-    return await response.json()
+    if (!response.ok) {
+        console.error(response)
+        return
+    }
+
+    const data: Collections[] = await response.json()
+    console.log(data)
+
+    return data
 }
 
-export const getCollectionById = (id: number) =>
-    new Promise<Collections>((resolve, reject) => {
-        const collection = collections[id - 1]
-
-        if (!collection) {
-            return setTimeout(
-                () => reject(new Error("Collection not found")),
-                100
-            )
-        }
-
-        setTimeout(() => resolve(collections[id - 1]), 100)
+export const getCollectionById = async (id: string) => {
+    const response = await fetch(`/api/corpora/${id}`, {
+        method: "GET",
+        headers: headers
     })
 
-export const createCollection = (data: Collections) =>
-    new Promise<boolean>((resolve) => {
-        const id = Object.keys(collections).length + 1
-        const newCollection: Collections = { id, ...data }
-        console.log(newCollection)
-        collections.push(newCollection)
+    console.log(response)
 
-        if (data.subCollections.length > 0) {
-            const colId = data.subCollections[0] - 1
-            collections[colId].subCollections.push(id)
-        }
+    if (!response.ok) {
+        console.error(response)
+        return
+    }
 
-        //collections = { ...collections, [id - 1]: newCollection }
+    const data: Collections = await response.json()
+    console.log(data)
 
-        setTimeout(() => resolve(true), 100)
-        console.log(collections)
+    return data
+}
+
+export const createCollection = async (newCorpus: Collections) => {
+    const response = await fetch("/api/corpora", {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(newCorpus)
     })
 
-export const updateCollection = (id: number, updatedCollection: Collections) =>
-    new Promise<boolean>((resolve, reject) => {
-        if (!collections[id]) {
-            return setTimeout(
-                () => reject(new Error("Collection not found")),
-                100
-            )
-        }
-        console.log(updatedCollection)
+    console.log(response)
 
-        if (updatedCollection.subCollections.length > 0) {
-            const colId = updatedCollection.subCollections[0] - 1
+    if (!response.ok) {
+        console.error(response)
+        return
+    }
 
-            collections[colId].subCollections.map((subCol) => {
-                if (subCol !== colId) {
-                    collections[colId].subCollections.push(id + 1)
-                } else {
-                    null
-                }
-            })
-        }
+    const data: Collections = await response.json()
+    console.log(data)
 
-        collections[id] = { ...collections[id], ...updatedCollection }
+    return data
+}
 
-        return setTimeout(() => resolve(true), 100)
+export const updateCollection = async (id: string, updatedCorpus: Collections) => {
+    const response = await fetch(`/api/corpora/${id}`, {
+        method: "PUT",
+        headers: headers,
+        body: JSON.stringify(updatedCorpus)
     })
+
+    console.log(response)
+
+    if (!response.ok) {
+        console.error(response)
+        return
+    }
+
+    const data: Collections = await response.json()
+    console.log(data)
+
+    return data
+}
 
 export const getSources = async () => {
     const response = await fetch("/api/sources", {
         method: "GET",
         headers: headers
     })
-    console.log(response)
-    if (!response.ok) return
 
-    console.log(await response.json())
-    return await response.json()
+    console.log(response)
+
+    if (!response.ok) {
+        console.error(response)
+        return
+    }
+
+    const data: Sources[] = await response.json()
+    console.log(data)
+
+    return data
 }
 
-export const getSourceById = (id: number) =>
-    new Promise<Sources>((resolve, reject) => {
-        const source = sources[id - 1]
-        if (!source) {
-            return setTimeout(
-                () => reject(new Error("Source not found")),
-                100
-            )
-        }
-        setTimeout(() => resolve(sources[id - 1]), 100)
+export const getSourceById = async (id: string) => {
+    console.log(id)
+    const response = await fetch(`/api/sources/${id}`, {
+        method: "GET",
+        headers: headers
     })
 
-export const createSource = (data: Sources) =>
-    new Promise<boolean>((resolve) => {
-        const id = Object.keys(sources).length + 1
-        const newSource = { id, ...data }
-        sources.push(newSource)
-        const collectionId = data.partCol[0] - 1
-        collections[collectionId].sources.push(newSource)
+    console.log(response)
 
-        setTimeout(() => resolve(true), 100)
-        console.log(sources)
+    if (!response.ok) {
+        console.error(response)
+        return
+    }
+
+    const data: Sources = await response.json()
+    console.log(data)
+
+    return data
+}
+
+export const createSource = async (newSource: Sources) => {
+    const response = await fetch("/api/sources", {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(newSource)
     })
 
-export const updateSource = (id: number, updatedSource: Sources) =>
-    new Promise<boolean>((resolve, reject) => {
-        if (!sources[id]) {
-            return setTimeout(
-                () => reject(new Error("Source not found")),
-                100
-            )
-        }
+    console.log(response)
 
-        sources[id] = { ...sources[id], ...updatedSource }
+    if (!response.ok) {
+        console.error(response)
+        return
+    }
 
-        //const collectionId = parseInt(updateSource.partCol) - 1
+    const data: Sources = await response.json()
+    console.log(data)
 
-        return setTimeout(() => resolve(true), 100)
+    return data
+}
+
+export const updateSource = async (id: string, updatedSource: Sources) => {
+    const response = await fetch(`/api/sources/${id}`, {
+        method: "PUT",
+        headers: headers,
+        body: JSON.stringify(updatedSource)
     })
+
+    console.log(response)
+
+    if (!response.ok) {
+        console.error(response)
+        return
+    }
+
+    const data: Sources = await response.json()
+    console.log(data)
+
+    return data
+}

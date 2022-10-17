@@ -5,7 +5,6 @@ import Button from "react-bootstrap/Button"
 import styled from "@emotion/styled"
 import { createCollection, getCollectionById, updateCollection } from "../API"
 import { Collections } from "../../Model/DexterModel"
-import { collectionsContext } from "../../State/Collections/collectionContext"
 import { Languages } from "./Languages"
 
 type NewCollectionProps = {
@@ -49,17 +48,9 @@ const Select = styled.select`
 `
 
 export function NewCollection(props: NewCollectionProps) {
-    const { collectionsState } = React.useContext(collectionsContext)
-    const { register, handleSubmit, reset, setValue, watch, control } = useForm<Collections>()
+    const { register, handleSubmit, reset, setValue, control } = useForm<Collections>()
     const onSubmit: SubmitHandler<Collections> = async data => {
         if (!props.edit) {
-            data.lastupdated = new Date()
-            data.user = "Sebastiaan"
-            data.creation = new Date()
-            data.sources = []
-            if (data.mainorsub === "Main collection") {
-                data.subCollections = []
-            }
             try {
                 await createCollection(data)
                 await props.refetch()
@@ -68,25 +59,24 @@ export function NewCollection(props: NewCollectionProps) {
             }
             props.onClose()
         } else {
-            const doUpdateCollection = async (id: number, updatedData: Collections) => {
+            const doUpdateCollection = async (id: string, updatedData: Collections) => {
                 try {
-                    updatedData.lastupdated = new Date()
                     await updateCollection(id, updatedData)
                     await props.refetchCol()
                 } catch (error) {
                     console.log(error)
                 }
             }
-            doUpdateCollection(props.colToEdit.id - 1, data)
+            doUpdateCollection(props.colToEdit.id, data)
             props.onClose()
         }
     }
 
     React.useEffect(() => {
-        const doGetCollectionById = async (id: number) => {
+        const doGetCollectionById = async (id: string) => {
             const response: any = await getCollectionById(id)
             console.log(response)
-            const fields = ["title", "description", "mainorsub", "creator", "subject", "rights", "access", "created", "spatial", "temporal", "language", "subCollections"]
+            const fields = ["title", "description", "rights", "access", "location", "earliest", "latest", "contributor", "notes"]
             fields.map((field: any) => {
                 setValue(field, response[field])
             })
@@ -110,8 +100,6 @@ export function NewCollection(props: NewCollectionProps) {
         reset() //Should later be moved to a useEffect
     }
 
-    const mainOrSub = watch("mainorsub")
-
     return (
         <>
             <Modal size="lg" show={props.show} onHide={handleClose}>
@@ -124,25 +112,6 @@ export function NewCollection(props: NewCollectionProps) {
                         <Input {...register("title", { required: true })} />
                         <Label>Description</Label>
                         <Textarea rows={6} {...register("description", { required: true })} />
-                        <Label>Main or sub collection?</Label>
-                        <Select {...register("mainorsub", { required: true })}>
-                            <option value="Main collection">Main collection</option>
-                            <option value="Sub collection">Sub collection</option>
-                        </Select>
-                        {mainOrSub === "Sub collection" && (
-                            <>
-                                <Label>Part of which collection?</Label>
-                                <Select {...register("subCollections")}>
-                                    {collectionsState.collections.map((collection, i) => {
-                                        return <option value={collection.id} key={i}>{collection.id} {collection.title}</option>
-                                    })}
-                                </Select>
-                            </>
-                        )}
-                        <Label>Creator</Label>
-                        <Input {...register("creator", { required: true })} />
-                        <Label>Subject</Label>
-                        <Input {...register("subject", { required: true })} />
                         <Label>Rights</Label>
                         <Input {...register("rights", { required: true })} />
                         <Label>Access</Label>
@@ -151,15 +120,18 @@ export function NewCollection(props: NewCollectionProps) {
                             <option value="Restricted">Restricted</option>
                             <option value="Closed">Closed</option>
                         </Select>
-                        <Label>Created</Label>
-                        <Input {...register("created", { required: true })} />
-                        <Label>Spatial</Label>
-                        <Input {...register("spatial")} />
-                        <Label>Temporal</Label>
-                        <Input {...register("temporal")} />
+                        <Label>Location</Label>
+                        <Input {...register("location")} />
+                        <Label>Earliest</Label>
+                        <Input {...register("earliest")} />
+                        <Label>Latest</Label>
+                        <Input {...register("latest")} />
+                        <Label>Contributor</Label>
+                        <Input {...register("contributor")} />
+                        <Label>Notes</Label>
+                        <Input {...register("notes")} />
                         <Label>Language</Label>
                         <Languages control={control} />
-                        {/* <Input {...register("language")} /> */}
                         <Button type="submit">Submit</Button>
                     </form>
                 </Modal.Body>
