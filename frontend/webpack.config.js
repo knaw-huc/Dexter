@@ -42,7 +42,7 @@ module.exports = {
         filename: "[name].bundle.js",
         chunkFilename: "js/[id].chunk.js",
         //path: path.resolve(__dirname, "dist"),
-        //publicPath: "/",
+        publicPath: "/",
     },
 
     plugins: [
