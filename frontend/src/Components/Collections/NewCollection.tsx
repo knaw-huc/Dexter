@@ -5,7 +5,7 @@ import Button from "react-bootstrap/Button"
 import styled from "@emotion/styled"
 import { createCollection, getCollectionById, updateCollection } from "../API"
 import { Collections } from "../../Model/DexterModel"
-import { Languages } from "./Languages"
+// import { Languages } from "./Languages"
 
 type NewCollectionProps = {
     refetch?: () => void,
@@ -130,8 +130,8 @@ export function NewCollection(props: NewCollectionProps) {
                         <Input {...register("contributor")} />
                         <Label>Notes</Label>
                         <Input {...register("notes")} />
-                        <Label>Language</Label>
-                        <Languages control={control} />
+                        {/* <Label>Language</Label>
+                        <Languages control={control} /> */}
                         <Button type="submit">Submit</Button>
                     </form>
                 </Modal.Body>
