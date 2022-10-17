@@ -191,7 +191,7 @@ export const updateSource = (id: number, updatedSource: Sources) =>
                 100
             )
         }
-        
+
         sources[id] = { ...sources[id], ...updatedSource }
 
         //const collectionId = parseInt(updateSource.partCol) - 1
