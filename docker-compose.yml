@@ -2,14 +2,12 @@ version: '3.8'
 
 services:
   backend:
-    build:
-      context: ./backend
-      dockerfile: deploy/dexter-server/Dockerfile-multistage
     container_name: dexter_backend
     depends_on:
       - postgres
     expose:
       - 8080
+    image: registry.diginfra.net/tt/dexter-backend:${VERSION}
     networks:
       - backend_network
       - postgres_network
@@ -35,7 +33,7 @@ services:
       - ./frontend/tsconfig.json:/dexter/tsconfig.json
       - ./frontend/webpack.config.js:/dexter/webpack.config.js
       - ./frontend/index.template.html:/dexter/index.template.html
-      - ./frontend/.eslintrc.json:/dexter/.eslintrc.json    
+      - ./frontend/.eslintrc.json:/dexter/.eslintrc.json
   nginx:
     container_name: dexter_nginx
     depends_on:
@@ -74,6 +72,7 @@ networks:
   backend_network:
   frontend_network:
   postgres_network:
+
 
 volumes:
   postgres_data:
