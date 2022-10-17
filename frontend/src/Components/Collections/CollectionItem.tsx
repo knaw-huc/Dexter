@@ -48,7 +48,7 @@ export function CollectionItem(props: CollectionItemProps) {
             <ul>
                 <li key={props.collectionId}>
                     <Link to={`/corpora/${props.collection.id}`} key={props.collectionId} onClick={toggleClick}>
-                        {props.collection.id} {props.collection.title}
+                        {props.collection.title}
                     </Link>
                     <DeleteIconStyled color="error" onClick={() => handleDelete(props.collection.id)}>Delete corpus</DeleteIconStyled>
                 </li>

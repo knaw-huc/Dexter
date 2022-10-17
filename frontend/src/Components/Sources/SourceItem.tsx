@@ -48,7 +48,7 @@ export const SourceItem = (props: SourceItemProps) => {
         <ul>
             <li key={props.sourceId}>
                 <Link to={`/sources/${props.source.id}`} key={props.sourceId} onClick={toggleClick}>
-                    {props.source.id} {props.source.title}
+                    {props.source.title}
                 </Link>
                 <DeleteIconStyled color="error" onClick={() => handleDelete(props.source.id)}>Delete source</DeleteIconStyled>
             </li>
