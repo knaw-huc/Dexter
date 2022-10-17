@@ -2,10 +2,11 @@ import React from "react"
 import { useForm, SubmitHandler } from "react-hook-form"
 import Modal from "react-bootstrap/Modal"
 import Button from "react-bootstrap/Button"
-import styled from "styled-components"
+// import styled from "styled-components"
 import { createCollection, getCollectionById, updateCollection } from "../API"
 import { Collections } from "../../Model/DexterModel"
 import { collectionsContext } from "../../State/Collections/collectionContext"
+import { Languages } from "./Languages"
 
 type NewCollectionProps = {
     refetch?: () => void,
@@ -17,39 +18,39 @@ type NewCollectionProps = {
     refetchCol?: () => void
 }
 
-const Input = styled.input`
-    display: block;
-    box-sizing: border-box;
-    width: 100%;
-    border-radius: 4px;
-    border: 1px solid black;
-    padding: 10px 15px;
-    margin-bottom: 10px;
-`
+// const input = styled.input`
+//     display: block;
+//     box-sizing: border-box;
+//     width: 100%;
+//     border-radius: 4px;
+//     border: 1px solid black;
+//     padding: 10px 15px;
+//     margin-bottom: 10px;
+// `
 
-const Textarea = styled.textarea`
-    display: block;
-    box-sizing: border-box;
-    width: 100%;
-    border-radius: 4px;
-    border: 1px solid black;
-    padding: 10px 15px;
-    margin-bottom: 10px;
-`
+// const textarea = styled.textarea`
+//     display: block;
+//     box-sizing: border-box;
+//     width: 100%;
+//     border-radius: 4px;
+//     border: 1px solid black;
+//     padding: 10px 15px;
+//     margin-bottom: 10px;
+// `
 
-const Label = styled.label`
-    font-weight: bold;
-    margin-bottom: 5px;
-`
+// const label = styled.label`
+//     font-weight: bold;
+//     margin-bottom: 5px;
+// `
 
-const Select = styled.select`
-    display: block;
-    margin-bottom: 10px;
-`
+// const select = styled.select`
+//     display: block;
+//     margin-bottom: 10px;
+// `
 
 export function NewCollection(props: NewCollectionProps) {
     const { collectionsState } = React.useContext(collectionsContext)
-    const { register, handleSubmit, reset, setValue, watch } = useForm<Collections>()
+    const { register, handleSubmit, reset, setValue, watch, control } = useForm<Collections>()
     const onSubmit: SubmitHandler<Collections> = async data => {
         if (!props.edit) {
             data.lastupdated = new Date()
@@ -105,7 +106,7 @@ export function NewCollection(props: NewCollectionProps) {
         if (props.edit) {
             props.onEdit(false)
         }
-        
+
         reset() //Should later be moved to a useEffect
     }
 
@@ -119,45 +120,46 @@ export function NewCollection(props: NewCollectionProps) {
                 </Modal.Header>
                 <Modal.Body>
                     <form onSubmit={handleSubmit(onSubmit)}>
-                        <Label>Title</Label>
-                        <Input {...register("title", { required: true })} />
-                        <Label>Description</Label>
-                        <Textarea rows={6} {...register("description", { required: true })} />
-                        <Label>Main or sub collection?</Label>
-                        <Select {...register("mainorsub", { required: true })}>
+                        <label>Title</label>
+                        <input {...register("title", { required: true })} />
+                        <label>Description</label>
+                        <textarea rows={6} {...register("description", { required: true })} />
+                        <label>Main or sub collection?</label>
+                        <select {...register("mainorsub", { required: true })}>
                             <option value="Main collection">Main collection</option>
                             <option value="Sub collection">Sub collection</option>
-                        </Select>
+                        </select>
                         {mainOrSub === "Sub collection" && (
                             <>
-                                <Label>Part of which collection?</Label>
-                                <Select {...register("subCollections")}>
+                                <label>Part of which collection?</label>
+                                <select {...register("subCollections")}>
                                     {collectionsState.collections.map((collection, i) => {
                                         return <option value={collection.id} key={i}>{collection.id} {collection.title}</option>
                                     })}
-                                </Select>
+                                </select>
                             </>
                         )}
-                        <Label>Creator</Label>
-                        <Input {...register("creator", { required: true })} />
-                        <Label>Subject</Label>
-                        <Input {...register("subject", { required: true })} />
-                        <Label>Rights</Label>
-                        <Input {...register("rights", { required: true })} />
-                        <Label>Access</Label>
-                        <Select {...register("access", { required: true })}>
+                        <label>Creator</label>
+                        <input {...register("creator", { required: true })} />
+                        <label>Subject</label>
+                        <input {...register("subject", { required: true })} />
+                        <label>Rights</label>
+                        <input {...register("rights", { required: true })} />
+                        <label>Access</label>
+                        <select {...register("access", { required: true })}>
                             <option value="Open">Open</option>
                             <option value="Restricted">Restricted</option>
                             <option value="Closed">Closed</option>
-                        </Select>
-                        <Label>Created</Label>
-                        <Input {...register("created", { required: true })} />
-                        <Label>Spatial</Label>
-                        <Input {...register("spatial")} />
-                        <Label>Temporal</Label>
-                        <Input {...register("temporal")} />
-                        <Label>Language</Label>
-                        <Input {...register("language")} />
+                        </select>
+                        <label>Created</label>
+                        <input {...register("created", { required: true })} />
+                        <label>Spatial</label>
+                        <input {...register("spatial")} />
+                        <label>Temporal</label>
+                        <input {...register("temporal")} />
+                        <label>Language</label>
+                        <Languages control={control} />
+                        {/* <input {...register("language")} /> */}
                         <Button type="submit">Submit</Button>
                     </form>
                 </Modal.Body>

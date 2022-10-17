@@ -7,12 +7,12 @@ import { NewSource } from "./NewSource"
 import { doGetSources } from "../../Utils/doGetSources"
 import { FilterBySubject } from "../FilterBySubject"
 import Button from "react-bootstrap/Button"
-import styled from "styled-components"
+// import styled from "styled-components"
 
-const FilterRow = styled.div`
-    display: flex;
-    flex-direction: row;
-`
+// const FilterRow = styled.div`
+//     display: flex;
+//     flex-direction: row;
+// `
 
 export function SourcesList() {
     const { sourcesState, sourcesDispatch } = React.useContext(sourcesContext)
@@ -66,10 +66,10 @@ export function SourcesList() {
 
     return (
         <>
-            <FilterRow>
+            <div>
                 <FilterBySubject selected={filteredSubject} onChangeFilter={filterChangeHandler} toFilter="Sources" />
-                <Button style={{marginLeft:"10px"}} onClick={formShowHandler}>Add new source</Button> 
-            </FilterRow>
+                <Button style={{ marginLeft: "10px" }} onClick={formShowHandler}>Add new source</Button>
+            </div>
             {showForm && <NewSource show={showForm} onClose={formCloseHandler} refetch={refetchSources} />}
             {filteredSubject != "No filter" ? sourcesState.filteredSources && sourcesState.filteredSources.map((source: Sources, index: number) => (
                 <SourceItem

@@ -6,12 +6,12 @@ import { collectionsContext } from "../../State/Collections/collectionContext"
 import { ACTIONS } from "../../State/actions"
 import { NewCollection } from "./NewCollection"
 import { Link } from "react-router-dom"
-import styled from "styled-components"
+// import styled from "styled-components"
 import { Button } from "react-bootstrap"
 
-const Wrapper = styled.div`
-    overflow: auto
-`
+// const Wrapper = styled.div`
+//     overflow: auto
+// `
 
 export function CollectionItemContent() {
     const [collection, setCollection] = React.useState<Collections>(null)
@@ -52,7 +52,7 @@ export function CollectionItemContent() {
     }
 
     return (
-        <Wrapper>
+        <div>
             {collection &&
                 <>
                     <Button onClick={formShowHandler}>Edit</Button>
@@ -86,6 +86,7 @@ export function CollectionItemContent() {
                 </>
             }
             {collectionsState.editColMode && <NewCollection show={showForm} onEdit={editHandler} edit={collectionsState.editColMode} colToEdit={collectionsState.toEditCol} onClose={formCloseHandler} refetchCol={refetchCollection} />}
-        </Wrapper>
+        </div>
+
     )
 }

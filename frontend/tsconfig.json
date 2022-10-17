@@ -15,8 +15,8 @@
 		"module": "esnext",
 		"moduleResolution": "node",
 		"noImplicitAny": true,
-		"noUnusedLocals": true,
-		"noUnusedParameters": true,
+		// "noUnusedLocals": true,
+		// "noUnusedParameters": true,
 		"outDir": "./build",
 		"removeComments": true,
 		"resolveJsonModule": true,
@@ -27,5 +27,7 @@
 		"./dist",
 		"./node_modules"
 	],
-	"files": ["src/index.tsx"]
+	"files": [
+		"src/index.tsx"
+	]
 }
