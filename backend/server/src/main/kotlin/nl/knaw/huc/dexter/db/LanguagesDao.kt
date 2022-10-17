@@ -13,6 +13,9 @@ interface LanguagesDao {
     @SqlQuery("select * from iso_639_3")
     fun list(): List<ResultLanguage>
 
+    @SqlQuery("select * from iso_639_3 where id = :id")
+    fun findById(id: String): ResultLanguage?
+
     @SqlQuery("select * from iso_639_3 where lower(ref_name) = lower(:key)")
     fun findByLength1 (key: String): List<ResultLanguage>
 
