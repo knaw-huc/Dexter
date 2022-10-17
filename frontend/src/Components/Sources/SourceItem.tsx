@@ -30,6 +30,10 @@ export const SourceItem = (props: SourceItemProps) => {
     }
 
     const handleDelete = async (id: string) => {
+        const warning = window.confirm("Are you sure you wish to delete this source?")
+
+        if (warning === false) return
+
         await deleteSource(id)
         getSources()
             .then(function (sources) {

@@ -29,6 +29,10 @@ export function CollectionItem(props: CollectionItemProps) {
     }
 
     const handleDelete = async (id: string) => {
+        const warning = window.confirm("Are you sure you wish to delete this corpus?")
+
+        if (warning === false) return
+
         await deleteCollection(id)
         getCollections()
             .then(function (collections) {
