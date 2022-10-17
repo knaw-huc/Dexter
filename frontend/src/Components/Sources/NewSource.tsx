@@ -5,6 +5,7 @@ import Button from "react-bootstrap/Button"
 import styled from "@emotion/styled"
 import { createSource, getSourceById, updateSource } from "../API"
 import { Sources } from "../../Model/DexterModel"
+import TextField from "@mui/material/TextField"
 
 type NewSourceProps = {
     refetch?: () => void,
@@ -16,34 +17,16 @@ type NewSourceProps = {
     refetchSource?: () => void
 }
 
-const Input = styled.input`
+const TextFieldStyled = styled(TextField)`
     display: block;
-    box-sizing: border-box;
-    width: 100%;
-    border-radius: 4px;
-    border: 1px solid black;
-    padding: 10px 15px;
-    margin-bottom: 10px;
-`
-
-const Textarea = styled.textarea`
-    display: block;
-    box-sizing: border-box;
-    width: 100%;
-    border-radius: 4px;
-    border: 1px solid black;
-    padding: 10px 15px;
-    margin-bottom: 10px;
 `
 
 const Label = styled.label`
     font-weight: bold;
-    margin-bottom: 5px;
 `
 
 const Select = styled.select`
     display: block;
-    margin-bottom: 10px;
 `
 
 export function NewSource(props: NewSourceProps) {
@@ -108,13 +91,13 @@ export function NewSource(props: NewSourceProps) {
                 <Modal.Body>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <Label>External reference</Label>
-                        <Input {...register("externalRef")} />
+                        <TextFieldStyled fullWidth margin="dense" {...register("externalRef")} />
                         <Label>Title</Label>
-                        <Input {...register("title", { required: true })} />
+                        <TextFieldStyled fullWidth margin="dense" {...register("title", { required: true })} />
                         <Label>Description</Label>
-                        <Textarea rows={6} {...register("description", { required: true })} />
+                        <TextFieldStyled fullWidth margin="dense" multiline rows={6} {...register("description", { required: true })} />
                         <Label>Rights</Label>
-                        <Input {...register("rights", { required: true })} />
+                        <TextFieldStyled fullWidth margin="dense" {...register("rights", { required: true })} />
                         <Label>Access</Label>
                         <Select {...register("access", { required: true })}>
                             <option value="Open">Open</option>
@@ -122,13 +105,13 @@ export function NewSource(props: NewSourceProps) {
                             <option value="Closed">Closed</option>
                         </Select>
                         <Label>Location</Label>
-                        <Input {...register("location")} />
+                        <TextFieldStyled fullWidth margin="dense" {...register("location")} />
                         <Label>Earliest</Label>
-                        <Input {...register("earliest")} />
+                        <TextFieldStyled fullWidth margin="dense" {...register("earliest")} />
                         <Label>Latest</Label>
-                        <Input {...register("latest")} />
+                        <TextFieldStyled fullWidth margin="dense" {...register("latest")} />
                         <Label>Notes</Label>
-                        <Input {...register("notes")} />
+                        <TextFieldStyled fullWidth margin="dense" {...register("notes")} />
                         <Button type="submit">Submit</Button>
                     </form>
                 </Modal.Body>

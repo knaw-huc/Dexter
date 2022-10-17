@@ -6,7 +6,7 @@ import { collectionsContext } from "../../State/Collections/collectionContext"
 import { ACTIONS } from "../../State/actions"
 import { NewCollection } from "./NewCollection"
 import styled from "@emotion/styled"
-import { Button } from "react-bootstrap"
+import Button from "@mui/material/Button"
 
 const Wrapper = styled.div`
     overflow: auto;
@@ -57,7 +57,7 @@ export const CollectionItemContent = () => {
         <Wrapper>
             {collection &&
                 <>
-                    <Button onClick={formShowHandler}>Edit</Button>
+                    <Button variant="contained" onClick={formShowHandler}>Edit</Button>
                     <p>Parent ID: {collection.parentId}</p>
                     <p>Title: {collection.title}</p>
                     <p>Description: {collection.description}</p>

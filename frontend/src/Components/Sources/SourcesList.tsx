@@ -6,7 +6,7 @@ import { SourceItem } from "./SourceItem"
 import { NewSource } from "./NewSource"
 import { doGetSources } from "../../Utils/doGetSources"
 // import { FilterBySubject } from "../FilterBySubject"
-import Button from "react-bootstrap/Button"
+import Button from "@mui/material/Button"
 import styled from "@emotion/styled"
 
 const FilterRow = styled.div`
@@ -68,7 +68,7 @@ export function SourcesList() {
         <>
             <FilterRow>
                 {/* <FilterBySubject selected={filteredSubject} onChangeFilter={filterChangeHandler} toFilter="Sources" /> */}
-                <Button style={{ marginLeft: "10px" }} onClick={formShowHandler}>Add new source</Button>
+                <Button variant="contained" style={{ marginLeft: "10px" }} onClick={formShowHandler}>Add new source</Button>
             </FilterRow>
             {showForm && <NewSource show={showForm} onClose={formCloseHandler} refetch={refetchSources} />}
             {sourcesState.sources && sourcesState.sources.map((source: Sources, index: number) => (

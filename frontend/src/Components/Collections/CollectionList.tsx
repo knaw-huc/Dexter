@@ -3,7 +3,7 @@ import { Collections } from "../..//Model/DexterModel"
 import { NewCollection } from "./NewCollection"
 import { CollectionItem } from "./CollectionItem"
 import { collectionsContext } from "../../State/Collections/collectionContext"
-import { Button } from "react-bootstrap"
+import Button from "@mui/material/Button"
 import { ACTIONS } from "../../State/actions"
 import { doGetCollections } from "../../Utils/doGetCollections"
 // import { FilterBySubject } from "../FilterBySubject"
@@ -69,7 +69,7 @@ export function CollectionList() {
         <>
             <FilterRow>
                 {/* <FilterBySubject selected={filteredSubject} onChangeFilter={filterChangeHandler} toFilter="Collections" /> */}
-                <Button style={{ marginLeft: "10px" }} onClick={formShowHandler}>Add new corpus</Button>
+                <Button variant="contained" style={{ marginLeft: "10px" }} onClick={formShowHandler}>Add new corpus</Button>
             </FilterRow>
             {showForm && <NewCollection show={showForm} onClose={formCloseHandler} refetch={refetchCollections} />}
             {collectionsState.collections && collectionsState.collections.map((collection: Collections, index: number) => (

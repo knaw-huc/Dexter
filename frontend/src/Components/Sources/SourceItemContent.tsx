@@ -5,7 +5,7 @@ import { sourcesContext } from "../../State/Sources/sourcesContext"
 import { getSourceById } from "../API"
 import { ACTIONS } from "../../State/actions"
 import { NewSource } from "./NewSource"
-import { Button } from "react-bootstrap"
+import Button from "@mui/material/Button"
 
 export const SourceItemContent = () => {
     const [source, setSource] = React.useState<Sources>(null)
@@ -51,7 +51,7 @@ export const SourceItemContent = () => {
         <div>
             {source &&
                 <>
-                    <Button onClick={formShowHandler}>Edit</Button>
+                    <Button variant="contained" onClick={formShowHandler}>Edit</Button>
                     <p>External reference: {source.externalRef}</p>
                     <p>Title: {source.title}</p>
                     <p>Description: {source.description}</p>

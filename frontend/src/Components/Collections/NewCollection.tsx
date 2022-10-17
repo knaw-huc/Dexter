@@ -1,11 +1,12 @@
 import React from "react"
 import { useForm, SubmitHandler } from "react-hook-form"
 import Modal from "react-bootstrap/Modal"
-import Button from "react-bootstrap/Button"
+import Button from "@mui/material/Button"
 import styled from "@emotion/styled"
 import { createCollection, getCollectionById, updateCollection } from "../API"
 import { Collections } from "../../Model/DexterModel"
 // import { Languages } from "./Languages"
+import TextField from "@mui/material/TextField"
 
 type NewCollectionProps = {
     refetch?: () => void,
@@ -17,38 +18,20 @@ type NewCollectionProps = {
     refetchCol?: () => void
 }
 
-const Input = styled.input`
+const TextFieldStyled = styled(TextField)`
     display: block;
-    box-sizing: border-box;
-    width: 100%;
-    border-radius: 4px;
-    border: 1px solid black;
-    padding: 10px 15px;
-    margin-bottom: 10px;
-`
-
-const Textarea = styled.textarea`
-    display: block;
-    box-sizing: border-box;
-    width: 100%;
-    border-radius: 4px;
-    border: 1px solid black;
-    padding: 10px 15px;
-    margin-bottom: 10px;
 `
 
 const Label = styled.label`
     font-weight: bold;
-    margin-bottom: 5px;
 `
 
 const Select = styled.select`
     display: block;
-    margin-bottom: 10px;
 `
 
 export function NewCollection(props: NewCollectionProps) {
-    const { register, handleSubmit, reset, setValue, control } = useForm<Collections>()
+    const { register, handleSubmit, reset, setValue } = useForm<Collections>()
     const onSubmit: SubmitHandler<Collections> = async data => {
         if (!props.edit) {
             try {
@@ -109,11 +92,11 @@ export function NewCollection(props: NewCollectionProps) {
                 <Modal.Body>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <Label>Title</Label>
-                        <Input {...register("title", { required: true })} />
+                        <TextFieldStyled fullWidth margin="dense" {...register("title", { required: true })} />
                         <Label>Description</Label>
-                        <Textarea rows={6} {...register("description", { required: true })} />
+                        <TextFieldStyled fullWidth margin="dense" multiline rows={6} {...register("description", { required: true })} />
                         <Label>Rights</Label>
-                        <Input {...register("rights", { required: true })} />
+                        <TextFieldStyled fullWidth margin="dense" {...register("rights", { required: true })} />
                         <Label>Access</Label>
                         <Select {...register("access", { required: true })}>
                             <option value="Open">Open</option>
@@ -121,22 +104,22 @@ export function NewCollection(props: NewCollectionProps) {
                             <option value="Closed">Closed</option>
                         </Select>
                         <Label>Location</Label>
-                        <Input {...register("location")} />
+                        <TextFieldStyled fullWidth margin="dense" {...register("location")} />
                         <Label>Earliest</Label>
-                        <Input {...register("earliest")} />
+                        <TextFieldStyled fullWidth margin="dense" {...register("earliest")} />
                         <Label>Latest</Label>
-                        <Input {...register("latest")} />
+                        <TextFieldStyled fullWidth margin="dense" {...register("latest")} />
                         <Label>Contributor</Label>
-                        <Input {...register("contributor")} />
+                        <TextFieldStyled fullWidth margin="dense" {...register("contributor")} />
                         <Label>Notes</Label>
-                        <Input {...register("notes")} />
+                        <TextFieldStyled fullWidth margin="dense" {...register("notes")} />
                         {/* <Label>Language</Label>
                         <Languages control={control} /> */}
-                        <Button type="submit">Submit</Button>
+                        <Button variant="contained" type="submit">Submit</Button>
                     </form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
+                    <Button variant="contained" onClick={handleClose}>
                         Close
                     </Button>
                     {/* <Button type="submit" onClick={handleClose}>
