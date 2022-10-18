@@ -26,7 +26,8 @@ export const Home = () => {
             <NavStyled id="nav">
                 <Link to="/">Home</Link> | {" "}
                 <Link to="/corpora">Corpora</Link> | {" "}
-                <Link to="/sources">Sources</Link>
+                <Link to="/sources">Sources</Link> | {" "}
+                <Link to="/keywords">Keywords</Link>
             </NavStyled>
             <Outlet />
         </div>

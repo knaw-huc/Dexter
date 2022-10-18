@@ -1,4 +1,4 @@
-import { Collections, Sources } from "../Model/DexterModel"
+import { Collections, Sources, Keywords } from "../Model/DexterModel"
 
 const headers = {
     "Content-Type": "application/json"
@@ -187,4 +187,43 @@ export const deleteSource = async (id: string) => {
         console.error(response)
         return
     }
+}
+
+export const getKeywords = async () => {
+    const response = await fetch("/api/keywords", {
+        method: "GET",
+        headers: headers
+    })
+
+    console.log(response)
+
+    if (!response.ok) {
+        console.error(response)
+        return
+    }
+
+    const data: Keywords[] = await response.json()
+    console.log(data)
+
+    return data
+}
+
+export const createKeywords = async (newKeyword: Keywords) => {
+    const response = await fetch("/api/keywords", {
+        method: "POST",
+        headers: headers,
+        body: newKeyword.val
+    })
+
+    console.log(response)
+
+    if (!response.ok) {
+        console.error(response)
+        return
+    }
+
+    const data: Keywords = await response.json()
+    console.log(data)
+
+    return data
 }
