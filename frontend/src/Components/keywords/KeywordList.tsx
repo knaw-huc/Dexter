@@ -17,7 +17,7 @@ export const KeywordList = () => {
 
     return (
         <>
-            <NewKeywords />
+            <NewKeywords setKeywords={setKeywords} />
             {keywords && keywords.map((keyword: Keywords, index: number) => (
                 <div key={index}>{keyword.id} {keyword.val}</div>
             ))}
