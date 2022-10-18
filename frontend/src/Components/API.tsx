@@ -227,3 +227,17 @@ export const createKeywords = async (newKeyword: Keywords) => {
 
     return data
 }
+
+export const deleteKeyword = async (id: number) => {
+    const response = await fetch(`/api/keywords/${id}`, {
+        method: "DELETE",
+        headers: headers
+    })
+
+    console.log(response)
+
+    if (!response.ok) {
+        console.error(response)
+        return
+    }
+}
