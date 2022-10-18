@@ -9,6 +9,7 @@ import { useSourcesState } from "./State/Sources/sourcesReducer"
 import { sourcesContext } from "./State/Sources/sourcesContext"
 import { collectionsContext } from "./State/Collections/collectionContext"
 import { useCollectionsState } from "./State/Collections/collectionReducer"
+import { KeywordList } from "./Components/keywords/KeywordList"
 
 export function App() {
     const [sourcesState, sourcesDispatch] = useSourcesState()
@@ -23,6 +24,7 @@ export function App() {
                         <Route path="/corpora/:corpusId" element={<CollectionItemContent />} />
                         <Route path="/sources" element={<SourcesList />} />
                         <Route path="/sources/:sourceId" element={<SourceItemContent />} />
+                        <Route path="/keywords" element={<KeywordList />} />
                         <Route path="*" element={<p>There is nothing here</p>} />
                     </Route>
                 </Routes>

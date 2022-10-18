@@ -31,8 +31,8 @@ export interface Sources {
     updatedAt: string
 }
 
-export interface Keywords {
-    id: number,
+export type Keywords = {
+    id?: number,
     val: string
 }
 
