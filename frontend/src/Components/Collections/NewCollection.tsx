@@ -4,9 +4,10 @@ import Modal from "react-bootstrap/Modal"
 import Button from "@mui/material/Button"
 import styled from "@emotion/styled"
 import { createCollection, getCollectionById, updateCollection } from "../API"
-import { Collections } from "../../Model/DexterModel"
+import { Collections, Keywords } from "../../Model/DexterModel"
 // import { Languages } from "./Languages"
 import TextField from "@mui/material/TextField"
+import { KeywordsField } from "../keywords/KeywordsField"
 
 type NewCollectionProps = {
     refetch?: () => void,
@@ -31,7 +32,7 @@ const Select = styled.select`
 `
 
 export function NewCollection(props: NewCollectionProps) {
-    const { register, handleSubmit, reset, setValue } = useForm<Collections>()
+    const { register, handleSubmit, reset, setValue, control } = useForm<Collections | Keywords>()
     const onSubmit: SubmitHandler<Collections> = async data => {
         if (!props.edit) {
             try {
@@ -115,6 +116,8 @@ export function NewCollection(props: NewCollectionProps) {
                         <TextFieldStyled fullWidth margin="dense" {...register("notes")} />
                         {/* <Label>Language</Label>
                         <Languages control={control} /> */}
+                        <Label>Keywords</Label>
+                        <KeywordsField control={control} />
                         <Button variant="contained" type="submit">Submit</Button>
                     </form>
                 </Modal.Body>
