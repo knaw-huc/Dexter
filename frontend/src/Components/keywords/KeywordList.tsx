@@ -38,7 +38,7 @@ export const KeywordList = () => {
         <>
             <NewKeywords setKeywords={setKeywords} />
             {keywords && keywords.map((keyword: Keywords, index: number) => (
-                <div key={index}>{keyword.id} {keyword.val} {<DeleteIconStyled color="error" onClick={() => handleDelete(keyword.id)}>Delete corpus</DeleteIconStyled>}</div>
+                <div key={index}>{keyword.id} {keyword.val} {<DeleteIconStyled color="error" onClick={() => handleDelete(keyword.id)} />}</div>
             ))}
         </>
     )

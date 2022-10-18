@@ -50,7 +50,7 @@ export const SourceItem = (props: SourceItemProps) => {
                 <Link to={`/sources/${props.source.id}`} key={props.sourceId} onClick={toggleClick}>
                     {props.source.title}
                 </Link>
-                <DeleteIconStyled color="error" onClick={() => handleDelete(props.source.id)}>Delete source</DeleteIconStyled>
+                <DeleteIconStyled color="error" onClick={() => handleDelete(props.source.id)} />
             </li>
         </ul>
     )
