@@ -51,7 +51,7 @@ class LanguagesResource(private val jdbi: Jdbi) {
 
     private fun validateHeaderLine(headerLine: String) {
         if (headerLine != "Id\tPart2B\tPart2T\tPart1\tScope\tLanguage_Type\tRef_Name\tComment") {
-            log.warn("Invalid iso-639-3 code file, header was [$this].")
+            log.warn("Invalid iso-639-3 code file, header was [$headerLine].")
             throw BadRequestException(
                 "Invalid iso-639-3 Code Set file, please get it from: $ISO_639_URL"
             )
