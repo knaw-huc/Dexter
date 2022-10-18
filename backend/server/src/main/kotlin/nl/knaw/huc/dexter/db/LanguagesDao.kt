@@ -12,6 +12,10 @@ interface LanguagesDao {
      where lang.tab comes from:
        https://iso639-3.sil.org/sites/iso639-3/files/downloads/iso-639-3.tab
      */
+
+    @SqlQuery("select count(*) from iso_639_3")
+    fun count(): Long
+
     @SqlQuery("select * from iso_639_3")
     fun list(): List<ResultLanguage>
 
