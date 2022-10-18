@@ -37,35 +37,40 @@ class LanguagesResource(private val jdbi: Jdbi) {
     @PUT
     @Consumes(TEXT_PLAIN)
     fun seed(@NotNull contents: String) =
-        contents.lineSequence().also {
-            it.first().run {
-                if (this != "Id\tPart2B\tPart2T\tPart1\tScope\tLanguage_Type\tRef_Name\tComment") {
-                    log.warn("Invalid iso-639-3 code file, header was [$this].")
-                    throw BadRequestException(
-                        "Invalid iso-639-3 Code Set file, please get it from: $ISO_639_URL"
-                    )
-                }
-            }
-        }.drop(1) // Ignore CSV header line
+        contents
+            .lineSequence()
+            .also { validateHeaderLine(it.first()) }
+            .drop(1) // Ignore CSV header line
             .map { line ->
-                val cols = line.split('\t')
-                ResultLanguage(
-                    id = cols[0],
-                    part2b = cols[1],
-                    part2t = cols[2],
-                    part1 = cols[3],
-                    scope = cols[4][0],
-                    type = cols[5][0],
-                    refName = cols[6],
-                    comment = cols[7]
-                ).also {
-                    log.trace("Adding [${it.id}] -> [${it.refName}]")
-                }
+                languageFromTabSeparated(line).also { log.trace("Adding [${it.id}] -> [${it.refName}]") }
             }
             .let {
                 languages().seed(it.asIterable())
-                mapOf("count" to languages().list().size)
+                mapOf("count" to languages().count())
             }
+
+    private fun validateHeaderLine(headerLine: String) {
+        if (headerLine != "Id\tPart2B\tPart2T\tPart1\tScope\tLanguage_Type\tRef_Name\tComment") {
+            log.warn("Invalid iso-639-3 code file, header was [$this].")
+            throw BadRequestException(
+                "Invalid iso-639-3 Code Set file, please get it from: $ISO_639_URL"
+            )
+        }
+    }
+
+    private fun languageFromTabSeparated(line: String) =
+        line.split('\t').let { cols ->
+            ResultLanguage(
+                id = cols[0],
+                part2b = cols[1],
+                part2t = cols[2],
+                part1 = cols[3],
+                scope = cols[4][0],
+                type = cols[5][0],
+                refName = cols[6],
+                comment = cols[7]
+            )
+        }
 
     @GET
     @Path(ID_PATH)
