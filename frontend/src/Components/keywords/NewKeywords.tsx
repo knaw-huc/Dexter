@@ -1,12 +1,8 @@
 import React from "react"
 import TextField from "@mui/material/TextField"
 import { useForm, SubmitHandler } from "react-hook-form"
-//import { Keywords } from "../../Model/DexterModel"
+import { Keywords } from "../../Model/DexterModel"
 import { createKeywords } from "../API"
-
-type Keywords = {
-    val: string
-}
 
 export const NewKeywords = () => {
     const { register, handleSubmit } = useForm<Keywords>()
