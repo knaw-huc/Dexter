@@ -36,7 +36,7 @@ class KeywordsResource(private val jdbi: Jdbi) {
     fun createKeyword(keyword: FormKeyword): ResultKeyword =
         keyword.run {
             log.info("createKeyword: [$this]")
-            keywords().insert(this)
+            diagnoseViolations { keywords().insert(this) }
         }
 
     @PUT
