@@ -21,6 +21,6 @@ interface KeywordsDao {
     @SqlUpdate("delete from keywords where id = :id")
     fun delete(id: Int)
 
-    @SqlQuery("select * from keywords where val like :key")
+    @SqlQuery("select * from keywords where lower(val) like lower(:key)")
     fun like(key: String): List<ResultKeyword>
 }
