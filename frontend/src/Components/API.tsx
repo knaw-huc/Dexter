@@ -320,3 +320,21 @@ export const getKeywordsCorpora = async (corpusId: string) => {
 
     return data
 }
+
+export const getKeywordsAutocomplete = async (input: string) => {
+    const response = await fetch("/api/keywords/autocomplete", {
+        method: "POST",
+        headers: headers,
+        body: input
+    })
+
+    if (!response.ok) {
+        console.error(response)
+        return
+    }
+
+    const data: Keywords[] = await response.json()
+    console.log(data)
+
+    return data
+}

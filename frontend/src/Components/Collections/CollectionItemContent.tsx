@@ -52,7 +52,7 @@ export const CollectionItemContent = () => {
 
     React.useEffect(() => {
         doGetCollectionById(params.corpusId)
-    }, [params])
+    }, [params.corpusId])
 
     const refetchCollection = async () => {
         await doGetCollectionById(params.corpusId)
