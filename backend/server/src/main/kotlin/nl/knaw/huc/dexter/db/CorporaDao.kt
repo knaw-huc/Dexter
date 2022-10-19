@@ -41,7 +41,7 @@ interface CorporaDao {
     @RegisterKotlinMapper(ResultKeyword::class)
     fun getKeywords(corpusId: UUID): List<ResultKeyword>
 
-    @SqlUpdate("insert into corpora_keywords (corpus_id,key_id) values (:corpusId,:keywordId)")
+    @SqlUpdate("insert into corpora_keywords (corpus_id,key_id) values (:corpusId,:keywordId) on conflict do nothing")
     fun addKeyword(corpusId: UUID, keywordId: Int)
 
     @SqlUpdate("delete from corpora_keywords where corpus_id = :corpusId and key_id = :keywordId")
