@@ -45,7 +45,7 @@ interface SourcesDao {
     @RegisterKotlinMapper(ResultKeyword::class)
     fun getKeywords(sourceId: UUID): List<ResultKeyword>
 
-    @SqlUpdate("insert into sources_keywords (source_id,key_id) values (:sourceId,:keywordId)")
+    @SqlUpdate("insert into sources_keywords (source_id,key_id) values (:sourceId,:keywordId) on conflict do nothing")
     fun addKeyword(sourceId: UUID, keywordId: Int)
 
     @SqlUpdate("delete from sources_keywords where source_id = :sourceId and key_id = :keywordId")
