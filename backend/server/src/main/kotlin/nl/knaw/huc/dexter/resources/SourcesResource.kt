@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory
 import java.util.*
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType.APPLICATION_JSON
+import javax.ws.rs.core.MediaType.TEXT_PLAIN
 import javax.ws.rs.core.Response
 
 @Path(ResourcePaths.SOURCES)
@@ -97,6 +98,7 @@ class SourcesResource(private val jdbi: Jdbi) {
     }
 
     @POST
+    @Consumes(TEXT_PLAIN)
     @Path("$ID_PATH/$KEYWORDS")
     fun addKeyword(@PathParam(ID_PARAM) id: UUID, keywordId: String): List<ResultKeyword> =
         onExistingSource(id) { dao, src ->
