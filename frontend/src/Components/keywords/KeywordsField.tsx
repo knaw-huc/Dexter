@@ -45,6 +45,27 @@ export const KeywordsField = ({ control }: { control: Control<Keywords | Collect
                                 value={value}
                             />
                         )}
+                        renderOption={(props, option, { inputValue }) => {
+                            const matches = match(option.val, inputValue, { insideWords: true })
+                            const parts = parse(option.val, matches)
+
+                            return (
+                                <li {...props}>
+                                    <div>
+                                        {parts.map((part, index) => (
+                                            <span
+                                                key={index}
+                                                style={{
+                                                    fontWeight: part.highlight ? 700 : 400
+                                                }}
+                                            >
+                                                {part.text}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </li>
+                            )
+                        }}
                         onChange={(event, values) => {
                             onChange(values)
                         }}
