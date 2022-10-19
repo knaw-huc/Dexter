@@ -4,6 +4,9 @@ import { Autocomplete } from "@mui/material"
 import { TextField } from "@mui/material"
 import { getKeywords } from "../API"
 import { Collections } from "../../Model/DexterModel"
+import parse from "autosuggest-highlight/parse"
+import match from "autosuggest-highlight/match"
+
 
 interface Keywords {
     id?: number,
