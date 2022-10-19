@@ -29,7 +29,8 @@ export interface Sources {
     notes: string | null,
     createdBy: string,
     createdAt: string,
-    updatedAt: string
+    updatedAt: string,
+    val: Keywords[]
 }
 
 export type Keywords = {

@@ -248,6 +248,26 @@ export const addKeywordToCorpus = async (corpusId: string, keywordId: string[]) 
     return data
 }
 
+export const addKeywordToSource = async (sourceId: string, keywordId: string[]) => {
+    const response = await fetch(`/api/sources/${sourceId}/keywords`, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(keywordId)
+    })
+
+    console.log(response)
+
+    if (!response.ok) {
+        console.error(response)
+        return
+    }
+
+    const data: Keywords = await response.json()
+    console.log(data)
+
+    return data
+}
+
 export const deleteKeyword = async (id: string) => {
     const response = await fetch(`/api/keywords/${id}`, {
         method: "DELETE",

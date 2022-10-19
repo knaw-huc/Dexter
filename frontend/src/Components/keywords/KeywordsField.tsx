@@ -3,17 +3,11 @@ import { Control, Controller } from "react-hook-form"
 import { Autocomplete } from "@mui/material"
 import { TextField } from "@mui/material"
 import { getKeywords } from "../API"
-import { Collections } from "../../Model/DexterModel"
+import { Collections, Sources, Keywords } from "../../Model/DexterModel"
 import parse from "autosuggest-highlight/parse"
 import match from "autosuggest-highlight/match"
 
-
-interface Keywords {
-    id?: string,
-    val: string
-}
-
-export const KeywordsField = ({ control }: { control: Control<Keywords | Collections> }) => {
+export const KeywordsField = ({ control }: { control: Control<Keywords | Collections | Sources> }) => {
     const [keywords, setKeywords] = React.useState<Keywords[]>()
 
     const doGetKeywords = async () => {
