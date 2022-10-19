@@ -33,7 +33,7 @@ class KeywordsResource(private val jdbi: Jdbi) {
         keywords().find(keywordId) ?: keywordNotFound(keywordId)
 
     @POST
-    @Path("$AUTOCOMPLETE/key")
+    @Path(AUTOCOMPLETE)
     fun getKeywordLike(key: String): List<ResultKeyword> =
         key.takeIf { it.length > 2 }.let { keywords().like("%$key%") }
 
