@@ -12,7 +12,8 @@ export interface Collections {
     notes: string | null,
     createdBy: string,
     createdAt: string,
-    updatedAt: string
+    updatedAt: string,
+    val: Keywords[]
 }
 
 export interface Sources {
@@ -32,7 +33,7 @@ export interface Sources {
 }
 
 export type Keywords = {
-    id?: number,
+    id?: string,
     val: string
 }
 

@@ -228,7 +228,27 @@ export const createKeywords = async (newKeyword: Keywords) => {
     return data
 }
 
-export const deleteKeyword = async (id: number) => {
+export const addKeywordToCorpus = async (corpusId: string, keywordId: string[]) => {
+    const response = await fetch(`/api/corpora/${corpusId}/keywords`, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(keywordId)
+    })
+
+    console.log(response)
+
+    if (!response.ok) {
+        console.error(response)
+        return
+    }
+
+    const data: Keywords = await response.json()
+    console.log(data)
+
+    return data
+}
+
+export const deleteKeyword = async (id: string) => {
     const response = await fetch(`/api/keywords/${id}`, {
         method: "DELETE",
         headers: headers

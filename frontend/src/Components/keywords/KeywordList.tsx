@@ -25,7 +25,7 @@ export const KeywordList = () => {
         setKeywords(kw)
     }
 
-    const handleDelete = async (id: number) => {
+    const handleDelete = async (id: string) => {
         const warning = window.confirm("Are you sure you wish to delete this keyword?")
 
         if (warning === false) return

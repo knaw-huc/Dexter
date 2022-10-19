@@ -3,7 +3,7 @@ import { useForm, SubmitHandler } from "react-hook-form"
 import Modal from "react-bootstrap/Modal"
 import Button from "@mui/material/Button"
 import styled from "@emotion/styled"
-import { createCollection, getCollectionById, updateCollection } from "../API"
+import { addKeywordToCorpus, createCollection, getCollectionById, updateCollection } from "../API"
 import { Collections, Keywords } from "../../Model/DexterModel"
 // import { Languages } from "./Languages"
 import TextField from "@mui/material/TextField"
@@ -34,9 +34,21 @@ const Select = styled.select`
 export function NewCollection(props: NewCollectionProps) {
     const { register, handleSubmit, reset, setValue, control } = useForm<Collections | Keywords>()
     const onSubmit: SubmitHandler<Collections> = async data => {
+        console.log(data)
+
+        const keywordId = () => {
+            const ids = data.val.map((keyword) => {
+                return keyword.id
+            })
+
+            return ids
+        }
+
         if (!props.edit) {
             try {
-                await createCollection(data)
+                const newCollection = await createCollection(data)
+                const corpusId = newCollection.id
+                await addKeywordToCorpus(corpusId, keywordId())
                 await props.refetch()
             } catch (error) {
                 console.log(error)
