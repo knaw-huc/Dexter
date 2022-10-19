@@ -32,7 +32,7 @@ class KeywordsResource(private val jdbi: Jdbi) {
         keywords().find(keywordId) ?: keywordNotFound(keywordId)
 
     @POST
-    @Consumes("$APPLICATION_JSON,$TEXT_PLAIN")
+    @Consumes(APPLICATION_JSON, TEXT_PLAIN)
     fun createKeyword(keyword: FormKeyword): ResultKeyword =
         keyword.run {
             log.info("createKeyword: [$this]")
