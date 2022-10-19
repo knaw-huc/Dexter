@@ -43,6 +43,7 @@ export const getCollectionById = async (id: string) => {
 }
 
 export const createCollection = async (newCorpus: Collections) => {
+    JSON.stringify(newCorpus)
     const response = await fetch("/api/corpora", {
         method: "POST",
         headers: headers,
@@ -212,7 +213,7 @@ export const createKeywords = async (newKeyword: Keywords) => {
     const response = await fetch("/api/keywords", {
         method: "POST",
         headers: headers,
-        body: newKeyword.val
+        body: JSON.stringify(newKeyword)
     })
 
     console.log(response)
@@ -280,4 +281,42 @@ export const deleteKeyword = async (id: string) => {
         console.error(response)
         return
     }
+}
+
+export const getKeywordsSources = async (sourceId: string) => {
+    const response = await fetch(`/api/sources/${sourceId}/keywords`, {
+        method: "GET",
+        headers: headers
+    })
+
+    console.log(response)
+
+    if (!response.ok) {
+        console.error(response)
+        return
+    }
+
+    const data: Keywords[] = await response.json()
+    console.log(data)
+
+    return data
+}
+
+export const getKeywordsCorpora = async (corpusId: string) => {
+    const response = await fetch(`/api/corpora/${corpusId}/keywords`, {
+        method: "GET",
+        headers: headers
+    })
+
+    console.log(response)
+
+    if (!response.ok) {
+        console.error(response)
+        return
+    }
+
+    const data: Keywords[] = await response.json()
+    console.log(data)
+
+    return data
 }

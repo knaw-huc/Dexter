@@ -1,12 +1,13 @@
 import React from "react"
-import { getCollectionById } from "../API"
+import { getCollectionById, getKeywordsCorpora } from "../API"
 import { useParams } from "react-router-dom"
-import { Collections } from "../../Model/DexterModel"
+import { Collections, Keywords } from "../../Model/DexterModel"
 import { collectionsContext } from "../../State/Collections/collectionContext"
 import { ACTIONS } from "../../State/actions"
 import { NewCollection } from "./NewCollection"
 import styled from "@emotion/styled"
 import Button from "@mui/material/Button"
+import { KeywordContent } from "../keywords/KeywordContent"
 
 const Wrapper = styled.div`
     overflow: auto;
@@ -14,6 +15,8 @@ const Wrapper = styled.div`
 
 export const CollectionItemContent = () => {
     const [collection, setCollection] = React.useState<Collections>(null)
+    const [keywords, setKeywords] = React.useState<Keywords[]>(null)
+
     const params = useParams()
 
     const { collectionsState, collectionsDispatch } = React.useContext(collectionsContext)
@@ -40,9 +43,11 @@ export const CollectionItemContent = () => {
     }
 
     const doGetCollectionById = async (id: string) => {
-        //console.log(id)
         const response = await getCollectionById(id)
         setCollection(response as Collections)
+        const kws = await getKeywordsCorpora(response.id)
+        setKeywords(kws)
+        console.log(kws)
     }
 
     React.useEffect(() => {
@@ -55,7 +60,7 @@ export const CollectionItemContent = () => {
 
     return (
         <Wrapper>
-            {collection &&
+            {collection && keywords &&
                 <>
                     <Button variant="contained" onClick={formShowHandler}>Edit</Button>
                     <p>Parent ID: {collection.parentId}</p>
@@ -68,6 +73,7 @@ export const CollectionItemContent = () => {
                     <p>Latest: {collection.latest}</p>
                     <p>Contributor: {collection.contributor}</p>
                     <p>Notes: {collection.notes}</p>
+                    <div>Keywords: <KeywordContent keywords={keywords} /></div>
                 </>
             }
             {collectionsState.editColMode && <NewCollection show={showForm} onEdit={editHandler} edit={collectionsState.editColMode} colToEdit={collectionsState.toEditCol} onClose={formCloseHandler} refetchCol={refetchCollection} />}
