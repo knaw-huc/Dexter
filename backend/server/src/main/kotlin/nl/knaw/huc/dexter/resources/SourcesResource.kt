@@ -107,6 +107,16 @@ class SourcesResource(private val jdbi: Jdbi) {
             dao.getKeywords(src.id)
         }
 
+    @POST
+    @Consumes(APPLICATION_JSON)
+    @Path("$ID_PATH/$KEYWORDS")
+    fun addKeywords(@PathParam(ID_PARAM) id: UUID, keywordIds: List<Int>): List<ResultKeyword> =
+        onExistingSource(id) { dao, src ->
+            log.info("addKeywords: sourceId=${src.id}, keywords=$keywordIds")
+            keywordIds.forEach { keywordId -> dao.addKeyword(src.id, keywordId) }
+            dao.getKeywords(src.id)
+        }
+
     @DELETE
     @Path("$ID_PATH/$KEYWORDS/{keywordId}")
     fun deleteKeyword(
@@ -139,10 +149,10 @@ class SourcesResource(private val jdbi: Jdbi) {
         @PathParam(ID_PARAM) id: UUID,
         @PathParam("languageId") languageId: String
     ) = onExistingSource(id) { dao, src ->
-            log.info("deleteLanguage: sourceId=${src.id}, languageId=$languageId")
-            dao.deleteLanguage(src.id, languageId)
-            dao.getLanguages(src.id)
-        }
+        log.info("deleteLanguage: sourceId=${src.id}, languageId=$languageId")
+        dao.deleteLanguage(src.id, languageId)
+        dao.getLanguages(src.id)
+    }
 
     private fun <R> onExistingSource(id: UUID, block: DaoBlock<SourcesDao, ResultSource, R>): R =
         jdbi.inTransaction<R, Exception>(REPEATABLE_READ) { handle ->
