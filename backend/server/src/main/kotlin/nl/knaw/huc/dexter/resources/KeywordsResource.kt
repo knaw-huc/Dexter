@@ -14,11 +14,12 @@ import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel.REPEATABLE_READ
 import org.slf4j.LoggerFactory
 import javax.ws.rs.*
-import javax.ws.rs.core.MediaType
+import javax.ws.rs.core.MediaType.APPLICATION_JSON
+import javax.ws.rs.core.MediaType.TEXT_PLAIN
 import javax.ws.rs.core.Response
 
 @Path(ResourcePaths.KEYWORDS)
-@Produces(MediaType.APPLICATION_JSON)
+@Produces(APPLICATION_JSON)
 class KeywordsResource(private val jdbi: Jdbi) {
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -31,6 +32,7 @@ class KeywordsResource(private val jdbi: Jdbi) {
         keywords().find(keywordId) ?: keywordNotFound(keywordId)
 
     @POST
+    @Consumes("$APPLICATION_JSON,$TEXT_PLAIN")
     fun createKeyword(keyword: FormKeyword): ResultKeyword =
         keyword.run {
             log.info("createKeyword: [$this]")
