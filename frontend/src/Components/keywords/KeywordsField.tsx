@@ -9,7 +9,7 @@ import match from "autosuggest-highlight/match"
 
 
 interface Keywords {
-    id?: number,
+    id?: string,
     val: string
 }
 
@@ -68,6 +68,7 @@ export const KeywordsField = ({ control }: { control: Control<Keywords | Collect
                         }}
                         onChange={(event, values) => {
                             onChange(values)
+                            console.log(values)
                         }}
                     />
                 )}
