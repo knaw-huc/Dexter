@@ -3,13 +3,14 @@ import { Control, Controller } from "react-hook-form"
 import { Autocomplete } from "@mui/material"
 import { TextField } from "@mui/material"
 import { getKeywords } from "../API"
+import { Collections } from "../../Model/DexterModel"
 
 interface Keywords {
     id?: number,
     val: string
 }
 
-export const KeywordsField = ({ control }: { control: any }) => {
+export const KeywordsField = ({ control }: { control: Control<Keywords | Collections> }) => {
     const [keywords, setKeywords] = React.useState<Keywords[]>()
 
     const doGetKeywords = async () => {
@@ -25,18 +26,20 @@ export const KeywordsField = ({ control }: { control: any }) => {
         <div>
             {keywords && <Controller
                 control={control}
-                name={"keywords"}
+                name={"val"}
                 render={({ field: { onChange, value } }) => (
                     <Autocomplete
-                        id="test"
+                        multiple={true}
+                        id="keywords-autocomplete"
                         options={keywords}
                         getOptionLabel={(keyword: Keywords) => keyword.val}
                         renderInput={(params) => (
                             <TextField
                                 {...params}
-                                variant="standard"
+                                margin="dense"
                                 label="Select a keyword"
                                 onChange={onChange}
+                                value={value}
                             />
                         )}
                         onChange={(event, values) => {
