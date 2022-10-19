@@ -3,9 +3,10 @@ import { useForm, SubmitHandler } from "react-hook-form"
 import Modal from "react-bootstrap/Modal"
 import Button from "@mui/material/Button"
 import styled from "@emotion/styled"
-import { createSource, getSourceById, updateSource } from "../API"
-import { Sources } from "../../Model/DexterModel"
+import { addKeywordToSource, createSource, getSourceById, updateSource } from "../API"
+import { Collections, Keywords, Sources } from "../../Model/DexterModel"
 import TextField from "@mui/material/TextField"
+import { KeywordsField } from "../keywords/KeywordsField"
 
 type NewSourceProps = {
     refetch?: () => void,
@@ -30,11 +31,23 @@ const Select = styled.select`
 `
 
 export function NewSource(props: NewSourceProps) {
-    const { register, handleSubmit, reset, setValue } = useForm<Sources>()
+    const { register, handleSubmit, reset, setValue, control } = useForm<Sources | Keywords | Collections>()
     const onSubmit: SubmitHandler<Sources> = async data => {
+        console.log(data)
+
+        const keywordIds = () => {
+            const ids = data.val.map((keyword) => {
+                return keyword.id
+            })
+
+            return ids
+        }
+
         if (!props.edit) {
             try {
-                await createSource(data)
+                const newSource = await createSource(data)
+                const sourceId = newSource.id
+                await addKeywordToSource(sourceId, keywordIds())
                 await props.refetch()
             } catch (error) {
                 console.log(error)
@@ -112,6 +125,8 @@ export function NewSource(props: NewSourceProps) {
                         <TextFieldStyled fullWidth margin="dense" {...register("latest")} />
                         <Label>Notes</Label>
                         <TextFieldStyled fullWidth margin="dense" {...register("notes")} />
+                        <Label>Keywords</Label>
+                        <KeywordsField control={control} />
                         <Button variant="contained" type="submit">Submit</Button>
                     </form>
                 </Modal.Body>
