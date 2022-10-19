@@ -86,6 +86,16 @@ class CorporaResource(private val jdbi: Jdbi) {
             dao.getKeywords(corpus.id)
         }
 
+    @POST
+    @Consumes(APPLICATION_JSON)
+    @Path("$ID_PATH/$KEYWORDS")
+    fun addKeywords(@PathParam(ID_PARAM) id: UUID, keywordIs: List<Int>) =
+        onExistingCorpus(id) { dao, corpus ->
+            log.info("addKeywords: corpusId=${corpus.id}, keywordIds=$keywordIs")
+            keywordIs.forEach { keywordId -> dao.addKeyword(corpus.id, keywordId) }
+            dao.getKeywords(corpus.id)
+        }
+
     @DELETE
     @Path("$ID_PATH/$KEYWORDS/{keywordId}")
     fun deleteKeyword(
