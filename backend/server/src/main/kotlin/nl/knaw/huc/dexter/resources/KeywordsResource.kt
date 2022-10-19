@@ -16,7 +16,6 @@ import org.jdbi.v3.core.transaction.TransactionIsolationLevel.REPEATABLE_READ
 import org.slf4j.LoggerFactory
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType.APPLICATION_JSON
-import javax.ws.rs.core.MediaType.TEXT_PLAIN
 import javax.ws.rs.core.Response
 
 @Path(ResourcePaths.KEYWORDS)
@@ -40,7 +39,7 @@ class KeywordsResource(private val jdbi: Jdbi) {
             ?: throw BadRequestException("key length MUST be > 2 (but was ${key.length}: '$key')")
 
     @POST
-    @Consumes(APPLICATION_JSON, TEXT_PLAIN)
+    @Consumes(APPLICATION_JSON)
     fun createKeyword(keyword: FormKeyword): ResultKeyword =
         keyword.run {
             log.info("createKeyword: [$this]")
@@ -49,10 +48,10 @@ class KeywordsResource(private val jdbi: Jdbi) {
 
     @PUT
     @Path(ID_PATH)
-    fun updateKeyword(@PathParam(ID_PARAM) id: Int, value: FormKeyword): ResultKeyword =
+    fun updateKeyword(@PathParam(ID_PARAM) id: Int, formKeyword: FormKeyword): ResultKeyword =
         onExistingKeyword(id) { dao, kw ->
-            log.info("updateKeyword: id=$id, val=$value")
-            dao.update(kw.id, value)
+            log.info("updateKeyword: keywordId=${kw.id}, formKeyword=$formKeyword")
+            dao.update(kw.id, formKeyword)
         }
 
     @DELETE

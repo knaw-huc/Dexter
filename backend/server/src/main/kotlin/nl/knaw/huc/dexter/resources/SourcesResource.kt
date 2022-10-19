@@ -68,33 +68,9 @@ class SourcesResource(private val jdbi: Jdbi) {
         }
 
     @GET
-    @Path("$ID_PATH/$KEYWORDS/v1")
-    fun getKeywordsV1(@PathParam(ID_PARAM) id: UUID) = onExistingSource(id) { dao, src ->
+    @Path("$ID_PATH/$KEYWORDS")
+    fun getKeywords(@PathParam(ID_PARAM) id: UUID) = onExistingSource(id) { dao, src ->
         dao.getKeywords(src.id)
-    }
-
-    @GET
-    @Path("$ID_PATH/$KEYWORDS/v2a")
-    fun getKeywordsV2a(@PathParam(ID_PARAM) id: UUID) = onExistingSource(id) { dao, src ->
-        dao.getKeywords(src.id).map { it.id }
-    }
-
-    @GET
-    @Path("$ID_PATH/$KEYWORDS/v2b")
-    fun getKeywordsV2b(@PathParam(ID_PARAM) id: UUID) = onExistingSource(id) { dao, src ->
-        dao.getKeywords(src.id).map { it.`val` }
-    }
-
-    @GET
-    @Path("$ID_PATH/$KEYWORDS/v2c")
-    fun getKeywordsV2c(@PathParam(ID_PARAM) id: UUID) = onExistingSource(id) { dao, src ->
-        dao.getKeywords(src.id).map { mapOf(it.id to it.`val`) }
-    }
-
-    @GET
-    @Path("$ID_PATH/$KEYWORDS/v2d")
-    fun getKeywordsV2d(@PathParam(ID_PARAM) id: UUID) = onExistingSource(id) { dao, src ->
-        dao.getKeywords(src.id).fold(HashMap<Int, String>()) { all, kw -> all[kw.id] = kw.`val`; all }
     }
 
     @POST

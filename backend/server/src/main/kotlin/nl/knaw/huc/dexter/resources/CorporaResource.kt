@@ -70,8 +70,8 @@ class CorporaResource(private val jdbi: Jdbi) {
         }
 
     @GET
-    @Path("$ID_PATH/$KEYWORDS/v1")
-    fun getKeywordsV1(@PathParam(ID_PARAM) id: UUID) =
+    @Path("$ID_PATH/$KEYWORDS")
+    fun getKeywords(@PathParam(ID_PARAM) id: UUID) =
         onExistingCorpus(id) { dao, corpus ->
             dao.getKeywords(corpus.id)
         }
