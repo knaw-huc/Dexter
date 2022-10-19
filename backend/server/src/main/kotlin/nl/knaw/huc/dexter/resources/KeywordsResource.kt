@@ -3,6 +3,7 @@ package nl.knaw.huc.dexter.resources
 import io.dropwizard.auth.Auth
 import nl.knaw.huc.dexter.api.FormKeyword
 import nl.knaw.huc.dexter.api.ResourcePaths
+import nl.knaw.huc.dexter.api.ResourcePaths.AUTOCOMPLETE
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PARAM
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PATH
 import nl.knaw.huc.dexter.api.ResultKeyword
@@ -30,6 +31,11 @@ class KeywordsResource(private val jdbi: Jdbi) {
     @Path(ID_PATH)
     fun getKeyword(@PathParam(ID_PARAM) keywordId: Int) =
         keywords().find(keywordId) ?: keywordNotFound(keywordId)
+
+    @POST
+    @Path("$AUTOCOMPLETE/key")
+    fun getKeywordLike(key: String): List<ResultKeyword> =
+        key.takeIf { it.length > 2 }.let { keywords().like("%$key%") }
 
     @POST
     @Consumes(APPLICATION_JSON, TEXT_PLAIN)
