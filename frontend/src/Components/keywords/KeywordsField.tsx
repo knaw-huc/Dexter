@@ -2,39 +2,28 @@ import React from "react"
 import { Control, Controller } from "react-hook-form"
 import { Autocomplete } from "@mui/material"
 import { TextField } from "@mui/material"
-import { getKeywords, getKeywordsAutocomplete } from "../API"
+import { getKeywordsAutocomplete } from "../API"
 import { Collections, Sources, Keywords } from "../../Model/DexterModel"
 import parse from "autosuggest-highlight/parse"
 import match from "autosuggest-highlight/match"
+import { useDebounce } from "../../Utils/useDebounce"
 
 export const KeywordsField = ({ control }: { control: Control<Keywords | Collections | Sources> }) => {
     const [keywords, setKeywords] = React.useState<Keywords[]>([])
     const [inputValue, setInputValue] = React.useState("")
-
-    // const doGetKeywords = async () => {
-    //     const kw = await getKeywords()
-    //     setKeywords(kw)
-    // }
-
-    // React.useEffect(() => {
-    //     doGetKeywords()
-    // }, [])
-
+    const debouncedInput = useDebounce<string>(inputValue, 250)
 
     async function autoComplete(input: string) {
-        console.log(input)
         const result = await getKeywordsAutocomplete(input)
-        console.log(result)
         setKeywords(result)
         return result
     }
 
-
     React.useEffect(() => {
-        if (inputValue.length > 2) {
-            autoComplete(inputValue)
+        if (debouncedInput.length > 2) {
+            autoComplete(debouncedInput)
         }
-    }, [inputValue])
+    }, [debouncedInput])
 
     return (
         <div>
@@ -44,7 +33,7 @@ export const KeywordsField = ({ control }: { control: Control<Keywords | Collect
                 render={({ field: { onChange, value } }) => (
                     <Autocomplete
                         inputValue={inputValue}
-                        open={inputValue.length > 2}
+                        open={debouncedInput.length > 2}
                         onInputChange={async (event, value) => { setInputValue(value) }}
                         multiple={true}
                         id="keywords-autocomplete"
@@ -83,7 +72,6 @@ export const KeywordsField = ({ control }: { control: Control<Keywords | Collect
                         }}
                         onChange={(event, values) => {
                             onChange(values)
-                            console.log(values)
                         }}
                     />
                 )}
