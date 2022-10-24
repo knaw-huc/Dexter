@@ -1,9 +1,6 @@
 package nl.knaw.huc.dexter.db
 
-import nl.knaw.huc.dexter.api.FormSource
-import nl.knaw.huc.dexter.api.ResultKeyword
-import nl.knaw.huc.dexter.api.ResultSource
-import nl.knaw.huc.dexter.api.User
+import nl.knaw.huc.dexter.api.*
 import org.jdbi.v3.sqlobject.kotlin.BindKotlin
 import org.jdbi.v3.sqlobject.kotlin.RegisterKotlinMapper
 import org.jdbi.v3.sqlobject.statement.SqlQuery
@@ -51,8 +48,8 @@ interface SourcesDao {
     @SqlUpdate("delete from sources_keywords where source_id = :sourceId and key_id = :keywordId")
     fun deleteKeyword(sourceId: UUID, keywordId: Int)
 
-    @SqlQuery("select lang_id from sources_languages where source_id = :sourceId")
-    fun getLanguages(sourceId: UUID): List<String>
+    @SqlQuery("select l.* from sources_languages sl join iso_639_3 l on sl.lang_id = l.id where source_id = :sourceId")
+    fun getLanguages(sourceId: UUID): List<ResultLanguage>
 
     @SqlUpdate("insert into sources_languages (source_id,lang_id) values (:sourceId,:languageId) on conflict do nothing")
     fun addLanguage(sourceId: UUID, languageId: String)
