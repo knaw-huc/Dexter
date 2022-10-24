@@ -48,7 +48,7 @@ interface CorporaDao {
     @SqlUpdate("delete from corpora_keywords where corpus_id = :corpusId and key_id = :keywordId")
     fun deleteKeyword(corpusId: UUID, keywordId: Int)
 
-    @SqlQuery("select l.* from corpora_languages cl join languages l on cl.lang_id = l.id where corpus_id = :corpusId")
+    @SqlQuery("select l.* from corpora_languages cl join iso_639_3 l on cl.lang_id = l.id where corpus_id = :corpusId")
     fun getLanguages(corpusId: UUID): List<ResultLanguage>
 
     @SqlUpdate("insert into corpora_languages (corpus_id,lang_id) values (:corpusId,:languageId) on conflict do nothing")
