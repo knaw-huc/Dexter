@@ -62,13 +62,13 @@ class LanguagesResource(private val jdbi: Jdbi) {
         line.split('\t').let { cols ->
             ResultLanguage(
                 id = cols[0],
-                part2b = cols[1],
-                part2t = cols[2],
-                part1 = cols[3],
+                part2b = cols[1].ifBlank { null },
+                part2t = cols[2].ifBlank { null  },
+                part1 = cols[3].ifBlank { null },
                 scope = cols[4][0],
                 type = cols[5][0],
                 refName = cols[6],
-                comment = cols[7]
+                comment = cols[7].ifBlank { null }
             )
         }
 
