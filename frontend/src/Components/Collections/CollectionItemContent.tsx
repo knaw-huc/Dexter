@@ -1,13 +1,14 @@
 import React from "react"
-import { getCollectionById, getKeywordsCorpora } from "../API"
+import { getCollectionById, getKeywordsCorpora, getLanguagesCorpora } from "../API"
 import { useParams } from "react-router-dom"
-import { Collections, Keywords } from "../../Model/DexterModel"
+import { Collections, Keywords, Languages } from "../../Model/DexterModel"
 import { collectionsContext } from "../../State/Collections/collectionContext"
 import { ACTIONS } from "../../State/actions"
 import { NewCollection } from "./NewCollection"
 import styled from "@emotion/styled"
 import Button from "@mui/material/Button"
 import { KeywordContent } from "../keywords/KeywordContent"
+import { LanguagesContent } from "../languages/LanguagesContent"
 
 const Wrapper = styled.div`
     overflow: auto;
@@ -16,6 +17,7 @@ const Wrapper = styled.div`
 export const CollectionItemContent = () => {
     const [collection, setCollection] = React.useState<Collections>(null)
     const [keywords, setKeywords] = React.useState<Keywords[]>(null)
+    const [languages, setLanguages] = React.useState<Languages[]>(null)
 
     const params = useParams()
 
@@ -45,9 +47,14 @@ export const CollectionItemContent = () => {
     const doGetCollectionById = async (id: string) => {
         const response = await getCollectionById(id)
         setCollection(response as Collections)
+
         const kws = await getKeywordsCorpora(response.id)
         setKeywords(kws)
         console.log(kws)
+
+        const langs = await getLanguagesCorpora(response.id)
+        setLanguages(langs)
+        console.log(langs)
     }
 
     React.useEffect(() => {
@@ -60,7 +67,7 @@ export const CollectionItemContent = () => {
 
     return (
         <Wrapper>
-            {collection && keywords &&
+            {collection && keywords && languages &&
                 <>
                     <Button variant="contained" onClick={formShowHandler}>Edit</Button>
                     <p>Parent ID: {collection.parentId}</p>
@@ -74,6 +81,7 @@ export const CollectionItemContent = () => {
                     <p>Contributor: {collection.contributor}</p>
                     <p>Notes: {collection.notes}</p>
                     <div>Keywords: <KeywordContent keywords={keywords} /></div>
+                    <div>Languages: <LanguagesContent languages={languages} /></div>
                 </>
             }
             {collectionsState.editColMode && <NewCollection show={showForm} onEdit={editHandler} edit={collectionsState.editColMode} colToEdit={collectionsState.toEditCol} onClose={formCloseHandler} refetchCol={refetchCollection} />}

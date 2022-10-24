@@ -50,8 +50,9 @@ export const LanguagesField = ({ control }: { control: Control<Collections | Sou
                             />
                         )}
                         renderOption={(props, option, { inputValue }) => {
-                            const matches = match(option.refName, inputValue, { insideWords: true })
-                            const parts = parse(option.refName, matches)
+                            const label = option.refName + " [" + option.id + "]"
+                            const matches = match(label, inputValue, { insideWords: true })
+                            const parts = parse(label, matches)
 
                             return (
                                 <li {...props}>

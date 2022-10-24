@@ -1,16 +1,18 @@
 import React from "react"
 import { useParams } from "react-router-dom"
-import { Sources, Keywords } from "../../Model/DexterModel"
+import { Sources, Keywords, Languages } from "../../Model/DexterModel"
 import { sourcesContext } from "../../State/Sources/sourcesContext"
-import { getKeywordsSources, getSourceById } from "../API"
+import { getKeywordsSources, getLanguagesSources, getSourceById } from "../API"
 import { ACTIONS } from "../../State/actions"
 import { NewSource } from "./NewSource"
 import Button from "@mui/material/Button"
 import { KeywordContent } from "../keywords/KeywordContent"
+import { LanguagesContent } from "../languages/LanguagesContent"
 
 export const SourceItemContent = () => {
     const [source, setSource] = React.useState<Sources>(null)
     const [keywords, setKeywords] = React.useState<Keywords[]>(null)
+    const [languages, setLanguages] = React.useState<Languages[]>(null)
 
     const params = useParams()
 
@@ -40,9 +42,14 @@ export const SourceItemContent = () => {
     const doGetSourceById = async (id: string) => {
         const response = await getSourceById(id)
         setSource(response as Sources)
+
         const kws = await getKeywordsSources(response.id)
         setKeywords(kws)
         console.log(kws)
+
+        const langs = await getLanguagesSources(response.id)
+        setLanguages(langs)
+        console.log(langs)
     }
 
     React.useEffect(() => {
@@ -55,7 +62,7 @@ export const SourceItemContent = () => {
 
     return (
         <div>
-            {source && keywords &&
+            {source && keywords && languages &&
                 <>
                     <Button variant="contained" onClick={formShowHandler}>Edit</Button>
                     <p>External reference: {source.externalRef}</p>
@@ -68,6 +75,7 @@ export const SourceItemContent = () => {
                     <p>Latest: {source.latest}</p>
                     <p>Notes: {source.notes}</p>
                     <div>Keywords: <KeywordContent keywords={keywords} /></div>
+                    <div>Languages: <LanguagesContent languages={languages} /></div>
                 </>
             }
             {sourcesState.editSourceMode && <NewSource show={showForm} onEdit={editHandler} edit={sourcesState.editSourceMode} sourceToEdit={sourcesState.toEditSource} onClose={formCloseHandler} refetchSource={refetchSource} />}
