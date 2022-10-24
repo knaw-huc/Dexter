@@ -3,10 +3,11 @@ import { useForm, SubmitHandler } from "react-hook-form"
 import Modal from "react-bootstrap/Modal"
 import Button from "@mui/material/Button"
 import styled from "@emotion/styled"
-import { addKeywordToSource, createSource, getSourceById, updateSource } from "../API"
-import { Collections, Keywords, Sources } from "../../Model/DexterModel"
+import { addKeywordsToSource, addLanguagesToSource, createSource, getSourceById, updateSource } from "../API"
+import { Collections, Keywords, Languages, Sources } from "../../Model/DexterModel"
 import TextField from "@mui/material/TextField"
 import { KeywordsField } from "../keywords/KeywordsField"
+import { LanguagesField } from "../languages/LanguagesField"
 
 type NewSourceProps = {
     refetch?: () => void,
@@ -31,23 +32,20 @@ const Select = styled.select`
 `
 
 export function NewSource(props: NewSourceProps) {
-    const { register, handleSubmit, reset, setValue, control } = useForm<Sources | Keywords | Collections>()
+    const { register, handleSubmit, reset, setValue, control } = useForm<Sources | Keywords | Collections | Languages>()
     const onSubmit: SubmitHandler<Sources> = async data => {
         console.log(data)
 
-        const keywordIds = () => {
-            const ids = data.val.map((keyword) => {
-                return keyword.id
-            })
+        const keywordIds = data.val.map((keyword) => { return keyword.id })
 
-            return ids
-        }
+        const languagesIds = data.refName.map((language) => { return language.id })
 
         if (!props.edit) {
             try {
                 const newSource = await createSource(data)
                 const sourceId = newSource.id
-                await addKeywordToSource(sourceId, keywordIds())
+                await addKeywordsToSource(sourceId, keywordIds)
+                await addLanguagesToSource(sourceId, languagesIds)
                 await props.refetch()
             } catch (error) {
                 console.log(error)
@@ -127,6 +125,8 @@ export function NewSource(props: NewSourceProps) {
                         <TextFieldStyled fullWidth margin="dense" {...register("notes")} />
                         <Label>Keywords</Label>
                         <KeywordsField control={control} />
+                        <Label>Languages</Label>
+                        <LanguagesField control={control} />
                         <Button variant="contained" type="submit">Submit</Button>
                     </form>
                 </Modal.Body>

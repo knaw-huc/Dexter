@@ -1,57 +1,57 @@
 import React from "react"
 import { Control, Controller } from "react-hook-form"
-import { Autocomplete } from "@mui/material"
-import { TextField } from "@mui/material"
-import { getKeywordsAutocomplete } from "../API"
-import { Collections, Sources, Keywords, Languages } from "../../Model/DexterModel"
+import Autocomplete from "@mui/material/Autocomplete"
+import TextField from "@mui/material/TextField"
+import { getLanguagesAutocomplete } from "../API"
+import { Collections, Sources, Languages, Keywords } from "../../Model/DexterModel"
 import parse from "autosuggest-highlight/parse"
 import match from "autosuggest-highlight/match"
 import { useDebounce } from "../../Utils/useDebounce"
 
-export const KeywordsField = ({ control }: { control: Control<Keywords | Collections | Sources | Languages> }) => {
-    const [keywords, setKeywords] = React.useState<Keywords[]>([])
+export const LanguagesField = ({ control }: { control: Control<Collections | Sources | Languages | Keywords> }) => {
+    const [languages, setLanguages] = React.useState<Languages[]>([])
     const [inputValue, setInputValue] = React.useState("")
     const debouncedInput = useDebounce<string>(inputValue, 250)
 
-    async function autoComplete(input: string) {
-        const result = await getKeywordsAutocomplete(input)
-        setKeywords(result)
+    const autoComplete = async (input: string) => {
+        const result = await getLanguagesAutocomplete(input)
+        setLanguages(result)
         return result
     }
 
     React.useEffect(() => {
-        if (debouncedInput.length > 2) {
+        if (debouncedInput.length > 0) {
             autoComplete(debouncedInput)
         }
     }, [debouncedInput])
 
     return (
         <div>
-            {keywords && <Controller
+            {languages && <Controller
                 control={control}
-                name={"val"}
+                name={"refName"}
                 render={({ field: { onChange, value } }) => (
                     <Autocomplete
                         inputValue={inputValue}
-                        open={debouncedInput.length > 2}
+                        open={debouncedInput.length > 0}
                         onInputChange={async (event, value) => { setInputValue(value) }}
                         multiple={true}
-                        id="keywords-autocomplete"
-                        options={keywords}
-                        getOptionLabel={(keyword: Keywords) => keyword.val}
+                        id="languages-autocomplete"
+                        options={languages}
+                        getOptionLabel={(language: Languages) => language.refName}
                         filterOptions={(x) => x}
                         renderInput={(params) => (
                             <TextField
                                 {...params}
                                 margin="dense"
-                                label="Select a keyword"
+                                label="Select a language"
                                 onChange={onChange}
                                 value={value}
                             />
                         )}
                         renderOption={(props, option, { inputValue }) => {
-                            const matches = match(option.val, inputValue, { insideWords: true })
-                            const parts = parse(option.val, matches)
+                            const matches = match(option.refName, inputValue, { insideWords: true })
+                            const parts = parse(option.refName, matches)
 
                             return (
                                 <li {...props}>

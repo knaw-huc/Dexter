@@ -1,4 +1,4 @@
-import { Collections, Sources, Keywords } from "../Model/DexterModel"
+import { Collections, Sources, Keywords, Languages } from "../Model/DexterModel"
 
 const headers = {
     "Content-Type": "application/json"
@@ -229,7 +229,7 @@ export const createKeywords = async (newKeyword: Keywords) => {
     return data
 }
 
-export const addKeywordToCorpus = async (corpusId: string, keywordId: string[]) => {
+export const addKeywordsToCorpus = async (corpusId: string, keywordId: string[]) => {
     const response = await fetch(`/api/corpora/${corpusId}/keywords`, {
         method: "POST",
         headers: headers,
@@ -249,7 +249,7 @@ export const addKeywordToCorpus = async (corpusId: string, keywordId: string[]) 
     return data
 }
 
-export const addKeywordToSource = async (sourceId: string, keywordId: string[]) => {
+export const addKeywordsToSource = async (sourceId: string, keywordId: string[]) => {
     const response = await fetch(`/api/sources/${sourceId}/keywords`, {
         method: "POST",
         headers: headers,
@@ -334,6 +334,65 @@ export const getKeywordsAutocomplete = async (input: string) => {
     }
 
     const data: Keywords[] = await response.json()
+    console.log(data)
+
+    return data
+}
+
+export const getLanguagesAutocomplete = async (input: string) => {
+    const response = await fetch("/api/languages/autocomplete", {
+        method: "POST",
+        headers: headers,
+        body: input
+    })
+
+    if (!response.ok) {
+        console.error(response)
+        return
+    }
+
+    const data: Languages[] = await response.json()
+    console.log(data)
+
+    return data
+}
+
+export const addLanguagesToCorpus = async (corpusId: string, languageId: string[]) => {
+    const response = await fetch(`/api/corpora/${corpusId}/languages`, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(languageId)
+    })
+
+    console.log(response)
+
+    if (!response.ok) {
+        console.error(response)
+        return
+    }
+
+    const data: Languages = await response.json()
+    console.log(data)
+
+    return data
+}
+
+export const addLanguagesToSource = async (corpusId: string, languageId: string[]) => {
+
+    const response = await fetch(`/api/sources/${corpusId}/languages`, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(languageId)
+    })
+
+    console.log(response)
+
+    if (!response.ok) {
+        console.error(response)
+        return
+    }
+
+    const data: Languages = await response.json()
     console.log(data)
 
     return data

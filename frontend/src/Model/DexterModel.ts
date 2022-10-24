@@ -13,7 +13,8 @@ export interface Collections {
     createdBy: string,
     createdAt: string,
     updatedAt: string,
-    val: Keywords[]
+    val: Keywords[],
+    refName: Languages[]
 }
 
 export interface Sources {
@@ -30,7 +31,8 @@ export interface Sources {
     createdBy: string,
     createdAt: string,
     updatedAt: string,
-    val: Keywords[]
+    val: Keywords[],
+    refName: Languages[]
 }
 
 export type Keywords = {

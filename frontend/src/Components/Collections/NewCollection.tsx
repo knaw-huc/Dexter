@@ -3,11 +3,12 @@ import { useForm, SubmitHandler } from "react-hook-form"
 import Modal from "react-bootstrap/Modal"
 import Button from "@mui/material/Button"
 import styled from "@emotion/styled"
-import { addKeywordToCorpus, createCollection, getCollectionById, updateCollection } from "../API"
-import { Collections, Keywords, Sources } from "../../Model/DexterModel"
+import { addKeywordsToCorpus, addLanguagesToCorpus, createCollection, getCollectionById, updateCollection } from "../API"
+import { Collections, Keywords, Languages, Sources } from "../../Model/DexterModel"
 // import { Languages } from "./Languages"
 import TextField from "@mui/material/TextField"
 import { KeywordsField } from "../keywords/KeywordsField"
+import { LanguagesField } from "../languages/LanguagesField"
 
 type NewCollectionProps = {
     refetch?: () => void,
@@ -32,23 +33,20 @@ const Select = styled.select`
 `
 
 export function NewCollection(props: NewCollectionProps) {
-    const { register, handleSubmit, reset, setValue, control } = useForm<Collections | Keywords | Sources>()
+    const { register, handleSubmit, reset, setValue, control } = useForm<Collections | Keywords | Sources | Languages>()
     const onSubmit: SubmitHandler<Collections> = async data => {
         console.log(data)
 
-        const keywordIds = () => {
-            const ids = data.val.map((keyword) => {
-                return keyword.id
-            })
+        const keywordIds = data.val.map((keyword) => { return keyword.id })
 
-            return ids
-        }
+        const languagesIds = data.refName.map((language) => { return language.id })
 
         if (!props.edit) {
             try {
                 const newCollection = await createCollection(data)
                 const corpusId = newCollection.id
-                await addKeywordToCorpus(corpusId, keywordIds())
+                await addKeywordsToCorpus(corpusId, keywordIds)
+                await addLanguagesToCorpus(corpusId, languagesIds)
                 await props.refetch()
             } catch (error) {
                 console.log(error)
@@ -130,6 +128,8 @@ export function NewCollection(props: NewCollectionProps) {
                         <Languages control={control} /> */}
                         <Label>Keywords</Label>
                         <KeywordsField control={control} />
+                        <Label>Languages</Label>
+                        <LanguagesField control={control} />
                         <Button variant="contained" type="submit">Submit</Button>
                     </form>
                 </Modal.Body>
