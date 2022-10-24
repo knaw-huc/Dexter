@@ -397,3 +397,25 @@ export const addLanguagesToSource = async (corpusId: string, languageId: string[
 
     return data
 }
+
+export const getLanguages = async (type: string, id: string) => {
+    const response = await fetch(`/api/${type}/${id}/languages`, {
+        method: "GET",
+        headers: headers
+    })
+
+    console.log(response)
+
+    if (!response.ok) {
+        console.error(response)
+        return
+    }
+
+    const data: Languages[] = await response.json()
+    console.log(data)
+
+    return data
+}
+
+export const getLanguagesCorpora = (corpusId: string) => getLanguages("corpora", corpusId)
+export const getLanguagesSources = (sourceId: string) => getLanguages("sources", sourceId)
