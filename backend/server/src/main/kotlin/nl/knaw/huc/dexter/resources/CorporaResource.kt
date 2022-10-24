@@ -115,6 +115,7 @@ class CorporaResource(private val jdbi: Jdbi) {
         }
 
     @POST
+    @Consumes(TEXT_PLAIN)
     @Path("$ID_PATH/$LANGUAGES")
     fun addLanguage(@PathParam(ID_PARAM) id: UUID, languageId: String) =
         onExistingCorpus(id) { dao, corpus ->
@@ -122,6 +123,17 @@ class CorporaResource(private val jdbi: Jdbi) {
             dao.addLanguage(corpus.id, languageId)
             dao.getLanguages(id)
         }
+
+    @POST
+    @Consumes(APPLICATION_JSON)
+    @Path("$ID_PATH/$LANGUAGES")
+    fun addLanguages(@PathParam(ID_PARAM) id: UUID, languageIds: List<String>) =
+        onExistingCorpus(id) { dao, corpus ->
+            log.info("addLanguages: corpusId=${corpus.id}, languageIds=$languageIds")
+            languageIds.forEach { languageId -> dao.addLanguage(corpus.id, languageId) }
+            dao.getLanguages(corpus.id)
+        }
+
 
     @DELETE
     @Path("$ID_PATH/$LANGUAGES/{languageId}")
