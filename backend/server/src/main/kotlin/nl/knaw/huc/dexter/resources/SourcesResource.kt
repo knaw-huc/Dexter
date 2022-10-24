@@ -112,12 +112,23 @@ class SourcesResource(private val jdbi: Jdbi) {
 
     @POST
     @Path("$ID_PATH/$LANGUAGES")
-    fun addLanguage(@PathParam(ID_PARAM) id: UUID, languageId: String): List<String> =
+    fun addLanguage(@PathParam(ID_PARAM) id: UUID, languageId: String) =
         onExistingSource(id) { dao, src ->
             log.info("addLanguage: sourceId=${src.id}, languageId=$languageId")
             dao.addLanguage(src.id, languageId)
             dao.getLanguages(src.id)
         }
+
+    @POST
+    @Consumes(APPLICATION_JSON)
+    @Path("$ID_PATH/$LANGUAGES")
+    fun addLanguages(@PathParam(ID_PARAM) id: UUID, languageIds: List<String>) =
+        onExistingSource(id) { dao, src ->
+            log.info("addLanguages: sourceId=${src.id}, languageIds=$languageIds")
+            languageIds.forEach { languageId -> dao.addLanguage(src.id, languageId) }
+            dao.getLanguages(src.id)
+        }
+
 
     @DELETE
     @Path("$ID_PATH/$LANGUAGES/{languageId}")
