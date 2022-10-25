@@ -16,6 +16,7 @@
   "dependencies": {
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
+    "@hookform/resolvers": "^2.9.10",
     "@mui/icons-material": "^5.10.9",
     "@mui/material": "^5.10.9",
     "@types/node": "^18.8.1",
@@ -25,7 +26,8 @@
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.33.1",
     "react-router-dom": "^6.3.0",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@emotion/eslint-plugin": "^11.10.0",
