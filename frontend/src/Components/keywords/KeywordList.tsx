@@ -4,12 +4,14 @@ import { deleteKeyword, getKeywords } from "../API"
 import { NewKeywords } from "./NewKeywords"
 import DeleteIcon from "@mui/icons-material/Delete"
 import styled from "@emotion/styled"
+import { red } from "@mui/material/colors"
 
 const DeleteIconStyled = styled(DeleteIcon)`
     margin-left: 5px;
+    color: gray;
     &:hover {
         cursor: pointer;
-        color: gray;
+        color: ${red[700]};
     }
 `
 
@@ -38,7 +40,7 @@ export const KeywordList = () => {
         <>
             <NewKeywords setKeywords={setKeywords} />
             {keywords && keywords.map((keyword: Keywords, index: number) => (
-                <div key={index}>{keyword.id} {keyword.val} {<DeleteIconStyled color="error" onClick={() => handleDelete(keyword.id)} />}</div>
+                <div key={index}>{keyword.id} {keyword.val} {<DeleteIconStyled onClick={() => handleDelete(keyword.id)} />}</div>
             ))}
         </>
     )

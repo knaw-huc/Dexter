@@ -6,6 +6,7 @@ import styled from "@emotion/styled"
 import { collectionsContext } from "../../State/Collections/collectionContext"
 import { ACTIONS } from "../../State/actions"
 import DeleteIcon from "@mui/icons-material/Delete"
+import { red } from "@mui/material/colors"
 
 type CollectionItemProps = {
     collectionId: React.Key,
@@ -15,9 +16,10 @@ type CollectionItemProps = {
 
 const DeleteIconStyled = styled(DeleteIcon)`
     margin-left: 5px;
+    color: gray;
     &:hover {
         cursor: pointer;
-        color: gray;
+        color: ${red[700]};
     }
 `
 
@@ -50,7 +52,7 @@ export function CollectionItem(props: CollectionItemProps) {
                     <Link to={`/corpora/${props.collection.id}`} key={props.collectionId} onClick={toggleClick}>
                         {props.collection.title}
                     </Link>
-                    <DeleteIconStyled color="error" onClick={() => handleDelete(props.collection.id)} />
+                    <DeleteIconStyled onClick={() => handleDelete(props.collection.id)} />
                 </li>
             </ul>
         </>
