@@ -87,17 +87,17 @@ export const SourceItemContent = () => {
             {source && keywords && languages &&
                 <>
                     <Button variant="contained" onClick={formShowHandler}>Edit</Button>
-                    <p>External reference: {source.externalRef}</p>
-                    <p>Title: {source.title}</p>
-                    <p>Description: {source.description}</p>
-                    <p>Rights: {source.rights}</p>
-                    <p>Access: {source.access}</p>
-                    <p>Location: {source.location}</p>
-                    <p>Earliest: {source.earliest}</p>
-                    <p>Latest: {source.latest}</p>
-                    <p>Notes: {source.notes}</p>
-                    <div>Keywords: <KeywordContent keywords={keywords} onDelete={deleteKeywordHandler} /></div>
-                    <div>Languages: <LanguagesContent languages={languages} onDelete={deleteLanguageHandler} /></div>
+                    <p><strong>External reference:</strong> {source.externalRef}</p>
+                    <p><strong>Title:</strong> {source.title}</p>
+                    <p><strong>Description:</strong> {source.description}</p>
+                    <p><strong>Rights:</strong> {source.rights}</p>
+                    <p><strong>Access:</strong> {source.access}</p>
+                    <p><strong>Location:</strong> {source.location}</p>
+                    <p><strong>Earliest:</strong> {source.earliest}</p>
+                    <p><strong>Latest:</strong> {source.latest}</p>
+                    <p><strong>Notes:</strong> {source.notes}</p>
+                    <div><strong>Keywords:</strong> <KeywordContent keywords={keywords} onDelete={deleteKeywordHandler} /></div>
+                    <div><strong>Languages:</strong> <LanguagesContent languages={languages} onDelete={deleteLanguageHandler} /></div>
                 </>
             }
             {sourcesState.editSourceMode && <NewSource show={showForm} onEdit={editHandler} edit={sourcesState.editSourceMode} sourceToEdit={sourcesState.toEditSource} onClose={formCloseHandler} refetchSource={refetchSource} />}

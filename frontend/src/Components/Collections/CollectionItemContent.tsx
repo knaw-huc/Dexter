@@ -92,18 +92,18 @@ export const CollectionItemContent = () => {
             {collection && keywords && languages &&
                 <>
                     <Button variant="contained" onClick={formShowHandler}>Edit</Button>
-                    <p>Parent ID: {collection.parentId}</p>
-                    <p>Title: {collection.title}</p>
-                    <p>Description: {collection.description}</p>
-                    <p>Rights: {collection.rights}</p>
-                    <p>Access: {collection.access}</p>
-                    <p>Location: {collection.location}</p>
-                    <p>Earliest: {collection.earliest}</p>
-                    <p>Latest: {collection.latest}</p>
-                    <p>Contributor: {collection.contributor}</p>
-                    <p>Notes: {collection.notes}</p>
-                    <div>Keywords: <KeywordContent keywords={keywords} onDelete={deleteKeywordHandler} /></div>
-                    <div>Languages: <LanguagesContent languages={languages} onDelete={deleteLanguageHandler} /></div>
+                    <p><strong>Parent ID:</strong> {collection.parentId}</p>
+                    <p><strong>Title:</strong> {collection.title}</p>
+                    <p><strong>Description:</strong> {collection.description}</p>
+                    <p><strong>Rights:</strong> {collection.rights}</p>
+                    <p><strong>Access:</strong> {collection.access}</p>
+                    <p><strong>Location:</strong> {collection.location}</p>
+                    <p><strong>Earliest:</strong> {collection.earliest}</p>
+                    <p><strong>Latest:</strong> {collection.latest}</p>
+                    <p><strong>Contributor:</strong> {collection.contributor}</p>
+                    <p><strong>Notes:</strong> {collection.notes}</p>
+                    <div><strong>Keywords:</strong> <KeywordContent keywords={keywords} onDelete={deleteKeywordHandler} /></div>
+                    <div><strong>Languages:</strong> <LanguagesContent languages={languages} onDelete={deleteLanguageHandler} /></div>
                 </>
             }
             {collectionsState.editColMode && <NewCollection show={showForm} onEdit={editHandler} edit={collectionsState.editColMode} colToEdit={collectionsState.toEditCol} onClose={formCloseHandler} refetchCol={refetchCollection} />}
