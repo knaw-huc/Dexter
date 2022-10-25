@@ -36,16 +36,16 @@ export function NewSource(props: NewSourceProps) {
     const onSubmit: SubmitHandler<Sources> = async data => {
         console.log(data)
 
-        const keywordIds = data.val.map((keyword) => { return keyword.id })
+        const keywordIds = data.val && data.val.map((keyword) => { return keyword.id })
 
-        const languagesIds = data.refName.map((language) => { return language.id })
+        const languageIds = data.refName && data.refName.map((language) => { return language.id })
 
         if (!props.edit) {
             try {
                 const newSource = await createSource(data)
                 const sourceId = newSource.id
-                await addKeywordsToSource(sourceId, keywordIds)
-                await addLanguagesToSource(sourceId, languagesIds)
+                keywordIds && await addKeywordsToSource(sourceId, keywordIds)
+                languageIds && await addLanguagesToSource(sourceId, languageIds)
                 await props.refetch()
             } catch (error) {
                 console.log(error)
@@ -69,7 +69,7 @@ export function NewSource(props: NewSourceProps) {
         const doGetSourceById = async (id: string) => {
             const response: any = await getSourceById(id)
             console.log(response as Sources)
-            const fields = ["title", "description", "creator", "subject", "rights", "access", "created", "spatial", "temporal", "language"]
+            const fields = ["externalRef", "title", "description", "rights", "access", "location", "earliest", "latest", "notes"]
             fields.map((field: any) => {
                 setValue(field, response[field])
             })

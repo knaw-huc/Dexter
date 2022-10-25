@@ -37,16 +37,16 @@ export function NewCollection(props: NewCollectionProps) {
     const onSubmit: SubmitHandler<Collections> = async data => {
         console.log(data)
 
-        const keywordIds = data.val.map((keyword) => { return keyword.id })
+        const keywordIds = data.val && data.val.map((keyword) => { return keyword.id })
 
-        const languagesIds = data.refName.map((language) => { return language.id })
+        const languageIds = data.refName && data.refName.map((language) => { return language.id })
 
         if (!props.edit) {
             try {
                 const newCollection = await createCollection(data)
                 const corpusId = newCollection.id
-                await addKeywordsToCorpus(corpusId, keywordIds)
-                await addLanguagesToCorpus(corpusId, languagesIds)
+                keywordIds && await addKeywordsToCorpus(corpusId, keywordIds)
+                languageIds && await addLanguagesToCorpus(corpusId, languageIds)
                 await props.refetch()
             } catch (error) {
                 console.log(error)
