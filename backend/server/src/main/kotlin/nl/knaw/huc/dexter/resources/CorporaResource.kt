@@ -7,6 +7,7 @@ import nl.knaw.huc.dexter.api.ResourcePaths.ID_PARAM
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PATH
 import nl.knaw.huc.dexter.api.ResourcePaths.KEYWORDS
 import nl.knaw.huc.dexter.api.ResourcePaths.LANGUAGES
+import nl.knaw.huc.dexter.api.ResourcePaths.SOURCES
 import nl.knaw.huc.dexter.api.ResultCorpus
 import nl.knaw.huc.dexter.auth.DexterUser
 import nl.knaw.huc.dexter.db.CorporaDao
@@ -144,6 +145,34 @@ class CorporaResource(private val jdbi: Jdbi) {
         log.info("deleteLanguage: corpusId=${corpus.id}, languageId=$languageId")
         dao.deleteLanguage(corpus.id, languageId)
         dao.getLanguages(corpus.id)
+    }
+
+    @GET
+    @Path("$ID_PATH/$SOURCES")
+    fun getSources(@PathParam(ID_PARAM) corpusId: UUID) =
+        onExistingCorpus(corpusId) { dao, corpus ->
+            dao.getSources(corpus.id)
+        }
+
+    @POST
+    @Consumes(APPLICATION_JSON)
+    @Path("$ID_PATH/$SOURCES")
+    fun addSources(@PathParam(ID_PARAM) corpusId: UUID, sourceIds: List<UUID>) =
+        onExistingCorpus(corpusId) { dao, corpus ->
+            log.info("addSources: corpusId=${corpus.id}, sourceIds=$sourceIds")
+            sourceIds.forEach {sourceId -> dao.addSource(corpus.id, sourceId)}
+            dao.getSources(corpus.id)
+        }
+
+    @DELETE
+    @Path("$ID_PATH/$SOURCES/{sourceId}")
+    fun deleteSource(
+        @PathParam(ID_PARAM) id: UUID,
+        @PathParam("sourceId") sourceId: UUID
+    ) = onExistingCorpus(id) { dao, corpus ->
+        log.info("deleteSource: corpusId=${corpus.id}, sourceId=$sourceId")
+        dao.deleteSource(corpus.id, sourceId)
+        dao.getSources(corpus.id)
     }
 
     private fun <R> onExistingCorpus(id: UUID, block: DaoBlock<CorporaDao, ResultCorpus, R>): R =
