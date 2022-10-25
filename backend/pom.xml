@@ -8,7 +8,7 @@
 
     <groupId>nl.knaw.huc</groupId>
     <artifactId>dexter</artifactId>
-    <version>0.8.3</version>
+    <version>0.8.4</version>
     <packaging>pom</packaging>
 
     <name>Dexter Backend</name>
