@@ -1,9 +1,6 @@
 package nl.knaw.huc.dexter.db
 
-import nl.knaw.huc.dexter.api.FormCorpus
-import nl.knaw.huc.dexter.api.ResultCorpus
-import nl.knaw.huc.dexter.api.ResultKeyword
-import nl.knaw.huc.dexter.api.ResultLanguage
+import nl.knaw.huc.dexter.api.*
 import org.jdbi.v3.sqlobject.kotlin.BindKotlin
 import org.jdbi.v3.sqlobject.kotlin.RegisterKotlinMapper
 import org.jdbi.v3.sqlobject.statement.SqlQuery
@@ -56,4 +53,13 @@ interface CorporaDao {
 
     @SqlUpdate("delete from corpora_languages where corpus_id = :corpusId and lang_id = :languageId")
     fun deleteLanguage(corpusId: UUID, languageId: String)
+
+    @SqlQuery("select s.* from corpora_sources cs join sources s on cs.source_id = s.id where corpus_id = :corpusId")
+    fun getSources(corpusId: UUID): List<ResultSource>
+
+    @SqlUpdate("insert into corpora_sources (corpus_id,source_id) values (:corpusId, :sourceId) on conflict do nothing")
+    fun addSource(corpusId: UUID, sourceId: UUID)
+
+    @SqlUpdate("delete from corpora_sources where corpus_id = :corpusId and source_id = :sourceId")
+    fun deleteSource(corpusId: UUID, sourceId: UUID)
 }
