@@ -419,3 +419,58 @@ export const getLanguages = async (type: string, id: string) => {
 
 export const getLanguagesCorpora = (corpusId: string) => getLanguages("corpora", corpusId)
 export const getLanguagesSources = (sourceId: string) => getLanguages("sources", sourceId)
+
+export const deleteLanguageFromCorpus = async (corpusId: string, languageId: string) => {
+    const response = await fetch(`/api/corpora/${corpusId}/languages/${languageId}`, {
+        method: "DELETE",
+        headers: headers
+    })
+
+    console.log(response)
+
+    if (!response.ok) {
+        console.error(response)
+        return
+    }
+}
+
+export const deleteKeywordFromCorpus = async (corpusId: string, keywordId: string) => {
+    const response = await fetch(`/api/corpora/${corpusId}/keywords/${keywordId}`, {
+        method: "DELETE",
+        headers: headers
+    })
+
+    console.log(response)
+
+    if (!response.ok) {
+        console.error(response)
+        return
+    }
+}
+
+export const deleteLanguageFromSource = async (sourceId: string, languageId: string) => {
+    const response = await fetch(`/api/sources/${sourceId}/languages/${languageId}`, {
+        method: "DELETE",
+        headers: headers
+    })
+
+    console.log(response)
+
+    if (!response.ok) {
+        console.error(response)
+        return
+    }
+}
+
+export const deleteKeywordFromSource = async (sourceId: string, keywordId: string) => {
+    const response = await fetch(`/api/sources/${sourceId}/keywords/${keywordId}`, {
+        method: "DELETE",
+        headers: headers
+    })
+    console.log(response)
+
+    if (!response.ok) {
+        console.error(response)
+        return
+    }
+}

@@ -1,5 +1,5 @@
 import React from "react"
-import { getCollectionById, getKeywordsCorpora, getLanguagesCorpora } from "../API"
+import { deleteKeywordFromCorpus, deleteLanguageFromCorpus, getCollectionById, getKeywordsCorpora, getLanguagesCorpora } from "../API"
 import { useParams } from "react-router-dom"
 import { Collections, Keywords, Languages } from "../../Model/DexterModel"
 import { collectionsContext } from "../../State/Collections/collectionContext"
@@ -65,6 +65,28 @@ export const CollectionItemContent = () => {
         await doGetCollectionById(params.corpusId)
     }
 
+    const deleteLanguageHandler = async (languageId: string) => {
+        const warning = window.confirm("Are you sure you wish to delete this language?")
+
+        if (warning === false) return
+
+        const corpusId = params.corpusId
+
+        await deleteLanguageFromCorpus(corpusId, languageId)
+        await refetchCollection()
+    }
+
+    const deleteKeywordHandler = async (keywordId: string) => {
+        const warning = window.confirm("Are you sure you wish to delete this keyword?")
+
+        if (warning === false) return
+
+        const corpusId = params.corpusId
+
+        await deleteKeywordFromCorpus(corpusId, keywordId)
+        await refetchCollection()
+    }
+
     return (
         <Wrapper>
             {collection && keywords && languages &&
@@ -80,8 +102,8 @@ export const CollectionItemContent = () => {
                     <p>Latest: {collection.latest}</p>
                     <p>Contributor: {collection.contributor}</p>
                     <p>Notes: {collection.notes}</p>
-                    <div>Keywords: <KeywordContent keywords={keywords} /></div>
-                    <div>Languages: <LanguagesContent languages={languages} /></div>
+                    <div>Keywords: <KeywordContent keywords={keywords} onDelete={deleteKeywordHandler} /></div>
+                    <div>Languages: <LanguagesContent languages={languages} onDelete={deleteLanguageHandler} /></div>
                 </>
             }
             {collectionsState.editColMode && <NewCollection show={showForm} onEdit={editHandler} edit={collectionsState.editColMode} colToEdit={collectionsState.toEditCol} onClose={formCloseHandler} refetchCol={refetchCollection} />}

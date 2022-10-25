@@ -6,6 +6,7 @@ import { deleteSource, getSources } from "../API"
 import { sourcesContext } from "../../State/Sources/sourcesContext"
 import { ACTIONS } from "../../State/actions"
 import DeleteIcon from "@mui/icons-material/Delete"
+import { red } from "@mui/material/colors"
 
 type SourceItemProps = {
     sourceId: React.Key,
@@ -15,9 +16,10 @@ type SourceItemProps = {
 
 const DeleteIconStyled = styled(DeleteIcon)`
     margin-left: 5px;
+    color: gray;
     &:hover {
         cursor: pointer;
-        color: gray;
+        color: ${red[700]};
     }
 `
 
@@ -50,7 +52,7 @@ export const SourceItem = (props: SourceItemProps) => {
                 <Link to={`/sources/${props.source.id}`} key={props.sourceId} onClick={toggleClick}>
                     {props.source.title}
                 </Link>
-                <DeleteIconStyled color="error" onClick={() => handleDelete(props.source.id)} />
+                <DeleteIconStyled onClick={() => handleDelete(props.source.id)} />
             </li>
         </ul>
     )

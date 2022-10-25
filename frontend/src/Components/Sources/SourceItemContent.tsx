@@ -2,7 +2,7 @@ import React from "react"
 import { useParams } from "react-router-dom"
 import { Sources, Keywords, Languages } from "../../Model/DexterModel"
 import { sourcesContext } from "../../State/Sources/sourcesContext"
-import { getKeywordsSources, getLanguagesSources, getSourceById } from "../API"
+import { deleteKeywordFromSource, deleteLanguageFromSource, getKeywordsSources, getLanguagesSources, getSourceById } from "../API"
 import { ACTIONS } from "../../State/actions"
 import { NewSource } from "./NewSource"
 import Button from "@mui/material/Button"
@@ -60,6 +60,28 @@ export const SourceItemContent = () => {
         await doGetSourceById(params.sourceId)
     }
 
+    const deleteLanguageHandler = async (languageId: string) => {
+        const warning = window.confirm("Are you sure you wish to delete this language?")
+
+        if (warning === false) return
+
+        const sourceId = params.sourceId
+
+        await deleteLanguageFromSource(sourceId, languageId)
+        await refetchSource()
+    }
+
+    const deleteKeywordHandler = async (keywordId: string) => {
+        const warning = window.confirm("Are you sure you wish to delete this keyword?")
+
+        if (warning === false) return
+
+        const sourceId = params.sourceId
+
+        await deleteKeywordFromSource(sourceId, keywordId)
+        await refetchSource()
+    }
+
     return (
         <div>
             {source && keywords && languages &&
@@ -74,8 +96,8 @@ export const SourceItemContent = () => {
                     <p>Earliest: {source.earliest}</p>
                     <p>Latest: {source.latest}</p>
                     <p>Notes: {source.notes}</p>
-                    <div>Keywords: <KeywordContent keywords={keywords} /></div>
-                    <div>Languages: <LanguagesContent languages={languages} /></div>
+                    <div>Keywords: <KeywordContent keywords={keywords} onDelete={deleteKeywordHandler} /></div>
+                    <div>Languages: <LanguagesContent languages={languages} onDelete={deleteLanguageHandler} /></div>
                 </>
             }
             {sourcesState.editSourceMode && <NewSource show={showForm} onEdit={editHandler} edit={sourcesState.editSourceMode} sourceToEdit={sourcesState.toEditSource} onClose={formCloseHandler} refetchSource={refetchSource} />}
