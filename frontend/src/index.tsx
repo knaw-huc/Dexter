@@ -10,7 +10,10 @@ const container = document.getElementById("container")
 const root = createRoot(container!)
 
 root.render(
-    <BrowserRouter>
-        <App />
-    </BrowserRouter>
+    <React.StrictMode>
+        <BrowserRouter>
+            <App />
+        </BrowserRouter>
+    </React.StrictMode>
+
 )
