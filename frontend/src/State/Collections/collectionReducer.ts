@@ -1,14 +1,14 @@
 import React from "react"
-import { Collections } from "../../Model/DexterModel"
+import { ServerCorpus } from "../../Model/DexterModel"
 import { ACTIONS } from "../actions"
 import { doGetCollections } from "../../Utils/doGetCollections"
 
 export interface CollectionsState {
-    collections: Collections[],
-    filteredCollections: Collections[]
-    selectedCollection: Collections | undefined,
+    collections: ServerCorpus[],
+    filteredCollections: ServerCorpus[]
+    selectedCollection: ServerCorpus | undefined,
     editColMode: boolean,
-    toEditCol: Collections | undefined
+    toEditCol: ServerCorpus | undefined
 }
 
 export const initState: CollectionsState = {
@@ -21,17 +21,17 @@ export const initState: CollectionsState = {
 
 interface SetCollections {
     type: ACTIONS.SET_COLLECTIONS,
-    collections: Collections[]
+    collections: ServerCorpus[]
 }
 
 interface SetFilteredCollections {
     type: ACTIONS.SET_FILTEREDCOLLECTIONS,
-    filteredCollections: Collections[]
+    filteredCollections: ServerCorpus[]
 }
 
 interface SetSelectedCollection {
     type: ACTIONS.SET_SELECTEDCOLLECTION,
-    selectedCollection: Collections | undefined
+    selectedCollection: ServerCorpus | undefined
 }
 
 interface SetEditColMode {
@@ -41,7 +41,7 @@ interface SetEditColMode {
 
 interface SetToEditCol {
     type: ACTIONS.SET_TOEDITCOL,
-    toEditCol: Collections | undefined
+    toEditCol: ServerCorpus | undefined
 }
 
 export type CollectionsAction = SetCollections | SetFilteredCollections | SetSelectedCollection | SetEditColMode | SetToEditCol
@@ -63,20 +63,20 @@ export const useCollectionsState = (): [CollectionsState, React.Dispatch<Collect
 }
 
 const collectionsReducer = (state: CollectionsState, action: CollectionsAction): CollectionsState => {
-    console.log(action,state)
-    switch(action.type) {
-    case ACTIONS.SET_COLLECTIONS:
-        return setCollections(state, action)
-    case ACTIONS.SET_FILTEREDCOLLECTIONS:
-        return setFilteredCollections(state, action)
-    case ACTIONS.SET_SELECTEDCOLLECTION:
-        return setSelectedCollection(state, action)
-    case ACTIONS.SET_EDITCOLMODE:
-        return setEditColMode(state, action)
-    case ACTIONS.SET_TOEDITCOL:
-        return setToEditCol(state, action)
-    default:
-        break
+    console.log(action, state)
+    switch (action.type) {
+        case ACTIONS.SET_COLLECTIONS:
+            return setCollections(state, action)
+        case ACTIONS.SET_FILTEREDCOLLECTIONS:
+            return setFilteredCollections(state, action)
+        case ACTIONS.SET_SELECTEDCOLLECTION:
+            return setSelectedCollection(state, action)
+        case ACTIONS.SET_EDITCOLMODE:
+            return setEditColMode(state, action)
+        case ACTIONS.SET_TOEDITCOL:
+            return setToEditCol(state, action)
+        default:
+            break
     }
 
     return state

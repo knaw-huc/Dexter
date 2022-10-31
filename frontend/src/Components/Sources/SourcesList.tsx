@@ -1,5 +1,5 @@
 import React from "react"
-import { Sources } from "../../Model/DexterModel"
+import { ServerSource } from "../../Model/DexterModel"
 import { sourcesContext } from "../../State/Sources/sourcesContext"
 import { ACTIONS } from "../../State/actions"
 import { SourceItem } from "./SourceItem"
@@ -44,7 +44,7 @@ export function SourcesList() {
             })
     }
 
-    const handleSelected = (selected: Sources | undefined) => {
+    const handleSelected = (selected: ServerSource | undefined) => {
         console.log(selected)
         return sourcesDispatch({
             type: ACTIONS.SET_SELECTEDSOURCE,
@@ -71,7 +71,7 @@ export function SourcesList() {
                 <Button variant="contained" style={{ marginLeft: "10px" }} onClick={formShowHandler}>Add new source</Button>
             </FilterRow>
             {showForm && <NewSource show={showForm} onClose={formCloseHandler} refetch={refetchSources} />}
-            {sourcesState.sources && sourcesState.sources.map((source: Sources, index: number) => (
+            {sourcesState.sources && sourcesState.sources.map((source: ServerSource, index: number) => (
                 <SourceItem
                     key={index}
                     sourceId={index}

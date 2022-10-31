@@ -1,4 +1,4 @@
-export interface Collections {
+export interface ServerCorpus {
     id: string,
     parentId: string | null,
     title: string,
@@ -13,11 +13,24 @@ export interface Collections {
     createdBy: string,
     createdAt: string,
     updatedAt: string,
-    val: Keywords[],
-    refName: Languages[]
+    keywords: ServerKeyword[],
+    languages: ServerLanguage[],
 }
 
-export interface Sources {
+export interface FormCorpus {
+    title: string,
+    description: string,
+    rights: string,
+    access: string,
+    parentId: string | null,
+    location: string | null,
+    earliest: string | null,
+    latest: string | null,
+    contributor: string | null,
+    notes: string | null
+}
+
+export interface ServerSource {
     id: string,
     externalRef: string | null,
     title: string,
@@ -31,16 +44,21 @@ export interface Sources {
     createdBy: string,
     createdAt: string,
     updatedAt: string,
-    val: Keywords[],
-    refName: Languages[]
+    keywords: ServerKeyword[],
+    languages: ServerLanguage[],
+    partOfCorpus: string[]
 }
 
-export type Keywords = {
-    id?: string,
+export interface ServerKeyword {
+    id: string,
     val: string
 }
 
-export interface Languages {
+export interface FormKeyword {
+    val: string
+}
+
+export interface ServerLanguage {
     id: string,
     part2b: string,
     part2t: string,
@@ -49,4 +67,9 @@ export interface Languages {
     type: string,
     refName: string,
     comment: string
+}
+
+export interface FormLanguage {
+    id: string,
+    refName: string
 }

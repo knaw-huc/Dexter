@@ -1,6 +1,6 @@
 import React from "react"
 import { useParams } from "react-router-dom"
-import { Sources, Keywords, Languages } from "../../Model/DexterModel"
+import { ServerSource, ServerKeyword, ServerLanguage } from "../../Model/DexterModel"
 import { sourcesContext } from "../../State/Sources/sourcesContext"
 import { deleteKeywordFromSource, deleteLanguageFromSource, getKeywordsSources, getLanguagesSources, getSourceById } from "../API"
 import { ACTIONS } from "../../State/actions"
@@ -10,9 +10,9 @@ import { KeywordContent } from "../keywords/KeywordContent"
 import { LanguagesContent } from "../languages/LanguagesContent"
 
 export const SourceItemContent = () => {
-    const [source, setSource] = React.useState<Sources>(null)
-    const [keywords, setKeywords] = React.useState<Keywords[]>(null)
-    const [languages, setLanguages] = React.useState<Languages[]>(null)
+    const [source, setSource] = React.useState<ServerSource>(null)
+    const [keywords, setKeywords] = React.useState<ServerKeyword[]>(null)
+    const [languages, setLanguages] = React.useState<ServerLanguage[]>(null)
 
     const params = useParams()
 
@@ -41,7 +41,7 @@ export const SourceItemContent = () => {
 
     const doGetSourceById = async (id: string) => {
         const response = await getSourceById(id)
-        setSource(response as Sources)
+        setSource(response as ServerSource)
 
         const kws = await getKeywordsSources(response.id)
         setKeywords(kws)
@@ -60,25 +60,25 @@ export const SourceItemContent = () => {
         await doGetSourceById(params.sourceId)
     }
 
-    const deleteLanguageHandler = async (languageId: string) => {
+    const deleteLanguageHandler = async (language: ServerLanguage) => {
         const warning = window.confirm("Are you sure you wish to delete this language?")
 
         if (warning === false) return
 
         const sourceId = params.sourceId
 
-        await deleteLanguageFromSource(sourceId, languageId)
+        await deleteLanguageFromSource(sourceId, language.id)
         await refetchSource()
     }
 
-    const deleteKeywordHandler = async (keywordId: string) => {
+    const deleteKeywordHandler = async (keyword: ServerKeyword) => {
         const warning = window.confirm("Are you sure you wish to delete this keyword?")
 
         if (warning === false) return
 
         const sourceId = params.sourceId
 
-        await deleteKeywordFromSource(sourceId, keywordId)
+        await deleteKeywordFromSource(sourceId, keyword.id)
         await refetchSource()
     }
 

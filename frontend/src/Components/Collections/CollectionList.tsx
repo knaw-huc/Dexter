@@ -1,5 +1,5 @@
 import React from "react"
-import { Collections } from "../..//Model/DexterModel"
+import { ServerCorpus } from "../..//Model/DexterModel"
 import { NewCollection } from "./NewCollection"
 import { CollectionItem } from "./CollectionItem"
 import { collectionsContext } from "../../State/Collections/collectionContext"
@@ -44,7 +44,7 @@ export function CollectionList() {
             })
     }
 
-    const handleSelected = (selected: Collections | undefined) => {
+    const handleSelected = (selected: ServerCorpus | undefined) => {
         console.log(selected)
         return collectionsDispatch({ type: ACTIONS.SET_SELECTEDCOLLECTION, selectedCollection: selected })
     }
@@ -72,7 +72,7 @@ export function CollectionList() {
                 <Button variant="contained" style={{ marginLeft: "10px" }} onClick={formShowHandler}>Add new corpus</Button>
             </FilterRow>
             {showForm && <NewCollection show={showForm} onClose={formCloseHandler} refetch={refetchCollections} />}
-            {collectionsState.collections && collectionsState.collections.map((collection: Collections, index: number) => (
+            {collectionsState.collections && collectionsState.collections.map((collection: ServerCorpus, index: number) => (
                 <CollectionItem
                     key={index}
                     collectionId={index}

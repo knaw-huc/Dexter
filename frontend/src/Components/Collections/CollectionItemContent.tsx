@@ -1,7 +1,7 @@
 import React from "react"
 import { deleteKeywordFromCorpus, deleteLanguageFromCorpus, getCollectionById, getKeywordsCorpora, getLanguagesCorpora } from "../API"
 import { useParams } from "react-router-dom"
-import { Collections, Keywords, Languages } from "../../Model/DexterModel"
+import { ServerCorpus, ServerKeyword, ServerLanguage } from "../../Model/DexterModel"
 import { collectionsContext } from "../../State/Collections/collectionContext"
 import { ACTIONS } from "../../State/actions"
 import { NewCollection } from "./NewCollection"
@@ -15,9 +15,9 @@ const Wrapper = styled.div`
 `
 
 export const CollectionItemContent = () => {
-    const [collection, setCollection] = React.useState<Collections>(null)
-    const [keywords, setKeywords] = React.useState<Keywords[]>(null)
-    const [languages, setLanguages] = React.useState<Languages[]>(null)
+    const [collection, setCollection] = React.useState<ServerCorpus>(null)
+    const [keywords, setKeywords] = React.useState<ServerKeyword[]>(null)
+    const [languages, setLanguages] = React.useState<ServerLanguage[]>(null)
 
     const params = useParams()
 
@@ -46,7 +46,7 @@ export const CollectionItemContent = () => {
 
     const doGetCollectionById = async (id: string) => {
         const response = await getCollectionById(id)
-        setCollection(response as Collections)
+        setCollection(response as ServerCorpus)
 
         const kws = await getKeywordsCorpora(response.id)
         setKeywords(kws)
@@ -65,25 +65,25 @@ export const CollectionItemContent = () => {
         await doGetCollectionById(params.corpusId)
     }
 
-    const deleteLanguageHandler = async (languageId: string) => {
+    const deleteLanguageHandler = async (language: ServerLanguage) => {
         const warning = window.confirm("Are you sure you wish to delete this language?")
 
         if (warning === false) return
 
         const corpusId = params.corpusId
 
-        await deleteLanguageFromCorpus(corpusId, languageId)
+        await deleteLanguageFromCorpus(corpusId, language.id)
         await refetchCollection()
     }
 
-    const deleteKeywordHandler = async (keywordId: string) => {
+    const deleteKeywordHandler = async (keyword: ServerKeyword) => {
         const warning = window.confirm("Are you sure you wish to delete this keyword?")
 
         if (warning === false) return
 
         const corpusId = params.corpusId
 
-        await deleteKeywordFromCorpus(corpusId, keywordId)
+        await deleteKeywordFromCorpus(corpusId, keyword.id)
         await refetchCollection()
     }
 

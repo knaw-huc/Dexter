@@ -1,5 +1,5 @@
 import React from "react"
-import { Collections } from "../../Model/DexterModel"
+import { ServerCorpus } from "../../Model/DexterModel"
 import { Link } from "react-router-dom"
 import { deleteCollection, getCollections } from "../API"
 import styled from "@emotion/styled"
@@ -10,8 +10,8 @@ import { red } from "@mui/material/colors"
 
 type CollectionItemProps = {
     collectionId: React.Key,
-    collection: Collections,
-    onSelect: (selected: Collections | undefined) => void,
+    collection: ServerCorpus,
+    onSelect: (selected: ServerCorpus | undefined) => void,
 }
 
 const DeleteIconStyled = styled(DeleteIcon)`
@@ -30,12 +30,12 @@ export function CollectionItem(props: CollectionItemProps) {
         props.onSelect(props.collection)
     }
 
-    const handleDelete = async (id: string) => {
+    const handleDelete = async (collection: ServerCorpus) => {
         const warning = window.confirm("Are you sure you wish to delete this corpus?")
 
         if (warning === false) return
 
-        await deleteCollection(id)
+        await deleteCollection(collection.id)
         getCollections()
             .then(function (collections) {
                 collectionsDispatch({
@@ -52,7 +52,7 @@ export function CollectionItem(props: CollectionItemProps) {
                     <Link to={`/corpora/${props.collection.id}`} key={props.collectionId} onClick={toggleClick}>
                         {props.collection.title}
                     </Link>
-                    <DeleteIconStyled onClick={() => handleDelete(props.collection.id)} />
+                    <DeleteIconStyled onClick={() => handleDelete(props.collection)} />
                 </li>
             </ul>
         </>

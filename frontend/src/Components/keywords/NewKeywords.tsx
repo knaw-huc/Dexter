@@ -1,16 +1,16 @@
 import React from "react"
 import TextField from "@mui/material/TextField"
 import { useForm, SubmitHandler } from "react-hook-form"
-import { Keywords } from "../../Model/DexterModel"
+import { FormKeyword, ServerKeyword } from "../../Model/DexterModel"
 import { createKeywords, getKeywords } from "../API"
 
 type NewKeywordsProps = {
-    setKeywords: React.Dispatch<React.SetStateAction<Keywords[]>>
+    setKeywords: React.Dispatch<React.SetStateAction<ServerKeyword[]>>
 }
 
 export const NewKeywords = (props: NewKeywordsProps) => {
-    const { register, handleSubmit } = useForm<Keywords>()
-    const onSubmit: SubmitHandler<Keywords> = async data => {
+    const { register, handleSubmit } = useForm<FormKeyword>()
+    const onSubmit: SubmitHandler<FormKeyword> = async data => {
         try {
             await createKeywords(data)
             const kw = await getKeywords()

@@ -4,17 +4,18 @@ import Modal from "react-bootstrap/Modal"
 import Button from "@mui/material/Button"
 import styled from "@emotion/styled"
 import { addKeywordsToSource, addLanguagesToSource, createSource, getSourceById, updateSource } from "../API"
-import { Collections, Keywords, Languages, Sources } from "../../Model/DexterModel"
+import { ServerCorpus, ServerKeyword, ServerLanguage, ServerSource } from "../../Model/DexterModel"
 import TextField from "@mui/material/TextField"
 import { KeywordsField } from "../keywords/KeywordsField"
 import { LanguagesField } from "../languages/LanguagesField"
+import { collectionsContext } from "../../State/Collections/collectionContext"
 
 type NewSourceProps = {
     refetch?: () => void,
     show?: boolean,
     onClose?: () => void,
     edit?: boolean,
-    sourceToEdit?: Sources,
+    sourceToEdit?: ServerSource,
     onEdit?: (boolean: boolean) => void,
     refetchSource?: () => void
 }
@@ -32,27 +33,29 @@ const Select = styled.select`
 `
 
 export function NewSource(props: NewSourceProps) {
-    const { register, handleSubmit, reset, setValue, control } = useForm<Sources | Keywords | Collections | Languages>()
-    const onSubmit: SubmitHandler<Sources> = async data => {
+    const { collectionsState } = React.useContext(collectionsContext)
+
+    const { register, handleSubmit, reset, setValue, control } = useForm<ServerSource | ServerKeyword | ServerCorpus | ServerLanguage>()
+    const onSubmit: SubmitHandler<ServerSource> = async data => {
         console.log(data)
 
-        const keywordIds = data.val && data.val.map((keyword) => { return keyword.id })
+        // const keywordIds = data.val && data.val.map((keyword) => { return keyword.id })
 
-        const languageIds = data.refName && data.refName.map((language) => { return language.id })
+        // const languageIds = data.refName && data.refName.map((language) => { return language.id })
 
         if (!props.edit) {
             try {
                 const newSource = await createSource(data)
                 const sourceId = newSource.id
-                keywordIds && await addKeywordsToSource(sourceId, keywordIds)
-                languageIds && await addLanguagesToSource(sourceId, languageIds)
+                // keywordIds && await addKeywordsToSource(sourceId, keywordIds)
+                // languageIds && await addLanguagesToSource(sourceId, languageIds)
                 await props.refetch()
             } catch (error) {
                 console.log(error)
             }
             props.onClose()
         } else {
-            const doUpdateSource = async (id: string, updatedData: Sources) => {
+            const doUpdateSource = async (id: string, updatedData: ServerSource) => {
                 try {
                     await updateSource(id, updatedData)
                     await props.refetchSource()
@@ -68,7 +71,7 @@ export function NewSource(props: NewSourceProps) {
     React.useEffect(() => {
         const doGetSourceById = async (id: string) => {
             const response: any = await getSourceById(id)
-            console.log(response as Sources)
+            console.log(response as ServerSource)
             const fields = ["externalRef", "title", "description", "rights", "access", "location", "earliest", "latest", "notes"]
             fields.map((field: any) => {
                 setValue(field, response[field])
@@ -127,6 +130,12 @@ export function NewSource(props: NewSourceProps) {
                         <KeywordsField control={control} />
                         <Label>Languages</Label>
                         <LanguagesField control={control} />
+                        <Label>Part of which corpus?</Label>
+                        <Select {...register("partOfCorpus")}>
+                            {collectionsState.collections.map((collection, index) => {
+                                return <option value={collection.id} key={index}>{collection.title}</option>
+                            })}
+                        </Select>
                         <Button variant="contained" type="submit">Submit</Button>
                     </form>
                 </Modal.Body>

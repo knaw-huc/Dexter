@@ -4,17 +4,19 @@ import Modal from "react-bootstrap/Modal"
 import Button from "@mui/material/Button"
 import styled from "@emotion/styled"
 import { addKeywordsToCorpus, addLanguagesToCorpus, createCollection, getCollectionById, updateCollection } from "../API"
-import { Collections, Keywords, Languages, Sources } from "../../Model/DexterModel"
+import { ServerCorpus, ServerKeyword, ServerLanguage } from "../../Model/DexterModel"
 import TextField from "@mui/material/TextField"
 import { KeywordsField } from "../keywords/KeywordsField"
 import { LanguagesField } from "../languages/LanguagesField"
+import { yupResolver } from "@hookform/resolvers/yup"
+import * as yup from "yup"
 
 type NewCollectionProps = {
     refetch?: () => void,
     show?: boolean,
     onClose?: () => void,
     edit?: boolean,
-    colToEdit?: Collections,
+    colToEdit?: ServerCorpus,
     onEdit?: (boolean: boolean) => void,
     refetchCol?: () => void
 }
@@ -31,28 +33,42 @@ const Select = styled.select`
     display: block;
 `
 
+const schema = yup.object({
+    title: yup.string().required(),
+
+})
+
+const formToServer = (data: ServerCorpus) => {
+    const newData: any = data
+    if (newData.keywords) {
+        newData.keywords = newData.keywords.map((kw: ServerKeyword) => { return kw.id })
+    }
+    if (newData.languages) {
+        newData.languages = newData.languages.map((language: ServerLanguage) => { return language.id })
+    }
+    return newData
+}
+
 export function NewCollection(props: NewCollectionProps) {
-    const { register, handleSubmit, reset, setValue, control } = useForm<Collections | Keywords | Sources | Languages>()
-    const onSubmit: SubmitHandler<Collections> = async data => {
+    const { register, handleSubmit, reset, setValue, control, formState: { errors } } = useForm<ServerCorpus>({ resolver: yupResolver(schema) })
+    const onSubmit: SubmitHandler<ServerCorpus> = async data => {
         console.log(data)
 
-        const keywordIds = data.val && data.val.map((keyword) => { return keyword.id })
-
-        const languageIds = data.refName && data.refName.map((language) => { return language.id })
+        const dataToServer = formToServer(data)
 
         if (!props.edit) {
             try {
-                const newCollection = await createCollection(data)
+                const newCollection = await createCollection(dataToServer)
                 const corpusId = newCollection.id
-                keywordIds && await addKeywordsToCorpus(corpusId, keywordIds)
-                languageIds && await addLanguagesToCorpus(corpusId, languageIds)
+                dataToServer.keywords && await addKeywordsToCorpus(corpusId, dataToServer.keywords)
+                dataToServer.languages && await addLanguagesToCorpus(corpusId, dataToServer.languages)
                 await props.refetch()
             } catch (error) {
                 console.log(error)
             }
             props.onClose()
         } else {
-            const doUpdateCollection = async (id: string, updatedData: Collections) => {
+            const doUpdateCollection = async (id: string, updatedData: ServerCorpus) => {
                 try {
                     await updateCollection(id, updatedData)
                     await props.refetchCol()
@@ -102,7 +118,8 @@ export function NewCollection(props: NewCollectionProps) {
                 <Modal.Body>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <Label>Title</Label>
-                        <TextFieldStyled fullWidth margin="dense" {...register("title", { required: true })} />
+                        <TextFieldStyled fullWidth margin="dense" {...register("title")} />
+                        <p>{errors.title?.message}</p>
                         <Label>Description</Label>
                         <TextFieldStyled fullWidth margin="dense" multiline rows={6} {...register("description", { required: true })} />
                         <Label>Rights</Label>
@@ -123,8 +140,6 @@ export function NewCollection(props: NewCollectionProps) {
                         <TextFieldStyled fullWidth margin="dense" {...register("contributor")} />
                         <Label>Notes</Label>
                         <TextFieldStyled fullWidth margin="dense" {...register("notes")} />
-                        {/* <Label>Language</Label>
-                        <Languages control={control} /> */}
                         <Label>Keywords</Label>
                         <KeywordsField control={control} />
                         <Label>Languages</Label>

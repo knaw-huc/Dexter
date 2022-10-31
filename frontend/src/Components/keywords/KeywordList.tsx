@@ -1,5 +1,5 @@
 import React from "react"
-import { Keywords } from "../../Model/DexterModel"
+import { ServerKeyword } from "../../Model/DexterModel"
 import { deleteKeyword, getKeywords } from "../API"
 import { NewKeywords } from "./NewKeywords"
 import DeleteIcon from "@mui/icons-material/Delete"
@@ -16,7 +16,7 @@ const DeleteIconStyled = styled(DeleteIcon)`
 `
 
 export const KeywordList = () => {
-    const [keywords, setKeywords] = React.useState<Keywords[]>()
+    const [keywords, setKeywords] = React.useState<ServerKeyword[]>()
 
     React.useEffect(() => {
         doGetKeywords()
@@ -39,7 +39,7 @@ export const KeywordList = () => {
     return (
         <>
             <NewKeywords setKeywords={setKeywords} />
-            {keywords && keywords.map((keyword: Keywords, index: number) => (
+            {keywords && keywords.map((keyword: ServerKeyword, index: number) => (
                 <div key={index}>{keyword.id} {keyword.val} {<DeleteIconStyled onClick={() => handleDelete(keyword.id)} />}</div>
             ))}
         </>

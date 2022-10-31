@@ -1,15 +1,15 @@
 import React from "react"
-import { Control, Controller } from "react-hook-form"
+import { Controller } from "react-hook-form"
 import Autocomplete from "@mui/material/Autocomplete"
 import TextField from "@mui/material/TextField"
 import { getLanguagesAutocomplete } from "../API"
-import { Collections, Sources, Languages, Keywords } from "../../Model/DexterModel"
+import { FormLanguage } from "../../Model/DexterModel"
 import parse from "autosuggest-highlight/parse"
 import match from "autosuggest-highlight/match"
 import { useDebounce } from "../../Utils/useDebounce"
 
-export const LanguagesField = ({ control }: { control: Control<Collections | Sources | Languages | Keywords> }) => {
-    const [languages, setLanguages] = React.useState<Languages[]>([])
+export const LanguagesField = ({ control }: { control: any }) => {
+    const [languages, setLanguages] = React.useState<FormLanguage[]>([])
     const [inputValue, setInputValue] = React.useState("")
     const debouncedInput = useDebounce<string>(inputValue, 250)
 
@@ -29,7 +29,7 @@ export const LanguagesField = ({ control }: { control: Control<Collections | Sou
         <div>
             {languages && <Controller
                 control={control}
-                name={"refName"}
+                name={"languages"}
                 render={({ field: { onChange, value } }) => (
                     <Autocomplete
                         inputValue={inputValue}
@@ -38,8 +38,9 @@ export const LanguagesField = ({ control }: { control: Control<Collections | Sou
                         multiple={true}
                         id="languages-autocomplete"
                         options={languages}
-                        getOptionLabel={(language: Languages) => language.refName}
+                        getOptionLabel={(language: FormLanguage) => language.refName}
                         filterOptions={(x) => x}
+                        isOptionEqualToValue={(option, value) => option.refName === value.refName}
                         renderInput={(params) => (
                             <TextField
                                 {...params}

@@ -1,14 +1,14 @@
 import React from "react"
 import { ACTIONS } from "../actions"
-import { Sources } from "../../Model/DexterModel"
+import { ServerSource } from "../../Model/DexterModel"
 import { doGetSources } from "../../Utils/doGetSources"
 
 export interface SourcesState {
-    sources: Sources[],
-    filteredSources: Sources[],
-    selectedSource: Sources | undefined,
+    sources: ServerSource[],
+    filteredSources: ServerSource[],
+    selectedSource: ServerSource | undefined,
     editSourceMode: boolean,
-    toEditSource: Sources | undefined
+    toEditSource: ServerSource | undefined
 }
 
 export const initState: SourcesState = {
@@ -21,17 +21,17 @@ export const initState: SourcesState = {
 
 interface SetSources {
     type: ACTIONS.SET_SOURCES,
-    sources: Sources[]
+    sources: ServerSource[]
 }
 
 interface SetFilteredSources {
     type: ACTIONS.SET_FILTEREDSOURCES,
-    filteredSources: Sources[]
+    filteredSources: ServerSource[]
 }
 
 interface SetSelectedSource {
     type: ACTIONS.SET_SELECTEDSOURCE,
-    selectedSource: Sources
+    selectedSource: ServerSource
 }
 
 interface SetEditSourceMode {
@@ -41,7 +41,7 @@ interface SetEditSourceMode {
 
 interface SetToEditSource {
     type: ACTIONS.SET_TOEDITSOURCE,
-    toEditSource: Sources
+    toEditSource: ServerSource
 }
 
 export type SourcesAction = SetSources | SetFilteredSources | SetSelectedSource | SetEditSourceMode | SetToEditSource
@@ -65,18 +65,18 @@ export const useSourcesState = (): [SourcesState, React.Dispatch<SourcesAction>]
 function sourcesReducer(state: SourcesState, action: SourcesAction): SourcesState {
     console.log(action, state)
     switch (action.type) {
-    case ACTIONS.SET_SOURCES:
-        return setSources(state, action)
-    case ACTIONS.SET_FILTEREDSOURCES:
-        return setFilteredSources(state, action)
-    case ACTIONS.SET_SELECTEDSOURCE:
-        return setSelectedSource(state, action)
-    case ACTIONS.SET_EDITSOURCEMODE:
-        return setEditSourceMode(state, action)
-    case ACTIONS.SET_TOEDITSOURCE:
-        return setToEditSource(state, action)
-    default:
-        break
+        case ACTIONS.SET_SOURCES:
+            return setSources(state, action)
+        case ACTIONS.SET_FILTEREDSOURCES:
+            return setFilteredSources(state, action)
+        case ACTIONS.SET_SELECTEDSOURCE:
+            return setSelectedSource(state, action)
+        case ACTIONS.SET_EDITSOURCEMODE:
+            return setEditSourceMode(state, action)
+        case ACTIONS.SET_TOEDITSOURCE:
+            return setToEditSource(state, action)
+        default:
+            break
     }
 
     return state

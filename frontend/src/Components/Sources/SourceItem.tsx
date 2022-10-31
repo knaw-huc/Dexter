@@ -1,5 +1,5 @@
 import React from "react"
-import { Sources } from "../../Model/DexterModel"
+import { ServerSource } from "../../Model/DexterModel"
 import { Link } from "react-router-dom"
 import styled from "@emotion/styled"
 import { deleteSource, getSources } from "../API"
@@ -10,8 +10,8 @@ import { red } from "@mui/material/colors"
 
 type SourceItemProps = {
     sourceId: React.Key,
-    source: Sources,
-    onSelect: (selected: Sources | undefined) => void,
+    source: ServerSource,
+    onSelect: (selected: ServerSource | undefined) => void,
 }
 
 const DeleteIconStyled = styled(DeleteIcon)`

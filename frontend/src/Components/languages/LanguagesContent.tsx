@@ -1,12 +1,12 @@
 import React from "react"
-import { Languages } from "../../Model/DexterModel"
+import { ServerLanguage } from "../../Model/DexterModel"
 import DeleteIcon from "@mui/icons-material/Delete"
 import styled from "@emotion/styled"
 import { red } from "@mui/material/colors"
 
 type LanguagesContentProps = {
-    languages: Languages[],
-    onDelete: (languageId: string) => Promise<void>
+    languages: ServerLanguage[],
+    onDelete: (language: ServerLanguage) => Promise<void>
 }
 
 const DeleteIconStyled = styled(DeleteIcon)`
@@ -22,7 +22,7 @@ export const LanguagesContent = (props: LanguagesContentProps) => {
     return (
         <>
             {props.languages.map((language, index) => {
-                return <p key={index}>{language.refName} {<DeleteIconStyled onClick={() => props.onDelete(language.id)} />}</p>
+                return <p key={index}>{language.refName} {<DeleteIconStyled onClick={() => props.onDelete(language)} />}</p>
             })}
         </>
     )

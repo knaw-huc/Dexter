@@ -1,4 +1,4 @@
-import { Collections, Sources, Keywords, Languages } from "../Model/DexterModel"
+import { ServerCorpus, ServerSource, ServerKeyword, ServerLanguage, FormKeyword } from "../Model/DexterModel"
 
 const headers = {
     "Content-Type": "application/json"
@@ -17,7 +17,7 @@ export const getCollections = async () => {
         return
     }
 
-    const data: Collections[] = await response.json()
+    const data: ServerCorpus[] = await response.json()
     console.log(data)
 
     return data
@@ -36,13 +36,13 @@ export const getCollectionById = async (id: string) => {
         return
     }
 
-    const data: Collections = await response.json()
+    const data: ServerCorpus = await response.json()
     console.log(data)
 
     return data
 }
 
-export const createCollection = async (newCorpus: Collections) => {
+export const createCollection = async (newCorpus: ServerCorpus) => {
     JSON.stringify(newCorpus)
     const response = await fetch("/api/corpora", {
         method: "POST",
@@ -57,13 +57,13 @@ export const createCollection = async (newCorpus: Collections) => {
         return
     }
 
-    const data: Collections = await response.json()
+    const data: ServerCorpus = await response.json()
     console.log(data)
 
     return data
 }
 
-export const updateCollection = async (id: string, updatedCorpus: Collections) => {
+export const updateCollection = async (id: string, updatedCorpus: ServerCorpus) => {
     const response = await fetch(`/api/corpora/${id}`, {
         method: "PUT",
         headers: headers,
@@ -77,7 +77,7 @@ export const updateCollection = async (id: string, updatedCorpus: Collections) =
         return
     }
 
-    const data: Collections = await response.json()
+    const data: ServerCorpus = await response.json()
     console.log(data)
 
     return data
@@ -110,7 +110,7 @@ export const getSources = async () => {
         return
     }
 
-    const data: Sources[] = await response.json()
+    const data: ServerSource[] = await response.json()
     console.log(data)
 
     return data
@@ -130,13 +130,13 @@ export const getSourceById = async (id: string) => {
         return
     }
 
-    const data: Sources = await response.json()
+    const data: ServerSource = await response.json()
     console.log(data)
 
     return data
 }
 
-export const createSource = async (newSource: Sources) => {
+export const createSource = async (newSource: ServerSource) => {
     const response = await fetch("/api/sources", {
         method: "POST",
         headers: headers,
@@ -150,13 +150,13 @@ export const createSource = async (newSource: Sources) => {
         return
     }
 
-    const data: Sources = await response.json()
+    const data: ServerSource = await response.json()
     console.log(data)
 
     return data
 }
 
-export const updateSource = async (id: string, updatedSource: Sources) => {
+export const updateSource = async (id: string, updatedSource: ServerSource) => {
     const response = await fetch(`/api/sources/${id}`, {
         method: "PUT",
         headers: headers,
@@ -170,7 +170,7 @@ export const updateSource = async (id: string, updatedSource: Sources) => {
         return
     }
 
-    const data: Sources = await response.json()
+    const data: ServerSource = await response.json()
     console.log(data)
 
     return data
@@ -203,13 +203,13 @@ export const getKeywords = async () => {
         return
     }
 
-    const data: Keywords[] = await response.json()
+    const data: ServerKeyword[] = await response.json()
     console.log(data)
 
     return data
 }
 
-export const createKeywords = async (newKeyword: Keywords) => {
+export const createKeywords = async (newKeyword: FormKeyword) => {
     const response = await fetch("/api/keywords", {
         method: "POST",
         headers: headers,
@@ -223,7 +223,7 @@ export const createKeywords = async (newKeyword: Keywords) => {
         return
     }
 
-    const data: Keywords = await response.json()
+    const data: FormKeyword = await response.json()
     console.log(data)
 
     return data
@@ -243,7 +243,7 @@ export const addKeywordsToCorpus = async (corpusId: string, keywordId: string[])
         return
     }
 
-    const data: Keywords = await response.json()
+    const data: ServerKeyword = await response.json()
     console.log(data)
 
     return data
@@ -263,7 +263,7 @@ export const addKeywordsToSource = async (sourceId: string, keywordId: string[])
         return
     }
 
-    const data: Keywords = await response.json()
+    const data: ServerKeyword = await response.json()
     console.log(data)
 
     return data
@@ -296,7 +296,7 @@ export const getKeywordsSources = async (sourceId: string) => {
         return
     }
 
-    const data: Keywords[] = await response.json()
+    const data: ServerKeyword[] = await response.json()
     console.log(data)
 
     return data
@@ -315,7 +315,7 @@ export const getKeywordsCorpora = async (corpusId: string) => {
         return
     }
 
-    const data: Keywords[] = await response.json()
+    const data: ServerKeyword[] = await response.json()
     console.log(data)
 
     return data
@@ -333,7 +333,7 @@ export const getKeywordsAutocomplete = async (input: string) => {
         return
     }
 
-    const data: Keywords[] = await response.json()
+    const data: ServerKeyword[] = await response.json()
     console.log(data)
 
     return data
@@ -351,7 +351,7 @@ export const getLanguagesAutocomplete = async (input: string) => {
         return
     }
 
-    const data: Languages[] = await response.json()
+    const data: ServerLanguage[] = await response.json()
     console.log(data)
 
     return data
@@ -371,7 +371,7 @@ export const addLanguagesToCorpus = async (corpusId: string, languageId: string[
         return
     }
 
-    const data: Languages = await response.json()
+    const data: ServerLanguage = await response.json()
     console.log(data)
 
     return data
@@ -392,7 +392,7 @@ export const addLanguagesToSource = async (corpusId: string, languageId: string[
         return
     }
 
-    const data: Languages = await response.json()
+    const data: ServerLanguage = await response.json()
     console.log(data)
 
     return data
@@ -411,7 +411,7 @@ export const getLanguages = async (type: string, id: string) => {
         return
     }
 
-    const data: Languages[] = await response.json()
+    const data: ServerLanguage[] = await response.json()
     console.log(data)
 
     return data
