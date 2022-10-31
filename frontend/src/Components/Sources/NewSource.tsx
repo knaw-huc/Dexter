@@ -4,11 +4,14 @@ import Modal from "react-bootstrap/Modal"
 import Button from "@mui/material/Button"
 import styled from "@emotion/styled"
 import { addKeywordsToSource, addLanguagesToSource, createSource, getSourceById, updateSource } from "../API"
-import { ServerCorpus, ServerKeyword, ServerLanguage, ServerSource } from "../../Model/DexterModel"
+import { ServerKeyword, ServerLanguage, ServerSource } from "../../Model/DexterModel"
 import TextField from "@mui/material/TextField"
 import { KeywordsField } from "../keywords/KeywordsField"
 import { LanguagesField } from "../languages/LanguagesField"
 import { collectionsContext } from "../../State/Collections/collectionContext"
+import { MenuItem } from "@mui/material"
+import Select from "@mui/material/Select"
+import { PartOfCorpusField } from "./PartOfCorpusField"
 
 type NewSourceProps = {
     refetch?: () => void,
@@ -28,27 +31,36 @@ const Label = styled.label`
     font-weight: bold;
 `
 
-const Select = styled.select`
+const SelectStyled = styled.select`
     display: block;
 `
+
+const formToServer = (data: ServerSource) => {
+    const newData: any = data
+    if (newData.keywords) {
+        newData.keywords = newData.keywords.map((kw: ServerKeyword) => { return kw.id })
+    }
+    if (newData.languages) {
+        newData.languages = newData.languages.map((language: ServerLanguage) => { return language.id })
+    }
+    return newData
+}
 
 export function NewSource(props: NewSourceProps) {
     const { collectionsState } = React.useContext(collectionsContext)
 
-    const { register, handleSubmit, reset, setValue, control } = useForm<ServerSource | ServerKeyword | ServerCorpus | ServerLanguage>()
+    const { register, handleSubmit, reset, setValue, control } = useForm<ServerSource>()
     const onSubmit: SubmitHandler<ServerSource> = async data => {
         console.log(data)
 
-        // const keywordIds = data.val && data.val.map((keyword) => { return keyword.id })
-
-        // const languageIds = data.refName && data.refName.map((language) => { return language.id })
+        const dataToServer = formToServer(data)
 
         if (!props.edit) {
             try {
-                const newSource = await createSource(data)
+                const newSource = await createSource(dataToServer)
                 const sourceId = newSource.id
-                // keywordIds && await addKeywordsToSource(sourceId, keywordIds)
-                // languageIds && await addLanguagesToSource(sourceId, languageIds)
+                dataToServer.keywords && await addKeywordsToSource(sourceId, dataToServer.keywords)
+                dataToServer.languages && await addLanguagesToSource(sourceId, dataToServer.languages)
                 await props.refetch()
             } catch (error) {
                 console.log(error)
@@ -113,11 +125,11 @@ export function NewSource(props: NewSourceProps) {
                         <Label>Rights</Label>
                         <TextFieldStyled fullWidth margin="dense" {...register("rights", { required: true })} />
                         <Label>Access</Label>
-                        <Select {...register("access", { required: true })}>
+                        <SelectStyled {...register("access", { required: true })}>
                             <option value="Open">Open</option>
                             <option value="Restricted">Restricted</option>
                             <option value="Closed">Closed</option>
-                        </Select>
+                        </SelectStyled>
                         <Label>Location</Label>
                         <TextFieldStyled fullWidth margin="dense" {...register("location")} />
                         <Label>Earliest</Label>
@@ -130,12 +142,7 @@ export function NewSource(props: NewSourceProps) {
                         <KeywordsField control={control} />
                         <Label>Languages</Label>
                         <LanguagesField control={control} />
-                        <Label>Part of which corpus?</Label>
-                        <Select {...register("partOfCorpus")}>
-                            {collectionsState.collections.map((collection, index) => {
-                                return <option value={collection.id} key={index}>{collection.title}</option>
-                            })}
-                        </Select>
+                        <PartOfCorpusField control={control} corpora={collectionsState.collections} />
                         <Button variant="contained" type="submit">Submit</Button>
                     </form>
                 </Modal.Body>
