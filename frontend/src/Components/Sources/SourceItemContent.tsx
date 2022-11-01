@@ -96,8 +96,8 @@ export const SourceItemContent = () => {
                     <p><strong>Earliest:</strong> {source.earliest}</p>
                     <p><strong>Latest:</strong> {source.latest}</p>
                     <p><strong>Notes:</strong> {source.notes}</p>
-                    <div><strong>Keywords:</strong> <KeywordContent keywords={keywords} onDelete={deleteKeywordHandler} /></div>
-                    <div><strong>Languages:</strong> <LanguagesContent languages={languages} onDelete={deleteLanguageHandler} /></div>
+                    <div><strong>Keywords:</strong> <KeywordContent sourceId={params.sourceId} onDelete={deleteKeywordHandler} /></div>
+                    <div><strong>Languages:</strong> <LanguagesContent sourceId={params.sourceId} onDelete={deleteLanguageHandler} /></div>
                 </>
             }
             {sourcesState.editSourceMode && <NewSource show={showForm} onEdit={editHandler} edit={sourcesState.editSourceMode} sourceToEdit={sourcesState.toEditSource} onClose={formCloseHandler} refetchSource={refetchSource} />}

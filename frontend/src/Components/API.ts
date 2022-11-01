@@ -489,7 +489,27 @@ export const addSourcesToCorpus = async (corpusId: string, sourceIds: string) =>
         return
     }
 
-    const data: ServerCorpus[] = await response.json()
+    const data: ServerSource[] = await response.json()
+
+    console.log(data)
+
+    return data
+}
+
+export const getSourceInCorpus = async (corpusId: string) => {
+    const response = await fetch(`/api/corpora/${corpusId}/sources`, {
+        method: "GET",
+        headers: headers
+    })
+
+    console.log(response)
+
+    if (!response.ok) {
+        console.error(response)
+        return
+    }
+
+    const data: ServerSource[] = await response.json()
 
     console.log(data)
 

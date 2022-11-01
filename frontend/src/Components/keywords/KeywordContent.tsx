@@ -8,7 +8,7 @@ import { getKeywordsCorpora, getKeywordsSources } from "../API"
 type KeywordContentProps = {
     sourceId?: string,
     corpusId?: string,
-    onDelete: (keyword: ServerKeyword) => Promise<void>
+    onDelete?: (keyword: ServerKeyword) => Promise<void>
 }
 
 const DeleteIconStyled = styled(DeleteIcon)`
@@ -47,10 +47,6 @@ export const KeywordContent = (props: KeywordContentProps) => {
 
     return (
         <>
-            {/* {props.keywords.map((keyword, index) => {
-                return <p key={index}>{keyword.val} {<DeleteIconStyled onClick={() => props.onDelete(keyword)} />}</p>
-            })} */}
-
             {keywords && keywords.map((keyword, index) => {
                 return <p key={index}>{keyword.val} {<DeleteIconStyled onClick={() => props.onDelete(keyword)} />}</p>
             })}

@@ -8,7 +8,7 @@ import { getLanguagesCorpora, getLanguagesSources } from "../API"
 type LanguagesContentProps = {
     sourceId?: string,
     corpusId?: string,
-    onDelete: (language: ServerLanguage) => Promise<void>
+    onDelete?: (language: ServerLanguage) => Promise<void>
 }
 
 const DeleteIconStyled = styled(DeleteIcon)`

@@ -9,6 +9,7 @@ import styled from "@emotion/styled"
 import Button from "@mui/material/Button"
 import { KeywordContent } from "../keywords/KeywordContent"
 import { LanguagesContent } from "../languages/LanguagesContent"
+import { SourceItemDropdown } from "../Sources/SourceItemDropdown"
 
 const Wrapper = styled.div`
     overflow: auto;
@@ -16,8 +17,6 @@ const Wrapper = styled.div`
 
 export const CollectionItemContent = () => {
     const [collection, setCollection] = React.useState<ServerCorpus>(null)
-    const [keywords, setKeywords] = React.useState<ServerKeyword[]>(null)
-    const [languages, setLanguages] = React.useState<ServerLanguage[]>(null)
 
     const params = useParams()
 
@@ -47,14 +46,6 @@ export const CollectionItemContent = () => {
     const doGetCollectionById = async (id: string) => {
         const response = await getCollectionById(id)
         setCollection(response as ServerCorpus)
-
-        const kws = await getKeywordsCorpora(response.id)
-        setKeywords(kws)
-        console.log(kws)
-
-        const langs = await getLanguagesCorpora(response.id)
-        setLanguages(langs)
-        console.log(langs)
     }
 
     React.useEffect(() => {
@@ -89,7 +80,7 @@ export const CollectionItemContent = () => {
 
     return (
         <Wrapper>
-            {collection && keywords && languages &&
+            {collection &&
                 <>
                     <Button variant="contained" onClick={formShowHandler}>Edit</Button>
                     <p><strong>Parent ID:</strong> {collection.parentId}</p>
@@ -102,8 +93,11 @@ export const CollectionItemContent = () => {
                     <p><strong>Latest:</strong> {collection.latest}</p>
                     <p><strong>Contributor:</strong> {collection.contributor}</p>
                     <p><strong>Notes:</strong> {collection.notes}</p>
-                    <div><strong>Keywords:</strong> <KeywordContent keywords={keywords} onDelete={deleteKeywordHandler} /></div>
-                    <div><strong>Languages:</strong> <LanguagesContent languages={languages} onDelete={deleteLanguageHandler} /></div>
+                    <div><strong>Keywords:</strong> <KeywordContent corpusId={params.corpusId} onDelete={deleteKeywordHandler} /></div>
+                    <div><strong>Languages:</strong> <LanguagesContent corpusId={params.corpusId} onDelete={deleteLanguageHandler} /></div>
+                    <div>
+                        <strong>Sources:</strong><SourceItemDropdown corpusId={params.corpusId} />
+                    </div>
                 </>
             }
             {collectionsState.editColMode && <NewCollection show={showForm} onEdit={editHandler} edit={collectionsState.editColMode} colToEdit={collectionsState.toEditCol} onClose={formCloseHandler} refetchCol={refetchCollection} />}
