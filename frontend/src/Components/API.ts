@@ -496,7 +496,7 @@ export const addSourcesToCorpus = async (corpusId: string, sourceIds: string) =>
     return data
 }
 
-export const getSourceInCorpus = async (corpusId: string) => {
+export const getSourcesInCorpus = async (corpusId: string) => {
     const response = await fetch(`/api/corpora/${corpusId}/sources`, {
         method: "GET",
         headers: headers

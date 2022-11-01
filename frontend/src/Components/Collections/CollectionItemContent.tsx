@@ -1,7 +1,7 @@
 import React from "react"
-import { deleteKeywordFromCorpus, deleteLanguageFromCorpus, getCollectionById, getKeywordsCorpora, getLanguagesCorpora } from "../API"
+import { deleteKeywordFromCorpus, deleteLanguageFromCorpus, getCollectionById, getKeywordsCorpora, getLanguagesCorpora, getSourcesInCorpus } from "../API"
 import { useParams } from "react-router-dom"
-import { ServerCorpus, ServerKeyword, ServerLanguage } from "../../Model/DexterModel"
+import { ServerCorpus, ServerKeyword, ServerLanguage, ServerSource } from "../../Model/DexterModel"
 import { collectionsContext } from "../../State/Collections/collectionContext"
 import { ACTIONS } from "../../State/actions"
 import { NewCollection } from "./NewCollection"
@@ -17,6 +17,7 @@ const Wrapper = styled.div`
 
 export const CollectionItemContent = () => {
     const [collection, setCollection] = React.useState<ServerCorpus>(null)
+    const [sources, setSources] = React.useState<ServerSource[]>(null)
 
     const params = useParams()
 
@@ -48,8 +49,15 @@ export const CollectionItemContent = () => {
         setCollection(response as ServerCorpus)
     }
 
+    const doGetSourcesInCorpus = async (corpusId: string) => {
+        const srcs = await getSourcesInCorpus(corpusId)
+        setSources(srcs)
+        console.log(srcs)
+    }
+
     React.useEffect(() => {
         doGetCollectionById(params.corpusId)
+        doGetSourcesInCorpus(params.corpusId)
     }, [params.corpusId])
 
     const refetchCollection = async () => {
@@ -80,7 +88,7 @@ export const CollectionItemContent = () => {
 
     return (
         <Wrapper>
-            {collection &&
+            {collection && sources &&
                 <>
                     <Button variant="contained" onClick={formShowHandler}>Edit</Button>
                     <p><strong>Parent ID:</strong> {collection.parentId}</p>
@@ -95,9 +103,9 @@ export const CollectionItemContent = () => {
                     <p><strong>Notes:</strong> {collection.notes}</p>
                     <div><strong>Keywords:</strong> <KeywordContent corpusId={params.corpusId} onDelete={deleteKeywordHandler} /></div>
                     <div><strong>Languages:</strong> <LanguagesContent corpusId={params.corpusId} onDelete={deleteLanguageHandler} /></div>
-                    <div>
-                        <strong>Sources:</strong><SourceItemDropdown corpusId={params.corpusId} />
-                    </div>
+                    <strong>Sources:</strong> {sources.map((source, index) => (
+                        <SourceItemDropdown key={index} source={source} />
+                    ))}
                 </>
             }
             {collectionsState.editColMode && <NewCollection show={showForm} onEdit={editHandler} edit={collectionsState.editColMode} colToEdit={collectionsState.toEditCol} onClose={formCloseHandler} refetchCol={refetchCollection} />}
