@@ -9,7 +9,6 @@ interface SourceItemDropdownContentProps {
 
 export const SourceItemDropdownContent = (props: SourceItemDropdownContentProps) => {
 
-
     return (
         <>
             {props.source && <div id="source-content">

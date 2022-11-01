@@ -4,7 +4,9 @@ import { useParams } from "react-router-dom"
 import { ServerKeyword, ServerLanguage, ServerSource } from "../../Model/DexterModel"
 import { ACTIONS } from "../../State/actions"
 import { sourcesContext } from "../../State/Sources/sourcesContext"
-import { deleteKeywordFromSource, deleteLanguageFromSource, getKeywordsSources, getLanguagesSources, getSourceById } from "../API"
+import { doDeleteKeywordFromSource } from "../../Utils/doDeleteKeywordFromSource"
+import { doDeleteLanguageFromSource } from "../../Utils/doDeleteLanguageFromSource"
+import { getKeywordsSources, getLanguagesSources, getSourceById } from "../API"
 import { KeywordContent } from "../keywords/KeywordContent"
 import { LanguagesContent } from "../languages/LanguagesContent"
 import { NewSource } from "./NewSource"
@@ -61,24 +63,12 @@ export const SourceItemContent = () => {
     }
 
     const deleteLanguageHandler = async (language: ServerLanguage) => {
-        const warning = window.confirm("Are you sure you wish to delete this language?")
-
-        if (warning === false) return
-
-        const sourceId = params.sourceId
-
-        await deleteLanguageFromSource(sourceId, language.id)
+        await doDeleteLanguageFromSource(language, params.sourceId)
         await refetchSource()
     }
 
     const deleteKeywordHandler = async (keyword: ServerKeyword) => {
-        const warning = window.confirm("Are you sure you wish to delete this keyword?")
-
-        if (warning === false) return
-
-        const sourceId = params.sourceId
-
-        await deleteKeywordFromSource(sourceId, keyword.id)
+        await doDeleteKeywordFromSource(keyword, params.sourceId)
         await refetchSource()
     }
 
