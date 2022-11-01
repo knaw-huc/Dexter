@@ -1,8 +1,8 @@
+import styled from "@emotion/styled"
 import React from "react"
+import Button from "react-bootstrap/Button"
 import { collectionsContext } from "../State/Collections/collectionContext"
 import { sourcesContext } from "../State/Sources/sourcesContext"
-import Button from "react-bootstrap/Button"
-import styled from "@emotion/styled"
 
 type FilterBySubjectProps = {
     selected: string,

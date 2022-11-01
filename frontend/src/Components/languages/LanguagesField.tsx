@@ -1,12 +1,12 @@
-import React from "react"
-import { Controller } from "react-hook-form"
 import Autocomplete from "@mui/material/Autocomplete"
 import TextField from "@mui/material/TextField"
-import { getLanguagesAutocomplete } from "../API"
-import { FormLanguage } from "../../Model/DexterModel"
-import parse from "autosuggest-highlight/parse"
 import match from "autosuggest-highlight/match"
+import parse from "autosuggest-highlight/parse"
+import React from "react"
+import { Controller } from "react-hook-form"
+import { FormLanguage } from "../../Model/DexterModel"
 import { useDebounce } from "../../Utils/useDebounce"
+import { getLanguagesAutocomplete } from "../API"
 
 export const LanguagesField = ({ control }: { control: any }) => {
     const [languages, setLanguages] = React.useState<FormLanguage[]>([])

@@ -1,9 +1,9 @@
-import React from "react"
-import { Controller } from "react-hook-form"
 import Autocomplete from "@mui/material/Autocomplete"
 import TextField from "@mui/material/TextField"
-import parse from "autosuggest-highlight/parse"
 import match from "autosuggest-highlight/match"
+import parse from "autosuggest-highlight/parse"
+import React from "react"
+import { Controller } from "react-hook-form"
 import { ServerSource } from "../../Model/DexterModel"
 
 interface PartOfSourceFieldProps {

@@ -1,5 +1,5 @@
 import React from "react"
-import { CollectionsState, CollectionsAction, initState } from "./collectionReducer"
+import { CollectionsAction, CollectionsState, initState } from "./collectionReducer"
 
 interface CollectionsContext {
     collectionsState: CollectionsState,

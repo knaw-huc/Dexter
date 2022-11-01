@@ -1,7 +1,7 @@
 import React from "react"
-import { ACTIONS } from "../actions"
 import { ServerSource } from "../../Model/DexterModel"
 import { doGetSources } from "../../Utils/doGetSources"
+import { ACTIONS } from "../actions"
 
 export interface SourcesState {
     sources: ServerSource[],

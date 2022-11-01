@@ -1,12 +1,12 @@
-import React from "react"
-import { ServerSource } from "../../Model/DexterModel"
-import { Link } from "react-router-dom"
 import styled from "@emotion/styled"
-import { deleteSource, getSources } from "../API"
-import { sourcesContext } from "../../State/Sources/sourcesContext"
-import { ACTIONS } from "../../State/actions"
 import DeleteIcon from "@mui/icons-material/Delete"
 import { red } from "@mui/material/colors"
+import React from "react"
+import { Link } from "react-router-dom"
+import { ServerSource } from "../../Model/DexterModel"
+import { ACTIONS } from "../../State/actions"
+import { sourcesContext } from "../../State/Sources/sourcesContext"
+import { deleteSource, getSources } from "../API"
 
 type SourceItemProps = {
     sourceId: React.Key,

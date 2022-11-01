@@ -1,7 +1,6 @@
+import styled from "@emotion/styled"
 import React from "react"
 import { ServerSource } from "../../Model/DexterModel"
-import styled from "@emotion/styled"
-import { getSourcesInCorpus } from "../API"
 import { SourceItemDropdownContent } from "./SourceItemDropdownContent"
 
 interface SourceItemDropdownProps {

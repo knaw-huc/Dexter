@@ -1,15 +1,15 @@
-import React from "react"
-import { deleteKeywordFromCorpus, deleteLanguageFromCorpus, getCollectionById, getKeywordsCorpora, getLanguagesCorpora, getSourcesInCorpus } from "../API"
-import { useParams } from "react-router-dom"
-import { ServerCorpus, ServerKeyword, ServerLanguage, ServerSource } from "../../Model/DexterModel"
-import { collectionsContext } from "../../State/Collections/collectionContext"
-import { ACTIONS } from "../../State/actions"
-import { NewCollection } from "./NewCollection"
 import styled from "@emotion/styled"
 import Button from "@mui/material/Button"
+import React from "react"
+import { useParams } from "react-router-dom"
+import { ServerCorpus, ServerKeyword, ServerLanguage, ServerSource } from "../../Model/DexterModel"
+import { ACTIONS } from "../../State/actions"
+import { collectionsContext } from "../../State/Collections/collectionContext"
+import { deleteKeywordFromCorpus, deleteLanguageFromCorpus, getCollectionById, getSourcesInCorpus } from "../API"
 import { KeywordContent } from "../keywords/KeywordContent"
 import { LanguagesContent } from "../languages/LanguagesContent"
 import { SourceItemDropdown } from "../Sources/SourceItemDropdown"
+import { NewCollection } from "./NewCollection"
 
 const Wrapper = styled.div`
     overflow: auto;

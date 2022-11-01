@@ -1,13 +1,13 @@
 import React from "react"
 import { ServerSource } from "../../Model/DexterModel"
-import { sourcesContext } from "../../State/Sources/sourcesContext"
 import { ACTIONS } from "../../State/actions"
-import { SourceItem } from "./SourceItem"
-import { NewSource } from "./NewSource"
+import { sourcesContext } from "../../State/Sources/sourcesContext"
 import { doGetSources } from "../../Utils/doGetSources"
+import { NewSource } from "./NewSource"
+import { SourceItem } from "./SourceItem"
 // import { FilterBySubject } from "../FilterBySubject"
-import Button from "@mui/material/Button"
 import styled from "@emotion/styled"
+import Button from "@mui/material/Button"
 
 const FilterRow = styled.div`
     display: flex;

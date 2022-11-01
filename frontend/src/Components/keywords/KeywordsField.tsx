@@ -1,12 +1,11 @@
+import { Autocomplete, TextField } from "@mui/material"
+import match from "autosuggest-highlight/match"
+import parse from "autosuggest-highlight/parse"
 import React from "react"
 import { Controller } from "react-hook-form"
-import { Autocomplete } from "@mui/material"
-import { TextField } from "@mui/material"
-import { getKeywordsAutocomplete } from "../API"
 import { FormKeyword } from "../../Model/DexterModel"
-import parse from "autosuggest-highlight/parse"
-import match from "autosuggest-highlight/match"
 import { useDebounce } from "../../Utils/useDebounce"
+import { getKeywordsAutocomplete } from "../API"
 
 export const KeywordsField = ({ control }: { control: any }) => {
     const [keywords, setKeywords] = React.useState<FormKeyword[]>([])

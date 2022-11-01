@@ -1,10 +1,10 @@
+import styled from "@emotion/styled"
+import DeleteIcon from "@mui/icons-material/Delete"
+import { red } from "@mui/material/colors"
 import React from "react"
 import { ServerKeyword } from "../../Model/DexterModel"
 import { deleteKeyword, getKeywords } from "../API"
 import { NewKeywords } from "./NewKeywords"
-import DeleteIcon from "@mui/icons-material/Delete"
-import styled from "@emotion/styled"
-import { red } from "@mui/material/colors"
 
 const DeleteIconStyled = styled(DeleteIcon)`
     margin-left: 5px;

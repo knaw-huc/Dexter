@@ -1,7 +1,7 @@
 import React from "react"
 import { ServerCorpus } from "../../Model/DexterModel"
-import { ACTIONS } from "../actions"
 import { doGetCollections } from "../../Utils/doGetCollections"
+import { ACTIONS } from "../actions"
 
 export interface CollectionsState {
     collections: ServerCorpus[],

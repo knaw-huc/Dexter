@@ -1,13 +1,13 @@
+import Button from "@mui/material/Button"
 import React from "react"
 import { useParams } from "react-router-dom"
-import { ServerSource, ServerKeyword, ServerLanguage } from "../../Model/DexterModel"
+import { ServerKeyword, ServerLanguage, ServerSource } from "../../Model/DexterModel"
+import { ACTIONS } from "../../State/actions"
 import { sourcesContext } from "../../State/Sources/sourcesContext"
 import { deleteKeywordFromSource, deleteLanguageFromSource, getKeywordsSources, getLanguagesSources, getSourceById } from "../API"
-import { ACTIONS } from "../../State/actions"
-import { NewSource } from "./NewSource"
-import Button from "@mui/material/Button"
 import { KeywordContent } from "../keywords/KeywordContent"
 import { LanguagesContent } from "../languages/LanguagesContent"
+import { NewSource } from "./NewSource"
 
 export const SourceItemContent = () => {
     const [source, setSource] = React.useState<ServerSource>(null)

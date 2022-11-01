@@ -1,4 +1,4 @@
-import { ServerCorpus, ServerSource, ServerKeyword, ServerLanguage, FormKeyword } from "../Model/DexterModel"
+import { FormKeyword, ServerCorpus, ServerKeyword, ServerLanguage, ServerSource } from "../Model/DexterModel"
 
 const headers = {
     "Content-Type": "application/json"

@@ -1,8 +1,8 @@
+import styled from "@emotion/styled"
+import DeleteIcon from "@mui/icons-material/Delete"
+import { red } from "@mui/material/colors"
 import React from "react"
 import { ServerLanguage } from "../../Model/DexterModel"
-import DeleteIcon from "@mui/icons-material/Delete"
-import styled from "@emotion/styled"
-import { red } from "@mui/material/colors"
 import { getLanguagesCorpora, getLanguagesSources } from "../API"
 
 type LanguagesContentProps = {
