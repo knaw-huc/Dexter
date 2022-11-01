@@ -3,9 +3,11 @@ import { ServerKeyword } from "../../Model/DexterModel"
 import DeleteIcon from "@mui/icons-material/Delete"
 import styled from "@emotion/styled"
 import { red } from "@mui/material/colors"
+import { getKeywordsCorpora, getKeywordsSources } from "../API"
 
 type KeywordContentProps = {
-    keywords: ServerKeyword[],
+    sourceId?: string,
+    corpusId?: string,
     onDelete: (keyword: ServerKeyword) => Promise<void>
 }
 
@@ -19,10 +21,37 @@ const DeleteIconStyled = styled(DeleteIcon)`
 `
 
 export const KeywordContent = (props: KeywordContentProps) => {
+    const [keywords, setKeywords] = React.useState<ServerKeyword[]>(null)
+
+    const doGetSourceKeywords = async (sourceId: string) => {
+        const kws = await getKeywordsSources(sourceId)
+        setKeywords(kws)
+        console.log(kws)
+    }
+
+    const doGetCorpusKeywords = async (corpusId: string) => {
+        const kws = await getKeywordsCorpora(corpusId)
+        setKeywords(kws)
+        console.log(kws)
+    }
+
+    React.useEffect(() => {
+        if (props.sourceId) {
+            doGetSourceKeywords(props.sourceId)
+        }
+
+        if (props.corpusId) {
+            doGetCorpusKeywords(props.corpusId)
+        }
+    }, [props.corpusId, props.sourceId])
 
     return (
         <>
-            {props.keywords.map((keyword, index) => {
+            {/* {props.keywords.map((keyword, index) => {
+                return <p key={index}>{keyword.val} {<DeleteIconStyled onClick={() => props.onDelete(keyword)} />}</p>
+            })} */}
+
+            {keywords && keywords.map((keyword, index) => {
                 return <p key={index}>{keyword.val} {<DeleteIconStyled onClick={() => props.onDelete(keyword)} />}</p>
             })}
         </>
