@@ -3,13 +3,15 @@ import { useForm, SubmitHandler } from "react-hook-form"
 import Modal from "react-bootstrap/Modal"
 import Button from "@mui/material/Button"
 import styled from "@emotion/styled"
-import { addKeywordsToCorpus, addLanguagesToCorpus, createCollection, getCollectionById, updateCollection } from "../API"
-import { ServerCorpus, ServerKeyword, ServerLanguage } from "../../Model/DexterModel"
+import { addKeywordsToCorpus, addLanguagesToCorpus, addSourcesToCorpus, createCollection, getCollectionById, updateCollection } from "../API"
+import { ServerCorpus, ServerKeyword, ServerLanguage, ServerSource } from "../../Model/DexterModel"
 import TextField from "@mui/material/TextField"
 import { KeywordsField } from "../keywords/KeywordsField"
 import { LanguagesField } from "../languages/LanguagesField"
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
+import { PartOfSourceField } from "./PartOfSourceField"
+import { sourcesContext } from "../../State/Sources/sourcesContext"
 
 type NewCollectionProps = {
     refetch?: () => void,
@@ -46,10 +48,14 @@ const formToServer = (data: ServerCorpus) => {
     if (newData.languages) {
         newData.languages = newData.languages.map((language: ServerLanguage) => { return language.id })
     }
+    if (newData.sourceIds) {
+        newData.sourceIds = newData.sourceIds.map((source: ServerSource) => { return source.id })
+    }
     return newData
 }
 
 export function NewCollection(props: NewCollectionProps) {
+    const { sourcesState } = React.useContext(sourcesContext)
     const { register, handleSubmit, reset, setValue, control, formState: { errors } } = useForm<ServerCorpus>({ resolver: yupResolver(schema) })
     const onSubmit: SubmitHandler<ServerCorpus> = async data => {
         console.log(data)
@@ -62,6 +68,7 @@ export function NewCollection(props: NewCollectionProps) {
                 const corpusId = newCollection.id
                 dataToServer.keywords && await addKeywordsToCorpus(corpusId, dataToServer.keywords)
                 dataToServer.languages && await addLanguagesToCorpus(corpusId, dataToServer.languages)
+                dataToServer.sourceIds && await addSourcesToCorpus(corpusId, dataToServer.sourceIds)
                 await props.refetch()
             } catch (error) {
                 console.log(error)
@@ -144,6 +151,8 @@ export function NewCollection(props: NewCollectionProps) {
                         <KeywordsField control={control} />
                         <Label>Languages</Label>
                         <LanguagesField control={control} />
+                        <Label>Add sources to corpus</Label>
+                        <PartOfSourceField control={control} sources={sourcesState.sources} />
                         <Button variant="contained" type="submit">Submit</Button>
                     </form>
                 </Modal.Body>

@@ -474,3 +474,24 @@ export const deleteKeywordFromSource = async (sourceId: string, keywordId: strin
         return
     }
 }
+
+export const addSourcesToCorpus = async (corpusId: string, sourceIds: string) => {
+    const response = await fetch(`/api/corpora/${corpusId}/sources`, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(sourceIds)
+    })
+
+    console.log(response)
+
+    if (!response.ok) {
+        console.error(response)
+        return
+    }
+
+    const data: ServerCorpus[] = await response.json()
+
+    console.log(data)
+
+    return data
+}

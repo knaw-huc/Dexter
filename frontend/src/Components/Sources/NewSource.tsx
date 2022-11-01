@@ -4,7 +4,7 @@ import Modal from "react-bootstrap/Modal"
 import Button from "@mui/material/Button"
 import styled from "@emotion/styled"
 import { addKeywordsToSource, addLanguagesToSource, createSource, getSourceById, updateSource } from "../API"
-import { ServerKeyword, ServerLanguage, ServerSource } from "../../Model/DexterModel"
+import { ServerCorpus, ServerKeyword, ServerLanguage, ServerSource } from "../../Model/DexterModel"
 import TextField from "@mui/material/TextField"
 import { KeywordsField } from "../keywords/KeywordsField"
 import { LanguagesField } from "../languages/LanguagesField"
@@ -43,6 +43,11 @@ const formToServer = (data: ServerSource) => {
     if (newData.languages) {
         newData.languages = newData.languages.map((language: ServerLanguage) => { return language.id })
     }
+    if (newData.partOfCorpus) {
+        newData.partOfCorpus = newData.partOfCorpus.map((corpus: ServerCorpus) => { return corpus.id })
+    }
+
+    console.log(newData)
     return newData
 }
 
@@ -142,6 +147,7 @@ export function NewSource(props: NewSourceProps) {
                         <KeywordsField control={control} />
                         <Label>Languages</Label>
                         <LanguagesField control={control} />
+                        <Label>Part of which corpus?</Label>
                         <PartOfCorpusField control={control} corpora={collectionsState.collections} />
                         <Button variant="contained" type="submit">Submit</Button>
                     </form>

@@ -15,6 +15,7 @@ export interface ServerCorpus {
     updatedAt: string,
     keywords: ServerKeyword[],
     languages: ServerLanguage[],
+    sourceIds: string[]
 }
 
 export interface FormCorpus {
