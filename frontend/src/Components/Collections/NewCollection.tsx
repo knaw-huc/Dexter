@@ -7,11 +7,13 @@ import Modal from "react-bootstrap/Modal"
 import { SubmitHandler, useForm } from "react-hook-form"
 import * as yup from "yup"
 import { ServerCorpus, ServerKeyword, ServerLanguage, ServerSource } from "../../Model/DexterModel"
+import { collectionsContext } from "../../State/Collections/collectionContext"
 import { sourcesContext } from "../../State/Sources/sourcesContext"
 import { addKeywordsToCorpus, addLanguagesToCorpus, addSourcesToCorpus, createCollection, getCollectionById, updateCollection } from "../API"
 import { KeywordsField } from "../keywords/KeywordsField"
 import { LanguagesField } from "../languages/LanguagesField"
 import { PartOfSourceField } from "./PartOfSourceField"
+import { SubCorpusField } from "./SubCorpusField"
 
 type NewCollectionProps = {
     refetch?: () => void,
@@ -51,11 +53,15 @@ const formToServer = (data: ServerCorpus) => {
     if (newData.sourceIds) {
         newData.sourceIds = newData.sourceIds.map((source: ServerSource) => { return source.id })
     }
+    if (newData.parentId) {
+        newData.parentId = newData.parentId.map((corpus: ServerCorpus) => { return corpus.id }).toString()
+    }
     return newData
 }
 
 export function NewCollection(props: NewCollectionProps) {
     const { sourcesState } = React.useContext(sourcesContext)
+    const { collectionsState } = React.useContext(collectionsContext)
     const { register, handleSubmit, reset, setValue, control, formState: { errors } } = useForm<ServerCorpus>({ resolver: yupResolver(schema) })
     const onSubmit: SubmitHandler<ServerCorpus> = async data => {
         console.log(data)
@@ -153,6 +159,8 @@ export function NewCollection(props: NewCollectionProps) {
                         <LanguagesField control={control} />
                         <Label>Add sources to corpus</Label>
                         <PartOfSourceField control={control} sources={sourcesState.sources} />
+                        <Label>Add corpus to which main corpus?</Label>
+                        <SubCorpusField control={control} corpora={collectionsState.collections} />
                         <Button variant="contained" type="submit">Submit</Button>
                     </form>
                 </Modal.Body>

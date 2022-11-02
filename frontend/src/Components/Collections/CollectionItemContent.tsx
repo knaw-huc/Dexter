@@ -1,7 +1,7 @@
 import styled from "@emotion/styled"
 import Button from "@mui/material/Button"
 import React from "react"
-import { useParams } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 import { ServerCorpus, ServerKeyword, ServerLanguage, ServerSource } from "../../Model/DexterModel"
 import { ACTIONS } from "../../State/actions"
 import { collectionsContext } from "../../State/Collections/collectionContext"
@@ -99,7 +99,7 @@ export const CollectionItemContent = () => {
             {collection && sources && keywords && languages &&
                 <>
                     <Button variant="contained" onClick={formShowHandler}>Edit</Button>
-                    <p><strong>Parent ID:</strong> {collection.parentId}</p>
+                    <p><strong>Parent ID:</strong> <Link to={`/corpora/${collection.parentId}`}>{collection.parentId}</Link></p>
                     <p><strong>Title:</strong> {collection.title}</p>
                     <p><strong>Description:</strong> {collection.description}</p>
                     <p><strong>Rights:</strong> {collection.rights}</p>

@@ -50,7 +50,7 @@ export function CollectionItem(props: CollectionItemProps) {
             <ul>
                 <li key={props.collectionId}>
                     <Link to={`/corpora/${props.collection.id}`} key={props.collectionId} onClick={toggleClick}>
-                        {props.collection.title}
+                        {props.collection.parentId ? props.collection.title + " (" + "subcorpus" + ")" : props.collection.title}
                     </Link>
                     <DeleteIconStyled onClick={() => handleDelete(props.collection)} />
                 </li>
