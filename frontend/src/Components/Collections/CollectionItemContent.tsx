@@ -112,7 +112,7 @@ export const CollectionItemContent = () => {
                     <div><strong>Keywords:</strong> <KeywordContent keywords={keywords} onDelete={deleteKeywordHandler} /></div>
                     <div><strong>Languages:</strong> <LanguagesContent languages={languages} onDelete={deleteLanguageHandler} /></div>
                     <strong>Sources:</strong> {sources.map((source, index) => (
-                        <SourceItemDropdown key={index} source={source} />
+                        <SourceItemDropdown key={index} source={source} corpusId={collection.id} />
                     ))}
                 </>
             }

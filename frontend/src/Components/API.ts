@@ -515,3 +515,17 @@ export const getSourcesInCorpus = async (corpusId: string) => {
 
     return data
 }
+
+export const deleteSourceFromCorpus = async (corpusId: string, sourceId: string) => {
+    const response = await fetch(`/api/corpora/${corpusId}/sources/${sourceId}`, {
+        method: "DELETE",
+        headers: headers
+    })
+
+    console.log(response)
+
+    if (!response.ok) {
+        console.error(response)
+        return
+    }
+}

@@ -30,6 +30,7 @@ export const SourceItemDropdownContent = (props: SourceItemDropdownContentProps)
 
     const deleteLanguageHandler = async (language: ServerLanguage) => {
         await doDeleteLanguageFromSource(language, props.source.id)
+        window.location.reload()
     }
 
     React.useEffect(() => {
