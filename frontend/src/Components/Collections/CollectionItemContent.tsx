@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom"
 import { ServerCorpus, ServerKeyword, ServerLanguage, ServerSource } from "../../Model/DexterModel"
 import { ACTIONS } from "../../State/actions"
 import { collectionsContext } from "../../State/Collections/collectionContext"
-import { deleteKeywordFromCorpus, deleteLanguageFromCorpus, getCollectionById, getSourcesInCorpus } from "../API"
+import { deleteKeywordFromCorpus, deleteLanguageFromCorpus, getCollectionById, getKeywordsCorpora, getLanguagesCorpora, getSourcesInCorpus } from "../API"
 import { KeywordContent } from "../keywords/KeywordContent"
 import { LanguagesContent } from "../languages/LanguagesContent"
 import { SourceItemDropdown } from "../Sources/SourceItemDropdown"
@@ -18,6 +18,8 @@ const Wrapper = styled.div`
 export const CollectionItemContent = () => {
     const [collection, setCollection] = React.useState<ServerCorpus>(null)
     const [sources, setSources] = React.useState<ServerSource[]>(null)
+    const [keywords, setKeywords] = React.useState<ServerKeyword[]>(null)
+    const [languages, setLanguages] = React.useState<ServerLanguage[]>(null)
 
     const params = useParams()
 
@@ -47,6 +49,12 @@ export const CollectionItemContent = () => {
     const doGetCollectionById = async (id: string) => {
         const response = await getCollectionById(id)
         setCollection(response as ServerCorpus)
+
+        const kws = await getKeywordsCorpora(response.id)
+        setKeywords(kws)
+
+        const langs = await getLanguagesCorpora(response.id)
+        setLanguages(langs)
     }
 
     const doGetSourcesInCorpus = async (corpusId: string) => {
@@ -88,7 +96,7 @@ export const CollectionItemContent = () => {
 
     return (
         <Wrapper>
-            {collection && sources &&
+            {collection && sources && keywords && languages &&
                 <>
                     <Button variant="contained" onClick={formShowHandler}>Edit</Button>
                     <p><strong>Parent ID:</strong> {collection.parentId}</p>
@@ -101,8 +109,8 @@ export const CollectionItemContent = () => {
                     <p><strong>Latest:</strong> {collection.latest}</p>
                     <p><strong>Contributor:</strong> {collection.contributor}</p>
                     <p><strong>Notes:</strong> {collection.notes}</p>
-                    <div><strong>Keywords:</strong> <KeywordContent corpusId={params.corpusId} onDelete={deleteKeywordHandler} /></div>
-                    <div><strong>Languages:</strong> <LanguagesContent corpusId={params.corpusId} onDelete={deleteLanguageHandler} /></div>
+                    <div><strong>Keywords:</strong> <KeywordContent keywords={keywords} onDelete={deleteKeywordHandler} /></div>
+                    <div><strong>Languages:</strong> <LanguagesContent languages={languages} onDelete={deleteLanguageHandler} /></div>
                     <strong>Sources:</strong> {sources.map((source, index) => (
                         <SourceItemDropdown key={index} source={source} />
                     ))}
