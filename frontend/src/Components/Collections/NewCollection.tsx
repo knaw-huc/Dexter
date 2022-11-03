@@ -1,6 +1,7 @@
 import styled from "@emotion/styled"
 import { yupResolver } from "@hookform/resolvers/yup"
 import Button from "@mui/material/Button"
+import MenuItem from "@mui/material/MenuItem"
 import TextField from "@mui/material/TextField"
 import React from "react"
 import Modal from "react-bootstrap/Modal"
@@ -38,8 +39,10 @@ const Select = styled.select`
 `
 
 const schema = yup.object({
-    title: yup.string().required(),
-
+    title: yup.string().required("Title is required"),
+    description: yup.string().required("Description is required"),
+    rights: yup.string().required("Rights is required"),
+    access: yup.string().required("Access is required")
 })
 
 const formToServer = (data: ServerCorpus) => {
@@ -62,7 +65,7 @@ const formToServer = (data: ServerCorpus) => {
 export function NewCollection(props: NewCollectionProps) {
     const { sourcesState } = React.useContext(sourcesContext)
     const { collectionsState } = React.useContext(collectionsContext)
-    const { register, handleSubmit, reset, setValue, control, formState: { errors } } = useForm<ServerCorpus>({ resolver: yupResolver(schema) })
+    const { register, handleSubmit, reset, setValue, control, formState: { errors } } = useForm<ServerCorpus>({ resolver: yupResolver(schema), mode: "onBlur" })
     const onSubmit: SubmitHandler<ServerCorpus> = async data => {
         console.log(data)
 
@@ -131,18 +134,27 @@ export function NewCollection(props: NewCollectionProps) {
                 <Modal.Body>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <Label>Title</Label>
-                        <TextFieldStyled fullWidth margin="dense" {...register("title")} />
-                        <p>{errors.title?.message}</p>
+                        <TextFieldStyled fullWidth margin="dense" error={errors.title ? true : false} {...register("title")} />
+                        <p style={{ color: "red" }}>{errors.title?.message}</p>
                         <Label>Description</Label>
-                        <TextFieldStyled fullWidth margin="dense" multiline rows={6} {...register("description", { required: true })} />
+                        <TextFieldStyled fullWidth margin="dense" multiline rows={6} error={errors.description ? true : false} {...register("description", { required: true })} />
+                        <p style={{ color: "red" }}>{errors.description?.message}</p>
                         <Label>Rights</Label>
-                        <TextFieldStyled fullWidth margin="dense" {...register("rights", { required: true })} />
+                        <TextFieldStyled fullWidth margin="dense" error={errors.rights ? true : false} {...register("rights", { required: true })} />
+                        <p style={{ color: "red" }}>{errors.rights?.message}</p>
                         <Label>Access</Label>
-                        <Select {...register("access", { required: true })}>
-                            <option value="Open">Open</option>
-                            <option value="Restricted">Restricted</option>
-                            <option value="Closed">Closed</option>
-                        </Select>
+                        <TextFieldStyled
+                            error={errors.access ? true : false}
+                            select
+                            fullWidth
+                            defaultValue=""
+                            inputProps={register("access", { required: true })}
+                        >
+                            <MenuItem value="Open">Open</MenuItem>
+                            <MenuItem value="Restricted">Restricted</MenuItem>
+                            <MenuItem value="Closed">Closed</MenuItem>
+                        </TextFieldStyled>
+                        <p style={{ color: "red" }}>{errors.access?.message}</p>
                         <Label>Location</Label>
                         <TextFieldStyled fullWidth margin="dense" {...register("location")} />
                         <Label>Earliest</Label>
