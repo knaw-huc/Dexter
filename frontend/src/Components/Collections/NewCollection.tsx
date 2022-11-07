@@ -10,7 +10,7 @@ import * as yup from "yup"
 import { ServerCorpus, ServerKeyword, ServerLanguage, ServerSource } from "../../Model/DexterModel"
 import { collectionsContext } from "../../State/Collections/collectionContext"
 import { sourcesContext } from "../../State/Sources/sourcesContext"
-import { addKeywordsToCorpus, addLanguagesToCorpus, addSourcesToCorpus, createCollection, getCollectionById, updateCollection } from "../API"
+import { addKeywordsToCorpus, addLanguagesToCorpus, addSourcesToCorpus, createCollection, getCollectionById, getKeywordsCorpora, getLanguagesCorpora, getSourcesInCorpus, updateCollection } from "../API"
 import { KeywordsField } from "../keywords/KeywordsField"
 import { LanguagesField } from "../languages/LanguagesField"
 import { PartOfSourceField } from "./PartOfSourceField"
@@ -34,10 +34,6 @@ const Label = styled.label`
     font-weight: bold;
 `
 
-const Select = styled.select`
-    display: block;
-`
-
 const schema = yup.object({
     title: yup.string().required("Title is required"),
     description: yup.string().required("Description is required"),
@@ -46,6 +42,7 @@ const schema = yup.object({
 })
 
 const formToServer = (data: ServerCorpus) => {
+    console.log(data)
     const newData: any = data
     if (newData.keywords) {
         newData.keywords = newData.keywords.map((kw: ServerKeyword) => { return kw.id })
@@ -69,9 +66,8 @@ export function NewCollection(props: NewCollectionProps) {
     const onSubmit: SubmitHandler<ServerCorpus> = async data => {
         console.log(data)
 
-        const dataToServer = formToServer(data)
-
         if (!props.edit) {
+            const dataToServer = formToServer(data)
             try {
                 const newCollection = await createCollection(dataToServer)
                 const corpusId = newCollection.id
@@ -99,21 +95,27 @@ export function NewCollection(props: NewCollectionProps) {
 
     React.useEffect(() => {
         const doGetCollectionById = async (id: string) => {
-            const response: any = await getCollectionById(id)
-            console.log(response)
-            const fields = ["title", "description", "rights", "access", "location", "earliest", "latest", "contributor", "notes"]
+            const data: any = await getCollectionById(id)
+            const keywords = await getKeywordsCorpora(id)
+            const languages = await getLanguagesCorpora(id)
+            const sources = await getSourcesInCorpus(id)
+
+            data.keywords = keywords.map((keyword) => { return keyword })
+            console.log(data)
+
+            const fields = ["parentId", "title", "description", "rights", "access", "location", "earliest", "latest", "contributor", "notes", "keywords"]
             fields.map((field: any) => {
-                setValue(field, response[field])
+                setValue(field, data[field])
             })
         }
 
-        if (props.edit) {
+        if (props.edit && props.colToEdit) {
             doGetCollectionById(props.colToEdit.id)
 
         } else {
             return
         }
-    }, [props.edit, setValue])
+    }, [props.colToEdit, props.edit, setValue])
 
     const handleClose = () => {
         props.onClose()
