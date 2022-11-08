@@ -24,7 +24,6 @@ export const KeywordsField = (props: KeywordsFieldProps) => {
     const debouncedInput = useDebounce<string>(inputValue, 250)
     const selectedItems = useWatch({ control, name: "keywords" })
 
-
     async function autoComplete(input: string) {
         const result = await getKeywordsAutocomplete(input)
         setKeywords(result)
@@ -35,11 +34,11 @@ export const KeywordsField = (props: KeywordsFieldProps) => {
     const deleteKeywordHandler = (keyword: ServerKeyword) => {
         if (!props.edit) {
             if (props.setValueCorpus) {
-                props.setValueCorpus("keywords", [])
+                props.setValueCorpus("keywords", selectedItems.filter((entry: ServerKeyword) => entry !== keyword))
             }
 
             if (props.setValueSource) {
-                props.setValueSource("keywords", [])
+                props.setValueSource("keywords", selectedItems.filter((entry: ServerKeyword) => entry !== keyword))
             }
         }
 
