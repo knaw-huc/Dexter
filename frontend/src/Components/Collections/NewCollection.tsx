@@ -62,7 +62,7 @@ const formToServer = (data: ServerCorpus) => {
 export function NewCollection(props: NewCollectionProps) {
     const { sourcesState } = React.useContext(sourcesContext)
     const { collectionsState } = React.useContext(collectionsContext)
-    const { register, handleSubmit, reset, setValue, control, formState: { errors } } = useForm<ServerCorpus>({ resolver: yupResolver(schema), mode: "onBlur" })
+    const { register, handleSubmit, reset, setValue, control, formState: { errors } } = useForm<ServerCorpus>({ resolver: yupResolver(schema), mode: "onBlur", defaultValues: { keywords: [], languages: [], sourceIds: [], parentId: "" } })
     const onSubmit: SubmitHandler<ServerCorpus> = async data => {
         console.log(data)
 
@@ -168,7 +168,7 @@ export function NewCollection(props: NewCollectionProps) {
                         <Label>Notes</Label>
                         <TextFieldStyled fullWidth margin="dense" {...register("notes")} />
                         <Label>Keywords</Label>
-                        <KeywordsField control={control} />
+                        <KeywordsField control={control} corpusId={props.colToEdit.id} setValue={setValue} />
                         <Label>Languages</Label>
                         <LanguagesField control={control} />
                         <Label>Add sources to corpus</Label>

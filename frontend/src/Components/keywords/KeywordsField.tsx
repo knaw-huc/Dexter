@@ -2,22 +2,42 @@ import { Autocomplete, Chip, TextField } from "@mui/material"
 import match from "autosuggest-highlight/match"
 import parse from "autosuggest-highlight/parse"
 import React from "react"
-import { Controller } from "react-hook-form"
-import { FormKeyword } from "../../Model/DexterModel"
+import { Controller, UseFormSetValue, useWatch } from "react-hook-form"
+import { FormKeyword, ServerCorpus, ServerKeyword } from "../../Model/DexterModel"
 import { useDebounce } from "../../Utils/useDebounce"
-import { getKeywordsAutocomplete } from "../API"
+import { deleteKeywordFromCorpus, getKeywordsAutocomplete } from "../API"
 
-export const KeywordsField = ({ control }: { control: any }) => {
+interface KeywordsFieldProps {
+    corpusId?: string | undefined
+    sourceId?: string | undefined
+    control: any
+    setValue?: UseFormSetValue<ServerCorpus>
+}
+
+export const KeywordsField = (props: KeywordsFieldProps) => {
+    const { control } = props
     const [keywords, setKeywords] = React.useState<FormKeyword[]>([])
     const [inputValue, setInputValue] = React.useState("")
     const [loading, setLoading] = React.useState(false)
     const debouncedInput = useDebounce<string>(inputValue, 250)
+    const selectedItems = useWatch({ control, name: "keywords" })
+
 
     async function autoComplete(input: string) {
         const result = await getKeywordsAutocomplete(input)
         setKeywords(result)
         setLoading(false)
         //return result
+    }
+
+    const deleteKeywordHandler = async (corpusId: string, keyword: ServerKeyword) => {
+        const warning = window.confirm("Are you sure you wish to delete this keyword?")
+
+        if (warning === false) return
+
+        props.setValue("keywords", selectedItems.filter((entry: any) => entry !== keyword))
+
+        await deleteKeywordFromCorpus(corpusId, keyword.id)
     }
 
     React.useEffect(() => {
@@ -30,7 +50,7 @@ export const KeywordsField = ({ control }: { control: any }) => {
     return (
         <div>
             {keywords && <Controller
-                control={control}
+                control={props.control}
                 name={"keywords"}
                 render={({ field: { onChange, value } }) => (
                     <Autocomplete
@@ -54,11 +74,12 @@ export const KeywordsField = ({ control }: { control: any }) => {
                             />
                         )}
                         renderTags={(tagValue, getTagProps) =>
-                            tagValue.map((option, index) => (
+                            tagValue.map((keyword, index) => (
                                 <Chip
-                                    label={option.val}
+                                    label={keyword.val}
                                     key={index}
                                     {...getTagProps({ index })}
+                                    onDelete={() => { deleteKeywordHandler(props.corpusId, keyword) }}
                                 />
                             ))
                         }
