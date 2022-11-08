@@ -8,6 +8,7 @@ import { useDebounce } from "../../Utils/useDebounce"
 import { deleteKeywordFromCorpus, deleteKeywordFromSource, getKeywordsAutocomplete } from "../API"
 
 interface KeywordsFieldProps {
+    edit?: boolean
     corpusId?: string | undefined
     sourceId?: string | undefined
     control: any
@@ -29,6 +30,26 @@ export const KeywordsField = (props: KeywordsFieldProps) => {
         setKeywords(result)
         setLoading(false)
         //return result
+    }
+
+    const deleteKeywordHandler = (keyword: ServerKeyword) => {
+        if (!props.edit) {
+            if (props.setValueCorpus) {
+                props.setValueCorpus("keywords", [])
+            }
+
+            if (props.setValueSource) {
+                props.setValueSource("keywords", [])
+            }
+        }
+
+        if (props.corpusId) {
+            deleteKeywordFromCorpusHandler(props.corpusId, keyword)
+        }
+
+        if (props.sourceId) {
+            deleteKeywordFromSourceHandler(props.sourceId, keyword)
+        }
     }
 
     const deleteKeywordFromCorpusHandler = async (corpusId: string, keyword: ServerKeyword) => {
@@ -88,7 +109,7 @@ export const KeywordsField = (props: KeywordsFieldProps) => {
                                     label={keyword.val}
                                     key={index}
                                     {...getTagProps({ index })}
-                                    onDelete={() => { props.corpusId ? deleteKeywordFromCorpusHandler(props.corpusId, keyword) : deleteKeywordFromSourceHandler(props.sourceId, keyword) }}
+                                    onDelete={() => { deleteKeywordHandler(keyword) }}
                                 />
                             ))
                         }

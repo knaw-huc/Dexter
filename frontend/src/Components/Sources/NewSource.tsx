@@ -9,6 +9,7 @@ import { SubmitHandler, useForm } from "react-hook-form"
 import * as yup from "yup"
 import { ServerCorpus, ServerKeyword, ServerLanguage, ServerSource } from "../../Model/DexterModel"
 import { collectionsContext } from "../../State/Collections/collectionContext"
+import { sourcesContext } from "../../State/Sources/sourcesContext"
 import { addKeywordsToSource, addLanguagesToSource, createSource, getKeywordsSources, getSourceById, updateSource } from "../API"
 import { KeywordsField } from "../keywords/KeywordsField"
 import { LanguagesField } from "../languages/LanguagesField"
@@ -61,6 +62,7 @@ const formToServer = (data: ServerSource) => {
 
 export function NewSource(props: NewSourceProps) {
     const { collectionsState } = React.useContext(collectionsContext)
+    const { sourcesState } = React.useContext(sourcesContext)
 
     const { register, handleSubmit, reset, setValue, control, formState: { errors } } = useForm<ServerSource>({ resolver: yupResolver(schema), mode: "onBlur", defaultValues: { keywords: [], languages: [] } })
     const onSubmit: SubmitHandler<ServerSource> = async data => {
@@ -170,7 +172,7 @@ export function NewSource(props: NewSourceProps) {
                         <Label>Notes</Label>
                         <TextFieldStyled fullWidth margin="dense" {...register("notes")} />
                         <Label>Keywords</Label>
-                        <KeywordsField control={control} sourceId={props.sourceToEdit && props.sourceToEdit.id} setValueSource={setValue} />
+                        <KeywordsField control={control} sourceId={props.sourceToEdit && props.sourceToEdit.id} setValueSource={setValue} edit={sourcesState.editSourceMode} />
                         <Label>Languages</Label>
                         <LanguagesField control={control} />
                         <Label>Part of which corpus?</Label>

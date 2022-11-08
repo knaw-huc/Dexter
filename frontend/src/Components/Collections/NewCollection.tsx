@@ -173,7 +173,7 @@ export function NewCollection(props: NewCollectionProps) {
                         <Label>Notes</Label>
                         <TextFieldStyled fullWidth margin="dense" {...register("notes")} />
                         <Label>Keywords</Label>
-                        <KeywordsField control={control} corpusId={props.colToEdit && props.colToEdit.id} setValueCorpus={setValue} />
+                        <KeywordsField control={control} corpusId={props.colToEdit && props.colToEdit.id} setValueCorpus={setValue} edit={collectionsState.editColMode} />
                         <Label>Languages</Label>
                         <LanguagesField control={control} />
                         <Label>Add sources to corpus</Label>
