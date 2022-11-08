@@ -66,9 +66,8 @@ export function NewSource(props: NewSourceProps) {
     const onSubmit: SubmitHandler<ServerSource> = async data => {
         console.log(data)
 
-        const dataToServer = formToServer(data)
-
         if (!props.edit) {
+            const dataToServer = formToServer(data)
             try {
                 const newSource = await createSource(dataToServer)
                 const sourceId = newSource.id
@@ -80,9 +79,15 @@ export function NewSource(props: NewSourceProps) {
             }
             props.onClose()
         } else {
+            const updatedDataToServer: any = data
+            if (updatedDataToServer.keywords) {
+                updatedDataToServer.keywords = updatedDataToServer.keywords.map((kw: ServerKeyword) => { return kw.id })
+            }
+
             const doUpdateSource = async (id: string, updatedData: ServerSource) => {
                 try {
                     await updateSource(id, updatedData)
+                    await addKeywordsToSource(id, updatedDataToServer.keywords)
                     await props.refetchSource()
                 } catch (error) {
                     console.log(error)

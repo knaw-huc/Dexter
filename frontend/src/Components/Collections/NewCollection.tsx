@@ -42,7 +42,6 @@ const schema = yup.object({
 })
 
 const formToServer = (data: ServerCorpus) => {
-    console.log(data)
     const newData: any = data
     if (newData.keywords) {
         newData.keywords = newData.keywords.map((kw: ServerKeyword) => { return kw.id })
@@ -80,9 +79,15 @@ export function NewCollection(props: NewCollectionProps) {
             }
             props.onClose()
         } else {
+            const updatedDataToServer: any = data
+            if (updatedDataToServer.keywords) {
+                updatedDataToServer.keywords = updatedDataToServer.keywords.map((kw: ServerKeyword) => { return kw.id })
+            }
+
             const doUpdateCollection = async (id: string, updatedData: ServerCorpus) => {
                 try {
                     await updateCollection(id, updatedData)
+                    await addKeywordsToCorpus(id, updatedDataToServer.keywords)
                     await props.refetchCol()
                 } catch (error) {
                     console.log(error)
