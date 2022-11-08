@@ -3,15 +3,16 @@ import match from "autosuggest-highlight/match"
 import parse from "autosuggest-highlight/parse"
 import React from "react"
 import { Controller, UseFormSetValue, useWatch } from "react-hook-form"
-import { FormKeyword, ServerCorpus, ServerKeyword } from "../../Model/DexterModel"
+import { FormKeyword, ServerCorpus, ServerKeyword, ServerSource } from "../../Model/DexterModel"
 import { useDebounce } from "../../Utils/useDebounce"
-import { deleteKeywordFromCorpus, getKeywordsAutocomplete } from "../API"
+import { deleteKeywordFromCorpus, deleteKeywordFromSource, getKeywordsAutocomplete } from "../API"
 
 interface KeywordsFieldProps {
     corpusId?: string | undefined
     sourceId?: string | undefined
     control: any
-    setValue?: UseFormSetValue<ServerCorpus>
+    setValueCorpus?: UseFormSetValue<ServerCorpus>
+    setValueSource?: UseFormSetValue<ServerSource>
 }
 
 export const KeywordsField = (props: KeywordsFieldProps) => {
@@ -30,14 +31,22 @@ export const KeywordsField = (props: KeywordsFieldProps) => {
         //return result
     }
 
-    const deleteKeywordHandler = async (corpusId: string, keyword: ServerKeyword) => {
+    const deleteKeywordFromCorpusHandler = async (corpusId: string, keyword: ServerKeyword) => {
         const warning = window.confirm("Are you sure you wish to delete this keyword?")
 
         if (warning === false) return
 
-        props.setValue("keywords", selectedItems.filter((entry: any) => entry !== keyword))
-
         await deleteKeywordFromCorpus(corpusId, keyword.id)
+        props.setValueCorpus("keywords", selectedItems.filter((entry: ServerKeyword) => entry !== keyword))
+    }
+
+    const deleteKeywordFromSourceHandler = async (sourceId: string, keyword: ServerKeyword) => {
+        const warning = window.confirm("Are you sure you wish to delete this keyword?")
+
+        if (warning === false) return
+
+        await deleteKeywordFromSource(sourceId, keyword.id)
+        props.setValueSource("keywords", selectedItems.filter((entry: ServerKeyword) => entry !== keyword))
     }
 
     React.useEffect(() => {
@@ -79,7 +88,7 @@ export const KeywordsField = (props: KeywordsFieldProps) => {
                                     label={keyword.val}
                                     key={index}
                                     {...getTagProps({ index })}
-                                    onDelete={() => { deleteKeywordHandler(props.corpusId, keyword) }}
+                                    onDelete={() => { props.corpusId ? deleteKeywordFromCorpusHandler(props.corpusId, keyword) : deleteKeywordFromSourceHandler(props.sourceId, keyword) }}
                                 />
                             ))
                         }

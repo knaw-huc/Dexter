@@ -9,7 +9,7 @@ import { SubmitHandler, useForm } from "react-hook-form"
 import * as yup from "yup"
 import { ServerCorpus, ServerKeyword, ServerLanguage, ServerSource } from "../../Model/DexterModel"
 import { collectionsContext } from "../../State/Collections/collectionContext"
-import { addKeywordsToSource, addLanguagesToSource, createSource, getSourceById, updateSource } from "../API"
+import { addKeywordsToSource, addLanguagesToSource, createSource, getKeywordsSources, getSourceById, updateSource } from "../API"
 import { KeywordsField } from "../keywords/KeywordsField"
 import { LanguagesField } from "../languages/LanguagesField"
 import { PartOfCorpusField } from "./PartOfCorpusField"
@@ -62,7 +62,7 @@ const formToServer = (data: ServerSource) => {
 export function NewSource(props: NewSourceProps) {
     const { collectionsState } = React.useContext(collectionsContext)
 
-    const { register, handleSubmit, reset, setValue, control, formState: { errors } } = useForm<ServerSource>({ resolver: yupResolver(schema), mode: "onBlur" })
+    const { register, handleSubmit, reset, setValue, control, formState: { errors } } = useForm<ServerSource>({ resolver: yupResolver(schema), mode: "onBlur", defaultValues: { keywords: [], languages: [] } })
     const onSubmit: SubmitHandler<ServerSource> = async data => {
         console.log(data)
 
@@ -95,11 +95,14 @@ export function NewSource(props: NewSourceProps) {
 
     React.useEffect(() => {
         const doGetSourceById = async (id: string) => {
-            const response: any = await getSourceById(id)
-            console.log(response as ServerSource)
-            const fields = ["externalRef", "title", "description", "rights", "access", "location", "earliest", "latest", "notes"]
+            const data: any = await getSourceById(id)
+            const keywords = await getKeywordsSources(id)
+
+            data.keywords = keywords.map((keyword) => { return keyword })
+
+            const fields = ["externalRef", "title", "description", "rights", "access", "location", "earliest", "latest", "notes", "keywords"]
             fields.map((field: any) => {
-                setValue(field, response[field])
+                setValue(field, data[field])
             })
         }
 
@@ -162,7 +165,7 @@ export function NewSource(props: NewSourceProps) {
                         <Label>Notes</Label>
                         <TextFieldStyled fullWidth margin="dense" {...register("notes")} />
                         <Label>Keywords</Label>
-                        <KeywordsField control={control} />
+                        <KeywordsField control={control} sourceId={props.sourceToEdit.id} setValueSource={setValue} />
                         <Label>Languages</Label>
                         <LanguagesField control={control} />
                         <Label>Part of which corpus?</Label>
