@@ -21,7 +21,7 @@ type NewCollectionProps = {
     show?: boolean,
     onClose?: () => void,
     edit?: boolean,
-    colToEdit?: ServerCorpus,
+    colToEdit?: ServerCorpus | undefined,
     onEdit?: (boolean: boolean) => void,
     refetchCol?: () => void
 }
@@ -115,7 +115,7 @@ export function NewCollection(props: NewCollectionProps) {
         } else {
             return
         }
-    }, [props.colToEdit, props.edit, setValue])
+    }, [props.edit, setValue])
 
     const handleClose = () => {
         props.onClose()
@@ -168,7 +168,7 @@ export function NewCollection(props: NewCollectionProps) {
                         <Label>Notes</Label>
                         <TextFieldStyled fullWidth margin="dense" {...register("notes")} />
                         <Label>Keywords</Label>
-                        <KeywordsField control={control} corpusId={props.colToEdit.id} setValueCorpus={setValue} />
+                        <KeywordsField control={control} corpusId={props.colToEdit && props.colToEdit.id} setValueCorpus={setValue} />
                         <Label>Languages</Label>
                         <LanguagesField control={control} />
                         <Label>Add sources to corpus</Label>

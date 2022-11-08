@@ -19,7 +19,7 @@ type NewSourceProps = {
     show?: boolean,
     onClose?: () => void,
     edit?: boolean,
-    sourceToEdit?: ServerSource,
+    sourceToEdit?: ServerSource | undefined,
     onEdit?: (boolean: boolean) => void,
     refetchSource?: () => void
 }
@@ -165,7 +165,7 @@ export function NewSource(props: NewSourceProps) {
                         <Label>Notes</Label>
                         <TextFieldStyled fullWidth margin="dense" {...register("notes")} />
                         <Label>Keywords</Label>
-                        <KeywordsField control={control} sourceId={props.sourceToEdit.id} setValueSource={setValue} />
+                        <KeywordsField control={control} sourceId={props.sourceToEdit && props.sourceToEdit.id} setValueSource={setValue} />
                         <Label>Languages</Label>
                         <LanguagesField control={control} />
                         <Label>Part of which corpus?</Label>
