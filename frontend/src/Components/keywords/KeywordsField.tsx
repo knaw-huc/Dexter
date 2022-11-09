@@ -52,7 +52,7 @@ export const KeywordsField = (props: KeywordsFieldProps) => {
     }
 
     const deleteKeywordFromCorpusHandler = async (corpusId: string, keyword: ServerKeyword) => {
-        const warning = window.confirm("Are you sure you wish to delete this keyword?")
+        const warning = window.confirm(`Are you sure you wish to delete this ${keyword.val}?`)
 
         if (warning === false) return
 

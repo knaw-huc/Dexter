@@ -10,7 +10,7 @@ import * as yup from "yup"
 import { ServerCorpus, ServerKeyword, ServerLanguage, ServerSource } from "../../Model/DexterModel"
 import { collectionsContext } from "../../State/Collections/collectionContext"
 import { sourcesContext } from "../../State/Sources/sourcesContext"
-import { addKeywordsToSource, addLanguagesToSource, createSource, getKeywordsSources, getSourceById, updateSource } from "../API"
+import { addKeywordsToSource, addLanguagesToSource, createSource, getKeywordsSources, getLanguagesSources, getSourceById, updateSource } from "../API"
 import { KeywordsField } from "../keywords/KeywordsField"
 import { LanguagesField } from "../languages/LanguagesField"
 import { PartOfCorpusField } from "./PartOfCorpusField"
@@ -31,10 +31,6 @@ const TextFieldStyled = styled(TextField)`
 
 const Label = styled.label`
     font-weight: bold;
-`
-
-const SelectStyled = styled.select`
-    display: block;
 `
 
 const schema = yup.object({
@@ -86,10 +82,15 @@ export function NewSource(props: NewSourceProps) {
                 updatedDataToServer.keywords = updatedDataToServer.keywords.map((kw: ServerKeyword) => { return kw.id })
             }
 
+            if (updatedDataToServer.languages) {
+                updatedDataToServer.languages = updatedDataToServer.languages.map((language: ServerLanguage) => { return language.id })
+            }
+
             const doUpdateSource = async (id: string, updatedData: ServerSource) => {
                 try {
                     await updateSource(id, updatedData)
                     await addKeywordsToSource(id, updatedDataToServer.keywords)
+                    await addLanguagesToSource(id, updatedDataToServer.languages)
                     await props.refetchSource()
                 } catch (error) {
                     console.log(error)
@@ -104,10 +105,12 @@ export function NewSource(props: NewSourceProps) {
         const doGetSourceById = async (id: string) => {
             const data: any = await getSourceById(id)
             const keywords = await getKeywordsSources(id)
+            const languages = await getLanguagesSources(id)
 
             data.keywords = keywords.map((keyword) => { return keyword })
+            data.languages = languages.map((language) => { return language })
 
-            const fields = ["externalRef", "title", "description", "rights", "access", "location", "earliest", "latest", "notes", "keywords"]
+            const fields = ["externalRef", "title", "description", "rights", "access", "location", "earliest", "latest", "notes", "keywords", "languages"]
             fields.map((field: any) => {
                 setValue(field, data[field])
             })
@@ -174,7 +177,7 @@ export function NewSource(props: NewSourceProps) {
                         <Label>Keywords</Label>
                         <KeywordsField control={control} sourceId={props.sourceToEdit && props.sourceToEdit.id} setValueSource={setValue} edit={sourcesState.editSourceMode} />
                         <Label>Languages</Label>
-                        <LanguagesField control={control} />
+                        <LanguagesField control={control} sourceId={props.sourceToEdit && props.sourceToEdit.id} setValueSource={setValue} edit={sourcesState.editSourceMode} />
                         <Label>Part of which corpus?</Label>
                         <PartOfCorpusField control={control} corpora={collectionsState.collections} />
                         <Button variant="contained" type="submit">Submit</Button>

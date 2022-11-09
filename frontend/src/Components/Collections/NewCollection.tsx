@@ -84,10 +84,15 @@ export function NewCollection(props: NewCollectionProps) {
                 updatedDataToServer.keywords = updatedDataToServer.keywords.map((kw: ServerKeyword) => { return kw.id })
             }
 
+            if (updatedDataToServer.languages) {
+                updatedDataToServer.languages = updatedDataToServer.languages.map((language: ServerLanguage) => { return language.id })
+            }
+
             const doUpdateCollection = async (id: string, updatedData: ServerCorpus) => {
                 try {
                     await updateCollection(id, updatedData)
                     await addKeywordsToCorpus(id, updatedDataToServer.keywords)
+                    await addLanguagesToCorpus(id, updatedDataToServer.languages)
                     await props.refetchCol()
                 } catch (error) {
                     console.log(error)
@@ -106,9 +111,10 @@ export function NewCollection(props: NewCollectionProps) {
             const sources = await getSourcesInCorpus(id)
 
             data.keywords = keywords.map((keyword) => { return keyword })
+            data.languages = languages.map((language) => { return language })
             console.log(data)
 
-            const fields = ["parentId", "title", "description", "rights", "access", "location", "earliest", "latest", "contributor", "notes", "keywords"]
+            const fields = ["parentId", "title", "description", "rights", "access", "location", "earliest", "latest", "contributor", "notes", "keywords", "languages"]
             fields.map((field: any) => {
                 setValue(field, data[field])
             })
@@ -175,7 +181,7 @@ export function NewCollection(props: NewCollectionProps) {
                         <Label>Keywords</Label>
                         <KeywordsField control={control} corpusId={props.colToEdit && props.colToEdit.id} setValueCorpus={setValue} edit={collectionsState.editColMode} />
                         <Label>Languages</Label>
-                        <LanguagesField control={control} />
+                        <LanguagesField control={control} corpusId={props.colToEdit && props.colToEdit.id} setValueCorpus={setValue} edit={collectionsState.editColMode} />
                         <Label>Add sources to corpus</Label>
                         <PartOfSourceField control={control} sources={sourcesState.sources} />
                         <Label>Add corpus to which main corpus?</Label>
