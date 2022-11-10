@@ -23,18 +23,17 @@ export const SubCorpusField = (props: SubCorpusFieldProps) => {
                     <Autocomplete
                         inputValue={inputValue}
                         onInputChange={async (event, value) => { setInputValue(value) }}
-                        multiple={true}
                         id="subcorpus-autocomplete"
                         options={props.corpora}
                         getOptionLabel={(corpus: ServerCorpus) => corpus.title}
                         filterOptions={(x) => x}
                         isOptionEqualToValue={(option, value) => option.title === value.title}
+                        value={value}
                         renderInput={(params) => (
                             <TextField
                                 {...params}
                                 margin="dense"
                                 label="Select a corpus"
-                                onChange={onChange}
                                 value={value}
                             />
                         )}

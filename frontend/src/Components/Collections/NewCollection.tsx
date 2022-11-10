@@ -61,7 +61,7 @@ const formToServer = (data: ServerCorpus) => {
 export function NewCollection(props: NewCollectionProps) {
     const { sourcesState } = React.useContext(sourcesContext)
     const { collectionsState } = React.useContext(collectionsContext)
-    const { register, handleSubmit, reset, setValue, control, formState: { errors } } = useForm<ServerCorpus>({ resolver: yupResolver(schema), mode: "onBlur", defaultValues: { keywords: [], languages: [], sourceIds: [], parentId: "", access: "" } })
+    const { register, handleSubmit, reset, setValue, control, formState: { errors } } = useForm<ServerCorpus>({ resolver: yupResolver(schema), mode: "onBlur", defaultValues: { keywords: [], languages: [], sourceIds: [], parentId: null, access: null } })
     const onSubmit: SubmitHandler<ServerCorpus> = async data => {
         console.log(data)
 
@@ -92,6 +92,10 @@ export function NewCollection(props: NewCollectionProps) {
                 updatedDataToServer.sourceIds = updatedDataToServer.sourceIds.map((source: ServerSource) => { return source.id })
             }
 
+            if (updatedDataToServer.parentId) {
+                updatedDataToServer.parentId = updatedDataToServer.parentId.id
+            }
+
             const doUpdateCollection = async (id: string, updatedData: ServerCorpus) => {
                 try {
                     await updateCollection(id, updatedData)
@@ -117,8 +121,10 @@ export function NewCollection(props: NewCollectionProps) {
 
             data.keywords = keywords.map((keyword) => { return keyword })
             data.languages = languages.map((language) => { return language })
-
             data.sourceIds = sources.map((source) => { return source })
+
+            const parentId = data.parentId
+            data.parentId = await getCollectionById(parentId)
 
             const fields = ["parentId", "title", "description", "rights", "access", "location", "earliest", "latest", "contributor", "notes", "keywords", "languages", "sourceIds"]
             fields.map((field: any) => {
