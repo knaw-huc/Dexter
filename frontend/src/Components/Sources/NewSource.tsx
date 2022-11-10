@@ -13,7 +13,6 @@ import { sourcesContext } from "../../State/Sources/sourcesContext"
 import { addKeywordsToSource, addLanguagesToSource, createSource, getKeywordsSources, getLanguagesSources, getSourceById, updateSource } from "../API"
 import { KeywordsField } from "../keywords/KeywordsField"
 import { LanguagesField } from "../languages/LanguagesField"
-import { PartOfCorpusField } from "./PartOfCorpusField"
 
 type NewSourceProps = {
     refetch?: () => void,
@@ -178,8 +177,8 @@ export function NewSource(props: NewSourceProps) {
                         <KeywordsField control={control} sourceId={props.sourceToEdit && props.sourceToEdit.id} setValueSource={setValue} edit={sourcesState.editSourceMode} />
                         <Label>Languages</Label>
                         <LanguagesField control={control} sourceId={props.sourceToEdit && props.sourceToEdit.id} setValueSource={setValue} edit={sourcesState.editSourceMode} />
-                        <Label>Part of which corpus?</Label>
-                        <PartOfCorpusField control={control} corpora={collectionsState.collections} />
+                        {/* <Label>Part of which corpus?</Label>
+                        <PartOfCorpusField control={control} corpora={collectionsState.collections} /> */}
                         <Button variant="contained" type="submit">Submit</Button>
                     </form>
                 </Modal.Body>

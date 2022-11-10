@@ -1,18 +1,39 @@
 import Autocomplete from "@mui/material/Autocomplete"
+import Chip from "@mui/material/Chip"
 import TextField from "@mui/material/TextField"
 import match from "autosuggest-highlight/match"
 import parse from "autosuggest-highlight/parse"
 import React from "react"
-import { Controller } from "react-hook-form"
-import { ServerSource } from "../../Model/DexterModel"
+import { Controller, UseFormSetValue, useWatch } from "react-hook-form"
+import { ServerCorpus, ServerSource } from "../../Model/DexterModel"
+import { deleteSourceFromCorpus } from "../API"
 
 interface PartOfSourceFieldProps {
     sources: ServerSource[],
     control: any
+    corpusId: string
+    setValue: UseFormSetValue<ServerCorpus>
+    edit: boolean
 }
 
 export const PartOfSourceField = (props: PartOfSourceFieldProps) => {
+    const { control } = props
     const [inputValue, setInputValue] = React.useState("")
+    const selectedItems = useWatch({ control, name: "sourceIds" })
+
+    const deleteSourceFromSourceHandler = async (source: ServerSource) => {
+        if (!props.edit) {
+            props.setValue("sourceIds", selectedItems.filter((entry: ServerSource) => entry !== source))
+            return
+        }
+
+        const warning = window.confirm("Are you sure you wish to delete this source from this corpus?")
+
+        if (warning === false) return
+
+        await deleteSourceFromCorpus(props.corpusId, source.id)
+        props.setValue("sourceIds", selectedItems.filter((entry: ServerSource) => entry !== source))
+    }
 
     return (
         <div>
@@ -29,15 +50,25 @@ export const PartOfSourceField = (props: PartOfSourceFieldProps) => {
                         getOptionLabel={(source: ServerSource) => source.title}
                         filterOptions={(x) => x}
                         isOptionEqualToValue={(option, value) => option.title === value.title}
+                        value={value}
                         renderInput={(params) => (
                             <TextField
                                 {...params}
                                 margin="dense"
                                 label="Select a source"
-                                onChange={onChange}
                                 value={value}
                             />
                         )}
+                        renderTags={(tagValue, getTagProps) =>
+                            tagValue.map((source, index) => (
+                                <Chip
+                                    label={source.title}
+                                    key={index}
+                                    {...getTagProps({ index })}
+                                    onDelete={() => { deleteSourceFromSourceHandler(source) }}
+                                />
+                            ))
+                        }
                         onChange={(_, data) => {
                             onChange(data)
                         }}

@@ -61,7 +61,7 @@ const formToServer = (data: ServerCorpus) => {
 export function NewCollection(props: NewCollectionProps) {
     const { sourcesState } = React.useContext(sourcesContext)
     const { collectionsState } = React.useContext(collectionsContext)
-    const { register, handleSubmit, reset, setValue, control, formState: { errors } } = useForm<ServerCorpus>({ resolver: yupResolver(schema), mode: "onBlur", defaultValues: { keywords: [], languages: [], sourceIds: [], parentId: "" } })
+    const { register, handleSubmit, reset, setValue, control, formState: { errors } } = useForm<ServerCorpus>({ resolver: yupResolver(schema), mode: "onBlur", defaultValues: { keywords: [], languages: [], sourceIds: [], parentId: "", access: "" } })
     const onSubmit: SubmitHandler<ServerCorpus> = async data => {
         console.log(data)
 
@@ -88,11 +88,16 @@ export function NewCollection(props: NewCollectionProps) {
                 updatedDataToServer.languages = updatedDataToServer.languages.map((language: ServerLanguage) => { return language.id })
             }
 
+            if (updatedDataToServer.sourceIds) {
+                updatedDataToServer.sourceIds = updatedDataToServer.sourceIds.map((source: ServerSource) => { return source.id })
+            }
+
             const doUpdateCollection = async (id: string, updatedData: ServerCorpus) => {
                 try {
                     await updateCollection(id, updatedData)
                     await addKeywordsToCorpus(id, updatedDataToServer.keywords)
                     await addLanguagesToCorpus(id, updatedDataToServer.languages)
+                    await addSourcesToCorpus(id, updatedDataToServer.sourceIds)
                     await props.refetchCol()
                 } catch (error) {
                     console.log(error)
@@ -112,9 +117,10 @@ export function NewCollection(props: NewCollectionProps) {
 
             data.keywords = keywords.map((keyword) => { return keyword })
             data.languages = languages.map((language) => { return language })
-            console.log(data)
 
-            const fields = ["parentId", "title", "description", "rights", "access", "location", "earliest", "latest", "contributor", "notes", "keywords", "languages"]
+            data.sourceIds = sources.map((source) => { return source })
+
+            const fields = ["parentId", "title", "description", "rights", "access", "location", "earliest", "latest", "contributor", "notes", "keywords", "languages", "sourceIds"]
             fields.map((field: any) => {
                 setValue(field, data[field])
             })
@@ -183,7 +189,7 @@ export function NewCollection(props: NewCollectionProps) {
                         <Label>Languages</Label>
                         <LanguagesField control={control} corpusId={props.colToEdit && props.colToEdit.id} setValueCorpus={setValue} edit={collectionsState.editColMode} />
                         <Label>Add sources to corpus</Label>
-                        <PartOfSourceField control={control} sources={sourcesState.sources} />
+                        <PartOfSourceField control={control} sources={sourcesState.sources} corpusId={props.colToEdit && props.colToEdit.id} setValue={setValue} edit={collectionsState.editColMode} />
                         <Label>Add corpus to which main corpus?</Label>
                         <SubCorpusField control={control} corpora={collectionsState.collections} />
                         <Button variant="contained" type="submit">Submit</Button>
