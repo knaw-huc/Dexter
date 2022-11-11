@@ -123,8 +123,10 @@ export function NewCollection(props: NewCollectionProps) {
             data.languages = languages.map((language) => { return language })
             data.sourceIds = sources.map((source) => { return source })
 
-            const parentId = data.parentId
-            data.parentId = await getCollectionById(parentId)
+            if (data.parentId) {
+                const parentId = data.parentId
+                data.parentId = await getCollectionById(parentId)
+            }
 
             const fields = ["parentId", "title", "description", "rights", "access", "location", "earliest", "latest", "contributor", "notes", "keywords", "languages", "sourceIds"]
             fields.map((field: any) => {
