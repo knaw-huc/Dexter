@@ -15,7 +15,7 @@ export const ErrorMessage = () => {
 
     return (
         <>
-            {errorState.message && <Alert onClose={onCloseHandler} severity="error">{errorState.message}</Alert>}
+            {errorState.message && <Alert onClose={onCloseHandler} style={{ position: "fixed", width: "100%", zIndex: "99" }} severity="error">{errorState.message}</Alert>}
         </>
     )
 }
