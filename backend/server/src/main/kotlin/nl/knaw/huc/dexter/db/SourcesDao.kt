@@ -11,9 +11,9 @@ interface SourcesDao {
     // Postgres sets uuid, created_at, updated_at
     @SqlQuery(
         "insert into sources " +
-                "(external_ref,title,description,rights,access,location,earliest,latest,notes,created_by) " +
+                "(external_ref,title,description,rights,access,creator,location,earliest,latest,notes,created_by) " +
                 "values " +
-                "(:externalRef,:title,:description,:rights,:access,:location,:earliest,:latest,:notes,:createdBy) " +
+                "(:externalRef,:title,:description,:rights,:access,:creator,:location,:earliest,:latest,:notes,:createdBy) " +
                 "returning *"
     )
     @RegisterKotlinMapper(User::class)
@@ -25,8 +25,8 @@ interface SourcesDao {
 
     @SqlQuery(
         "update sources " +
-                "set (external_ref,title,description,rights,access,location,earliest,latest,notes) " +
-                "= (:externalRef,:title,:description,:rights,:access,:location,:earliest,:latest,:notes) " +
+                "set (external_ref,title,description,rights,access,creator,location,earliest,latest,notes) " +
+                "= (:externalRef,:title,:description,:rights,:access,:creator,:location,:earliest,:latest,:notes) " +
                 "where id = :id " +
                 "returning *"
     )
