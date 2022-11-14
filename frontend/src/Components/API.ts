@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import {
   FormKeyword,
   ServerCorpus,
@@ -482,6 +483,7 @@ export const deleteKeywordFromCorpus = async (
 
   if (!response.ok) {
     console.error(response);
+    toast("Woohoo!", { type: "error" });
     return null;
   }
 

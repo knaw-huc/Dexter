@@ -9,7 +9,6 @@ import {
   ServerKeyword,
   ServerSource,
 } from "../../Model/DexterModel";
-import { errorContext } from "../../State/Error/errorContext";
 import { useDebounce } from "../../Utils/useDebounce";
 import {
   deleteKeywordFromCorpus,
@@ -27,7 +26,6 @@ interface KeywordsFieldProps {
 }
 
 export const KeywordsField = (props: KeywordsFieldProps) => {
-  const { errorDispatch } = React.useContext(errorContext);
   const { control } = props;
   const [keywords, setKeywords] = React.useState<FormKeyword[]>([]);
   const [inputValue, setInputValue] = React.useState("");
@@ -78,7 +76,7 @@ export const KeywordsField = (props: KeywordsFieldProps) => {
 
     if (warning === false) return;
 
-    const res = await deleteKeywordFromCorpus(corpusId, keyword.id);
+    await deleteKeywordFromCorpus(corpusId, keyword.id);
 
     props.setValueCorpus(
       "keywords",

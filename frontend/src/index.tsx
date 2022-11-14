@@ -1,8 +1,9 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { App } from "./app";
-import { ErrorMessage } from "./Components/error/ErrorMessage";
 import { Providers } from "./Providers";
 
 const container = document.getElementById("container");
@@ -15,7 +16,7 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <Providers>
-        <ErrorMessage />
+        <ToastContainer />
         <App />
       </Providers>
     </BrowserRouter>

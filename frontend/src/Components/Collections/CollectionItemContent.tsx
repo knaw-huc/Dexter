@@ -10,7 +10,6 @@ import {
 } from "../../Model/DexterModel";
 import { ACTIONS } from "../../State/actions";
 import { collectionsContext } from "../../State/Collections/collectionContext";
-import { errorContext } from "../../State/Error/errorContext";
 import {
   deleteKeywordFromCorpus,
   deleteLanguageFromCorpus,
@@ -29,7 +28,6 @@ const Wrapper = styled.div`
 `;
 
 export const CollectionItemContent = () => {
-  const { errorDispatch } = React.useContext(errorContext);
   const [collection, setCollection] = React.useState<ServerCorpus>(null);
   const [sources, setSources] = React.useState<ServerSource[]>(null);
   const [keywords, setKeywords] = React.useState<ServerKeyword[]>(null);
@@ -108,19 +106,10 @@ export const CollectionItemContent = () => {
     if (warning === false) return;
 
     const corpusId = params.corpusId;
-    keyword.id = "bla";
 
-    const res = await deleteKeywordFromCorpus(corpusId, keyword.id);
-    console.log(res);
+    await deleteKeywordFromCorpus(corpusId, keyword.id);
 
-    if (res === null) {
-      errorDispatch({
-        type: ACTIONS.SET_ERROR,
-        message: `Could not delete keyword "${keyword.val}" from corpus!`,
-      });
-    }
-
-    //await refetchCollection()
+    await refetchCollection();
   };
 
   return (
