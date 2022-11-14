@@ -1,14 +1,15 @@
-import React from "react"
-import { SourcesState, SourcesAction, initState } from "./sourcesReducer"
+import React from "react";
+import { initState, SourcesAction, SourcesState } from "./sourcesReducer";
 
 interface SourcesContext {
-    sourcesState: SourcesState,
-    sourcesDispatch: React.Dispatch<SourcesAction>
+  sourcesState: SourcesState;
+  sourcesDispatch: React.Dispatch<SourcesAction>;
 }
 
 const initSourcesContext: SourcesContext = {
-    sourcesState: initState,
-    sourcesDispatch: null
-}
+  sourcesState: initState,
+  sourcesDispatch: null,
+};
 
-export const sourcesContext = React.createContext<SourcesContext>(initSourcesContext)
+export const sourcesContext =
+  React.createContext<SourcesContext>(initSourcesContext);
