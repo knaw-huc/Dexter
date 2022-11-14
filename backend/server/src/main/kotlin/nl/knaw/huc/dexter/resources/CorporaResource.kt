@@ -58,7 +58,15 @@ class CorporaResource(private val jdbi: Jdbi) {
     ): ResultCorpus =
         onExistingCorpus(id) { dao, corpus ->
             log.info("updateCorpus[${user.name}]: corpusId=$corpus.id, formCorpus=$formCorpus")
-            dao.update(id, formCorpus)
+            if (formCorpus.parentId != null) {
+                val reachable = dao.reachable(formCorpus.parentId)
+                log.info("reachable: $reachable")
+                if (reachable.map { it.id }.contains(corpus.id)) {
+                    val cycle = reachable.map { it.title }.fold(corpus.title) { acc, element -> "$acc -> $element" }
+                    throw BadRequestException("That would create a cycle: $cycle")
+                }
+            }
+            dao.update(corpus.id, formCorpus)
         }
 
     @DELETE
@@ -160,7 +168,7 @@ class CorporaResource(private val jdbi: Jdbi) {
     fun addSources(@PathParam(ID_PARAM) corpusId: UUID, sourceIds: List<UUID>) =
         onExistingCorpus(corpusId) { dao, corpus ->
             log.info("addSources: corpusId=${corpus.id}, sourceIds=$sourceIds")
-            sourceIds.forEach {sourceId -> dao.addSource(corpus.id, sourceId)}
+            sourceIds.forEach { sourceId -> dao.addSource(corpus.id, sourceId) }
             dao.getSources(corpus.id)
         }
 

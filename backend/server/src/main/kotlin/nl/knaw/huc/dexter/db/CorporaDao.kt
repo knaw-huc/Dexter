@@ -62,4 +62,15 @@ interface CorporaDao {
 
     @SqlUpdate("delete from corpora_sources where corpus_id = :corpusId and source_id = :sourceId")
     fun deleteSource(corpusId: UUID, sourceId: UUID)
+
+    @SqlQuery(
+        "with recursive sub as (" +
+                "select id,parent_id,title from corpora where id = :corpusId " +
+                "union " +
+                "select c.id,c.parent_id,c.title from corpora c inner join sub s on s.parent_id = c.id) " +
+                "select id,title from sub"
+    )
+    @RegisterKotlinMapper(IdTitle::class)
+    fun reachable(corpusId: UUID): List<IdTitle>
+    data class IdTitle(val id: UUID, val title: String)
 }
