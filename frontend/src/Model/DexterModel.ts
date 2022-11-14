@@ -36,6 +36,7 @@ export interface ServerSource {
   externalRef: string | null;
   title: string;
   description: string;
+  creator: string;
   rights: string;
   access: string;
   location: string | null;

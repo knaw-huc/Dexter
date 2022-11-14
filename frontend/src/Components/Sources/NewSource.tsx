@@ -48,6 +48,7 @@ const Label = styled.label`
 const schema = yup.object({
   title: yup.string().required("Title is required"),
   description: yup.string().required("Description is required"),
+  creator: yup.string().required("Creator is required"),
   rights: yup.string().required("Rights is required"),
   access: yup.string().required("Access is required"),
 });
@@ -157,6 +158,7 @@ export function NewSource(props: NewSourceProps) {
         "externalRef",
         "title",
         "description",
+        "creator",
         "rights",
         "access",
         "location",
@@ -220,6 +222,14 @@ export function NewSource(props: NewSourceProps) {
               {...register("description", { required: true })}
             />
             <p style={{ color: "red" }}>{errors.description?.message}</p>
+            <Label>Creator</Label>
+            <TextFieldStyled
+              fullWidth
+              margin="dense"
+              error={errors.creator ? true : false}
+              {...register("creator", { required: true })}
+            />
+            <p style={{ color: "red" }}>{errors.creator?.message}</p>
             <Label>Rights</Label>
             <TextFieldStyled
               fullWidth

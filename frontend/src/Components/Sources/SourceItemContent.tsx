@@ -93,6 +93,9 @@ export const SourceItemContent = () => {
             <strong>Description:</strong> {source.description}
           </p>
           <p>
+            <strong>Creator:</strong> {source.creator}
+          </p>
+          <p>
             <strong>Rights:</strong> {source.rights}
           </p>
           <p>
