@@ -430,8 +430,12 @@ export const deleteLanguageFromCorpus = async (corpusId: string, languageId: str
 
     if (!response.ok) {
         console.error(response)
-        return
+        return null
     }
+
+    const data: ServerLanguage[] = await response.json()
+
+    return data
 }
 
 export const deleteKeywordFromCorpus = async (corpusId: string, keywordId: string) => {
@@ -444,8 +448,12 @@ export const deleteKeywordFromCorpus = async (corpusId: string, keywordId: strin
 
     if (!response.ok) {
         console.error(response)
-        return
+        return null
     }
+
+    const data: ServerKeyword[] = await response.json()
+
+    return data
 }
 
 export const deleteLanguageFromSource = async (sourceId: string, languageId: string) => {

@@ -5,6 +5,7 @@ import { Link, useParams } from "react-router-dom"
 import { ServerCorpus, ServerKeyword, ServerLanguage, ServerSource } from "../../Model/DexterModel"
 import { ACTIONS } from "../../State/actions"
 import { collectionsContext } from "../../State/Collections/collectionContext"
+import { errorContext } from "../../State/Error/errorContext"
 import { deleteKeywordFromCorpus, deleteLanguageFromCorpus, getCollectionById, getKeywordsCorpora, getLanguagesCorpora, getSourcesInCorpus } from "../API"
 import { KeywordContent } from "../keywords/KeywordContent"
 import { LanguagesContent } from "../languages/LanguagesContent"
@@ -16,6 +17,7 @@ const Wrapper = styled.div`
 `
 
 export const CollectionItemContent = () => {
+    const { errorDispatch } = React.useContext(errorContext)
     const [collection, setCollection] = React.useState<ServerCorpus>(null)
     const [sources, setSources] = React.useState<ServerSource[]>(null)
     const [keywords, setKeywords] = React.useState<ServerKeyword[]>(null)
@@ -89,9 +91,19 @@ export const CollectionItemContent = () => {
         if (warning === false) return
 
         const corpusId = params.corpusId
+        keyword.id = "bla"
 
-        await deleteKeywordFromCorpus(corpusId, keyword.id)
-        await refetchCollection()
+        const res = await deleteKeywordFromCorpus(corpusId, keyword.id)
+        console.log(res)
+
+        if (res === null) {
+            errorDispatch({
+                type: ACTIONS.SET_ERROR,
+                message: `Could not delete ${keyword.val} from corpus!`
+            })
+        }
+
+        //await refetchCollection()
     }
 
     return (

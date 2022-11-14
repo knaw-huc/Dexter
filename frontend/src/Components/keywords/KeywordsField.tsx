@@ -4,6 +4,7 @@ import parse from "autosuggest-highlight/parse"
 import React from "react"
 import { Controller, UseFormSetValue, useWatch } from "react-hook-form"
 import { FormKeyword, ServerCorpus, ServerKeyword, ServerSource } from "../../Model/DexterModel"
+import { errorContext } from "../../State/Error/errorContext"
 import { useDebounce } from "../../Utils/useDebounce"
 import { deleteKeywordFromCorpus, deleteKeywordFromSource, getKeywordsAutocomplete } from "../API"
 
@@ -17,6 +18,7 @@ interface KeywordsFieldProps {
 }
 
 export const KeywordsField = (props: KeywordsFieldProps) => {
+    const { errorDispatch } = React.useContext(errorContext)
     const { control } = props
     const [keywords, setKeywords] = React.useState<FormKeyword[]>([])
     const [inputValue, setInputValue] = React.useState("")
@@ -56,7 +58,8 @@ export const KeywordsField = (props: KeywordsFieldProps) => {
 
         if (warning === false) return
 
-        await deleteKeywordFromCorpus(corpusId, keyword.id)
+        const res = await deleteKeywordFromCorpus(corpusId, keyword.id)
+
         props.setValueCorpus("keywords", selectedItems.filter((entry: ServerKeyword) => entry !== keyword))
     }
 
