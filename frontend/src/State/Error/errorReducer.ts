@@ -1,43 +1,43 @@
-import React from "react"
-import { ACTIONS } from "../actions"
+import React from "react";
+import { ACTIONS } from "../actions";
 
 export interface ErrorState {
-    message: string
+  message: string;
 }
 
 export const initErrorState: ErrorState = {
-    message: ""
-}
+  message: "",
+};
 
 interface SetError {
-    type: ACTIONS.SET_ERROR,
-    message: string
+  type: ACTIONS.SET_ERROR;
+  message: string;
 }
 
-export type ErrorAction = SetError
+export type ErrorAction = SetError;
 
 export const useErrorState = (): [ErrorState, React.Dispatch<ErrorAction>] => {
-    const [state, dispatch] = React.useReducer(errorReducer, initErrorState)
+  const [state, dispatch] = React.useReducer(errorReducer, initErrorState);
 
-    return [state, dispatch]
-}
+  return [state, dispatch];
+};
 
 const errorReducer = (state: ErrorState, action: ErrorAction): ErrorState => {
-    console.log(action, state)
+  console.log(action, state);
 
-    switch (action.type) {
-        case ACTIONS.SET_ERROR:
-            return setError(state, action)
-        default:
-            break
-    }
+  switch (action.type) {
+    case ACTIONS.SET_ERROR:
+      return setError(state, action);
+    default:
+      break;
+  }
 
-    return state
-}
+  return state;
+};
 
 function setError(state: ErrorState, action: SetError) {
-    return {
-        ...state,
-        message: action.message
-    }
+  return {
+    ...state,
+    message: action.message,
+  };
 }

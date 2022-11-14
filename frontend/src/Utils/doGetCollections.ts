@@ -1,6 +1,6 @@
-import { getCollections } from "../Components/API"
+import { getCollections } from "../Components/API";
 
 export async function doGetCollections() {
-    const response = await getCollections()
-    return response
+  const response = await getCollections();
+  return response;
 }
