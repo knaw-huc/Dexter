@@ -99,7 +99,8 @@ export const SourceItemContent = () => {
             <strong>Rights:</strong> {source.rights}
           </p>
           <p>
-            <strong>Access:</strong> {source.access}
+            <strong>Access:</strong>{" "}
+            {source.access.charAt(0).toUpperCase() + source.access.slice(1)}
           </p>
           <p>
             <strong>Location:</strong> {source.location}

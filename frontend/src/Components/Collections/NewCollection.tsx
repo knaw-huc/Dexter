@@ -1,7 +1,6 @@
 import styled from "@emotion/styled";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Button from "@mui/material/Button";
-import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
 import React from "react";
 import Modal from "react-bootstrap/Modal";
@@ -15,6 +14,7 @@ import {
 } from "../../Model/DexterModel";
 import { collectionsContext } from "../../State/Collections/collectionContext";
 import { sourcesContext } from "../../State/Sources/sourcesContext";
+import { AccessField } from "../access/AccessField";
 import {
   addKeywordsToCorpus,
   addLanguagesToCorpus,
@@ -189,6 +189,8 @@ export function NewCollection(props: NewCollectionProps) {
         return source;
       });
 
+      data.access = data.access.charAt(0).toUpperCase() + data.access.slice(1);
+
       if (data.parentId) {
         const parentId = data.parentId;
         data.parentId = await getCollectionById(parentId);
@@ -266,18 +268,23 @@ export function NewCollection(props: NewCollectionProps) {
             />
             <p style={{ color: "red" }}>{errors.rights?.message}</p>
             <Label>Access</Label>
+            <AccessField
+              control={control}
+              edit={collectionsState.editColMode}
+            />
+            {/* <Label>Access</Label>
             <TextFieldStyled
               error={errors.access ? true : false}
               select
               fullWidth
-              defaultValue=""
+              // defaultValue=""
               inputProps={register("access", { required: true })}
             >
               <MenuItem value="Open">Open</MenuItem>
               <MenuItem value="Restricted">Restricted</MenuItem>
               <MenuItem value="Closed">Closed</MenuItem>
             </TextFieldStyled>
-            <p style={{ color: "red" }}>{errors.access?.message}</p>
+            <p style={{ color: "red" }}>{errors.access?.message}</p> */}
             <Label>Location</Label>
             <TextFieldStyled
               fullWidth

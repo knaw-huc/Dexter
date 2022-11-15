@@ -135,7 +135,9 @@ export const CollectionItemContent = () => {
             <strong>Rights:</strong> {collection.rights}
           </p>
           <p>
-            <strong>Access:</strong> {collection.access}
+            <strong>Access:</strong>{" "}
+            {collection.access.charAt(0).toUpperCase() +
+              collection.access.slice(1)}
           </p>
           <p>
             <strong>Location:</strong> {collection.location}

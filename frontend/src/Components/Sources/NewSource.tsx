@@ -1,7 +1,6 @@
 import styled from "@emotion/styled";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Button from "@mui/material/Button";
-import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
 import React from "react";
 import Modal from "react-bootstrap/Modal";
@@ -15,6 +14,7 @@ import {
 } from "../../Model/DexterModel";
 import { collectionsContext } from "../../State/Collections/collectionContext";
 import { sourcesContext } from "../../State/Sources/sourcesContext";
+import { AccessField } from "../access/AccessField";
 import {
   addKeywordsToSource,
   addLanguagesToSource,
@@ -89,7 +89,7 @@ export function NewSource(props: NewSourceProps) {
   } = useForm<ServerSource>({
     resolver: yupResolver(schema),
     mode: "onBlur",
-    defaultValues: { keywords: [], languages: [] },
+    defaultValues: { keywords: [], languages: [], access: null },
   });
   const onSubmit: SubmitHandler<ServerSource> = async (data) => {
     console.log(data);
@@ -153,6 +153,8 @@ export function NewSource(props: NewSourceProps) {
       data.languages = languages.map((language) => {
         return language;
       });
+
+      data.access = data.access.charAt(0).toUpperCase() + data.access.slice(1);
 
       const fields = [
         "externalRef",
@@ -239,6 +241,8 @@ export function NewSource(props: NewSourceProps) {
             />
             <p style={{ color: "red" }}>{errors.rights?.message}</p>
             <Label>Access</Label>
+            <AccessField control={control} edit={sourcesState.editSourceMode} />
+            {/* <Label>Access</Label>
             <TextFieldStyled
               error={errors.access ? true : false}
               select
@@ -250,7 +254,7 @@ export function NewSource(props: NewSourceProps) {
               <MenuItem value="Restricted">Restricted</MenuItem>
               <MenuItem value="Closed">Closed</MenuItem>
             </TextFieldStyled>
-            <p style={{ color: "red" }}>{errors.access?.message}</p>
+            <p style={{ color: "red" }}>{errors.access?.message}</p> */}
             <Label>Location</Label>
             <TextFieldStyled
               fullWidth
