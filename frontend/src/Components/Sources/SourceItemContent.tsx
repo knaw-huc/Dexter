@@ -103,9 +103,9 @@ export const SourceItemContent = () => {
           <p>
             <strong>Rights:</strong> {source.rights}
           </p>
-          <CapitalizeFirstLetter>
+          <p>
             <strong>Access:</strong> {source.access}
-          </CapitalizeFirstLetter>
+          </p>
           <p>
             <strong>Location:</strong> {source.location}
           </p>

@@ -138,9 +138,9 @@ export const CollectionItemContent = () => {
           <p>
             <strong>Rights:</strong> {collection.rights}
           </p>
-          <CapitalizeFirstLetter>
+          <p>
             <strong>Access:</strong> {collection.access}
-          </CapitalizeFirstLetter>
+          </p>
           <p>
             <strong>Location:</strong> {collection.location}
           </p>
