@@ -1,3 +1,4 @@
+import styled from "@emotion/styled";
 import Button from "@mui/material/Button";
 import React from "react";
 import { useParams } from "react-router-dom";
@@ -14,6 +15,10 @@ import { getKeywordsSources, getLanguagesSources, getSourceById } from "../API";
 import { KeywordContent } from "../keywords/KeywordContent";
 import { LanguagesContent } from "../languages/LanguagesContent";
 import { NewSource } from "./NewSource";
+
+const CapitalizeFirstLetter = styled.p`
+  text-transform: capitalize;
+`;
 
 export const SourceItemContent = () => {
   const [source, setSource] = React.useState<ServerSource>(null);
@@ -98,10 +103,9 @@ export const SourceItemContent = () => {
           <p>
             <strong>Rights:</strong> {source.rights}
           </p>
-          <p>
-            <strong>Access:</strong>{" "}
-            {source.access.charAt(0).toUpperCase() + source.access.slice(1)}
-          </p>
+          <CapitalizeFirstLetter>
+            <strong>Access:</strong> {source.access}
+          </CapitalizeFirstLetter>
           <p>
             <strong>Location:</strong> {source.location}
           </p>

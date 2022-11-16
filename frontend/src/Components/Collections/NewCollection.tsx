@@ -80,6 +80,7 @@ const formToServer = (data: ServerCorpus) => {
       })
       .toString();
   }
+
   return newData;
 };
 

@@ -27,6 +27,10 @@ const Wrapper = styled.div`
   overflow: auto;
 `;
 
+const CapitalizeFirstLetter = styled.p`
+  text-transform: capitalize;
+`;
+
 export const CollectionItemContent = () => {
   const [collection, setCollection] = React.useState<ServerCorpus>(null);
   const [sources, setSources] = React.useState<ServerSource[]>(null);
@@ -134,11 +138,9 @@ export const CollectionItemContent = () => {
           <p>
             <strong>Rights:</strong> {collection.rights}
           </p>
-          <p>
-            <strong>Access:</strong>{" "}
-            {collection.access.charAt(0).toUpperCase() +
-              collection.access.slice(1)}
-          </p>
+          <CapitalizeFirstLetter>
+            <strong>Access:</strong> {collection.access}
+          </CapitalizeFirstLetter>
           <p>
             <strong>Location:</strong> {collection.location}
           </p>
