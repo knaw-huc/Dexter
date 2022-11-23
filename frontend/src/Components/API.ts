@@ -11,6 +11,12 @@ const headers = {
   "Content-Type": "application/json",
 };
 
+const errorToast = async (response: Response) => {
+  console.error(response);
+  const res = await response.json();
+  toast(`${res.message}`, { type: "error" });
+};
+
 export const getCollections = async () => {
   const response = await fetch("/api/corpora", {
     method: "GET",
@@ -20,8 +26,8 @@ export const getCollections = async () => {
   console.log(response);
 
   if (!response.ok) {
-    console.error(response);
-    return;
+    errorToast(response);
+    return null;
   }
 
   const data: ServerCorpus[] = await response.json();
@@ -39,8 +45,8 @@ export const getCollectionById = async (id: string) => {
   console.log(response);
 
   if (!response.ok) {
-    console.error(response);
-    return;
+    errorToast(response);
+    return null;
   }
 
   const data: ServerCorpus = await response.json();
@@ -60,8 +66,8 @@ export const createCollection = async (newCorpus: ServerCorpus) => {
   console.log(response);
 
   if (!response.ok) {
-    console.error(response);
-    return;
+    errorToast(response);
+    return null;
   }
 
   const data: ServerCorpus = await response.json();
@@ -83,8 +89,8 @@ export const updateCollection = async (
   console.log(response);
 
   if (!response.ok) {
-    console.error(response);
-    return;
+    errorToast(response);
+    return null;
   }
 
   const data: ServerCorpus = await response.json();
@@ -102,9 +108,13 @@ export const deleteCollection = async (id: string) => {
   console.log(response);
 
   if (!response.ok) {
-    console.error(response);
-    return;
+    errorToast(response);
+    return null;
   }
+
+  const data = await response.json();
+
+  return data;
 };
 
 export const getSources = async () => {
@@ -116,8 +126,8 @@ export const getSources = async () => {
   console.log(response);
 
   if (!response.ok) {
-    console.error(response);
-    return;
+    errorToast(response);
+    return null;
   }
 
   const data: ServerSource[] = await response.json();
@@ -136,8 +146,8 @@ export const getSourceById = async (id: string) => {
   console.log(response);
 
   if (!response.ok) {
-    console.error(response);
-    return;
+    errorToast(response);
+    return null;
   }
 
   const data: ServerSource = await response.json();
@@ -156,8 +166,8 @@ export const createSource = async (newSource: ServerSource) => {
   console.log(response);
 
   if (!response.ok) {
-    console.error(response);
-    return;
+    errorToast(response);
+    return null;
   }
 
   const data: ServerSource = await response.json();
@@ -176,8 +186,8 @@ export const updateSource = async (id: string, updatedSource: ServerSource) => {
   console.log(response);
 
   if (!response.ok) {
-    console.error(response);
-    return;
+    errorToast(response);
+    return null;
   }
 
   const data: ServerSource = await response.json();
@@ -195,9 +205,13 @@ export const deleteSource = async (id: string) => {
   console.log(response);
 
   if (!response.ok) {
-    console.error(response);
-    return;
+    errorToast(response);
+    return null;
   }
+
+  const data = await response.json();
+
+  return data;
 };
 
 export const getKeywords = async () => {
@@ -209,8 +223,8 @@ export const getKeywords = async () => {
   console.log(response);
 
   if (!response.ok) {
-    console.error(response);
-    return;
+    errorToast(response);
+    return null;
   }
 
   const data: ServerKeyword[] = await response.json();
@@ -229,8 +243,8 @@ export const createKeywords = async (newKeyword: FormKeyword) => {
   console.log(response);
 
   if (!response.ok) {
-    console.error(response);
-    return;
+    errorToast(response);
+    return null;
   }
 
   const data: FormKeyword = await response.json();
@@ -252,8 +266,8 @@ export const addKeywordsToCorpus = async (
   console.log(response);
 
   if (!response.ok) {
-    console.error(response);
-    return;
+    errorToast(response);
+    return null;
   }
 
   const data: ServerKeyword = await response.json();
@@ -275,8 +289,8 @@ export const addKeywordsToSource = async (
   console.log(response);
 
   if (!response.ok) {
-    console.error(response);
-    return;
+    errorToast(response);
+    return null;
   }
 
   const data: ServerKeyword = await response.json();
@@ -294,9 +308,13 @@ export const deleteKeyword = async (id: string) => {
   console.log(response);
 
   if (!response.ok) {
-    console.error(response);
-    return;
+    errorToast(response);
+    return null;
   }
+
+  const data = await response.json();
+
+  return data;
 };
 
 export const getKeywordsSources = async (sourceId: string) => {
@@ -308,8 +326,8 @@ export const getKeywordsSources = async (sourceId: string) => {
   console.log(response);
 
   if (!response.ok) {
-    console.error(response);
-    return;
+    errorToast(response);
+    return null;
   }
 
   const data: ServerKeyword[] = await response.json();
@@ -327,8 +345,8 @@ export const getKeywordsCorpora = async (corpusId: string) => {
   console.log(response);
 
   if (!response.ok) {
-    console.error(response);
-    return;
+    errorToast(response);
+    return null;
   }
 
   const data: ServerKeyword[] = await response.json();
@@ -345,8 +363,8 @@ export const getKeywordsAutocomplete = async (input: string) => {
   });
 
   if (!response.ok) {
-    console.error(response);
-    return;
+    errorToast(response);
+    return null;
   }
 
   const data: ServerKeyword[] = await response.json();
@@ -363,8 +381,8 @@ export const getLanguagesAutocomplete = async (input: string) => {
   });
 
   if (!response.ok) {
-    console.error(response);
-    return;
+    errorToast(response);
+    return null;
   }
 
   const data: ServerLanguage[] = await response.json();
@@ -386,8 +404,8 @@ export const addLanguagesToCorpus = async (
   console.log(response);
 
   if (!response.ok) {
-    console.error(response);
-    return;
+    errorToast(response);
+    return null;
   }
 
   const data: ServerLanguage = await response.json();
@@ -409,8 +427,8 @@ export const addLanguagesToSource = async (
   console.log(response);
 
   if (!response.ok) {
-    console.error(response);
-    return;
+    errorToast(response);
+    return null;
   }
 
   const data: ServerLanguage = await response.json();
@@ -428,8 +446,8 @@ export const getLanguages = async (type: string, id: string) => {
   console.log(response);
 
   if (!response.ok) {
-    console.error(response);
-    return;
+    errorToast(response);
+    return null;
   }
 
   const data: ServerLanguage[] = await response.json();
@@ -458,7 +476,7 @@ export const deleteLanguageFromCorpus = async (
   console.log(response);
 
   if (!response.ok) {
-    console.error(response);
+    errorToast(response);
     return null;
   }
 
@@ -482,8 +500,7 @@ export const deleteKeywordFromCorpus = async (
   console.log(response);
 
   if (!response.ok) {
-    console.error(response);
-    toast("Woohoo!", { type: "error" });
+    errorToast(response);
     return null;
   }
 
@@ -507,9 +524,13 @@ export const deleteLanguageFromSource = async (
   console.log(response);
 
   if (!response.ok) {
-    console.error(response);
-    return;
+    errorToast(response);
+    return null;
   }
+
+  const data: ServerLanguage[] = await response.json();
+
+  return data;
 };
 
 export const deleteKeywordFromSource = async (
@@ -526,9 +547,13 @@ export const deleteKeywordFromSource = async (
   console.log(response);
 
   if (!response.ok) {
-    console.error(response);
-    return;
+    errorToast(response);
+    return null;
   }
+
+  const data: ServerKeyword[] = await response.json();
+
+  return data;
 };
 
 export const addSourcesToCorpus = async (
@@ -544,8 +569,8 @@ export const addSourcesToCorpus = async (
   console.log(response);
 
   if (!response.ok) {
-    console.error(response);
-    return;
+    errorToast(response);
+    return null;
   }
 
   const data: ServerSource[] = await response.json();
@@ -564,8 +589,8 @@ export const getSourcesInCorpus = async (corpusId: string) => {
   console.log(response);
 
   if (!response.ok) {
-    console.error(response);
-    return;
+    errorToast(response);
+    return null;
   }
 
   const data: ServerSource[] = await response.json();
@@ -587,7 +612,11 @@ export const deleteSourceFromCorpus = async (
   console.log(response);
 
   if (!response.ok) {
-    console.error(response);
-    return;
+    errorToast(response);
+    return null;
   }
+
+  const data: ServerSource[] = await response.json();
+
+  return data;
 };
