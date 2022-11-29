@@ -4,8 +4,8 @@
   "description": "",
   "private": true,
   "scripts": {
-    "start": "webpack serve",
-    "build": "webpack build",
+    "start": "webpack serve --config webpack.config-dev.js",
+    "build": "webpack build --config webpack.config-prod.js",
     "docker:build": "./docker-build.sh",
     "docker:tag": "./docker-tag.sh",
     "docker:push": "./docker-push.sh",
