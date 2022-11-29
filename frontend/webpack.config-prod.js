@@ -1,5 +1,5 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const webpack = require("webpack");
+const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = {
   devServer: {
@@ -17,7 +17,7 @@ module.exports = {
     app: "./src/index.tsx",
   },
 
-  mode: "development",
+  mode: "production",
 
   module: {
     rules: [
@@ -50,13 +50,6 @@ module.exports = {
       template: "index.template.html",
       favicon: "src/assets/favicon-32x32.png",
     }),
-    new webpack.DefinePlugin({
-      "process.env": {
-        REACT_APP_BACKEND_HOST: JSON.stringify(
-          process.env.REACT_APP_BACKEND_HOST
-        ),
-      },
-    }),
   ],
 
   resolve: {
@@ -66,6 +59,20 @@ module.exports = {
 
   watchOptions: {
     ignored: /node_modules/,
+  },
+
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        test: /\.js(\?.*)?$/i,
+        terserOptions: {
+          compress: {
+            drop_console: true,
+          },
+        },
+      }),
+    ],
   },
 
   cache: {
