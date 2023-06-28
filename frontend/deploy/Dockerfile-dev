@@ -1,4 +1,4 @@
-FROM node:18.9.0-alpine
+FROM node:18.14.1-alpine
 
 WORKDIR /dexter
 COPY ./package.json /dexter/package.json
