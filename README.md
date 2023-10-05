@@ -2,25 +2,25 @@
 
 This project aims at building a much-needed solution for referencing and for creating analytical annotations around heterogeneous source material (speech data, survey data, audiovisual recordings, photographs, diaries etc.).
 
-## Local setup
+## Development
 
-- Download frontend dependencies:
+- Start database:
 ```shell
-cd frontend
-npm i
+docker-compose up postgres
 ```
-
-- Build backend:
+- Start backend:
 ```shell
 cd backend
 make build
-make docker-image
+export DEX_DATABASE_URL=jdbc:postgresql://0.0.0.0:5432/dexter 
+make run-server
 ```
-
-- Start frontend, backend and database:
+- Start frontend:
 ```shell
-docker-compose up
+cd frontend
+npm i
+npm start
 ```
 
-- Open http://localhost:8000 
+- Open http://localhost:3001
 - Login with dexter:dexter
