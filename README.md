@@ -42,41 +42,64 @@ npm start
 graph TD
     START((start))
 
-    START-->|login|HOME[home]
+    START-->LOGIN[login]-->HOME[view dashboard]
 
 %% virtual collection items:
-    HOME --> |create virtual collection|VC[virtual collection]
-    VC --> |populate|S{search}
-    S -->|in collection website| CW[collection url?]
-    S -->|where?| IIIF["(text) iiif link"]
-    S -->|in micro archive| MA[micro archive item]
-    CW-->|import?|VCI[virtual collection item]
-    IIIF-->|paste in form?|VCI
-    MA-->|fill out form|VCI
-    VCI-->|add dublin core metadata|VCI
+    HOME --> CVC[create virtual collection]
+    CVC --> VC[/virtual collection/]
+    VC --> S{search}
+    
+    S --> SI[search image]    
+    S --> ST[search text]
+    S --> SP[search micro-archive]    
+
+%% Search
+    SI-->SIL[/IIIF link/]
+    SIL-->IMIL[paste link in form?]
+    IMIL-->VCI[/virtual collection item/]
+    
+    ST-->STIL[/text-IIIF link/]
+    STIL-->IMTIL[paste link in form?]
+    MAI-->AMAI[add micro-archive item]-->VCI
+
+    SP-->MAI[/micro-archive item/]
+    
+    VCI-->ADBM[add dublin core metadata]-->VCI
 
 %% tag:
-    HOME --> |create tag|TAG[tag]
-    TAG-->|add tag|VCI
+    HOME --> CTAG[create tag]
+    CTAG-->TAG[/tag/]
+    TAG-->ATAG[add tag]
+    ATAG-->VCI
 
 %% index:
-    HOME --> |view virtual collection|VCIX[virtual collection index]
-    VCIX --> |sort by tags|VCIX
-    VCIX --> |view item|VCI
+    HOME --> VVC[view virtual collection]
+    VVC-->VCIX[/virtual collection item index/]
+    VCIX-->SBTAG[sort by tag]-->VCIX
+    
+    VCIX --> VI[view item]
+    VI-->VCI
 
 %% annotation:
-    ANN[web annotation]
-    VCI --> |annotate|MT{media type}
-    MT --> |text-iiif|RJS[recogito-js]
-    MT --> |iiif|ANT[annotorious]
-    MT --> |micro archive item|WAF[web annotation form]
-    RJS --> |create annotation|ANN
-    ANT --> |create annotation|ANN
-    WAF --> |create annotation|ANN
+    VCI --> ANN{annotate}
+    ANN --> TIIIF[/text-IIIF/]-->RJS[recogito-js] --> CWANN[create web annotation]
+    ANN --> IIIF[/IIIF/]-->ANT[annotorious]  --> CWANN
+    ANN --> MAI2[/micro-archive item/]-->WANNF[web annotation form] --> CWANN
+    CWANN --> WAN[/web annotation/]
 
 %% sharing:
-    VC-->|share|LN[link/peristent ID]
-    VCI-->|share|LN[link/peristent ID]
-    ANN-->|share|LN[link/peristent ID]
+    WAN-->SHAREWAN[share] --> WANL[/web annotation url/]
+    VCI-->SHAREVCI[share] --> VCIL[/stable id url/]
+    
+    process
+    decision{decision}
+    data[/data/]
+
+%% micro-archive
+    HOME-->CMA["create micro-archive (shoe box)"]
+    CMA-->MA[/"micro-archive (shoe box)"/]
+    MA-->CMAI[create micro-archive item]
+    CMAI-->IMMAI[fill out form + TMS import magic?]
+    IMMAI-->MAI[/micro-archive item/]
 
 ```
