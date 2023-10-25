@@ -39,6 +39,56 @@ npm start
 ## Workflow diagram
 
 ```mermaid
+---
+title: "Workflow of rolodex, 'minimal viable product'"
+---
+graph TD
+    START((start))
+        --> LOGIN[login@rolodex]
+        --> HOME[view dashboard]
+    
+    START
+        --> SEARCH[search] 
+        --> BROWSE[browse AAMU collection website] 
+        --> VIEWITEM[view item webpage] 
+        --> COPYHANDLER[copy item handle]
+        --> ADDHANDLER[add handle to item]
+        --> IMPORTHANDLER["🤖 import meta data"]
+        --> VCI[/virtual collection item/]
+    
+%% virtual collection items:
+    HOME --> CVC
+    CVC[create virtual collection]
+        --> VC[/virtual collection/]
+
+    VC 
+        --> AVC[add virtual collection item]
+        --> VCI
+
+%% tag:
+    HOME 
+        --> CTAG[create tag]
+    CTAG 
+        --> TAG[/tag/]
+    TAG
+        --> ATAG[add tag]
+        --> VCI
+    
+    TAG-->SORTVC
+        
+    HOME
+        --> VIEWVC[view virtual collection]
+        --> SORTVC[sort/filter virtual collection items]
+        --> VIEWVCI[view virtual collection item]
+        --> VCI
+
+    VCI 
+        -.-> |"(must have, possibly after demo)"|ANN[annotate]
+        --> ANNT[annotate text in recogito-js]
+        --> WANN[/web annotation/]
+```
+## Workflow including search and multimedia annotating
+```mermaid
 graph TD
     START((start))
 
