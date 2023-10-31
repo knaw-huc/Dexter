@@ -44,53 +44,62 @@ title: "Workflow of rolodex, 'minimal viable product'"
 ---
 graph TD
     START((start))
-        --> LOGIN[login@rolodex]
-        --> HOME[view dashboard]
+
+    AU[action of user]
+    AR[🤖 action of rolodex]
+    EN[/entities/]
     
     START
-        --> SEARCH[search] 
-        --> BROWSE[browse AAMU collection website] 
-        --> VIEWITEM[view item webpage] 
-        --> COPYHANDLER[copy item handle]
-        --> ADDHANDLER[add handle to item]
-        --> IMPORTHANDLER["🤖 import meta data"]
-        --> VCI[/virtual collection item/]
+    --> LOGIN[login@rolodex]
+    --> HOME[view dashboard]
     
-%% virtual collection items:
-    HOME --> CVC
-    CVC[create virtual collection]
-        --> VC[/virtual collection/]
-
-    VC 
-        --> AVC[add virtual collection item]
-        --> VCI
-
-%% tag:
-    HOME 
-        --> CTAG[create tag]
-    CTAG 
-        --> TAG[/tag/]
-    TAG
-        --> ATAG[add tag]
-        --> VCI
+    START
+    --> SEARCH[search@AAMU website]
+    --> VIEWITEM[view specific source]
+    --> COPYHANDLER[copy source handle]
+    --> ADDHANDLER[add handle to corpus source]
+    --> IMPORTHANDLER["🤖 import meta data"]
+    --> ADDMETADATA["🤖 add meta data to corpus source"]
+    --> VCI[/corpus source/]
+    
+    %% corpus sources:
+    HOME
+    --> CVC[create corpus]
+    --> VC[/corpus/]
+    
+    VC
+    --> AVC[add corpus source]
+    --> VCI
+    
+    %% tag:
+    HOME
+    --> CTAG[create tag]
+    --> TAG[/tag/]
+    --> ATAG[add tag]
+    --> VCI
     
     TAG-->SORTVC
-        
+    
     HOME
-        --> VIEWVC[view virtual collection]
-        --> SORTVC[sort/filter virtual collection items]
-        --> VIEWVCI[view virtual collection item]
-        --> VCI
-
-    VCI 
-        -.-> |"(must have, possibly after demo)"|ANN[annotate]
-        --> ANNT[annotate text in recogito-js]
-        --> WANN[/web annotation/]
+    --> VIEWVC[view corpus]
+    --> SORTVC[sort/filter corpus]
+    --> VIEWVCI[view corpus source]
+    --> VCI
+    
+    VCI
+    -.-> |"(must have, possibly after demo)"|ANN[annotate]
+    --> ANNT[annotate text in recogito-js]
+    --> WANN[/web annotation/]
 ```
+
 ## Workflow including search and multimedia annotating
 ```mermaid
 graph TD
     START((start))
+
+    process
+    decision{decision}
+    data[/data/]
 
     START-->LOGIN[login]-->HOME[view dashboard]
 
@@ -141,10 +150,6 @@ graph TD
     WAN-->SHAREWAN[share] --> WANL[/web annotation url/]
     VCI-->SHAREVCI[share] --> VCIL[/stable id url/]
     
-    process
-    decision{decision}
-    data[/data/]
-
 %% micro-archive
     HOME-->CMA["create micro-archive (shoe box)"]
     CMA-->MA[/"micro-archive (shoe box)"/]
