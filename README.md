@@ -6,20 +6,21 @@ This project aims at building a much-needed solution for referencing and for cre
 
 - Start database:
 ```shell
-docker-compose up -d postgres
+docker-compose up -d postgresdev
 ```
 
 - Start backend:
 ```shell
 cd backend
 make build
+export DEX_FLYWAY_LOCATIONS=['filesystem:db']
 export DEX_DATABASE_URL=jdbc:postgresql://0.0.0.0:5432/dexter 
 make run-server
 ```
 
 - Add user:
 ```shell
-curl -X 'POST' 'http://localhost:3001/api/admin/users' \
+curl -X 'POST' 'http://localhost:8080/admin/users' \
   -H 'Authorization: Basic cm9vdDpkMzNkMzM=' \
   -H 'Content-Type: application/json' \
   -d '["dexter"]'
