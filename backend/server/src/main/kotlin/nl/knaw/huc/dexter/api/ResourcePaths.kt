@@ -9,6 +9,7 @@ object ResourcePaths {
     const val KEYWORDS = "keywords"
     const val LANGUAGES = "languages"
     const val SOURCES = "sources"
+    const val WERELDCULTUREN = "wereldculturen"
 
     // sub paths
     const val USERS = "users"
@@ -17,4 +18,6 @@ object ResourcePaths {
     // params
     const val ID_PARAM = "id"
     const val ID_PATH = "{$ID_PARAM}"
+
+    const val CONVERT = "convert"
 }

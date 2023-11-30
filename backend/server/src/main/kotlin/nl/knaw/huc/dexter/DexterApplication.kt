@@ -1,5 +1,7 @@
 package nl.knaw.huc.dexter
 
+import WereldCollectieContext
+import WereldCulturenDublinCoreImporter
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import `in`.vectorpro.dropwizard.swagger.SwaggerBundle
@@ -34,6 +36,8 @@ import org.slf4j.LoggerFactory
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.util.*
+import javax.xml.xpath.XPath
+import javax.xml.xpath.XPathFactory
 
 class DexterApplication : Application<DexterConfiguration>() {
     private val log = LoggerFactory.getLogger(javaClass)
@@ -66,6 +70,8 @@ class DexterApplication : Application<DexterConfiguration>() {
         migrateDatabase(configuration.dataSourceFactory, configuration.flyway)
         customizeObjectMapper(environment)
         val jdbi = setupJdbi(environment, configuration.dataSourceFactory)
+        val factory: XPathFactory = XPathFactory.newInstance()
+        val wereldCulturenDublinCoreMapper = WereldCulturenDublinCoreImporter()
 
         val appVersion = javaClass.getPackage().implementationVersion
         environment.jersey().apply {
@@ -87,6 +93,7 @@ class DexterApplication : Application<DexterConfiguration>() {
             register(KeywordsResource(jdbi))
             register(LanguagesResource(jdbi))
             register(SourcesResource(jdbi))
+            register(WereldCulturenResource(wereldCulturenDublinCoreMapper))
         }
     }
 
