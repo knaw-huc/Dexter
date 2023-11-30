@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.3'
 
 services:
   backend:
@@ -7,7 +7,7 @@ services:
       - postgres
     expose:
       - 8080
-    image: registry.diginfra.net/tt/dexter-backend:${VERSION}
+    image: dexter-backend:${VERSION}
     networks:
       - backend_network
       - postgres_network

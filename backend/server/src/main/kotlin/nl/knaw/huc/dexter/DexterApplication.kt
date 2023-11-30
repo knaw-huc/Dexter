@@ -73,7 +73,9 @@ class DexterApplication : Application<DexterConfiguration>() {
         val factory: XPathFactory = XPathFactory.newInstance()
         val wereldCulturenDublinCoreMapper = WereldCulturenDublinCoreImporter()
 
-        val appVersion = javaClass.getPackage().implementationVersion
+        // TODO: why is implementationVersion null in dev mode?
+        val appVersion = javaClass.getPackage().implementationVersion ?: "no-implementation-version-found";
+
         environment.jersey().apply {
             register(
                 AuthDynamicFeature(
