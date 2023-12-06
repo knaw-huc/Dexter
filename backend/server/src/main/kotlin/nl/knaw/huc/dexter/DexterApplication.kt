@@ -67,7 +67,9 @@ class DexterApplication : Application<DexterConfiguration>() {
         customizeObjectMapper(environment)
         val jdbi = setupJdbi(environment, configuration.dataSourceFactory)
 
-        val appVersion = javaClass.getPackage().implementationVersion
+        // TODO: why is implementationVersion null in dev mode?
+        val appVersion = javaClass.getPackage().implementationVersion ?: "no-implementation-version-found";
+
         environment.jersey().apply {
             register(
                 AuthDynamicFeature(
