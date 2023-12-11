@@ -1,21 +1,21 @@
-import React from "react"
+import React, {useContext, useEffect, useState} from "react"
 import { useParams } from "react-router-dom"
-import { Sources } from "../../Model/DexterModel"
+import { Source } from "../../Model/DexterModel"
 import { sourcesContext } from "../../State/Sources/sourcesContext"
 import { getSourceById } from "../API"
 import { ACTIONS } from "../../State/actions"
-import { NewSource } from "./NewSource"
+import { SourceForm } from "./SourceForm"
 import Button from "@mui/material/Button"
 
 export const SourceItemContent = () => {
-    const [source, setSource] = React.useState<Sources>(null)
+    const [source, setSource] = useState<Source>(null)
     const params = useParams()
 
-    const { sourcesState, sourcesDispatch } = React.useContext(sourcesContext)
-    const [showForm, setShowForm] = React.useState(false)
+    const { sources, setSources } = useContext(sourcesContext)
+    const [showForm, setShowForm] = useState(false)
 
     const formShowHandler = () => {
-        sourcesDispatch({
+        setSources({
             type: ACTIONS.SET_TOEDITSOURCE,
             toEditSource: source
         })
@@ -28,7 +28,7 @@ export const SourceItemContent = () => {
     }
 
     const editHandler = (boolean: boolean) => {
-        sourcesDispatch({
+        setSources({
             type: ACTIONS.SET_EDITSOURCEMODE,
             editSourceMode: boolean
         })
@@ -36,7 +36,7 @@ export const SourceItemContent = () => {
 
     const doGetSourceById = async (id: string) => {
         const response = await getSourceById(id)
-        setSource(response as Sources)
+        setSource(response as Source)
     }
 
     React.useEffect(() => {
@@ -63,7 +63,14 @@ export const SourceItemContent = () => {
                     <p>Notes: {source.notes}</p>
                 </>
             }
-            {sourcesState.editSourceMode && <NewSource show={showForm} onEdit={editHandler} edit={sourcesState.editSourceMode} sourceToEdit={sourcesState.toEditSource} onClose={formCloseHandler} refetchSource={refetchSource} />}
+            {sources.editSourceMode && <SourceForm
+                show={showForm}
+                onEdit={editHandler}
+                edit={sources.editSourceMode}
+                sourceToEdit={sources.toEditSource}
+                onClose={formCloseHandler}
+                refetchSource={refetchSource}
+            />}
         </div>
     )
 }

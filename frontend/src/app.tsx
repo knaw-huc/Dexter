@@ -15,7 +15,7 @@ export function App() {
     const [collectionsState, collectionsDispatch] = useCollectionsState()
 
     return (
-        <sourcesContext.Provider value={{ sourcesState, sourcesDispatch }}>
+        <sourcesContext.Provider value={{ sources: sourcesState, setSources: sourcesDispatch }}>
             <collectionsContext.Provider value={{ collectionsState, collectionsDispatch }}>
                 <Routes>
                     <Route path="/" element={<Home />}>

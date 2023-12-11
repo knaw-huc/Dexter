@@ -1,4 +1,4 @@
-import { Collections, Sources } from "../Model/DexterModel"
+import {Collections, Source} from "../Model/DexterModel"
 
 const headers = {
     "Content-Type": "application/json"
@@ -109,33 +109,24 @@ export const getSources = async () => {
         return
     }
 
-    const data: Sources[] = await response.json()
+    const data: Source[] = await response.json()
     console.log(data)
 
     return data
 }
 
-export const getSourceById = async (id: string) => {
-    console.log(id)
+export async function getSourceById(id: string): Promise<Source> {
     const response = await fetch(`/api/sources/${id}`, {
         method: "GET",
         headers: headers
     })
-
-    console.log(response)
-
     if (!response.ok) {
-        console.error(response)
-        return
+        throw new Error(`Could not fetch source ${id}: ${response.statusText}`)
     }
-
-    const data: Sources = await response.json()
-    console.log(data)
-
-    return data
+    return await response.json()
 }
 
-export const createSource = async (newSource: Sources) => {
+export const createSource = async (newSource: Source) => {
     const response = await fetch("/api/sources", {
         method: "POST",
         headers: headers,
@@ -149,13 +140,13 @@ export const createSource = async (newSource: Sources) => {
         return
     }
 
-    const data: Sources = await response.json()
+    const data: Source = await response.json()
     console.log(data)
 
     return data
 }
 
-export const updateSource = async (id: string, updatedSource: Sources) => {
+export const updateSource = async (id: string, updatedSource: Source) => {
     const response = await fetch(`/api/sources/${id}`, {
         method: "PUT",
         headers: headers,
@@ -169,7 +160,7 @@ export const updateSource = async (id: string, updatedSource: Sources) => {
         return
     }
 
-    const data: Sources = await response.json()
+    const data: Source = await response.json()
     console.log(data)
 
     return data
@@ -187,4 +178,12 @@ export const deleteSource = async (id: string) => {
         console.error(response)
         return
     }
+}
+
+export async function postImport(url: URL) {
+    const result = await fetch("/api/wereldculturen/import", {
+        method: "POST",
+        body: JSON.stringify({url})
+    })
+    return await result.json()
 }

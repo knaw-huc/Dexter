@@ -15,7 +15,7 @@ export interface Collections {
     updatedAt: string
 }
 
-export interface Sources {
+export interface Source {
     id: string,
     externalRef: string | null,
     title: string,

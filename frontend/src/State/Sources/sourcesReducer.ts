@@ -1,14 +1,14 @@
 import React from "react"
 import { ACTIONS } from "../actions"
-import { Sources } from "../../Model/DexterModel"
+import { Source } from "../../Model/DexterModel"
 import { doGetSources } from "../../Utils/doGetSources"
 
 export interface SourcesState {
-    sources: Sources[],
-    filteredSources: Sources[],
-    selectedSource: Sources | undefined,
+    sources: Source[],
+    filteredSources: Source[],
+    selectedSource: Source | undefined,
     editSourceMode: boolean,
-    toEditSource: Sources | undefined
+    toEditSource: Source | undefined
 }
 
 export const initState: SourcesState = {
@@ -21,17 +21,17 @@ export const initState: SourcesState = {
 
 interface SetSources {
     type: ACTIONS.SET_SOURCES,
-    sources: Sources[]
+    sources: Source[]
 }
 
 interface SetFilteredSources {
     type: ACTIONS.SET_FILTEREDSOURCES,
-    filteredSources: Sources[]
+    filteredSources: Source[]
 }
 
 interface SetSelectedSource {
     type: ACTIONS.SET_SELECTEDSOURCE,
-    selectedSource: Sources
+    selectedSource: Source
 }
 
 interface SetEditSourceMode {
@@ -41,7 +41,7 @@ interface SetEditSourceMode {
 
 interface SetToEditSource {
     type: ACTIONS.SET_TOEDITSOURCE,
-    toEditSource: Sources
+    toEditSource: Source
 }
 
 export type SourcesAction = SetSources | SetFilteredSources | SetSelectedSource | SetEditSourceMode | SetToEditSource

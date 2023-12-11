@@ -1,5 +1,5 @@
 import React from "react"
-import { Sources } from "../../Model/DexterModel"
+import { Source } from "../../Model/DexterModel"
 import { Link } from "react-router-dom"
 import styled from "@emotion/styled"
 import { deleteSource, getSources } from "../API"
@@ -9,8 +9,8 @@ import DeleteIcon from "@mui/icons-material/Delete"
 
 type SourceItemProps = {
     sourceId: React.Key,
-    source: Sources,
-    onSelect: (selected: Sources | undefined) => void,
+    source: Source,
+    onSelect: (selected: Source | undefined) => void,
 }
 
 const DeleteIconStyled = styled(DeleteIcon)`
@@ -22,7 +22,7 @@ const DeleteIconStyled = styled(DeleteIcon)`
 `
 
 export const SourceItem = (props: SourceItemProps) => {
-    const { sourcesDispatch } = React.useContext(sourcesContext)
+    const { setSources } = React.useContext(sourcesContext)
 
     const toggleClick = () => {
         console.log(props.source.id)
@@ -37,7 +37,7 @@ export const SourceItem = (props: SourceItemProps) => {
         await deleteSource(id)
         getSources()
             .then(function (sources) {
-                sourcesDispatch({
+                setSources({
                     type: ACTIONS.SET_SOURCES,
                     sources: sources
                 })

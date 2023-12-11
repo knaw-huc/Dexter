@@ -6,7 +6,7 @@ This project aims at building a much-needed solution for referencing and for cre
 
 - Start database:
 ```shell
-docker-compose up -d postgresdev
+docker-compose up -d postgres
 ```
 
 - Start backend:
@@ -18,6 +18,14 @@ export DEX_DATABASE_URL=jdbc:postgresql://0.0.0.0:5432/dexter
 make run-server
 ```
 
+- Start frontend:
+```shell
+cd frontend
+npm i
+npm start
+```
+
+## Demo
 - Add user:
 ```shell
 curl -X 'POST' 'http://localhost:8080/admin/users' \
@@ -26,16 +34,46 @@ curl -X 'POST' 'http://localhost:8080/admin/users' \
   -d '["dexter"]'
 ```
 
-- Start frontend:
+- Add corpus:
 ```shell
-cd frontend
-npm i
-npm start
+curl 'http://localhost:3001/api/corpora' -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Basic ZGV4dGVyOmRleHRlcg==' \
+  --data-raw '{
+    "title": "test",
+    "description":"test",
+    "rights":"test",
+    "access":"Open",
+    "location":"test",
+    "earliest":"1990-01-30",
+    "latest":"1990-01-31",
+    "contributor":"test",
+    "notes":"test"
+  }'
+```
+
+- Add source:
+```shell
+curl 'http://localhost:3001/api/sources' -X POST  \
+  -H 'Content-Type: application/json'  \
+  -H 'Authorization: Basic ZGV4dGVyOmRleHRlcg=='  \
+  --data-raw '{
+    "externalRef":"test",
+    "title":"test",
+    "description":"test",
+    "rights":"test",
+    "access":"Open",
+    "location":"test",
+    "earliest":"1990-01-30",
+    "latest":"1990-01-31",
+    "notes":"test"
+  }'
 ```
 
 - Open http://localhost:3001
 - Login with dexter:dexter
 - Swagger: http://localhost:3001/api/swagger
+
 
 ## Workflow diagram
 

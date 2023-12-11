@@ -15,8 +15,7 @@ import javax.xml.xpath.XPathFactory
 
 data class Tms2Dc(
     val dcField: String,
-    val tmsPath: String,
-    val type: String
+    val tmsPath: String
 )
 
 class WereldCulturenDublinCoreImporter() {
@@ -33,33 +32,27 @@ class WereldCulturenDublinCoreImporter() {
         this.tms2DcFields = listOf(
             Tms2Dc(
                 "Identifier",
-                "//crm:E22_Human-Made_Object/@rdf:about",
-                "value"
+                "//crm:E22_Human-Made_Object/@rdf:about"
             ),
             Tms2Dc(
                 "Description",
-                "//crm:E22_Human-Made_Object/crm:P2_has_type//rdfs:label//text()",
-                "data"
+                "//crm:E22_Human-Made_Object/crm:P2_has_type//rdfs:label//text()"
             ),
             Tms2Dc(
                 "Format",
-                "//crm:P43_has_dimension//crm:P190_has_symbolic_content//text()",
-                "data"
+                "//crm:P43_has_dimension//crm:P190_has_symbolic_content//text()"
             ),
             Tms2Dc(
                 "Title",
-                "//crm:E22_Human-Made_Object/crm:P1_is_identified_by//crm:E33_E41_Linguistic_Appellation/crm:P190_has_symbolic_content//text()",
-                "data"
+                "//crm:E22_Human-Made_Object/crm:P1_is_identified_by//crm:E33_E41_Linguistic_Appellation/crm:P190_has_symbolic_content//text()"
             ),
             Tms2Dc(
                 "Date",
-                "//crm:P108i_was_produced_by//crm:E12_Production//crm:P4_has_time-span//crm:P1_is_identified_by//crm:P190_has_symbolic_content//text()",
-                "data"
+                "//crm:P108i_was_produced_by//crm:E12_Production//crm:P4_has_time-span//crm:P1_is_identified_by//crm:P190_has_symbolic_content//text()"
             ),
             Tms2Dc(
                 "Creator",
-                "//crm:P108i_was_produced_by//crm:P14_carried_out_by/@rdf:resource",
-                "value"
+                "//crm:P108i_was_produced_by//crm:P14_carried_out_by/@rdf:resource"
             ),
         )
     }

@@ -4,7 +4,7 @@ import Modal from "react-bootstrap/Modal"
 import Button from "@mui/material/Button"
 import styled from "@emotion/styled"
 import { createSource, getSourceById, updateSource } from "../API"
-import { Sources } from "../../Model/DexterModel"
+import { Source } from "../../Model/DexterModel"
 import TextField from "@mui/material/TextField"
 
 type NewSourceProps = {
@@ -12,7 +12,7 @@ type NewSourceProps = {
     show?: boolean,
     onClose?: () => void,
     edit?: boolean,
-    sourceToEdit?: Sources,
+    sourceToEdit?: Source,
     onEdit?: (boolean: boolean) => void,
     refetchSource?: () => void
 }
@@ -29,9 +29,10 @@ const Select = styled.select`
     display: block;
 `
 
-export function NewSource(props: NewSourceProps) {
-    const { register, handleSubmit, reset, setValue } = useForm<Sources>()
-    const onSubmit: SubmitHandler<Sources> = async data => {
+export function SourceForm(props: NewSourceProps) {
+    const { register, handleSubmit, reset, setValue } = useForm<Source>()
+
+    const onSubmit: SubmitHandler<Source> = async data => {
         if (!props.edit) {
             try {
                 await createSource(data)
@@ -41,7 +42,7 @@ export function NewSource(props: NewSourceProps) {
             }
             props.onClose()
         } else {
-            const doUpdateSource = async (id: string, updatedData: Sources) => {
+            const doUpdateSource = async (id: string, updatedData: Source) => {
                 try {
                     await updateSource(id, updatedData)
                     await props.refetchSource()
@@ -55,20 +56,14 @@ export function NewSource(props: NewSourceProps) {
     }
 
     React.useEffect(() => {
-        const doGetSourceById = async (id: string) => {
-            const response: any = await getSourceById(id)
-            console.log(response as Sources)
-            const fields = ["title", "description", "creator", "subject", "rights", "access", "created", "spatial", "temporal", "language"]
-            fields.map((field: any) => {
-                setValue(field, response[field])
-            })
-        }
+        getSource(props.sourceToEdit.id)
+        async function getSource(id: string) {
+            if (!props.edit) {
+                return
+            }
+            const response = await getSourceById(id)
+            reset(response)
 
-        if (props.edit) {
-            doGetSourceById(props.sourceToEdit.id)
-
-        } else {
-            return
         }
     }, [props.edit, setValue])
 
@@ -79,7 +74,7 @@ export function NewSource(props: NewSourceProps) {
             props.onEdit(false)
         }
 
-        reset() //Should later be moved to a useEffect
+        reset()
     }
 
     return (

@@ -1,9 +1,9 @@
 import React from "react"
-import { Sources } from "../../Model/DexterModel"
+import { Source } from "../../Model/DexterModel"
 import { sourcesContext } from "../../State/Sources/sourcesContext"
 import { ACTIONS } from "../../State/actions"
 import { SourceItem } from "./SourceItem"
-import { NewSource } from "./NewSource"
+import { SourceForm } from "./SourceForm"
 import { doGetSources } from "../../Utils/doGetSources"
 // import { FilterBySubject } from "../FilterBySubject"
 import Button from "@mui/material/Button"
@@ -15,7 +15,7 @@ const FilterRow = styled.div`
 `
 
 export function SourcesList() {
-    const { sourcesState, sourcesDispatch } = React.useContext(sourcesContext)
+    const { sources, setSources } = React.useContext(sourcesContext)
     const [showForm, setShowForm] = React.useState(false)
     // const [filteredSubject, setFilteredSubject] = React.useState("No filter")
 
@@ -37,16 +37,16 @@ export function SourcesList() {
     const refetchSources = async () => {
         doGetSources()
             .then(function (sources) {
-                sourcesDispatch({
+                setSources({
                     type: ACTIONS.SET_SOURCES,
                     sources: sources
                 })
             })
     }
 
-    const handleSelected = (selected: Sources | undefined) => {
+    const handleSelected = (selected: Source | undefined) => {
         console.log(selected)
-        return sourcesDispatch({
+        return setSources({
             type: ACTIONS.SET_SELECTEDSOURCE,
             selectedSource: selected
         })
@@ -70,8 +70,8 @@ export function SourcesList() {
                 {/* <FilterBySubject selected={filteredSubject} onChangeFilter={filterChangeHandler} toFilter="Sources" /> */}
                 <Button variant="contained" style={{ marginLeft: "10px" }} onClick={formShowHandler}>Add new source</Button>
             </FilterRow>
-            {showForm && <NewSource show={showForm} onClose={formCloseHandler} refetch={refetchSources} />}
-            {sourcesState.sources && sourcesState.sources.map((source: Sources, index: number) => (
+            {showForm && <SourceForm show={showForm} onClose={formCloseHandler} refetch={refetchSources} />}
+            {sources.sources && sources.sources.map((source: Source, index: number) => (
                 <SourceItem
                     key={index}
                     sourceId={index}

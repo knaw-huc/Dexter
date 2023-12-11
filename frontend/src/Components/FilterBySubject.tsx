@@ -20,7 +20,7 @@ const SelectStyled = styled.select`
 
 export const FilterBySubject = (props: FilterBySubjectProps) => {
     const { collectionsState } = React.useContext(collectionsContext)
-    const { sourcesState } = React.useContext(sourcesContext)
+    const { sources } = React.useContext(sourcesContext)
 
     const dropdownChangeHandler = (event: { target: { value: string } }) => {
         props.onChangeFilter(event.target.value)
@@ -42,7 +42,7 @@ export const FilterBySubject = (props: FilterBySubjectProps) => {
                             {collection.subject}
                         </option>
                     )
-                }) : sourcesState.sources && sourcesState.sources.map((source, i) => {
+                }) : sources.sources && sources.sources.map((source, i) => {
                     return (
                         <option value={source.subject} key={i}>
                             {source.subject}
