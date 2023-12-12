@@ -23,6 +23,7 @@
         "@emotion"
     ],
     "rules": {
+        "react-hooks/exhaustive-deps": "off",
         "indent": [
             "error",
             4

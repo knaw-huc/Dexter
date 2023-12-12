@@ -4,7 +4,7 @@ import { Link } from "react-router-dom"
 import { deleteCollection, getCollections } from "../API"
 import styled from "@emotion/styled"
 import { collectionsContext } from "../../State/Collections/collectionContext"
-import { ACTIONS } from "../../State/actions"
+import { Actions } from "../../State/actions"
 import DeleteIcon from "@mui/icons-material/Delete"
 
 type CollectionItemProps = {
@@ -37,7 +37,7 @@ export function CollectionItem(props: CollectionItemProps) {
         getCollections()
             .then(function (collections) {
                 collectionsDispatch({
-                    type: ACTIONS.SET_COLLECTIONS,
+                    type: Actions.SET_COLLECTIONS,
                     collections: collections
                 })
             })

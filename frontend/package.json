@@ -11,7 +11,6 @@
     "docker:push": "./docker-push.sh",
     "docker:all": "./docker-all.sh"
   },
-  "author": "Sebastiaan van Daalen",
   "license": "GPL-3.0-or-later",
   "dependencies": {
     "@emotion/react": "^11.10.4",

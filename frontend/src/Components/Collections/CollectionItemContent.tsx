@@ -3,7 +3,7 @@ import { getCollectionById } from "../API"
 import { useParams } from "react-router-dom"
 import { Collections } from "../../Model/DexterModel"
 import { collectionsContext } from "../../State/Collections/collectionContext"
-import { ACTIONS } from "../../State/actions"
+import { Actions } from "../../State/actions"
 import { NewCollection } from "./NewCollection"
 import styled from "@emotion/styled"
 import Button from "@mui/material/Button"
@@ -21,7 +21,7 @@ export const CollectionItemContent = () => {
 
     const formShowHandler = () => {
         collectionsDispatch({
-            type: ACTIONS.SET_TOEDITCOL,
+            type: Actions.SET_TOEDITCOL,
             toEditCol: collection
         })
         editHandler(true)
@@ -34,7 +34,7 @@ export const CollectionItemContent = () => {
 
     const editHandler = (boolean: boolean) => {
         collectionsDispatch({
-            type: ACTIONS.SET_EDITCOLMODE,
+            type: Actions.SET_EDITCOLMODE,
             editColMode: boolean
         })
     }

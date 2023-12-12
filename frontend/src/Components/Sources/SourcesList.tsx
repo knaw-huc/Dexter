@@ -1,7 +1,7 @@
 import React from "react"
 import { Source } from "../../Model/DexterModel"
 import { sourcesContext } from "../../State/Sources/sourcesContext"
-import { ACTIONS } from "../../State/actions"
+import { Actions } from "../../State/actions"
 import { SourceItem } from "./SourceItem"
 import { SourceForm } from "./SourceForm"
 import { doGetSources } from "../../Utils/doGetSources"
@@ -38,7 +38,7 @@ export function SourcesList() {
         doGetSources()
             .then(function (sources) {
                 setSources({
-                    type: ACTIONS.SET_SOURCES,
+                    type: Actions.SET_SOURCES,
                     sources: sources
                 })
             })
@@ -47,7 +47,7 @@ export function SourcesList() {
     const handleSelected = (selected: Source | undefined) => {
         console.log(selected)
         return setSources({
-            type: ACTIONS.SET_SELECTEDSOURCE,
+            type: Actions.SET_SELECTEDSOURCE,
             selectedSource: selected
         })
     }

@@ -4,7 +4,7 @@ import { Link } from "react-router-dom"
 import styled from "@emotion/styled"
 import { deleteSource, getSources } from "../API"
 import { sourcesContext } from "../../State/Sources/sourcesContext"
-import { ACTIONS } from "../../State/actions"
+import { Actions } from "../../State/actions"
 import DeleteIcon from "@mui/icons-material/Delete"
 
 type SourceItemProps = {
@@ -38,7 +38,7 @@ export const SourceItem = (props: SourceItemProps) => {
         getSources()
             .then(function (sources) {
                 setSources({
-                    type: ACTIONS.SET_SOURCES,
+                    type: Actions.SET_SOURCES,
                     sources: sources
                 })
             })

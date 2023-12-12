@@ -4,7 +4,7 @@ import { NewCollection } from "./NewCollection"
 import { CollectionItem } from "./CollectionItem"
 import { collectionsContext } from "../../State/Collections/collectionContext"
 import Button from "@mui/material/Button"
-import { ACTIONS } from "../../State/actions"
+import { Actions } from "../../State/actions"
 import { doGetCollections } from "../../Utils/doGetCollections"
 // import { FilterBySubject } from "../FilterBySubject"
 import styled from "@emotion/styled"
@@ -38,7 +38,7 @@ export function CollectionList() {
         doGetCollections()
             .then(function (collections) {
                 collectionsDispatch({
-                    type: ACTIONS.SET_COLLECTIONS,
+                    type: Actions.SET_COLLECTIONS,
                     collections: collections
                 })
             })
@@ -46,7 +46,7 @@ export function CollectionList() {
 
     const handleSelected = (selected: Collections | undefined) => {
         console.log(selected)
-        return collectionsDispatch({ type: ACTIONS.SET_SELECTEDCOLLECTION, selectedCollection: selected })
+        return collectionsDispatch({ type: Actions.SET_SELECTEDCOLLECTION, selectedCollection: selected })
     }
 
     const formShowHandler = () => {

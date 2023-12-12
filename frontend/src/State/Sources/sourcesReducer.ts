@@ -1,5 +1,5 @@
 import React from "react"
-import { ACTIONS } from "../actions"
+import { Actions } from "../actions"
 import { Source } from "../../Model/DexterModel"
 import { doGetSources } from "../../Utils/doGetSources"
 
@@ -20,27 +20,27 @@ export const initState: SourcesState = {
 }
 
 interface SetSources {
-    type: ACTIONS.SET_SOURCES,
+    type: Actions.SET_SOURCES,
     sources: Source[]
 }
 
 interface SetFilteredSources {
-    type: ACTIONS.SET_FILTEREDSOURCES,
+    type: Actions.SET_FILTEREDSOURCES,
     filteredSources: Source[]
 }
 
 interface SetSelectedSource {
-    type: ACTIONS.SET_SELECTEDSOURCE,
+    type: Actions.SET_SELECTEDSOURCE,
     selectedSource: Source
 }
 
 interface SetEditSourceMode {
-    type: ACTIONS.SET_EDITSOURCEMODE,
+    type: Actions.SET_EDITSOURCEMODE,
     editSourceMode: boolean
 }
 
 interface SetToEditSource {
-    type: ACTIONS.SET_TOEDITSOURCE,
+    type: Actions.SET_TOEDITSOURCE,
     toEditSource: Source
 }
 
@@ -53,7 +53,7 @@ export const useSourcesState = (): [SourcesState, React.Dispatch<SourcesAction>]
         doGetSources()
             .then(function (sources) {
                 dispatch({
-                    type: ACTIONS.SET_SOURCES,
+                    type: Actions.SET_SOURCES,
                     sources: sources
                 })
             })
@@ -65,15 +65,15 @@ export const useSourcesState = (): [SourcesState, React.Dispatch<SourcesAction>]
 function sourcesReducer(state: SourcesState, action: SourcesAction): SourcesState {
     console.log(action, state)
     switch (action.type) {
-    case ACTIONS.SET_SOURCES:
+    case Actions.SET_SOURCES:
         return setSources(state, action)
-    case ACTIONS.SET_FILTEREDSOURCES:
+    case Actions.SET_FILTEREDSOURCES:
         return setFilteredSources(state, action)
-    case ACTIONS.SET_SELECTEDSOURCE:
+    case Actions.SET_SELECTEDSOURCE:
         return setSelectedSource(state, action)
-    case ACTIONS.SET_EDITSOURCEMODE:
+    case Actions.SET_EDITSOURCEMODE:
         return setEditSourceMode(state, action)
-    case ACTIONS.SET_TOEDITSOURCE:
+    case Actions.SET_TOEDITSOURCE:
         return setToEditSource(state, action)
     default:
         break

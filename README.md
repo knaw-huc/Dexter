@@ -26,17 +26,15 @@ npm start
 ```
 
 ## Demo
-- Add user:
 ```shell
+# Add user:
 curl -X 'POST' 'http://localhost:8080/admin/users' \
   -H 'Authorization: Basic cm9vdDpkMzNkMzM=' \
   -H 'Content-Type: application/json' \
   -d '["dexter"]'
-```
 
-- Add corpus:
-```shell
-curl 'http://localhost:3001/api/corpora' -X POST \
+# Add corpus:
+curl 'http://localhost:8080/api/corpora' -X POST \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Basic ZGV4dGVyOmRleHRlcg==' \
   --data-raw '{
@@ -50,11 +48,9 @@ curl 'http://localhost:3001/api/corpora' -X POST \
     "contributor":"test",
     "notes":"test"
   }'
-```
 
-- Add source:
-```shell
-curl 'http://localhost:3001/api/sources' -X POST  \
+# Add source:
+curl 'http://localhost:8080/api/sources' -X POST  \
   -H 'Content-Type: application/json'  \
   -H 'Authorization: Basic ZGV4dGVyOmRleHRlcg=='  \
   --data-raw '{

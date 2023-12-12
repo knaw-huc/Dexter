@@ -162,7 +162,6 @@ export const updateSource = async (id: string, updatedSource: Source) => {
 
     const data: Source = await response.json()
     console.log(data)
-
     return data
 }
 

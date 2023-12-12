@@ -1,22 +1,24 @@
 import React, {useContext, useEffect, useState} from "react"
-import { useParams } from "react-router-dom"
-import { Source } from "../../Model/DexterModel"
-import { sourcesContext } from "../../State/Sources/sourcesContext"
-import { getSourceById } from "../API"
-import { ACTIONS } from "../../State/actions"
-import { SourceForm } from "./SourceForm"
+import {useParams} from "react-router-dom"
+import {Source} from "../../Model/DexterModel"
+import {sourcesContext} from "../../State/Sources/sourcesContext"
+import {getSourceById} from "../API"
+import {Actions} from "../../State/actions"
+import {SourceForm} from "./SourceForm"
 import Button from "@mui/material/Button"
+import {errorContext} from "../../State/Error/errorContext"
 
-export const SourceItemContent = () => {
+export const SourcePage = () => {
     const [source, setSource] = useState<Source>(null)
     const params = useParams()
 
-    const { sources, setSources } = useContext(sourcesContext)
+    const {sources, setSources} = useContext(sourcesContext)
     const [showForm, setShowForm] = useState(false)
+    const {updateError} = useContext(errorContext)
 
     const formShowHandler = () => {
         setSources({
-            type: ACTIONS.SET_TOEDITSOURCE,
+            type: Actions.SET_TOEDITSOURCE,
             toEditSource: source
         })
         editHandler(true)
@@ -29,22 +31,23 @@ export const SourceItemContent = () => {
 
     const editHandler = (boolean: boolean) => {
         setSources({
-            type: ACTIONS.SET_EDITSOURCEMODE,
+            type: Actions.SET_EDITSOURCEMODE,
             editSourceMode: boolean
         })
     }
 
-    const doGetSourceById = async (id: string) => {
+    const fetchSourcePage = async (id: string) => {
         const response = await getSourceById(id)
+            .catch(error => updateError({type: Actions.SET_ERROR, error}))
         setSource(response as Source)
     }
 
     React.useEffect(() => {
-        doGetSourceById(params.sourceId)
+        fetchSourcePage(params.sourceId)
     }, [])
 
     const refetchSource = async () => {
-        await doGetSourceById(params.sourceId)
+        await fetchSourcePage(params.sourceId)
     }
 
     return (
