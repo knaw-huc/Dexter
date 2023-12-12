@@ -1,5 +1,5 @@
 import React, {useContext, useEffect} from "react"
-import {useForm} from "react-hook-form"
+import {useForm, UseFormRegisterReturn} from "react-hook-form"
 import Modal from "react-bootstrap/Modal"
 import Button from "@mui/material/Button"
 import styled from "@emotion/styled"
@@ -28,6 +28,11 @@ const Label = styled.label`
 
 const Select = styled.select`
   display: block;
+  text-transform: capitalize;
+`
+
+const Option = styled.option`
+  text-transform: capitalize;
 `
 
 export function SourceForm(props: NewSourceProps) {
@@ -76,9 +81,6 @@ export function SourceForm(props: NewSourceProps) {
         reset()
     }
 
-    console.log("enum", Access)
-    console.log("values", Object.values(Access))
-    console.log("keys", Object.keys(Access))
     return <>
         <Modal size="lg" show={props.show} onHide={handleClose}>
             <Modal.Header closeButton>
@@ -95,11 +97,9 @@ export function SourceForm(props: NewSourceProps) {
                     <Label>Rights</Label>
                     <TextFieldStyled fullWidth margin="dense" {...register("rights", {required: true})} />
                     <Label>Access</Label>
-                    <Select {...register("access", {required: true})}>
-                        <option value="open">Open</option>
-                        <option value="restricted">Restricted</option>
-                        <option value="closed">Closed</option>
-                    </Select>
+                    <AccessSelectionField
+                        registered={{...register("access", {required: true})}}
+                    />
                     <Label>Location</Label>
                     <TextFieldStyled fullWidth margin="dense" {...register("location")} />
                     <Label>Earliest</Label>
@@ -118,4 +118,18 @@ export function SourceForm(props: NewSourceProps) {
             </Modal.Footer>
         </Modal>
     </>
+}
+
+export function AccessSelectionField(props: { registered: UseFormRegisterReturn }) {
+    const options = Object
+        .values(Access)
+    return <Select {...props.registered}>
+        {options.map(access => <Option
+            key={access}
+            value={access}
+        >
+            {access}
+        </Option>)
+        }
+    </Select>
 }
