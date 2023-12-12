@@ -16,7 +16,7 @@ import {errorContext} from "./State/Error/errorContext"
 export function App() {
     const [sourcesState, sourcesDispatch] = useSourcesState()
     const [collectionsState, collectionsDispatch] = useCollectionsState()
-    const [errorState, setError] = useErrorState()
+    const [errorState, updateError] = useErrorState()
 
     return (
         <Errorhandler
@@ -24,7 +24,7 @@ export function App() {
         >
             <sourcesContext.Provider value={{sources: sourcesState, setSources: sourcesDispatch}}>
                 <collectionsContext.Provider value={{collectionsState, collectionsDispatch}}>
-                    <errorContext.Provider value={{errorState, updateError: setError}}>
+                    <errorContext.Provider value={{errorState, updateError}}>
                         <Routes>
                             <Route path="/" element={<Home/>}>
                                 <Route path="/corpora" element={<CollectionList/>}/>

@@ -38,7 +38,7 @@ export const SourcePage = () => {
 
     const fetchSourcePage = async (id: string) => {
         const response = await getSourceById(id)
-            .catch(error => updateError({type: Actions.SET_ERROR, error}))
+            .catch(updateError)
         setSource(response as Source)
     }
 

@@ -1,10 +1,10 @@
 import React from "react"
-import { Source } from "../../Model/DexterModel"
-import { Link } from "react-router-dom"
+import {Source} from "../../Model/DexterModel"
+import {Link} from "react-router-dom"
 import styled from "@emotion/styled"
-import { deleteSource, getSources } from "../API"
-import { sourcesContext } from "../../State/Sources/sourcesContext"
-import { Actions } from "../../State/actions"
+import {deleteSource, getSources} from "../API"
+import {sourcesContext} from "../../State/Sources/sourcesContext"
+import {Actions} from "../../State/actions"
 import DeleteIcon from "@mui/icons-material/Delete"
 
 type SourceItemProps = {
@@ -14,15 +14,16 @@ type SourceItemProps = {
 }
 
 const DeleteIconStyled = styled(DeleteIcon)`
-    margin-left: 5px;
-    &:hover {
-        cursor: pointer;
-        color: gray;
-    }
+  margin-left: 5px;
+
+  &:hover {
+    cursor: pointer;
+    color: gray;
+  }
 `
 
 export const SourceItem = (props: SourceItemProps) => {
-    const { setSources } = React.useContext(sourcesContext)
+    const {setSources} = React.useContext(sourcesContext)
 
     const toggleClick = () => {
         console.log(props.source.id)
@@ -32,25 +33,33 @@ export const SourceItem = (props: SourceItemProps) => {
     const handleDelete = async (id: string) => {
         const warning = window.confirm("Are you sure you wish to delete this source?")
 
-        if (warning === false) return
+        if (warning === false) {
+            return
+        }
 
         await deleteSource(id)
-        getSources()
-            .then(function (sources) {
-                setSources({
-                    type: Actions.SET_SOURCES,
-                    sources: sources
-                })
-            })
+        getSources().then(sources => setSources({
+            type: Actions.SET_SOURCES,
+            sources: sources
+        }))
     }
 
     return (
         <ul>
             <li key={props.sourceId}>
-                <Link to={`/sources/${props.source.id}`} key={props.sourceId} onClick={toggleClick}>
+                <Link
+                    to={`/sources/${props.source.id}`}
+                    key={props.sourceId}
+                    onClick={toggleClick}
+                >
                     {props.source.title}
                 </Link>
-                <DeleteIconStyled color="error" onClick={() => handleDelete(props.source.id)}>Delete source</DeleteIconStyled>
+                <DeleteIconStyled
+                    color="error"
+                    onClick={() => handleDelete(props.source.id)}
+                >
+                    Delete source
+                </DeleteIconStyled>
             </li>
         </ul>
     )

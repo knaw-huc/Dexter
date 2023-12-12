@@ -44,7 +44,7 @@ export function SourceForm(props: NewSourceProps) {
 
     async function handleUpdate(data: Source) {
         await updateSource(props.sourceToEdit.id, data)
-            .catch(error => console.error(error))
+            .catch(updateError)
         props.refetchSource()
     }
 
@@ -61,13 +61,9 @@ export function SourceForm(props: NewSourceProps) {
             if (!props.edit) {
                 return
             }
-            try {
-                getSourceById(id)
-                    .then(reset)
-                    .catch(e => {throw e})
-            } catch (e) {
-                alert("blarp" + e.message)
-            }
+            getSourceById(id)
+                .then(reset)
+                .catch(updateError)
         }
     }, [props.edit, setValue])
 
@@ -96,9 +92,9 @@ export function SourceForm(props: NewSourceProps) {
                     <TextFieldStyled fullWidth margin="dense" {...register("rights", {required: true})} />
                     <Label>Access</Label>
                     <Select {...register("access", {required: true})}>
-                        <option value="Open">Open</option>
-                        <option value="Restricted">Restricted</option>
-                        <option value="Closed">Closed</option>
+                        <option value="open">Open</option>
+                        <option value="restricted">Restricted</option>
+                        <option value="closed">Closed</option>
                     </Select>
                     <Label>Location</Label>
                     <TextFieldStyled fullWidth margin="dense" {...register("location")} />

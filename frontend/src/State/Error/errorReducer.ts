@@ -9,20 +9,18 @@ export const initState: ErrorState = {
     error: null
 }
 
-type SetError = {
-    type: Actions.SET_ERROR,
-    error: Error
-}
-
-export type ErrorAction = SetError;
+export type ErrorAction = Actions.REMOVE_ERROR | Error;
 
 export const useErrorState = (): [ErrorState, React.Dispatch<ErrorAction>] => {
-    return React.useReducer(erroReducer, initState)
+    return React.useReducer(errorReducer, initState)
 }
 
-function erroReducer(state: ErrorState, action: ErrorAction): ErrorState {
-    if(action.error) {
-        return {...state, error: action.error}
+function errorReducer(state: ErrorState, action: ErrorAction): ErrorState {
+    if(action instanceof Error) {
+        return {...state, error: action}
+    }
+    if(action === Actions.REMOVE_ERROR) {
+        return {...state, error: null}
     }
     return state
 }
