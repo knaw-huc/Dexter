@@ -7,18 +7,6 @@ const NavStyled = styled.nav`
     border-bottom: "solid 1px";
     padding-bottom: 1rem;
 `
-
-console.log("Hoi allemaal!")
-//console.log(process.env.REACT_APP_BACKEND_HOST)
-
-async function testFetch() {
-    const response = await fetch("api/about")
-    const json = await response.json()
-    console.log(json)
-}
-
-testFetch()
-
 export const Home = () => {
     return (
         <div>

@@ -15,13 +15,19 @@ export interface Collections {
     updatedAt: string
 }
 
+export enum Access {
+    CLOSED = "closed",
+    RESTRICTED = "restricted",
+    OPEN = "open"
+}
+
 export interface Source {
     id: string,
     externalRef: string | null,
     title: string,
     description: string,
     rights: string,
-    access: string,
+    access: Access,
     location: string | null,
     earliest: string | null,
     latest: string | null,

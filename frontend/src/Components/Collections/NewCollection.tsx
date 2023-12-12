@@ -1,4 +1,4 @@
-import React from "react"
+import React, {useContext} from "react"
 import { useForm, SubmitHandler } from "react-hook-form"
 import Modal from "react-bootstrap/Modal"
 import Button from "@mui/material/Button"
@@ -7,6 +7,7 @@ import { createCollection, getCollectionById, updateCollection } from "../API"
 import { Collections } from "../../Model/DexterModel"
 // import { Languages } from "./Languages"
 import TextField from "@mui/material/TextField"
+import {errorContext} from "../../State/Error/errorContext"
 
 type NewCollectionProps = {
     refetch?: () => void,
@@ -32,14 +33,13 @@ const Select = styled.select`
 
 export function NewCollection(props: NewCollectionProps) {
     const { register, handleSubmit, reset, setValue } = useForm<Collections>()
+    const {updateError} = useContext(errorContext)
+
     const onSubmit: SubmitHandler<Collections> = async data => {
         if (!props.edit) {
-            try {
-                await createCollection(data)
-                await props.refetch()
-            } catch (error) {
-                console.log(error)
-            }
+            await createCollection(data)
+                .catch(updateError)
+            await props.refetch()
             props.onClose()
         } else {
             const doUpdateCollection = async (id: string, updatedData: Collections) => {

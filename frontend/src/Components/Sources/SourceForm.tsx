@@ -4,7 +4,7 @@ import Modal from "react-bootstrap/Modal"
 import Button from "@mui/material/Button"
 import styled from "@emotion/styled"
 import {createSource, getSourceById, updateSource} from "../API"
-import {Source} from "../../Model/DexterModel"
+import {Access, Source} from "../../Model/DexterModel"
 import TextField from "@mui/material/TextField"
 import {errorContext} from "../../State/Error/errorContext"
 
@@ -75,6 +75,9 @@ export function SourceForm(props: NewSourceProps) {
         reset()
     }
 
+    console.log("enum", Access)
+    console.log("values", Object.values(Access))
+    console.log("keys", Object.keys(Access))
     return <>
         <Modal size="lg" show={props.show} onHide={handleClose}>
             <Modal.Header closeButton>

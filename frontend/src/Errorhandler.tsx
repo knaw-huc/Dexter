@@ -39,11 +39,11 @@ export default class Errorhandler extends Component<ErrorBoundaryProps, ErrorBou
         }
         return <>
             <Alert severity="error">Er trad een fout op: <code>{error.message}</code></Alert>
-            <pre style={{
+            {error.stack && <pre style={{
                 height: "10em", overflowY: "scroll"
             }}>
                 {error.stack}
-            </pre>
+            </pre>}
         </>
     }
 }
