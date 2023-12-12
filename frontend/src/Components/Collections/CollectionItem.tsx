@@ -1,4 +1,4 @@
-import React from "react"
+import React, {useContext} from "react"
 import { Collections } from "../../Model/DexterModel"
 import { Link } from "react-router-dom"
 import { deleteCollection, getCollections } from "../API"
@@ -6,6 +6,7 @@ import styled from "@emotion/styled"
 import { collectionsContext } from "../../State/Collections/collectionContext"
 import { Actions } from "../../State/actions"
 import DeleteIcon from "@mui/icons-material/Delete"
+import {errorContext} from "../../State/Error/errorContext"
 
 type CollectionItemProps = {
     collectionId: React.Key,
@@ -23,7 +24,7 @@ const DeleteIconStyled = styled(DeleteIcon)`
 
 export function CollectionItem(props: CollectionItemProps) {
     const { collectionsDispatch } = React.useContext(collectionsContext)
-
+    const {setError} = useContext(errorContext)
     const toggleClick = () => {
         props.onSelect(props.collection)
     }
@@ -34,13 +35,14 @@ export function CollectionItem(props: CollectionItemProps) {
         if (warning === false) return
 
         await deleteCollection(id)
+            .catch(setError)
         getCollections()
             .then(function (collections) {
                 collectionsDispatch({
                     type: Actions.SET_COLLECTIONS,
                     collections: collections
                 })
-            })
+            }).catch(setError)
     }
 
     return (

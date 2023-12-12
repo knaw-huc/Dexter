@@ -33,18 +33,19 @@ const Select = styled.select`
 
 export function NewCollection(props: NewCollectionProps) {
     const { register, handleSubmit, reset, setValue } = useForm<Collections>()
-    const {updateError} = useContext(errorContext)
+    const {setError} = useContext(errorContext)
 
     const onSubmit: SubmitHandler<Collections> = async data => {
         if (!props.edit) {
             await createCollection(data)
-                .catch(updateError)
+                .catch(setError)
             await props.refetch()
             props.onClose()
         } else {
             const doUpdateCollection = async (id: string, updatedData: Collections) => {
                 try {
                     await updateCollection(id, updatedData)
+                        .catch(setError)
                     await props.refetchCol()
                 } catch (error) {
                     console.log(error)
@@ -57,7 +58,7 @@ export function NewCollection(props: NewCollectionProps) {
 
     React.useEffect(() => {
         const doGetCollectionById = async (id: string) => {
-            const response: any = await getCollectionById(id)
+            const response: any = await getCollectionById(id).catch(setError)
             console.log(response)
             const fields = ["title", "description", "rights", "access", "location", "earliest", "latest", "contributor", "notes"]
             fields.map((field: any) => {

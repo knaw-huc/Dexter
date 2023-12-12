@@ -14,7 +14,7 @@ export const SourcePage = () => {
 
     const {sources, setSources} = useContext(sourcesContext)
     const [showForm, setShowForm] = useState(false)
-    const {updateError} = useContext(errorContext)
+    const {setError} = useContext(errorContext)
 
     const formShowHandler = () => {
         setSources({
@@ -38,7 +38,7 @@ export const SourcePage = () => {
 
     const fetchSourcePage = async (id: string) => {
         const response = await getSourceById(id)
-            .catch(updateError)
+            .catch(setError)
         setSource(response as Source)
     }
 

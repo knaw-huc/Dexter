@@ -32,7 +32,7 @@ const Select = styled.select`
 
 export function SourceForm(props: NewSourceProps) {
     const {register, handleSubmit, reset, setValue} = useForm<Source>()
-    const {updateError} = useContext(errorContext)
+    const {setError} = useContext(errorContext)
 
     async function onSubmit(data: Source) {
         if (props.edit) {
@@ -44,12 +44,13 @@ export function SourceForm(props: NewSourceProps) {
 
     async function handleUpdate(data: Source) {
         await updateSource(props.sourceToEdit.id, data)
-            .catch(updateError)
+            .catch(setError)
         props.refetchSource()
     }
 
     async function handleCreate(data: Source) {
         await createSource(data)
+            .catch(setError)
         props.refetch()
         props.onClose()
     }
@@ -63,7 +64,7 @@ export function SourceForm(props: NewSourceProps) {
             }
             getSourceById(id)
                 .then(reset)
-                .catch(updateError)
+                .catch(setError)
         }
     }, [props.edit, setValue])
 

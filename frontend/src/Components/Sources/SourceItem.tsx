@@ -1,4 +1,4 @@
-import React from "react"
+import React, {useContext} from "react"
 import {Source} from "../../Model/DexterModel"
 import {Link} from "react-router-dom"
 import styled from "@emotion/styled"
@@ -6,6 +6,7 @@ import {deleteSource, getSources} from "../API"
 import {sourcesContext} from "../../State/Sources/sourcesContext"
 import {Actions} from "../../State/actions"
 import DeleteIcon from "@mui/icons-material/Delete"
+import {errorContext} from "../../State/Error/errorContext"
 
 type SourceItemProps = {
     sourceId: React.Key,
@@ -24,6 +25,7 @@ const DeleteIconStyled = styled(DeleteIcon)`
 
 export const SourceItem = (props: SourceItemProps) => {
     const {setSources} = React.useContext(sourcesContext)
+    const {setError} = useContext(errorContext)
 
     const toggleClick = () => {
         console.log(props.source.id)
@@ -38,10 +40,11 @@ export const SourceItem = (props: SourceItemProps) => {
         }
 
         await deleteSource(id)
+            .catch(setError)
         getSources().then(sources => setSources({
             type: Actions.SET_SOURCES,
             sources: sources
-        }))
+        })).catch(setError)
     }
 
     return (

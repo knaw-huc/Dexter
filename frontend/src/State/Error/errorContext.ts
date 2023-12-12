@@ -3,12 +3,12 @@ import {ErrorAction, ErrorState, initState} from "./errorReducer"
 
 export interface ErrorContext {
     errorState: ErrorState,
-    updateError: Dispatch<ErrorAction>
+    setError: Dispatch<ErrorAction>
 }
 
 const initErrorContext: ErrorContext = {
     errorState: initState,
-    updateError: null
+    setError: null
 }
 
 export const errorContext = createContext<ErrorContext>(initErrorContext)
