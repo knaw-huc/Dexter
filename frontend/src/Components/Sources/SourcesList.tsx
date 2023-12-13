@@ -1,13 +1,13 @@
-import React from "react"
+import React, {useContext} from "react"
 import { Source } from "../../Model/DexterModel"
 import { sourcesContext } from "../../State/Sources/sourcesContext"
 import { Actions } from "../../State/actions"
 import { SourceItem } from "./SourceItem"
 import { SourceForm } from "./SourceForm"
-import { doGetSources } from "../../Utils/doGetSources"
-// import { FilterBySubject } from "../FilterBySubject"
 import Button from "@mui/material/Button"
 import styled from "@emotion/styled"
+import {getSources} from "../API"
+import {errorContext} from "../../State/Error/errorContext"
 
 const FilterRow = styled.div`
     display: flex;
@@ -17,35 +17,19 @@ const FilterRow = styled.div`
 export function SourcesList() {
     const { sources, setSources } = React.useContext(sourcesContext)
     const [showForm, setShowForm] = React.useState(false)
-    // const [filteredSubject, setFilteredSubject] = React.useState("No filter")
-
-    // React.useEffect(() => {
-    //     if (sourcesState.sources && filteredSubject != "No filter") {
-    //         const filteredSources = sourcesState.sources.filter((source) => {
-    //             return source.subject === filteredSubject
-    //         })
-    //         console.log(filteredSources)
-    //         sourcesDispatch({
-    //             type: ACTIONS.SET_FILTEREDSOURCES,
-    //             filteredSources: filteredSources
-    //         })
-    //     } else {
-    //         return
-    //     }
-    // }, [filteredSubject])
+    const {setError} = useContext(errorContext)
 
     const refetchSources = async () => {
-        doGetSources()
-            .then(function (sources) {
+        getSources()
+            .then(sources => {
                 setSources({
                     type: Actions.SET_SOURCES,
                     sources: sources
                 })
-            })
+            }).catch(setError)
     }
 
     const handleSelected = (selected: Source | undefined) => {
-        console.log(selected)
         return setSources({
             type: Actions.SET_SELECTEDSOURCE,
             selectedSource: selected
@@ -60,14 +44,9 @@ export function SourcesList() {
         setShowForm(false)
     }
 
-    // const filterChangeHandler = (selectedSubject: string) => {
-    //     setFilteredSubject(selectedSubject)
-    // }
-
     return (
         <>
             <FilterRow>
-                {/* <FilterBySubject selected={filteredSubject} onChangeFilter={filterChangeHandler} toFilter="Sources" /> */}
                 <Button variant="contained" style={{ marginLeft: "10px" }} onClick={formShowHandler}>Add new source</Button>
             </FilterRow>
             {showForm && <SourceForm show={showForm} onClose={formCloseHandler} refetch={refetchSources} />}

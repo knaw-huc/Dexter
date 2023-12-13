@@ -1,7 +1,8 @@
-import React from "react"
+import React, {useContext, useEffect} from "react"
 import { Actions } from "../actions"
 import { Source } from "../../Model/DexterModel"
-import { doGetSources } from "../../Utils/doGetSources"
+import {getSources} from "../../Components/API"
+import {errorContext} from "../Error/errorContext"
 
 export interface SourcesState {
     sources: Source[],
@@ -48,15 +49,16 @@ export type SourcesAction = SetSources | SetFilteredSources | SetSelectedSource 
 
 export const useSourcesState = (): [SourcesState, React.Dispatch<SourcesAction>] => {
     const [state, dispatch] = React.useReducer(sourcesReducer, initState)
+    const {setError} = useContext(errorContext)
 
-    React.useEffect(() => {
-        doGetSources()
-            .then(function (sources) {
+    useEffect(() => {
+        getSources()
+            .then(sources => {
                 dispatch({
                     type: Actions.SET_SOURCES,
                     sources: sources
                 })
-            })
+            }).catch(setError)
     }, [])
 
     return [state, dispatch]

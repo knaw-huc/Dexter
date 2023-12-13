@@ -35,7 +35,6 @@ import org.slf4j.LoggerFactory
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.util.*
-import javax.xml.xpath.XPathFactory
 
 class DexterApplication : Application<DexterConfiguration>() {
     private val log = LoggerFactory.getLogger(javaClass)
@@ -92,7 +91,7 @@ class DexterApplication : Application<DexterConfiguration>() {
             register(KeywordsResource(jdbi))
             register(LanguagesResource(jdbi))
             register(SourcesResource(jdbi))
-            register(WereldCulturenResource(wereldCulturenDublinCoreMapper))
+            register(ImportResource(wereldCulturenDublinCoreMapper))
         }
     }
 

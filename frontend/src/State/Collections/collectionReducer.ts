@@ -1,7 +1,7 @@
 import React from "react"
 import { Collections } from "../../Model/DexterModel"
 import { Actions } from "../actions"
-import { doGetCollections } from "../../Utils/doGetCollections"
+import {getCollections} from "../../Components/API"
 
 export interface CollectionsState {
     collections: Collections[],
@@ -50,7 +50,7 @@ export const useCollectionsState = (): [CollectionsState, React.Dispatch<Collect
     const [state, dispatch] = React.useReducer(collectionsReducer, initState)
 
     React.useEffect(() => {
-        doGetCollections()
+        getCollections()
             .then(function (collections) {
                 dispatch({
                     type: Actions.SET_COLLECTIONS,

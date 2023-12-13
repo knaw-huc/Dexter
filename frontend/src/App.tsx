@@ -20,7 +20,7 @@ export function App() {
 
     return (
         <Errorhandler
-            errorState={errorState}
+            error={errorState.error}
         >
             <sourcesContext.Provider value={{sources: sourcesState, setSources: sourcesDispatch}}>
                 <collectionsContext.Provider value={{collectionsState, collectionsDispatch}}>

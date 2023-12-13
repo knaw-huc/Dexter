@@ -1,13 +1,13 @@
 import React, {useContext} from "react"
-import { useForm, SubmitHandler } from "react-hook-form"
-import Modal from "react-bootstrap/Modal"
+import {useForm, SubmitHandler} from "react-hook-form"
 import Button from "@mui/material/Button"
 import styled from "@emotion/styled"
-import { createCollection, getCollectionById, updateCollection } from "../API"
-import { Collections } from "../../Model/DexterModel"
+import {createCollection, getCollectionById, updateCollection} from "../API"
+import {Collections} from "../../Model/DexterModel"
 // import { Languages } from "./Languages"
 import TextField from "@mui/material/TextField"
 import {errorContext} from "../../State/Error/errorContext"
+import {Box, Modal} from "@mui/material"
 
 type NewCollectionProps = {
     refetch?: () => void,
@@ -20,19 +20,19 @@ type NewCollectionProps = {
 }
 
 const TextFieldStyled = styled(TextField)`
-    display: block;
+  display: block;
 `
 
 const Label = styled.label`
-    font-weight: bold;
+  font-weight: bold;
 `
 
 const Select = styled.select`
-    display: block;
+  display: block;
 `
 
 export function NewCollection(props: NewCollectionProps) {
-    const { register, handleSubmit, reset, setValue } = useForm<Collections>()
+    const {register, handleSubmit, reset, setValue} = useForm<Collections>()
     const {setError} = useContext(errorContext)
 
     const onSubmit: SubmitHandler<Collections> = async data => {
@@ -86,20 +86,19 @@ export function NewCollection(props: NewCollectionProps) {
 
     return (
         <>
-            <Modal size="lg" show={props.show} onHide={handleClose}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Create new corpus</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
+            <Modal open={props.show} onClose={handleClose}>
+                <Box>
+
+                    <h1>Create new corpus</h1>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <Label>Title</Label>
-                        <TextFieldStyled fullWidth margin="dense" {...register("title", { required: true })} />
+                        <TextFieldStyled fullWidth margin="dense" {...register("title", {required: true})} />
                         <Label>Description</Label>
-                        <TextFieldStyled fullWidth margin="dense" multiline rows={6} {...register("description", { required: true })} />
+                        <TextFieldStyled fullWidth margin="dense" multiline rows={6} {...register("description", {required: true})} />
                         <Label>Rights</Label>
-                        <TextFieldStyled fullWidth margin="dense" {...register("rights", { required: true })} />
+                        <TextFieldStyled fullWidth margin="dense" {...register("rights", {required: true})} />
                         <Label>Access</Label>
-                        <Select {...register("access", { required: true })}>
+                        <Select {...register("access", {required: true})}>
                             <option value="Open">Open</option>
                             <option value="Restricted">Restricted</option>
                             <option value="Closed">Closed</option>
@@ -118,15 +117,10 @@ export function NewCollection(props: NewCollectionProps) {
                         <Languages control={control} /> */}
                         <Button variant="contained" type="submit">Submit</Button>
                     </form>
-                </Modal.Body>
-                <Modal.Footer>
                     <Button variant="contained" onClick={handleClose}>
                         Close
                     </Button>
-                    {/* <Button type="submit" onClick={handleClose}>
-                        Submit
-                    </Button> */}
-                </Modal.Footer>
+                </Box>
             </Modal>
         </>
     )

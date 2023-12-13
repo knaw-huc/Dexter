@@ -11,7 +11,8 @@ export type ResponseErrorParams = {
 export class ResponseError extends Error {
     constructor(params: ResponseErrorParams) {
         super()
-        this.message = `${params.response.statusText}: request to ${params.response.url} failed`
+        const {statusText, url, status} = params.response
+        this.message = `${statusText}: request to ${url} failed with ${status}`
         this.name = this.constructor.name
     }
 }
@@ -24,8 +25,8 @@ export function validateResponse(params: ResponseErrorParams) {
 
 async function fetchValidated(path: string) {
     const response = await fetch(path, {
-        method: "GET",
-        headers: headers
+        headers,
+        method: "GET"
     })
     validateResponse({response})
     return response.json()
@@ -42,8 +43,8 @@ export const getCollectionById = async (id: string) => {
 export const createCollection = async (newCorpus: Collections) => {
     const path = "/api/corpora"
     const response = await fetch(path, {
+        headers,
         method: "POST",
-        headers: headers,
         body: JSON.stringify(newCorpus)
     })
     validateResponse({response})
@@ -53,8 +54,8 @@ export const createCollection = async (newCorpus: Collections) => {
 export const updateCollection = async (id: string, updatedCorpus: Collections) => {
     const path = `/api/corpora/${id}`
     const response = await fetch(path, {
+        headers,
         method: "PUT",
-        headers: headers,
         body: JSON.stringify(updatedCorpus)
     })
     validateResponse({response})
@@ -64,8 +65,8 @@ export const updateCollection = async (id: string, updatedCorpus: Collections) =
 export const deleteCollection = async (id: string) => {
     const path = `/api/corpora/${id}`
     const response = await fetch(path, {
-        method: "DELETE",
-        headers: headers
+        headers,
+        method: "DELETE"
     })
     validateResponse({response})
 }
@@ -83,8 +84,8 @@ export async function getSourceById(id: string): Promise<Source> {
 export const createSource = async (newSource: Source) => {
     const path = "/api/sources"
     const response = await fetch(path, {
+        headers,
         method: "POST",
-        headers: headers,
         body: JSON.stringify(newSource)
     })
     validateResponse({response})
@@ -94,8 +95,8 @@ export const createSource = async (newSource: Source) => {
 export const updateSource = async (id: string, updatedSource: Source) => {
     const path = `/api/sources/${id}`
     const response = await fetch(path, {
+        headers,
         method: "PUT",
-        headers: headers,
         body: JSON.stringify(updatedSource)
     })
     validateResponse({response})
@@ -105,15 +106,23 @@ export const updateSource = async (id: string, updatedSource: Source) => {
 export const deleteSource = async (id: string) => {
     const path = `/api/sources/${id}`
     const response = await fetch(path, {
-        method: "DELETE",
-        headers: headers
+        headers,
+        method: "DELETE"
     })
     validateResponse({response})
 }
 
-export async function postImport(url: URL) {
-    const path = "/api/wereldculturen/import"
+export type ImportResult = {
+    isValidExternalReference: boolean;
+    imported?: ResultDublinCoreMetadata
+}
+
+export type ResultDublinCoreMetadata = Record<string, string>;
+
+export async function postImport(url: URL): Promise<ImportResult> {
+    const path = "/api/import/wereldculturen"
     const response = await fetch(path, {
+        headers,
         method: "POST",
         body: JSON.stringify({url})
     })

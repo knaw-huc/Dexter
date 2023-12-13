@@ -83,7 +83,7 @@
                 <crm:P4_has_time-span>
                     <crm:E52_Time-Span rdf:nodeID="N9dda9e4c71ad4ed68f508e08b9710021">
                         <crm:P82a_begin_of_the_begin rdf:datatype="http://www.w3.org/2001/XMLSchema#date">1998-01-01</crm:P82a_begin_of_the_begin>
-                        <crm:P82b_end_of_the_end rdf:datatype="http://www.w3.org/2001/XMLSchema#date">1998-01-01</crm:P82b_end_of_the_end>
+                        <crm:P82b_end_of_the_end rdf:datatype="http://www.w3.org/2001/XMLSchema#date">1998-01-02</crm:P82b_end_of_the_end>
                         <crm:P1_is_identified_by>
                             <crm:E33_E41_Linguistic_Appellation rdf:nodeID="Ndef4642a72e1437da90748d4d16cebe9">
                                 <crm:P190_has_symbolic_content>1998</crm:P190_has_symbolic_content>

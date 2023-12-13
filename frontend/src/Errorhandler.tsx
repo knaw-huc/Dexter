@@ -3,7 +3,7 @@ import {ErrorState} from "./State/Error/errorReducer"
 import {Alert} from "@mui/material"
 
 type ErrorBoundaryProps = PropsWithChildren & {
-    errorState: ErrorState
+    error: Error
 }
 
 type ErrorBoundaryState = {
@@ -20,7 +20,7 @@ export default class Errorhandler extends Component<ErrorBoundaryProps, ErrorBou
     constructor(props: ErrorBoundaryProps) {
         super(props)
         this.state = {
-            error: props.errorState.error
+            error: props.error
         }
     }
 
@@ -33,7 +33,7 @@ export default class Errorhandler extends Component<ErrorBoundaryProps, ErrorBou
     }
 
     render() {
-        const error = this.state.error || this.props.errorState.error
+        const error = this.state.error || this.props.error
         if (!error) {
             return this.props.children
         }

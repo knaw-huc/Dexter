@@ -11,21 +11,19 @@ class WereldCulturenDublinCoreImporterTest {
 
     @Test
     @Throws(Exception::class)
-    fun convertsTmsIntoDublinCore() {
+    fun convertsTmsIntoDexter() {
         val xml = getResource("1046366.xml")
-        val result = toTest.mapTmsToDc(xml)
-        assertThat(result["Identifier"])
+        val result = toTest.mapTmsToDexter(xml)
+        assertThat(result["externalRef"])
             .isEqualToIgnoringWhitespace("https://hdl.handle.net/20.500.11840/1046366")
-        assertThat(result["Description"])
+        assertThat(result["description"])
             .isEqualToIgnoringWhitespace("Schildering, Schilderingen, Materiële cultuurcollectie")
-        assertThat(result["Creator"])
-            .isEqualToIgnoringWhitespace("https://hdl.handle.net/10.200.30000/foobar")
-        assertThat(result["Date"])
-            .isEqualToIgnoringWhitespace("1998")
-        assertThat(result["Title"])
+        assertThat(result["earliest"])
+            .isEqualToIgnoringWhitespace("1998-01-01")
+        assertThat(result["latest"])
+            .isEqualToIgnoringWhitespace("1998-01-02")
+        assertThat(result["title"])
             .isEqualToIgnoringWhitespace("High Tide at Progress Bay")
-        assertThat(result["Format"])
-            .isEqualToIgnoringWhitespace("155 x 180 cm")
     }
 
     private fun getResource(path: String): String {

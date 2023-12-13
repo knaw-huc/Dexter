@@ -1,12 +1,27 @@
-import React, {useContext, useEffect} from "react"
+import React, {useEffect, useState} from "react"
 import {useForm, UseFormRegisterReturn} from "react-hook-form"
-import Modal from "react-bootstrap/Modal"
-import Button from "@mui/material/Button"
 import styled from "@emotion/styled"
-import {createSource, getSourceById, updateSource} from "../API"
+import {createSource, getSourceById, postImport, updateSource} from "../API"
 import {Access, Source} from "../../Model/DexterModel"
 import TextField from "@mui/material/TextField"
-import {errorContext} from "../../State/Error/errorContext"
+import {useDebounce} from "../../utils/useDebounce"
+import isUrl from "../../utils/isUrl"
+import {Alert, Box, Modal} from "@mui/material"
+import Button from "@mui/material/Button"
+
+const modalStyle = {
+    bgcolor: "background.paper",
+    boxShadow: 24,
+    p: 4,
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "800px",
+    overflow: "scroll",
+    height: "100%",
+    display: "block"
+}
 
 type NewSourceProps = {
     refetch?: () => void,
@@ -36,26 +51,54 @@ const Option = styled.option`
 `
 
 export function SourceForm(props: NewSourceProps) {
-    const {register, handleSubmit, reset, setValue} = useForm<Source>()
-    const {setError} = useContext(errorContext)
+    const {register, handleSubmit, reset, setValue, watch} = useForm<Source>()
+    const [externalRefError, setExternalRefError] = useState<Error>(null)
+    const [isExternalRefLoading, setExternalRefLoading] = useState(false)
+    const externalRef = watch("externalRef")
+    const debouncedExternalRef = useDebounce<string>(externalRef, 500)
 
-    async function onSubmit(data: Source) {
-        if (props.edit) {
-            await handleUpdate(data)
+    async function importMetadata() {
+        if (isExternalRefLoading) {
+            return
+        }
+        if (!isUrl(debouncedExternalRef)) {
+            setExternalRefError(new Error("Not an url"))
+            return
+        }
+        setExternalRefLoading(true)
+        const tmsImport = await postImport(new URL(debouncedExternalRef))
+            .catch(setExternalRefError)
+        if (!tmsImport || !tmsImport.isValidExternalReference) {
+            setExternalRefError(new Error("Is not a valid external reference"))
         } else {
-            await handleCreate(data)
+            console.log("tmsImport", tmsImport)
+            Object.keys(tmsImport.imported).forEach(key => {
+                if (tmsImport.imported[key]) {
+                    setValue(key as keyof Source, tmsImport.imported[key])
+                }
+                // console.log(key, tmsImport.imported[key])
+            })
+        }
+        setExternalRefLoading(false)
+    }
+
+    async function onSubmit(source: Source) {
+        if (props.edit) {
+            await submitUpdate(source)
+        } else {
+            await submitNew(source)
         }
     }
 
-    async function handleUpdate(data: Source) {
+    async function submitUpdate(data: Source) {
         await updateSource(props.sourceToEdit.id, data)
-            .catch(setError)
+            .catch(setExternalRefError)
         props.refetchSource()
     }
 
-    async function handleCreate(data: Source) {
+    async function submitNew(data: Source) {
         await createSource(data)
-            .catch(setError)
+            .catch(setExternalRefError)
         props.refetch()
         props.onClose()
     }
@@ -69,7 +112,7 @@ export function SourceForm(props: NewSourceProps) {
             }
             getSourceById(id)
                 .then(reset)
-                .catch(setError)
+                .catch(setExternalRefError)
         }
     }, [props.edit, setValue])
 
@@ -82,14 +125,37 @@ export function SourceForm(props: NewSourceProps) {
     }
 
     return <>
-        <Modal size="lg" show={props.show} onHide={handleClose}>
-            <Modal.Header closeButton>
-                <Modal.Title>Create new source</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
+        <Modal
+            open={props.show}
+            onClose={handleClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+        >
+            <Box sx={modalStyle}>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <Label>External reference</Label>
                     <TextFieldStyled fullWidth margin="dense" {...register("externalRef")} />
+                    <Alert
+                        severity="info"
+                        aria-disabled={isExternalRefLoading}
+                    >
+                        <Button
+                            variant="contained"
+                            disableElevation
+                            onClick={() => importMetadata()}
+                            disabled={isExternalRefLoading}
+                        >
+                            import
+                        </Button>
+                        <p>Import and fill out found form fields with metadata from external reference</p>
+                        <p>Note: will overwrite existing values</p>
+                    </Alert>
+                    {externalRefError && <Alert
+                        severity="error"
+                    >
+                        Could not import: {externalRefError.message}</Alert>
+                    }
+
                     <Label>Title</Label>
                     <TextFieldStyled fullWidth margin="dense" {...register("title", {required: true})} />
                     <Label>Description</Label>
@@ -110,12 +176,10 @@ export function SourceForm(props: NewSourceProps) {
                     <TextFieldStyled fullWidth margin="dense" {...register("notes")} />
                     <Button variant="contained" type="submit">Submit</Button>
                 </form>
-            </Modal.Body>
-            <Modal.Footer>
                 <Button variant="contained" onClick={handleClose}>
                     Close
                 </Button>
-            </Modal.Footer>
+            </Box>
         </Modal>
     </>
 }

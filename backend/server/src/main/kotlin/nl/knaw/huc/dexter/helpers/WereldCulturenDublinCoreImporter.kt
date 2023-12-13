@@ -13,8 +13,8 @@ import javax.xml.xpath.XPathConstants
 import javax.xml.xpath.XPathFactory
 
 
-data class Tms2Dc(
-    val dcField: String,
+data class Tms2Dexter(
+    val dexterField: String,
     val tmsPath: String
 )
 
@@ -22,52 +22,48 @@ class WereldCulturenDublinCoreImporter() {
     private val client: Client = ClientBuilder.newClient()
     private val objectMapper: ObjectMapper = ObjectMapper()
     private val xpath: XPath
-    private val tms2DcFields: List<Tms2Dc>
+    private val tms2DexterFields: List<Tms2Dexter>
 
     init {
         val factory: XPathFactory = XPathFactory.newInstance()
         val xpath: XPath = factory.newXPath()
         xpath.namespaceContext = WereldCollectieContext()
         this.xpath = xpath
-        this.tms2DcFields = listOf(
-            Tms2Dc(
-                "Identifier",
+        this.tms2DexterFields = listOf(
+            Tms2Dexter(
+                "externalRef",
                 "//crm:E22_Human-Made_Object/@rdf:about"
             ),
-            Tms2Dc(
-                "Description",
+            Tms2Dexter(
+                "description",
                 "//crm:E22_Human-Made_Object/crm:P2_has_type//rdfs:label//text()"
             ),
-            Tms2Dc(
-                "Format",
-                "//crm:P43_has_dimension//crm:P190_has_symbolic_content//text()"
-            ),
-            Tms2Dc(
-                "Title",
+            Tms2Dexter(
+                "title",
                 "//crm:E22_Human-Made_Object/crm:P1_is_identified_by//crm:E33_E41_Linguistic_Appellation/crm:P190_has_symbolic_content//text()"
             ),
-            Tms2Dc(
-                "Date",
-                "//crm:P108i_was_produced_by//crm:E12_Production//crm:P4_has_time-span//crm:P1_is_identified_by//crm:P190_has_symbolic_content//text()"
+            Tms2Dexter(
+                "earliest",
+                "//crm:P108i_was_produced_by//crm:E12_Production//crm:P4_has_time-span//crm:P82a_begin_of_the_begin//text()"
             ),
-            Tms2Dc(
-                "Creator",
-                "//crm:P108i_was_produced_by//crm:P14_carried_out_by/@rdf:resource"
-            ),
+            Tms2Dexter(
+                "latest",
+                "//crm:P108i_was_produced_by//crm:E12_Production//crm:P4_has_time-span//crm:P82b_end_of_the_end//text()"
+            )
         )
     }
 
-    fun import(form: FormTmsExport): ResultDublinCoreMetadata {
+    fun import(url: String): ResultDublinCoreMetadata {
         val xmlResponse: String = client
-            .target(form.url)
+            .target(url)
             .request()
             .get(String::class.java)
-        return mapTmsToDc(xmlResponse);
+        return mapTmsToDexter(xmlResponse);
     }
 
-    fun mapTmsToDc(xmlResponse: String): HashMap<String, String> {
+    fun mapTmsToDexter(xmlResponse: String): HashMap<String, String> {
         val result = HashMap<String, String>();
-        tms2DcFields.forEach {
+        tms2DexterFields.forEach {
             val value: NodeList = xpath.evaluate(
                 it.tmsPath,
                 InputSource(StringReader(xmlResponse)),
@@ -77,7 +73,7 @@ class WereldCulturenDublinCoreImporter() {
                 .mapToObj(value::item)
                 .map { n -> n.nodeValue }
                 .collect(toList());
-            result[it.dcField] = found.stream().collect(joining(", "))
+            result[it.dexterField] = found.stream().collect(joining(", "))
         }
         return result
     }
