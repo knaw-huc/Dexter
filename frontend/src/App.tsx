@@ -12,16 +12,16 @@ import {useCollectionsState} from "./State/Collections/collectionReducer"
 import Errorhandler from "./Errorhandler"
 import {useErrorState} from "./State/Error/errorReducer"
 import {errorContext} from "./State/Error/errorContext"
+import CssBaseline from "@mui/material/CssBaseline"
 
 export function App() {
     const [sourcesState, sourcesDispatch] = useSourcesState()
     const [collectionsState, collectionsDispatch] = useCollectionsState()
     const [errorState, setError] = useErrorState()
 
-    return (
-        <Errorhandler
-            error={errorState.error}
-        >
+    return <>
+        <CssBaseline />
+        <Errorhandler error={errorState.error}>
             <sourcesContext.Provider value={{sources: sourcesState, setSources: sourcesDispatch}}>
                 <collectionsContext.Provider value={{collectionsState, collectionsDispatch}}>
                     <errorContext.Provider value={{errorState, setError}}>
@@ -38,5 +38,5 @@ export function App() {
                 </collectionsContext.Provider>
             </sourcesContext.Provider>
         </Errorhandler>
-    )
+    </>
 }
