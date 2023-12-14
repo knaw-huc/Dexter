@@ -32,7 +32,7 @@ export function App() {
                                 <Route path="/corpora/:corpusId" element={<CollectionItemContent/>}/>
                                 <Route path="/sources" element={<SourcesList/>}/>
                                 <Route path="/sources/:sourceId" element={<SourcePage/>}/>
-                                <Route path="*" element={<p>Page not found... <a href="/">Go back &gt;</a></p>}/>
+                                <Route path="*" element={<p>Page not found... <a href="/">Homepage &gt;</a></p>}/>
                             </Route>
                         </Routes>
                     </errorContext.Provider>
