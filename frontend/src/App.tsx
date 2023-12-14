@@ -12,12 +12,16 @@ import {useCollectionsState} from "./State/Collections/collectionReducer"
 import ErrorHandler from "./Components/ErrorHandler"
 import {useErrorState} from "./State/Error/errorReducer"
 import {errorContext} from "./State/Error/errorContext"
+import {userContext} from "./State/User/userContext"
 import CssBaseline from "@mui/material/CssBaseline"
+import LoginForm from "./Components/LoginForm"
+import {useUserState} from "./State/User/userReducer"
 
 export function App() {
     const [sourcesState, sourcesDispatch] = useSourcesState()
     const [collectionsState, collectionsDispatch] = useCollectionsState()
     const [errorState, setError] = useErrorState()
+    const [userState, setUser] = useUserState()
 
     return <>
         <CssBaseline/>
@@ -25,16 +29,19 @@ export function App() {
             <sourcesContext.Provider value={{sources: sourcesState, setSources: sourcesDispatch}}>
                 <collectionsContext.Provider value={{collectionsState, collectionsDispatch}}>
                     <errorContext.Provider value={{errorState, setError}}>
-                        <Routes>
-                            <Route path="/" element={<Page/>}>
-                                <Route path="/" element={<Navigate to="/corpora" replace />}/>
-                                <Route path="/corpora" element={<CollectionList/>}/>
-                                <Route path="/corpora/:corpusId" element={<CollectionItemContent/>}/>
-                                <Route path="/sources" element={<SourcesList/>}/>
-                                <Route path="/sources/:sourceId" element={<SourcePage/>}/>
-                                <Route path="*" element={<p>Page not found... <a href="/">Homepage &gt;</a></p>}/>
-                            </Route>
-                        </Routes>
+                        <userContext.Provider value={{userState, setUser}}>
+                            <Routes>
+                                <Route path="/" element={<Page/>}>
+                                    <Route path="/" element={<Navigate to="/login" replace/>}/>
+                                    <Route path="/login" element={<LoginForm/>}/>
+                                    <Route path="/corpora" element={<CollectionList/>}/>
+                                    <Route path="/corpora/:corpusId" element={<CollectionItemContent/>}/>
+                                    <Route path="/sources" element={<SourcesList/>}/>
+                                    <Route path="/sources/:sourceId" element={<SourcePage/>}/>
+                                    <Route path="*" element={<p>Page not found... <a href="/">Homepage &gt;</a></p>}/>
+                                </Route>
+                            </Routes>
+                        </userContext.Provider>
                     </errorContext.Provider>
                 </collectionsContext.Provider>
             </sourcesContext.Provider>

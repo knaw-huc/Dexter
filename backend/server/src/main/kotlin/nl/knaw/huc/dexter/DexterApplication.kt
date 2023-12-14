@@ -1,5 +1,6 @@
 package nl.knaw.huc.dexter
 
+import UserResource
 import WereldCulturenDublinCoreImporter
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
@@ -92,6 +93,7 @@ class DexterApplication : Application<DexterConfiguration>() {
             register(LanguagesResource(jdbi))
             register(SourcesResource(jdbi))
             register(ImportResource(wereldCulturenDublinCoreMapper))
+            register(UserResource())
         }
     }
 

@@ -7,7 +7,9 @@ export const Page = () => {
     return (
         <div>
             <Header/>
-            <Container>
+            <Container style={{
+                marginTop: "2em"
+            }}>
                 <Outlet/>
             </Container>
         </div>

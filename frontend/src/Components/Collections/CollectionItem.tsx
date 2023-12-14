@@ -25,6 +25,7 @@ const DeleteIconStyled = styled(DeleteIcon)`
 export function CollectionItem(props: CollectionItemProps) {
     const { collectionsDispatch } = React.useContext(collectionsContext)
     const {setError} = useContext(errorContext)
+
     const toggleClick = () => {
         props.onSelect(props.collection)
     }

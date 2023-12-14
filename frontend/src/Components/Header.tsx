@@ -10,11 +10,16 @@ import Avatar from "@mui/material/Avatar"
 import Button from "@mui/material/Button"
 import MenuItem from "@mui/material/MenuItem"
 import ScienceIcon from "@mui/icons-material/Science"
+import {useContext} from "react"
+import {userContext} from "../State/User/userContext"
+import {useNavigate} from "react-router-dom"
 
 const pages = ["corpora", "sources"]
 const settings = ["account"]
 
 export default function Header() {
+    const username = useContext(userContext).userState.username
+    const navigate = useNavigate()
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null)
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null)
 
@@ -37,15 +42,19 @@ export default function Header() {
         <AppBar position="static">
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
-                    <ScienceIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+                    <ScienceIcon
+                        onClick={() => window.location.href = "/"}
+                        sx={{display: {xs: "none", md: "flex"}, mr: 0.5}}
+                    />
                     <Typography
+                        onClick={() => window.location.href = "/"}
                         variant="h6"
                         noWrap
                         component="a"
                         href="#app-bar-with-responsive-menu"
                         sx={{
                             mr: 2,
-                            display: { xs: "none", md: "flex" },
+                            display: {xs: "none", md: "flex"},
                             fontFamily: "monospace",
                             fontWeight: 700,
                             letterSpacing: ".3rem",
@@ -55,24 +64,30 @@ export default function Header() {
                     >
                         DEXTER
                     </Typography>
-                    <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+                    <Box sx={{flexGrow: 1, display: {xs: "none", md: "flex"}}}>
                         {pages.map((page) => (
                             <Button
                                 key={page}
-                                onClick={() => window.location.href = "/" + page}
-                                sx={{ my: 2, color: "white", display: "block" }}
+                                onClick={() => navigate("/" + page)}
+                                sx={{my: 2, color: "white", display: "block"}}
                             >
                                 {page}
                             </Button>
                         ))}
                     </Box>
 
-                    <Box sx={{ flexGrow: 0 }}>
-                        <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                            <Avatar alt="Dexter" src="/static/images/avatar/2.jpg" />
+                    <Box sx={{flexGrow: 0}}>
+                        <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
+                            <Avatar
+                                alt={username
+                                    ? username[0].toUpperCase()
+                                    : "Anonymous"
+                                }
+                                src="/static/images/avatar/2.jpg"
+                            />
                         </IconButton>
                         <Menu
-                            sx={{ mt: "45px" }}
+                            sx={{mt: "45px"}}
                             id="menu-appbar"
                             anchorEl={anchorElUser}
                             anchorOrigin={{

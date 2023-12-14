@@ -7,6 +7,7 @@ import {Collections} from "../../Model/DexterModel"
 import TextField from "@mui/material/TextField"
 import {errorContext} from "../../State/Error/errorContext"
 import {Box, Modal} from "@mui/material"
+import ScrollableModal from "../Common/ScrollableModal"
 
 type NewCollectionProps = {
     refetch?: () => void,
@@ -85,42 +86,42 @@ export function NewCollection(props: NewCollectionProps) {
 
     return (
         <>
-            <Modal open={props.show} onClose={handleClose}>
-                <Box>
-
-                    <h1>Create new corpus</h1>
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                        <Label>Title</Label>
-                        <TextFieldStyled fullWidth margin="dense" {...register("title", {required: true})} />
-                        <Label>Description</Label>
-                        <TextFieldStyled fullWidth margin="dense" multiline rows={6} {...register("description", {required: true})} />
-                        <Label>Rights</Label>
-                        <TextFieldStyled fullWidth margin="dense" {...register("rights", {required: true})} />
-                        <Label>Access</Label>
-                        <Select {...register("access", {required: true})}>
-                            <option value="Open">Open</option>
-                            <option value="Restricted">Restricted</option>
-                            <option value="Closed">Closed</option>
-                        </Select>
-                        <Label>Location</Label>
-                        <TextFieldStyled fullWidth margin="dense" {...register("location")} />
-                        <Label>Earliest</Label>
-                        <TextFieldStyled fullWidth margin="dense" {...register("earliest")} />
-                        <Label>Latest</Label>
-                        <TextFieldStyled fullWidth margin="dense" {...register("latest")} />
-                        <Label>Contributor</Label>
-                        <TextFieldStyled fullWidth margin="dense" {...register("contributor")} />
-                        <Label>Notes</Label>
-                        <TextFieldStyled fullWidth margin="dense" {...register("notes")} />
-                        {/* <Label>Language</Label>
+            <ScrollableModal
+                show={props.show}
+                handleClose={handleClose}
+            >
+                <h1>Create new corpus</h1>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <Label>Title</Label>
+                    <TextFieldStyled fullWidth margin="dense" {...register("title", {required: true})} />
+                    <Label>Description</Label>
+                    <TextFieldStyled fullWidth margin="dense" multiline rows={6} {...register("description", {required: true})} />
+                    <Label>Rights</Label>
+                    <TextFieldStyled fullWidth margin="dense" {...register("rights", {required: true})} />
+                    <Label>Access</Label>
+                    <Select {...register("access", {required: true})}>
+                        <option value="Open">Open</option>
+                        <option value="Restricted">Restricted</option>
+                        <option value="Closed">Closed</option>
+                    </Select>
+                    <Label>Location</Label>
+                    <TextFieldStyled fullWidth margin="dense" {...register("location")} />
+                    <Label>Earliest</Label>
+                    <TextFieldStyled fullWidth margin="dense" {...register("earliest")} />
+                    <Label>Latest</Label>
+                    <TextFieldStyled fullWidth margin="dense" {...register("latest")} />
+                    <Label>Contributor</Label>
+                    <TextFieldStyled fullWidth margin="dense" {...register("contributor")} />
+                    <Label>Notes</Label>
+                    <TextFieldStyled fullWidth margin="dense" {...register("notes")} />
+                    {/* <Label>Language</Label>
                         <Languages control={control} /> */}
-                        <Button variant="contained" type="submit">Submit</Button>
-                    </form>
-                    <Button variant="contained" onClick={handleClose}>
-                        Close
-                    </Button>
-                </Box>
-            </Modal>
+                    <Button variant="contained" type="submit">Submit</Button>
+                </form>
+                <Button variant="contained" onClick={handleClose}>
+                    Close
+                </Button>
+            </ScrollableModal>
         </>
     )
 }

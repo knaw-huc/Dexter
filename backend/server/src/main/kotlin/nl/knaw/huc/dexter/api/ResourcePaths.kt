@@ -9,11 +9,13 @@ object ResourcePaths {
     const val KEYWORDS = "keywords"
     const val LANGUAGES = "languages"
     const val SOURCES = "sources"
+    const val USER = "user"
     const val WERELDCULTUREN = "wereldculturen"
 
     // sub paths
     const val USERS = "users"
     const val AUTOCOMPLETE = "autocomplete"
+    const val LOGIN = "login"
 
     // params
     const val ID_PARAM = "id"
