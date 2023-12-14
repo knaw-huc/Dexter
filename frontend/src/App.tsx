@@ -1,8 +1,8 @@
 import React from "react"
-import {Routes, Route} from "react-router-dom"
+import {Navigate, Route, Routes} from "react-router-dom"
 import {CollectionList} from "./Components/Collections/CollectionList"
 import {SourcesList} from "./Components/Sources/SourcesList"
-import {Home} from "./Components/Home"
+import {Page} from "./Components/Page"
 import {CollectionItemContent} from "./Components/Collections/CollectionItemContent"
 import {SourcePage} from "./Components/Sources/SourcePage"
 import {useSourcesState} from "./State/Sources/sourcesReducer"
@@ -20,18 +20,19 @@ export function App() {
     const [errorState, setError] = useErrorState()
 
     return <>
-        <CssBaseline />
+        <CssBaseline/>
         <Errorhandler error={errorState.error}>
             <sourcesContext.Provider value={{sources: sourcesState, setSources: sourcesDispatch}}>
                 <collectionsContext.Provider value={{collectionsState, collectionsDispatch}}>
                     <errorContext.Provider value={{errorState, setError}}>
                         <Routes>
-                            <Route path="/" element={<Home/>}>
+                            <Route path="/" element={<Page/>}>
+                                <Route path="/" element={<Navigate to="/corpora" replace />}/>
                                 <Route path="/corpora" element={<CollectionList/>}/>
                                 <Route path="/corpora/:corpusId" element={<CollectionItemContent/>}/>
                                 <Route path="/sources" element={<SourcesList/>}/>
                                 <Route path="/sources/:sourceId" element={<SourcePage/>}/>
-                                <Route path="*" element={<p>There is nothing here</p>}/>
+                                <Route path="*" element={<p>Page not found... <a href="/">Go back &gt;</a></p>}/>
                             </Route>
                         </Routes>
                     </errorContext.Provider>
