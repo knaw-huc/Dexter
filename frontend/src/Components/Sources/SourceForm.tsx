@@ -128,8 +128,6 @@ export function SourceForm(props: NewSourceProps) {
         <Modal
             open={props.show}
             onClose={handleClose}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
         >
             <Box sx={modalStyle}>
                 <form onSubmit={handleSubmit(onSubmit)}>
@@ -150,11 +148,9 @@ export function SourceForm(props: NewSourceProps) {
                         <p>Import and fill out found form fields with metadata from external reference</p>
                         <p>Note: will overwrite existing values</p>
                     </Alert>
-                    {externalRefError && <Alert
-                        severity="error"
-                    >
-                        Could not import: {externalRefError.message}</Alert>
-                    }
+                    {externalRefError && <Alert severity="error">
+                        Could not import: {externalRefError.message}
+                    </Alert>}
 
                     <Label>Title</Label>
                     <TextFieldStyled fullWidth margin="dense" {...register("title", {required: true})} />
