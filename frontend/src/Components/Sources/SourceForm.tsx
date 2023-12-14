@@ -90,12 +90,13 @@ export function SourceForm(props: NewSourceProps) {
     }
 
     useEffect(() => {
-        initSourceForm(props.sourceToEdit.id)
+        initSourceForm()
 
-        async function initSourceForm(id: string) {
+        async function initSourceForm() {
             if (!props.edit) {
                 return
             }
+            const id = props.sourceToEdit.id
             getSourceById(id)
                 .then(reset)
                 .catch(setExternalRefError)

@@ -48,7 +48,7 @@ export default function Header() {
                     DEXTER
                 </Typography>
                 <Box sx={{flexGrow: 1, display: {xs: "none", md: "flex"}}}>
-                    {pages.map((page) => (
+                    {username && pages.map((page) => (
                         <Button
                             key={page}
                             onClick={() => navigate("/" + page)}
@@ -90,8 +90,6 @@ function UserMenuAvatar() {
     const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElUser(event.currentTarget)
     }
-
-
 
     return <Box sx={{flexGrow: 0}}>
         <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
