@@ -6,7 +6,7 @@ import { SourceItem } from "./SourceItem"
 import { SourceForm } from "./SourceForm"
 import Button from "@mui/material/Button"
 import styled from "@emotion/styled"
-import {getSources} from "../API"
+import {getSources} from "../../utils/API"
 import {errorContext} from "../../State/Error/errorContext"
 
 const FilterRow = styled.div`

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react"
 import {useForm, UseFormRegisterReturn} from "react-hook-form"
 import styled from "@emotion/styled"
-import {createSource, getSourceById, postImport, updateSource} from "../API"
+import {createSource, getSourceById, postImport, updateSource} from "../../utils/API"
 import {Access, Source} from "../../Model/DexterModel"
 import TextField from "@mui/material/TextField"
 import {useDebounce} from "../../utils/useDebounce"

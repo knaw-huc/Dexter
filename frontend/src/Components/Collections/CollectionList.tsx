@@ -6,7 +6,7 @@ import {collectionsContext} from "../../State/Collections/collectionContext"
 import Button from "@mui/material/Button"
 import {Actions} from "../../State/actions"
 import styled from "@emotion/styled"
-import {getCollections} from "../API"
+import {getCollections} from "../../utils/API"
 import {errorContext} from "../../State/Error/errorContext"
 
 const FilterRow = styled.div`

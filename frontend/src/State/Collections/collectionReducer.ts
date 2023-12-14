@@ -1,7 +1,7 @@
 import React from "react"
 import { Collections } from "../../Model/DexterModel"
 import { Actions } from "../actions"
-import {getCollections} from "../../Components/API"
+import {getCollections} from "../../utils/API"
 
 export interface CollectionsState {
     collections: Collections[],

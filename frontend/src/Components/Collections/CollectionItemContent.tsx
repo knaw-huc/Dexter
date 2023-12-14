@@ -1,5 +1,5 @@
 import React, {useContext} from "react"
-import { getCollectionById } from "../API"
+import { getCollectionById } from "../../utils/API"
 import { useParams } from "react-router-dom"
 import { Collections } from "../../Model/DexterModel"
 import { collectionsContext } from "../../State/Collections/collectionContext"

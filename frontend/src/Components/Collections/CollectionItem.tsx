@@ -1,7 +1,7 @@
 import React, {useContext} from "react"
 import { Collections } from "../../Model/DexterModel"
 import { Link } from "react-router-dom"
-import { deleteCollection, getCollections } from "../API"
+import { deleteCollection, getCollections } from "../../utils/API"
 import styled from "@emotion/styled"
 import { collectionsContext } from "../../State/Collections/collectionContext"
 import { Actions } from "../../State/actions"

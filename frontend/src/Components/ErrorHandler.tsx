@@ -1,5 +1,4 @@
 import React, {Component, PropsWithChildren} from "react"
-import {ErrorState} from "./State/Error/errorReducer"
 import {Alert} from "@mui/material"
 
 type ErrorBoundaryProps = PropsWithChildren & {
@@ -15,7 +14,7 @@ type ErrorBoundaryState = {
  * - error thrown/caught in children of ErrorBoundary
  * - or error present in props\.error
  */
-export default class Errorhandler extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+export default class ErrorHandler extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
 
     constructor(props: ErrorBoundaryProps) {
         super(props)

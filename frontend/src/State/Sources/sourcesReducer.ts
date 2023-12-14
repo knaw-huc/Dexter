@@ -1,7 +1,7 @@
 import React, {useContext, useEffect} from "react"
 import { Actions } from "../actions"
 import { Source } from "../../Model/DexterModel"
-import {getSources} from "../../Components/API"
+import {getSources} from "../../utils/API"
 import {errorContext} from "../Error/errorContext"
 
 export interface SourcesState {
