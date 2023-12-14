@@ -6,22 +6,9 @@ import {Access, Source} from "../../Model/DexterModel"
 import TextField from "@mui/material/TextField"
 import {useDebounce} from "../../utils/useDebounce"
 import isUrl from "../../utils/isUrl"
-import {Alert, Box, Modal} from "@mui/material"
+import {Alert} from "@mui/material"
 import Button from "@mui/material/Button"
-
-const modalStyle = {
-    bgcolor: "background.paper",
-    boxShadow: 24,
-    p: 4,
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: "800px",
-    overflow: "scroll",
-    height: "100%",
-    display: "block"
-}
+import ScrollableModal from "../Common/ScrollableModal"
 
 type NewSourceProps = {
     refetch?: () => void,
@@ -76,7 +63,6 @@ export function SourceForm(props: NewSourceProps) {
                 if (tmsImport.imported[key]) {
                     setValue(key as keyof Source, tmsImport.imported[key])
                 }
-                // console.log(key, tmsImport.imported[key])
             })
         }
         setExternalRefLoading(false)
@@ -124,60 +110,56 @@ export function SourceForm(props: NewSourceProps) {
         reset()
     }
 
-    return <>
-        <Modal
-            open={props.show}
-            onClose={handleClose}
-        >
-            <Box sx={modalStyle}>
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <Label>External reference</Label>
-                    <TextFieldStyled fullWidth margin="dense" {...register("externalRef")} />
-                    <Alert
-                        severity="info"
-                        aria-disabled={isExternalRefLoading}
-                    >
-                        <Button
-                            variant="contained"
-                            disableElevation
-                            onClick={() => importMetadata()}
-                            disabled={isExternalRefLoading}
-                        >
-                            import
-                        </Button>
-                        <p>Import and fill out found form fields with metadata from external reference</p>
-                        <p>Note: will overwrite existing values</p>
-                    </Alert>
-                    {externalRefError && <Alert severity="error">
-                        Could not import: {externalRefError.message}
-                    </Alert>}
-
-                    <Label>Title</Label>
-                    <TextFieldStyled fullWidth margin="dense" {...register("title", {required: true})} />
-                    <Label>Description</Label>
-                    <TextFieldStyled fullWidth margin="dense" multiline rows={6} {...register("description", {required: true})} />
-                    <Label>Rights</Label>
-                    <TextFieldStyled fullWidth margin="dense" {...register("rights", {required: true})} />
-                    <Label>Access</Label>
-                    <AccessSelectionField
-                        registered={{...register("access", {required: true})}}
-                    />
-                    <Label>Location</Label>
-                    <TextFieldStyled fullWidth margin="dense" {...register("location")} />
-                    <Label>Earliest</Label>
-                    <TextFieldStyled fullWidth margin="dense" {...register("earliest")} />
-                    <Label>Latest</Label>
-                    <TextFieldStyled fullWidth margin="dense" {...register("latest")} />
-                    <Label>Notes</Label>
-                    <TextFieldStyled fullWidth margin="dense" {...register("notes")} />
-                    <Button variant="contained" type="submit">Submit</Button>
-                </form>
-                <Button variant="contained" onClick={handleClose}>
-                    Close
+    return <ScrollableModal
+        show={props.show}
+        handleClose={handleClose}
+    >
+        <form onSubmit={handleSubmit(onSubmit)}>
+            <Label>External reference</Label>
+            <TextFieldStyled fullWidth margin="dense" {...register("externalRef")} />
+            <Alert
+                severity="info"
+                aria-disabled={isExternalRefLoading}
+            >
+                <Button
+                    variant="contained"
+                    disableElevation
+                    onClick={() => importMetadata()}
+                    disabled={isExternalRefLoading}
+                >
+                    import
                 </Button>
-            </Box>
-        </Modal>
-    </>
+                <p>Import and fill out found form fields with metadata from external reference</p>
+                <p>Note: will overwrite existing values</p>
+            </Alert>
+            {externalRefError && <Alert severity="error">
+                Could not import: {externalRefError.message}
+            </Alert>}
+
+            <Label>Title</Label>
+            <TextFieldStyled fullWidth margin="dense" {...register("title", {required: true})} />
+            <Label>Description</Label>
+            <TextFieldStyled fullWidth margin="dense" multiline rows={6} {...register("description", {required: true})} />
+            <Label>Rights</Label>
+            <TextFieldStyled fullWidth margin="dense" {...register("rights", {required: true})} />
+            <Label>Access</Label>
+            <AccessSelectionField
+                registered={{...register("access", {required: true})}}
+            />
+            <Label>Location</Label>
+            <TextFieldStyled fullWidth margin="dense" {...register("location")} />
+            <Label>Earliest</Label>
+            <TextFieldStyled fullWidth margin="dense" {...register("earliest")} />
+            <Label>Latest</Label>
+            <TextFieldStyled fullWidth margin="dense" {...register("latest")} />
+            <Label>Notes</Label>
+            <TextFieldStyled fullWidth margin="dense" {...register("notes")} />
+            <Button variant="contained" type="submit">Submit</Button>
+        </form>
+        <Button variant="contained" onClick={handleClose}>
+            Close
+        </Button>
+    </ScrollableModal>
 }
 
 export function AccessSelectionField(props: { registered: UseFormRegisterReturn }) {
