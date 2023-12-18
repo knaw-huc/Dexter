@@ -14,7 +14,6 @@ import {useErrorState} from "./State/Error/errorReducer"
 import {errorContext} from "./State/Error/errorContext"
 import {userContext} from "./State/User/userContext"
 import CssBaseline from "@mui/material/CssBaseline"
-import LoginForm from "./Components/LoginForm"
 import {useUserState} from "./State/User/userReducer"
 
 export function App() {
@@ -32,8 +31,6 @@ export function App() {
                         <userContext.Provider value={{userState, setUser}}>
                             <Routes>
                                 <Route path="/" element={<Page/>}>
-                                    <Route path="/" element={<Navigate to="/login" replace/>}/>
-                                    <Route path="/login" element={<LoginForm/>}/>
                                     <Route path="/corpora" element={<CollectionList/>}/>
                                     <Route path="/corpora/:corpusId" element={<CollectionItemContent/>}/>
                                     <Route path="/sources" element={<SourcesList/>}/>

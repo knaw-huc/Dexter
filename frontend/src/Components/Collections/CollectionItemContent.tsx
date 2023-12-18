@@ -43,7 +43,6 @@ export const CollectionItemContent = () => {
     }
 
     const doGetCollectionById = async (id: string) => {
-        //console.log(id)
         const response = await getCollectionById(id)
             .catch(setError)
         setCollection(response as Collections)

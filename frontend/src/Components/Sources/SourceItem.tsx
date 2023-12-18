@@ -28,7 +28,6 @@ export const SourceItem = (props: SourceItemProps) => {
     const {setError} = useContext(errorContext)
 
     const toggleClick = () => {
-        console.log(props.source.id)
         props.onSelect(props.source)
     }
 

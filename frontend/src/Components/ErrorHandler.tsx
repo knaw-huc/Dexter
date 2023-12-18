@@ -38,12 +38,6 @@ export default class ErrorHandler extends Component<ErrorBoundaryProps, ErrorBou
         }
         return <div style={{margin: "1em"}}>
             <Alert severity="error">Er trad een fout op: <code>{error.message}</code></Alert>
-            {error.stack && <pre style={{
-                marginTop: "1em",
-                height: "10em", overflowY: "scroll"
-            }}>
-                {error.stack}
-            </pre>}
         </div>
     }
 }

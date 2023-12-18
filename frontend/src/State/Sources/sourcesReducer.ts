@@ -65,7 +65,6 @@ export const useSourcesState = (): [SourcesState, React.Dispatch<SourcesAction>]
 }
 
 function sourcesReducer(state: SourcesState, action: SourcesAction): SourcesState {
-    console.log(action, state)
     switch (action.type) {
     case Actions.SET_SOURCES:
         return setSources(state, action)

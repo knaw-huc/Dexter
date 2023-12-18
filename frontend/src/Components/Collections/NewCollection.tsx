@@ -59,7 +59,6 @@ export function NewCollection(props: NewCollectionProps) {
     React.useEffect(() => {
         const doGetCollectionById = async (id: string) => {
             const response: any = await getCollectionById(id).catch(setError)
-            console.log(response)
             const fields = ["title", "description", "rights", "access", "location", "earliest", "latest", "contributor", "notes"]
             fields.map((field: any) => {
                 setValue(field, response[field])

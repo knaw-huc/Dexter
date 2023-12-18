@@ -58,7 +58,6 @@ export function SourceForm(props: NewSourceProps) {
         if (!tmsImport || !tmsImport.isValidExternalReference) {
             setExternalRefError(new Error("Is not a valid external reference"))
         } else {
-            console.log("tmsImport", tmsImport)
             Object.keys(tmsImport.imported).forEach(key => {
                 if (tmsImport.imported[key]) {
                     setValue(key as keyof Source, tmsImport.imported[key])

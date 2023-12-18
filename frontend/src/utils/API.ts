@@ -130,12 +130,14 @@ export async function postImport(url: URL): Promise<ImportResult> {
     return response.json()
 }
 
-export async function login(username: string, password: string) {
+export type LoginResponse = {
+    name: string
+}
+export async function login(): Promise<LoginResponse> {
     const path = "/api/user/login"
     const response = await fetch(path, {
         headers: {
-            ...headers,
-            Authorization: `Basic ${window.btoa(username + ":" + password)}`
+            ...headers
         },
         method: "POST"
     })

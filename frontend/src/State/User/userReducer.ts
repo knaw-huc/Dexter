@@ -10,8 +10,7 @@ export const initState: UserState = {
 }
 
 interface SetUser {
-    type: Actions.SET_USER,
-    username: string,
+    username: string
 }
 
 export type UserAction = SetUser
@@ -21,14 +20,7 @@ export const useUserState = (): [UserState, React.Dispatch<UserAction>] => {
 }
 
 const collectionsReducer = (state: UserState, action: UserAction): UserState => {
-    console.log(action, state)
-    switch (action.type) {
-    case Actions.SET_USER:
-        return setUser(state, action)
-    default:
-        break
-    }
-    return state
+    return setUser(state, action)
 }
 
 function setUser(state: UserState, action: SetUser): UserState {

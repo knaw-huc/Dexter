@@ -63,7 +63,6 @@ export const useCollectionsState = (): [CollectionsState, React.Dispatch<Collect
 }
 
 const collectionsReducer = (state: CollectionsState, action: CollectionsAction): CollectionsState => {
-    console.log(action,state)
     switch(action.type) {
     case Actions.SET_COLLECTIONS:
         return setCollections(state, action)

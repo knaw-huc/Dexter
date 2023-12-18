@@ -1,4 +1,5 @@
 import * as React from "react"
+import {useContext} from "react"
 import AppBar from "@mui/material/AppBar"
 import Box from "@mui/material/Box"
 import Toolbar from "@mui/material/Toolbar"
@@ -10,17 +11,16 @@ import Avatar from "@mui/material/Avatar"
 import Button from "@mui/material/Button"
 import MenuItem from "@mui/material/MenuItem"
 import ScienceIcon from "@mui/icons-material/Science"
-import LoginIcon from "@mui/icons-material/Login"
-import {useContext} from "react"
 import {userContext} from "../State/User/userContext"
 import {useNavigate} from "react-router-dom"
+import {LoginAvatar} from "./LoginAvatar"
 
 const pages = ["corpora", "sources"]
 const settings = ["account"]
 
 export default function Header() {
     const navigate = useNavigate()
-    const username = useContext(userContext).userState.username
+    const user = useContext(userContext)
 
     return <AppBar position="static">
         <Container maxWidth="xl">
@@ -48,7 +48,7 @@ export default function Header() {
                     DEXTER
                 </Typography>
                 <Box sx={{flexGrow: 1, display: {xs: "none", md: "flex"}}}>
-                    {username && pages.map((page) => (
+                    {user.userState.username && pages.map((page) => (
                         <Button
                             key={page}
                             onClick={() => navigate("/" + page)}
@@ -58,25 +58,13 @@ export default function Header() {
                         </Button>
                     ))}
                 </Box>
-                {username
+                {user.userState.username
                     ? <UserMenuAvatar/>
                     : <LoginAvatar/>
                 }
             </Toolbar>
         </Container>
     </AppBar>
-}
-
-function LoginAvatar() {
-    const navigate = useNavigate()
-
-    return <Box sx={{flexGrow: 0}}>
-        <IconButton onClick={() => navigate("/login")} sx={{p: 0}}>
-            <Avatar>
-                <LoginIcon/>
-            </Avatar>
-        </IconButton>
-    </Box>
 }
 
 function UserMenuAvatar() {
