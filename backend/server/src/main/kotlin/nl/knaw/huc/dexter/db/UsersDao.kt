@@ -24,4 +24,5 @@ interface UsersDao {
 
     @SqlUpdate("delete from users where id = :id")
     fun deleteById(id: UUID)
+
 }

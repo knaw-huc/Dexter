@@ -1,5 +1,6 @@
 package nl.knaw.huc.dexter
 
+import UnauthorizedExceptionMapper
 import UserResource
 import WereldCulturenDublinCoreImporter
 import com.fasterxml.jackson.databind.module.SimpleModule
@@ -77,7 +78,7 @@ class DexterApplication : Application<DexterConfiguration>() {
             register(
                 AuthDynamicFeature(
                     BasicCredentialAuthFilter.Builder<DexterUser>()
-                        .setAuthenticator(DexterAuthenticator(configuration.root))
+                        .setAuthenticator(DexterAuthenticator(configuration.root, jdbi))
                         .setAuthorizer(DexterAuthorizer())
                         .setRealm("Dexter's Lab")
                         .buildAuthFilter()
@@ -94,6 +95,8 @@ class DexterApplication : Application<DexterConfiguration>() {
             register(SourcesResource(jdbi))
             register(ImportResource(wereldCulturenDublinCoreMapper))
             register(UserResource())
+
+            register(UnauthorizedExceptionMapper())
         }
     }
 

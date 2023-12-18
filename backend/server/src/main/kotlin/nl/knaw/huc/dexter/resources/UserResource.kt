@@ -2,14 +2,17 @@ import io.dropwizard.auth.Auth
 import nl.knaw.huc.dexter.api.ResourcePaths
 import nl.knaw.huc.dexter.api.UserResult
 import nl.knaw.huc.dexter.auth.DexterUser
+import nl.knaw.huc.dexter.auth.RoleNames
 import org.jdbi.v3.core.Jdbi
 import org.slf4j.LoggerFactory
+import javax.annotation.security.RolesAllowed
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType
 
 @Path(ResourcePaths.USER)
 @Produces(MediaType.APPLICATION_JSON)
-class UserResource() {
+@RolesAllowed(RoleNames.ROOT, RoleNames.USER)
+class UserResource {
     private val log = LoggerFactory.getLogger(javaClass)
 
     @POST
