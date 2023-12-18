@@ -16,7 +16,7 @@ import {useNavigate} from "react-router-dom"
 import {LoginAvatar} from "./LoginAvatar"
 
 const pages = ["corpora", "sources"]
-const settings = ["account"]
+const settings: string[] = []
 
 export default function Header() {
     const navigate = useNavigate()
@@ -59,7 +59,7 @@ export default function Header() {
                     ))}
                 </Box>
                 {user.userState.username
-                    ? <UserMenuAvatar/>
+                    ? <UserAvatar/>
                     : <LoginAvatar/>
                 }
             </Toolbar>
@@ -67,7 +67,7 @@ export default function Header() {
     </AppBar>
 }
 
-function UserMenuAvatar() {
+function UserAvatar() {
     const username = useContext(userContext).userState.username
 
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null)
@@ -81,13 +81,9 @@ function UserMenuAvatar() {
 
     return <Box sx={{flexGrow: 0}}>
         <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
-            <Avatar
-                alt={username
-                    ? username[0].toUpperCase()
-                    : "Anonymous"
-                }
-                src="/static/images/avatar/2.jpg"
-            />
+            <Avatar>
+                {username[0].toUpperCase()}
+            </Avatar>
         </IconButton>
         <Menu
             sx={{mt: "45px"}}
@@ -105,6 +101,11 @@ function UserMenuAvatar() {
             open={Boolean(anchorElUser)}
             onClose={handleCloseUserMenu}
         >
+            <MenuItem
+                style={{cursor: "default"}}
+            >
+                <Typography textAlign="center">{username}</Typography>
+            </MenuItem>
             {settings.map((setting) => (
                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
                     <Typography textAlign="center">{setting}</Typography>
