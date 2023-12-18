@@ -26,11 +26,11 @@ export default function Header() {
         <Container maxWidth="xl">
             <Toolbar disableGutters>
                 <ScienceIcon
-                    onClick={() => window.location.href = "/"}
+                    onClick={() => navigate("/")}
                     sx={{display: {xs: "none", md: "flex"}, mr: 0.5}}
                 />
                 <Typography
-                    onClick={() => window.location.href = "/"}
+                    onClick={() => navigate("/")}
                     variant="h6"
                     noWrap
                     component="a"
