@@ -7,6 +7,7 @@ import nl.knaw.huc.dexter.api.ResourcePaths.ID_PARAM
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PATH
 import nl.knaw.huc.dexter.api.ResourcePaths.KEYWORDS
 import nl.knaw.huc.dexter.api.ResourcePaths.LANGUAGES
+import nl.knaw.huc.dexter.api.ResourcePaths.SOURCES
 import nl.knaw.huc.dexter.api.ResultCorpus
 import nl.knaw.huc.dexter.auth.DexterUser
 import nl.knaw.huc.dexter.auth.RoleNames
@@ -21,6 +22,7 @@ import java.util.*
 import javax.annotation.security.RolesAllowed
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType.APPLICATION_JSON
+import javax.ws.rs.core.MediaType.TEXT_PLAIN
 import javax.ws.rs.core.Response
 
 @Path(ResourcePaths.CORPORA)
@@ -72,18 +74,29 @@ class CorporaResource(private val jdbi: Jdbi) {
         }
 
     @GET
-    @Path("$ID_PATH/$KEYWORDS/v1")
-    fun getKeywordsV1(@PathParam(ID_PARAM) id: UUID) =
+    @Path("$ID_PATH/$KEYWORDS")
+    fun getKeywords(@PathParam(ID_PARAM) id: UUID) =
         onExistingCorpus(id) { dao, corpus ->
             dao.getKeywords(corpus.id)
         }
 
     @POST
+    @Consumes(TEXT_PLAIN)
     @Path("$ID_PATH/$KEYWORDS")
     fun addKeyword(@PathParam(ID_PARAM) id: UUID, keywordId: String) =
         onExistingCorpus(id) { dao, corpus ->
             log.info("addKeyword: corpusId=${corpus.id}, keywordId=$keywordId")
             dao.addKeyword(corpus.id, keywordId.toInt())
+            dao.getKeywords(corpus.id)
+        }
+
+    @POST
+    @Consumes(APPLICATION_JSON)
+    @Path("$ID_PATH/$KEYWORDS")
+    fun addKeywords(@PathParam(ID_PARAM) id: UUID, keywordIs: List<Int>) =
+        onExistingCorpus(id) { dao, corpus ->
+            log.info("addKeywords: corpusId=${corpus.id}, keywordIds=$keywordIs")
+            keywordIs.forEach { keywordId -> dao.addKeyword(corpus.id, keywordId) }
             dao.getKeywords(corpus.id)
         }
 
@@ -106,6 +119,7 @@ class CorporaResource(private val jdbi: Jdbi) {
         }
 
     @POST
+    @Consumes(TEXT_PLAIN)
     @Path("$ID_PATH/$LANGUAGES")
     fun addLanguage(@PathParam(ID_PARAM) id: UUID, languageId: String) =
         onExistingCorpus(id) { dao, corpus ->
@@ -113,6 +127,17 @@ class CorporaResource(private val jdbi: Jdbi) {
             dao.addLanguage(corpus.id, languageId)
             dao.getLanguages(id)
         }
+
+    @POST
+    @Consumes(APPLICATION_JSON)
+    @Path("$ID_PATH/$LANGUAGES")
+    fun addLanguages(@PathParam(ID_PARAM) id: UUID, languageIds: List<String>) =
+        onExistingCorpus(id) { dao, corpus ->
+            log.info("addLanguages: corpusId=${corpus.id}, languageIds=$languageIds")
+            languageIds.forEach { languageId -> dao.addLanguage(corpus.id, languageId) }
+            dao.getLanguages(corpus.id)
+        }
+
 
     @DELETE
     @Path("$ID_PATH/$LANGUAGES/{languageId}")
@@ -123,6 +148,34 @@ class CorporaResource(private val jdbi: Jdbi) {
         log.info("deleteLanguage: corpusId=${corpus.id}, languageId=$languageId")
         dao.deleteLanguage(corpus.id, languageId)
         dao.getLanguages(corpus.id)
+    }
+
+    @GET
+    @Path("$ID_PATH/$SOURCES")
+    fun getSources(@PathParam(ID_PARAM) corpusId: UUID) =
+        onExistingCorpus(corpusId) { dao, corpus ->
+            dao.getSources(corpus.id)
+        }
+
+    @POST
+    @Consumes(APPLICATION_JSON)
+    @Path("$ID_PATH/$SOURCES")
+    fun addSources(@PathParam(ID_PARAM) corpusId: UUID, sourceIds: List<UUID>) =
+        onExistingCorpus(corpusId) { dao, corpus ->
+            log.info("addSources: corpusId=${corpus.id}, sourceIds=$sourceIds")
+            sourceIds.forEach {sourceId -> dao.addSource(corpus.id, sourceId)}
+            dao.getSources(corpus.id)
+        }
+
+    @DELETE
+    @Path("$ID_PATH/$SOURCES/{sourceId}")
+    fun deleteSource(
+        @PathParam(ID_PARAM) id: UUID,
+        @PathParam("sourceId") sourceId: UUID
+    ) = onExistingCorpus(id) { dao, corpus ->
+        log.info("deleteSource: corpusId=${corpus.id}, sourceId=$sourceId")
+        dao.deleteSource(corpus.id, sourceId)
+        dao.getSources(corpus.id)
     }
 
     private fun <R> onExistingCorpus(id: UUID, block: DaoBlock<CorporaDao, ResultCorpus, R>): R =

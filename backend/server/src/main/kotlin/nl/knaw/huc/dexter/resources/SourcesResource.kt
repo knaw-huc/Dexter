@@ -22,6 +22,7 @@ import java.util.*
 import javax.annotation.security.RolesAllowed
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType.APPLICATION_JSON
+import javax.ws.rs.core.MediaType.TEXT_PLAIN
 import javax.ws.rs.core.Response
 
 @Path(ResourcePaths.SOURCES)
@@ -70,41 +71,28 @@ class SourcesResource(private val jdbi: Jdbi) {
         }
 
     @GET
-    @Path("$ID_PATH/$KEYWORDS/v1")
-    fun getKeywordsV1(@PathParam(ID_PARAM) id: UUID) = onExistingSource(id) { dao, src ->
+    @Path("$ID_PATH/$KEYWORDS")
+    fun getKeywords(@PathParam(ID_PARAM) id: UUID) = onExistingSource(id) { dao, src ->
         dao.getKeywords(src.id)
     }
 
-    @GET
-    @Path("$ID_PATH/$KEYWORDS/v2a")
-    fun getKeywordsV2a(@PathParam(ID_PARAM) id: UUID) = onExistingSource(id) { dao, src ->
-        dao.getKeywords(src.id).map { it.id }
-    }
-
-    @GET
-    @Path("$ID_PATH/$KEYWORDS/v2b")
-    fun getKeywordsV2b(@PathParam(ID_PARAM) id: UUID) = onExistingSource(id) { dao, src ->
-        dao.getKeywords(src.id).map { it.`val` }
-    }
-
-    @GET
-    @Path("$ID_PATH/$KEYWORDS/v2c")
-    fun getKeywordsV2c(@PathParam(ID_PARAM) id: UUID) = onExistingSource(id) { dao, src ->
-        dao.getKeywords(src.id).map { mapOf(it.id to it.`val`) }
-    }
-
-    @GET
-    @Path("$ID_PATH/$KEYWORDS/v2d")
-    fun getKeywordsV2d(@PathParam(ID_PARAM) id: UUID) = onExistingSource(id) { dao, src ->
-        dao.getKeywords(src.id).fold(HashMap<Int, String>()) { all, kw -> all[kw.id] = kw.`val`; all }
-    }
-
     @POST
+    @Consumes(TEXT_PLAIN)
     @Path("$ID_PATH/$KEYWORDS")
     fun addKeyword(@PathParam(ID_PARAM) id: UUID, keywordId: String): List<ResultKeyword> =
         onExistingSource(id) { dao, src ->
             log.info("addKeyword: sourceId=${src.id}, keywordId=$keywordId")
             dao.addKeyword(src.id, keywordId.toInt())
+            dao.getKeywords(src.id)
+        }
+
+    @POST
+    @Consumes(APPLICATION_JSON)
+    @Path("$ID_PATH/$KEYWORDS")
+    fun addKeywords(@PathParam(ID_PARAM) id: UUID, keywordIds: List<Int>): List<ResultKeyword> =
+        onExistingSource(id) { dao, src ->
+            log.info("addKeywords: sourceId=${src.id}, keywords=$keywordIds")
+            keywordIds.forEach { keywordId -> dao.addKeyword(src.id, keywordId) }
             dao.getKeywords(src.id)
         }
 
@@ -127,12 +115,23 @@ class SourcesResource(private val jdbi: Jdbi) {
 
     @POST
     @Path("$ID_PATH/$LANGUAGES")
-    fun addLanguage(@PathParam(ID_PARAM) id: UUID, languageId: String): List<String> =
+    fun addLanguage(@PathParam(ID_PARAM) id: UUID, languageId: String) =
         onExistingSource(id) { dao, src ->
             log.info("addLanguage: sourceId=${src.id}, languageId=$languageId")
             dao.addLanguage(src.id, languageId)
             dao.getLanguages(src.id)
         }
+
+    @POST
+    @Consumes(APPLICATION_JSON)
+    @Path("$ID_PATH/$LANGUAGES")
+    fun addLanguages(@PathParam(ID_PARAM) id: UUID, languageIds: List<String>) =
+        onExistingSource(id) { dao, src ->
+            log.info("addLanguages: sourceId=${src.id}, languageIds=$languageIds")
+            languageIds.forEach { languageId -> dao.addLanguage(src.id, languageId) }
+            dao.getLanguages(src.id)
+        }
+
 
     @DELETE
     @Path("$ID_PATH/$LANGUAGES/{languageId}")
@@ -140,10 +139,10 @@ class SourcesResource(private val jdbi: Jdbi) {
         @PathParam(ID_PARAM) id: UUID,
         @PathParam("languageId") languageId: String
     ) = onExistingSource(id) { dao, src ->
-            log.info("deleteLanguage: sourceId=${src.id}, languageId=$languageId")
-            dao.deleteLanguage(src.id, languageId)
-            dao.getLanguages(src.id)
-        }
+        log.info("deleteLanguage: sourceId=${src.id}, languageId=$languageId")
+        dao.deleteLanguage(src.id, languageId)
+        dao.getLanguages(src.id)
+    }
 
     private fun <R> onExistingSource(id: UUID, block: DaoBlock<SourcesDao, ResultSource, R>): R =
         jdbi.inTransaction<R, Exception>(REPEATABLE_READ) { handle ->

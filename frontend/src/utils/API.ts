@@ -1,4 +1,4 @@
-import {Collections, Source} from "../Model/DexterModel"
+import {ServerCorpus, Source} from "../Model/DexterModel"
 
 const headers = {
     "Content-Type": "application/json"
@@ -40,7 +40,7 @@ export const getCollectionById = async (id: string) => {
     return fetchValidated(`/api/corpora/${id}`)
 }
 
-export const createCollection = async (newCorpus: Collections) => {
+export const createCollection = async (newCorpus: ServerCorpus) => {
     const path = "/api/corpora"
     const response = await fetch(path, {
         headers,
@@ -51,7 +51,7 @@ export const createCollection = async (newCorpus: Collections) => {
     return response.json()
 }
 
-export const updateCollection = async (id: string, updatedCorpus: Collections) => {
+export const updateCollection = async (id: string, updatedCorpus: ServerCorpus) => {
     const path = `/api/corpora/${id}`
     const response = await fetch(path, {
         headers,

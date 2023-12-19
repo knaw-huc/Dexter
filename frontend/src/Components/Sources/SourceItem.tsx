@@ -1,50 +1,53 @@
+import styled from "@emotion/styled";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { red } from "@mui/material/colors";
 import React, {useContext} from "react"
-import {Source} from "../../Model/DexterModel"
-import {Link} from "react-router-dom"
-import styled from "@emotion/styled"
-import {deleteSource, getSources} from "../../utils/API"
-import {sourcesContext} from "../../State/Sources/sourcesContext"
-import {Actions} from "../../State/actions"
-import DeleteIcon from "@mui/icons-material/Delete"
+import { Link } from "react-router-dom";
+import { ServerSource } from "../../Model/DexterModel";
+import { Actions } from "../../State/actions";
+import { sourcesContext } from "../../State/Sources/sourcesContext";
+import { deleteSource, getSources } from "../API";
 import {errorContext} from "../../State/Error/errorContext"
 
 type SourceItemProps = {
-    sourceId: React.Key,
-    source: Source,
-    onSelect: (selected: Source | undefined) => void,
-}
+    sourceId: React.Key;
+    source: ServerSource;
+    onSelect: (selected: ServerSource | undefined) => void;
+};
 
 const DeleteIconStyled = styled(DeleteIcon)`
   margin-left: 5px;
-
+  color: gray;
   &:hover {
     cursor: pointer;
-    color: gray;
+    color: ${red[700]};
   }
-`
+`;
 
 export const SourceItem = (props: SourceItemProps) => {
-    const {setSources} = React.useContext(sourcesContext)
+    const { setSources } = React.useContext(sourcesContext);
     const {setError} = useContext(errorContext)
 
     const toggleClick = () => {
-        props.onSelect(props.source)
-    }
+        console.log(props.source.id);
+        props.onSelect(props.source);
+    };
 
     const handleDelete = async (id: string) => {
-        const warning = window.confirm("Are you sure you wish to delete this source?")
+        const warning = window.confirm(
+            "Are you sure you wish to delete this source?"
+        );
 
-        if (warning === false) {
-            return
-        }
+        if (warning === false) return;
 
-        await deleteSource(id)
-            .catch(setError)
-        getSources().then(sources => setSources({
-            type: Actions.SET_SOURCES,
-            sources: sources
-        })).catch(setError)
-    }
+        await deleteSource(id);
+        getSources().then(function (sources) {
+            setSources({
+                type: Actions.SET_SOURCES,
+                sources: sources,
+            });
+        }).catch(setError);
+    };
 
     return (
         <ul>
@@ -56,13 +59,8 @@ export const SourceItem = (props: SourceItemProps) => {
                 >
                     {props.source.title}
                 </Link>
-                <DeleteIconStyled
-                    color="error"
-                    onClick={() => handleDelete(props.source.id)}
-                >
-                    Delete source
-                </DeleteIconStyled>
+                <DeleteIconStyled onClick={() => handleDelete(props.source.id)} />
             </li>
         </ul>
-    )
-}
+    );
+};

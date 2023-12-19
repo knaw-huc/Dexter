@@ -1,15 +1,15 @@
-import React, {useContext, useEffect} from "react"
-import { Actions } from "../actions"
-import { Source } from "../../Model/DexterModel"
+import React, {useContext} from "react"
+import {ServerSource} from "../../Model/DexterModel"
+import {Actions} from "../actions"
 import {getSources} from "../../utils/API"
 import {errorContext} from "../Error/errorContext"
 
 export interface SourcesState {
-    sources: Source[],
-    filteredSources: Source[],
-    selectedSource: Source | undefined,
-    editSourceMode: boolean,
-    toEditSource: Source | undefined
+    sources: ServerSource[];
+    filteredSources: ServerSource[];
+    selectedSource: ServerSource | undefined;
+    editSourceMode: boolean;
+    toEditSource: ServerSource | undefined;
 }
 
 export const initState: SourcesState = {
@@ -17,22 +17,22 @@ export const initState: SourcesState = {
     filteredSources: null,
     selectedSource: undefined,
     editSourceMode: false,
-    toEditSource: undefined
+    toEditSource: undefined,
 }
 
 interface SetSources {
     type: Actions.SET_SOURCES,
-    sources: Source[]
+    sources: ServerSource[]
 }
 
 interface SetFilteredSources {
     type: Actions.SET_FILTEREDSOURCES,
-    filteredSources: Source[]
+    filteredSources: ServerSource[]
 }
 
 interface SetSelectedSource {
     type: Actions.SET_SELECTEDSOURCE,
-    selectedSource: Source
+    selectedSource: ServerSource
 }
 
 interface SetEditSourceMode {
@@ -42,18 +42,26 @@ interface SetEditSourceMode {
 
 interface SetToEditSource {
     type: Actions.SET_TOEDITSOURCE,
-    toEditSource: Source
+    toEditSource: ServerSource
 }
 
-export type SourcesAction = SetSources | SetFilteredSources | SetSelectedSource | SetEditSourceMode | SetToEditSource
+export type SourcesAction =
+    | SetSources
+    | SetFilteredSources
+    | SetSelectedSource
+    | SetEditSourceMode
+    | SetToEditSource;
 
-export const useSourcesState = (): [SourcesState, React.Dispatch<SourcesAction>] => {
+export const useSourcesState = (): [
+    SourcesState,
+    React.Dispatch<SourcesAction>
+] => {
     const [state, dispatch] = React.useReducer(sourcesReducer, initState)
     const {setError} = useContext(errorContext)
 
-    useEffect(() => {
+    React.useEffect(() => {
         getSources()
-            .then(sources => {
+            .then(function (sources) {
                 dispatch({
                     type: Actions.SET_SOURCES,
                     sources: sources
@@ -61,59 +69,63 @@ export const useSourcesState = (): [SourcesState, React.Dispatch<SourcesAction>]
             }).catch(setError)
     }, [])
 
-    return [state, dispatch]
-}
+  return [state, dispatch];
+};
 
-function sourcesReducer(state: SourcesState, action: SourcesAction): SourcesState {
+function sourcesReducer(
+    state: SourcesState,
+    action: SourcesAction
+): SourcesState {
+    console.log(action, state);
     switch (action.type) {
     case Actions.SET_SOURCES:
-        return setSources(state, action)
+        return setSources(state, action);
     case Actions.SET_FILTEREDSOURCES:
-        return setFilteredSources(state, action)
+        return setFilteredSources(state, action);
     case Actions.SET_SELECTEDSOURCE:
-        return setSelectedSource(state, action)
+        return setSelectedSource(state, action);
     case Actions.SET_EDITSOURCEMODE:
-        return setEditSourceMode(state, action)
+        return setEditSourceMode(state, action);
     case Actions.SET_TOEDITSOURCE:
-        return setToEditSource(state, action)
+        return setToEditSource(state, action);
     default:
-        break
+        break;
     }
 
-    return state
+    return state;
 }
 
 function setSources(state: SourcesState, action: SetSources) {
-    return {
-        ...state,
-        sources: action.sources
-    }
+  return {
+    ...state,
+    sources: action.sources,
+  };
 }
 
 function setSelectedSource(state: SourcesState, action: SetSelectedSource) {
-    return {
-        ...state,
-        selectedSource: action.selectedSource
-    }
+  return {
+    ...state,
+    selectedSource: action.selectedSource,
+  };
 }
 
 function setEditSourceMode(state: SourcesState, action: SetEditSourceMode) {
-    return {
-        ...state,
-        editSourceMode: action.editSourceMode
-    }
+  return {
+    ...state,
+    editSourceMode: action.editSourceMode,
+  };
 }
 
 function setToEditSource(state: SourcesState, action: SetToEditSource) {
-    return {
-        ...state,
-        toEditSource: action.toEditSource
-    }
+  return {
+    ...state,
+    toEditSource: action.toEditSource,
+  };
 }
 
 function setFilteredSources(state: SourcesState, action: SetFilteredSources) {
-    return {
-        ...state,
-        filteredSources: action.filteredSources
-    }
+  return {
+    ...state,
+    filteredSources: action.filteredSources,
+  };
 }

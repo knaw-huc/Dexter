@@ -1,26 +1,24 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin")
-const webpack = require("webpack")
 
 module.exports = {
     devServer: {
-        headers: { "Access-Control-Allow-Origin": "*" },
+        headers: {"Access-Control-Allow-Origin": "*"},
         historyApiFallback: {
-            disableDotRule: true
+            disableDotRule: true,
         },
         host: "0.0.0.0",
         hot: true,
         port: 3001,
         proxy: {
             "/api": {
-                target: 'http://localhost:8080',
-                pathRewrite: { '^/api': '' },
+                target: "http://localhost:8080",
+                pathRewrite: {"^/api": ""},
             },
-
         },
     },
 
     entry: {
-        app: "./src/index.tsx"
+        app: "./src/index.tsx",
     },
 
     mode: "development",
@@ -34,13 +32,13 @@ module.exports = {
             },
             {
                 test: /\.css$/,
-                use: ["style-loader", "css-loader"]
+                use: ["style-loader", "css-loader"],
             },
             {
                 test: /\.ttf$/,
-                use: ["file-loader"]
-            }
-        ]
+                use: ["file-loader"],
+            },
+        ],
     },
 
     output: {
@@ -54,18 +52,13 @@ module.exports = {
         new HtmlWebpackPlugin({
             title: "Dexter's Lab",
             template: "index.template.html",
-            favicon: "src/assets/favicon-32x32.png"
+            favicon: "src/assets/favicon-32x32.png",
         }),
-        new webpack.DefinePlugin({
-            "process.env": {
-                REACT_APP_BACKEND_HOST: JSON.stringify(process.env.REACT_APP_BACKEND_HOST)
-            }
-        })
     ],
 
     resolve: {
         extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js"],
-        fallback: { "url": false },
+        fallback: {url: false},
     },
 
     watchOptions: {
@@ -73,6 +66,6 @@ module.exports = {
     },
 
     cache: {
-        type: "filesystem"
-    }
+        type: "filesystem",
+    },
 }

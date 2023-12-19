@@ -1,5 +1,5 @@
-import React from "react"
-import { SourcesState, SourcesAction, initState } from "./sourcesReducer"
+import React from "react";
+import { initState, SourcesAction, SourcesState } from "./sourcesReducer";
 
 interface SourcesContext {
     sources: SourcesState,
