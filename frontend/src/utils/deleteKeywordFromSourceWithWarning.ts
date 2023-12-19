@@ -1,4 +1,4 @@
-import { deleteKeywordFromSource } from "../components/API";
+import { deleteKeywordFromSource } from "./API";
 import { ServerKeyword } from "../model/DexterModel";
 
 export const deleteKeywordFromSourceWithWarning = async (

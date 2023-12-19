@@ -6,7 +6,7 @@ import {collectionsContext} from "../../state/collections/collectionContext"
 import {Actions} from "../../state/actions"
 import DeleteIcon from "@mui/icons-material/Delete"
 import {red} from "@mui/material/colors"
-import {deleteCollection, getCollections} from "../API"
+import {deleteCollection, getCollections} from "../../utils/API"
 import {errorContext} from "../../state/error/errorContext"
 
 type CollectionItemProps = {

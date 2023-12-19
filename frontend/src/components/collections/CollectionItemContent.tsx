@@ -14,7 +14,7 @@ import {
     getKeywordsCorpora,
     getLanguagesCorpora,
     getSourcesInCorpus,
-} from "../API"
+} from "../../utils/API"
 import {KeywordContent} from "../keywords/KeywordContent"
 import {LanguagesContent} from "../languages/LanguagesContent"
 import {SourceItemDropdown} from "../sources/SourceItemDropdown"

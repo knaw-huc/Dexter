@@ -1,13 +1,13 @@
 import {Container} from "@mui/material"
-import React from "react"
+import React, {useContext} from "react"
 import {Outlet} from "react-router-dom"
 import Header from ".//Header"
 import ErrorHandler from "./ErrorHandler"
 import {useErrorState} from "../state/error/errorReducer"
+import {errorContext} from "../state/error/errorContext"
 
 export const Page = () => {
-    const [errorState] = useErrorState()
-
+    const {errorState} = useContext(errorContext)
     return (
         <div>
             <Header/>

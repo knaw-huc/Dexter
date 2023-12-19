@@ -16,7 +16,7 @@ import {
   deleteLanguageFromCorpus,
   deleteLanguageFromSource,
   getLanguagesAutocomplete,
-} from "../API";
+} from "../../utils/API";
 
 interface LanguagesFieldProps {
   edit?: boolean;

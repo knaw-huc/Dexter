@@ -6,7 +6,7 @@ import {
 } from "../../model/DexterModel";
 import { deleteKeywordFromSourceWithWarning } from "../../utils/deleteKeywordFromSourceWithWarning";
 import { deleteLanguageFromSourceWithWarning } from "../../utils/deleteLanguageFromSourceWithWarning";
-import { getKeywordsSources, getLanguagesSources } from "../API";
+import { getKeywordsSources, getLanguagesSources } from "../../utils/API";
 import { KeywordContent } from "../keywords/KeywordContent";
 import { LanguagesContent } from "../languages/LanguagesContent";
 

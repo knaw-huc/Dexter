@@ -19,7 +19,7 @@ import {
     getLanguagesCorpora,
     getSourcesInCorpus,
     updateCollection,
-} from "../API"
+} from "../../utils/API"
 import {KeywordsField} from "../keywords/KeywordsField"
 import {LanguagesField} from "../languages/LanguagesField"
 import {PartOfSourceField} from "./PartOfSourceField"

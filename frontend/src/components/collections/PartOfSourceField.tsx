@@ -6,7 +6,7 @@ import parse from "autosuggest-highlight/parse";
 import React from "react";
 import { Controller, UseFormSetValue, useWatch } from "react-hook-form";
 import { ServerCorpus, ServerSource } from "../../model/DexterModel";
-import { deleteSourceFromCorpus } from "../API";
+import { deleteSourceFromCorpus } from "../../utils/API";
 
 interface PartOfSourceFieldProps {
   sources: ServerSource[];

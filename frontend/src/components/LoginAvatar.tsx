@@ -30,7 +30,7 @@ export function LoginAvatar() {
                 r => setUser({username: r.name})
             ).catch(
                 e => {
-                    if(e.statusCode === 401) {
+                    if(e.response.status === 401) {
                         setError(new Error("Could not login: username & password incorrect"))
                     } else {
                         setError(new Error("Error while logging in"))

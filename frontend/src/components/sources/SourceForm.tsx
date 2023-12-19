@@ -16,7 +16,7 @@ import {
     getLanguagesSources,
     getSourceById,
     updateSource,
-} from "../API"
+} from "../../utils/API"
 import ScrollableModal from "../common/ScrollableModal"
 import {KeywordsField} from "../keywords/KeywordsField"
 import {LanguagesField} from "../languages/LanguagesField"

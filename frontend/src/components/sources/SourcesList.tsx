@@ -5,7 +5,7 @@ import {sourcesContext} from "../../state/sources/sourcesContext"
 import {SourceItem} from "./SourceItem"
 import styled from "@emotion/styled"
 import Button from "@mui/material/Button"
-import {getSources} from "../API"
+import {getSources} from "../../utils/API"
 import {errorContext} from "../../state/error/errorContext"
 import {SourceForm} from "./SourceForm"
 

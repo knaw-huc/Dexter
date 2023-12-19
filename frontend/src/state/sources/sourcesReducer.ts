@@ -1,8 +1,6 @@
-import React, {useContext} from "react"
+import React from "react"
 import {ServerSource} from "../../model/DexterModel"
 import {Actions} from "../actions"
-import {getSources} from "../../utils/API"
-import {errorContext} from "../error/errorContext"
 
 export interface SourcesState {
     sources: ServerSource[];

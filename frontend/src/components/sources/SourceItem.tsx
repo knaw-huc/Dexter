@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { ServerSource } from "../../model/DexterModel";
 import { Actions } from "../../state/actions";
 import { sourcesContext } from "../../state/sources/sourcesContext";
-import { deleteSource, getSources } from "../API";
+import { deleteSource, getSources } from "../../utils/API";
 import {errorContext} from "../../state/error/errorContext"
 
 type SourceItemProps = {

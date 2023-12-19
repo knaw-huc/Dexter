@@ -3,7 +3,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { red } from "@mui/material/colors";
 import React from "react";
 import { ServerSource } from "../../model/DexterModel";
-import { deleteSourceFromCorpus } from "../API";
+import { deleteSourceFromCorpus } from "../../utils/API";
 import { SourceItemDropdownContent } from "./SourceItemDropdownContent";
 
 interface SourceItemDropdownProps {

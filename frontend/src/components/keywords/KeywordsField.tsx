@@ -14,7 +14,7 @@ import {
   deleteKeywordFromCorpus,
   deleteKeywordFromSource,
   getKeywordsAutocomplete,
-} from "../API";
+} from "../../utils/API";
 
 interface KeywordsFieldProps {
   edit?: boolean;

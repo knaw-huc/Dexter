@@ -3,7 +3,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { red } from "@mui/material/colors";
 import React from "react";
 import { ServerKeyword } from "../../model/DexterModel";
-import { deleteKeyword, getKeywords } from "../API";
+import { deleteKeyword, getKeywords } from "../../utils/API";
 import { NewKeywords } from "./NewKeywords";
 
 const DeleteIconStyled = styled(DeleteIcon)`

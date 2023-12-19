@@ -1,4 +1,4 @@
-import {ServerCorpus, Source} from "../model/DexterModel"
+import {FormKeyword, ServerCorpus, ServerKeyword, ServerLanguage, ServerSource, Source} from "../model/DexterModel"
 
 const headers = {
     "Content-Type": "application/json"
@@ -9,11 +9,13 @@ export type ResponseErrorParams = {
 }
 
 export class ResponseError extends Error {
+    response: Response
     constructor(params: ResponseErrorParams) {
         super()
         const {statusText, url, status} = params.response
         this.message = `${statusText}: request to ${url} failed with ${status}`
         this.name = this.constructor.name
+        this.response = params.response
     }
 }
 
@@ -32,15 +34,17 @@ async function fetchValidated(path: string) {
     return response.json()
 }
 
-export const getCollections = async () => {
+export const getCollections = async (): Promise<ServerCorpus[]> => {
     return fetchValidated("/api/corpora")
 }
 
-export const getCollectionById = async (id: string) => {
+export const getCollectionById = async (id: string): Promise<ServerCorpus> => {
     return fetchValidated(`/api/corpora/${id}`)
 }
 
-export const createCollection = async (newCorpus: ServerCorpus) => {
+export const createCollection = async (
+    newCorpus: ServerCorpus
+): Promise<ServerCorpus> => {
     const path = "/api/corpora"
     const response = await fetch(path, {
         headers,
@@ -51,7 +55,9 @@ export const createCollection = async (newCorpus: ServerCorpus) => {
     return response.json()
 }
 
-export const updateCollection = async (id: string, updatedCorpus: ServerCorpus) => {
+export const updateCollection = async (
+    id: string, updatedCorpus: ServerCorpus
+): Promise<ServerCorpus> => {
     const path = `/api/corpora/${id}`
     const response = await fetch(path, {
         headers,
@@ -62,7 +68,7 @@ export const updateCollection = async (id: string, updatedCorpus: ServerCorpus) 
     return response.json()
 }
 
-export const deleteCollection = async (id: string) => {
+export const deleteCollection = async (id: string): Promise<void> => {
     const path = `/api/corpora/${id}`
     const response = await fetch(path, {
         headers,
@@ -71,17 +77,15 @@ export const deleteCollection = async (id: string) => {
     validateResponse({response})
 }
 
-export const getSources = async () => {
-    const path = "/api/sources"
-    return fetchValidated(path)
+export const getSources = async (): Promise<ServerSource[]> => {
+    return fetchValidated("/api/sources")
 }
 
-export async function getSourceById(id: string): Promise<Source> {
-    const path = `/api/sources/${id}`
-    return fetchValidated(path)
+export async function getSourceById(id: string): Promise<ServerSource> {
+    return fetchValidated(`/api/sources/${id}`)
 }
 
-export const createSource = async (newSource: Source) => {
+export const createSource = async (newSource: Source): Promise<ServerSource> => {
     const path = "/api/sources"
     const response = await fetch(path, {
         headers,
@@ -92,7 +96,10 @@ export const createSource = async (newSource: Source) => {
     return response.json()
 }
 
-export const updateSource = async (id: string, updatedSource: Source) => {
+export const updateSource = async (
+    id: string,
+    updatedSource: ServerSource
+): Promise<ServerSource> => {
     const path = `/api/sources/${id}`
     const response = await fetch(path, {
         headers,
@@ -103,7 +110,7 @@ export const updateSource = async (id: string, updatedSource: Source) => {
     return response.json()
 }
 
-export const deleteSource = async (id: string) => {
+export const deleteSource = async (id: string): Promise<void> => {
     const path = `/api/sources/${id}`
     const response = await fetch(path, {
         headers,
@@ -116,6 +123,215 @@ export type ImportResult = {
     isValidExternalReference: boolean;
     imported?: ResultDublinCoreMetadata
 }
+
+export const getKeywords = async () => {
+    return fetchValidated(`/api/keywords`)
+};
+
+export const createKeywords = async (
+    newKeyword: FormKeyword
+): Promise<ServerKeyword> => {
+    const response = await fetch("/api/keywords", {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(newKeyword),
+    });
+    validateResponse({response});
+    return response.json();
+};
+
+export const addKeywordsToCorpus = async (
+    corpusId: string,
+    keywordId: string[]
+): Promise<ServerKeyword> => {
+    const response = await fetch(`/api/corpora/${corpusId}/keywords`, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(keywordId),
+    });
+    validateResponse({response});
+    return response.json();
+};
+
+export const addKeywordsToSource = async (
+    sourceId: string,
+    keywordId: string[]
+): Promise<ServerKeyword> => {
+    const response = await fetch(`/api/sources/${sourceId}/keywords`, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(keywordId),
+    });
+    validateResponse({response});
+    return response.json();
+};
+
+export const deleteKeyword = async (id: string): Promise<void> => {
+    const response = await fetch(`/api/keywords/${id}`, {
+        method: "DELETE",
+        headers: headers,
+    });
+    validateResponse({response});
+};
+
+export const getKeywordsSources = async (
+    sourceId: string
+): Promise<ServerKeyword[]> => {
+    const response = await fetch(`/api/sources/${sourceId}/keywords`, {
+        method: "GET",
+        headers: headers,
+    });
+    validateResponse({response});
+    return response.json();
+};
+
+export const getKeywordsCorpora = async (
+    corpusId: string
+): Promise<ServerKeyword[]> => {
+    return fetchValidated(`/api/corpora/${corpusId}/keywords`)
+};
+
+export const getKeywordsAutocomplete = async (
+    input: string
+): Promise<ServerKeyword[]> => {
+    const response = await fetch("/api/keywords/autocomplete", {
+        method: "POST",
+        headers: headers,
+        body: input,
+    });
+    validateResponse({response});
+    return response.json();
+};
+
+export const getLanguagesAutocomplete = async (input: string): Promise<ServerLanguage[]>  => {
+    const response = await fetch("/api/languages/autocomplete", {
+        method: "POST",
+        headers: headers,
+        body: input,
+    });
+    validateResponse({response});
+    return response.json();
+};
+
+export const addLanguagesToCorpus = async (
+    corpusId: string,
+    languageId: string[]
+): Promise<ServerLanguage>  => {
+    const response = await fetch(`/api/corpora/${corpusId}/languages`, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(languageId),
+    });
+    validateResponse({response});
+    return response.json();
+};
+
+export const addLanguagesToSource = async (
+    corpusId: string,
+    languageId: string[]
+): Promise<ServerLanguage> => {
+    const response = await fetch(`/api/sources/${corpusId}/languages`, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(languageId),
+    });
+    validateResponse({response});
+    return response.json();
+};
+
+export const getLanguages = async (type: string, id: string): Promise<ServerLanguage[]> => {
+    return fetchValidated(`/api/${type}/${id}/languages`)
+};
+
+export const getLanguagesCorpora = (corpusId: string) =>
+    getLanguages("corpora", corpusId);
+export const getLanguagesSources = (sourceId: string) =>
+    getLanguages("sources", sourceId);
+
+export const deleteLanguageFromCorpus = async (
+    corpusId: string,
+    languageId: string
+): Promise<ServerLanguage[]> => {
+    const response = await fetch(
+        `/api/corpora/${corpusId}/languages/${languageId}`,
+        {
+            method: "DELETE",
+            headers: headers,
+        }
+    );
+    validateResponse({response});
+    return response.json()};
+
+export const deleteKeywordFromCorpus = async (
+    corpusId: string,
+    keywordId: string
+): Promise<void> => {
+    const response = await fetch(
+        `/api/corpora/${corpusId}/keywords/${keywordId}`,
+        {
+            method: "DELETE",
+            headers: headers,
+        }
+    );
+    validateResponse({response});
+};
+
+export const deleteLanguageFromSource = async (
+    sourceId: string,
+    languageId: string
+): Promise<void> => {
+    const response = await fetch(
+        `/api/sources/${sourceId}/languages/${languageId}`,
+        {
+            method: "DELETE",
+            headers: headers,
+        }
+    );
+    validateResponse({response});
+};
+
+export const deleteKeywordFromSource = async (
+    sourceId: string,
+    keywordId: string
+): Promise<void> => {
+    const response = await fetch(
+        `/api/sources/${sourceId}/keywords/${keywordId}`,
+        {
+            method: "DELETE",
+            headers: headers,
+        }
+    );
+    validateResponse({response});
+};
+
+export const addSourcesToCorpus = async (
+    corpusId: string,
+    sourceIds: string
+): Promise<ServerSource[]> => {
+    const response = await fetch(`/api/corpora/${corpusId}/sources`, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(sourceIds),
+    });
+    validateResponse({response});
+    return response.json();
+};
+
+export const getSourcesInCorpus = async (corpusId: string): Promise<ServerSource[]> => {
+    return fetchValidated(`/api/corpora/${corpusId}/sources`)
+};
+
+export const deleteSourceFromCorpus = async (
+    corpusId: string,
+    sourceId: string
+): Promise<void> => {
+    const response = await fetch(`/api/corpora/${corpusId}/sources/${sourceId}`, {
+        method: "DELETE",
+        headers: headers,
+    });
+    validateResponse({response});
+};
+
 
 export type ResultDublinCoreMetadata = Record<string, string>;
 
@@ -144,3 +360,4 @@ export async function login(): Promise<LoginResponse> {
     validateResponse({response})
     return response.json()
 }
+
