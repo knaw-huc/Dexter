@@ -1,5 +1,5 @@
-import { deleteLanguageFromSource } from "../Components/API";
-import { ServerLanguage } from "../Model/DexterModel";
+import { deleteLanguageFromSource } from "../components/API";
+import { ServerLanguage } from "../model/DexterModel";
 
 export const deleteLanguageFromSourceWithWarning = async (
     language: ServerLanguage,

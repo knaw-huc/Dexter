@@ -1,12 +1,12 @@
 import React from "react"
-import {collectionsContext} from "./State/Collections/collectionContext"
-import {useCollectionsState} from "./State/Collections/collectionReducer"
-import {sourcesContext} from "./State/Sources/sourcesContext"
-import {useSourcesState} from "./State/Sources/sourcesReducer"
-import {useErrorState} from "./State/Error/errorReducer"
-import {useUserState} from "./State/User/userReducer"
-import {errorContext} from "./State/Error/errorContext"
-import {userContext} from "./State/User/userContext"
+import {collectionsContext} from "./state/collections/collectionContext"
+import {useCollectionsState} from "./state/collections/collectionReducer"
+import {sourcesContext} from "./state/sources/sourcesContext"
+import {useSourcesState} from "./state/sources/sourcesReducer"
+import {useErrorState} from "./state/error/errorReducer"
+import {useUserState} from "./state/user/userReducer"
+import {errorContext} from "./state/error/errorContext"
+import {userContext} from "./state/user/userContext"
 
 export const Providers = (props: { children: React.ReactNode }) => {
     const [sourcesState, sourcesDispatch] = useSourcesState()
