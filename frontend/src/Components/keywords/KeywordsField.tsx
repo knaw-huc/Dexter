@@ -133,7 +133,7 @@ export const KeywordsField = (props: KeywordsFieldProps) => {
                 <TextField
                   {...params}
                   margin="dense"
-                  label="Select a keyword"
+                  label="Search and select keywords"
                   value={value}
                 />
               )}

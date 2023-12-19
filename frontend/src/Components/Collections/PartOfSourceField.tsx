@@ -68,7 +68,7 @@ export const PartOfSourceField = (props: PartOfSourceFieldProps) => {
                 <TextField
                   {...params}
                   margin="dense"
-                  label="Select a source"
+                  label="Search and select sources"
                   value={value}
                 />
               )}

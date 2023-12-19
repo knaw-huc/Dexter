@@ -136,7 +136,7 @@ export const LanguagesField = (props: LanguagesFieldProps) => {
                 <TextField
                   {...params}
                   margin="dense"
-                  label="Select a language"
+                  label="Search and select a language"
                   value={value}
                 />
               )}
