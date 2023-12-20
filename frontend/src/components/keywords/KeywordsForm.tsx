@@ -8,7 +8,7 @@ type NewKeywordsProps = {
   setKeywords: React.Dispatch<React.SetStateAction<ServerKeyword[]>>;
 };
 
-export const NewKeywords = (props: NewKeywordsProps) => {
+export const KeywordsForm = (props: NewKeywordsProps) => {
   const { register, handleSubmit } = useForm<FormKeyword>();
   const onSubmit: SubmitHandler<FormKeyword> = async (data) => {
     try {

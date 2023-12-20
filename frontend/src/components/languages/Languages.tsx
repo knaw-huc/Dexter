@@ -18,7 +18,7 @@ const DeleteIconStyled = styled(DeleteIcon)`
   }
 `;
 
-export const LanguagesContent = (props: LanguagesContentProps) => {
+export const Languages = (props: LanguagesContentProps) => {
   return (
     <>
       {props.languages &&

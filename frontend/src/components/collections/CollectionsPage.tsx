@@ -3,8 +3,8 @@ import React, {useContext, useEffect} from "react"
 import {ServerCorpus} from "../../model/DexterModel"
 import {Actions} from "../../state/actions"
 import {collectionsContext} from "../../state/collections/collectionContext"
-import {CollectionItem} from "./CollectionItem"
-import {NewCollection} from "./NewCollection"
+import {Collection} from "./Collection"
+import {CollectionForm} from "./CollectionForm"
 import styled from "@emotion/styled"
 import {errorContext} from "../../state/error/errorContext"
 import {getCollections} from "../../utils/API"
@@ -14,7 +14,7 @@ const FilterRow = styled.div`
   flex-direction: row;
 `
 
-export function CollectionList() {
+export function CollectionsPage() {
     const {collectionsState, dispatchCollections} =
         useContext(collectionsContext)
     const [showForm, setShowForm] = React.useState(false)
@@ -54,7 +54,7 @@ export function CollectionList() {
                 </Button>
             </FilterRow>
             {showForm && (
-                <NewCollection
+                <CollectionForm
                     show={showForm}
                     onClose={formCloseHandler}
                     refetch={refetchCollections}
@@ -63,7 +63,7 @@ export function CollectionList() {
             {collectionsState.collections &&
                 collectionsState.collections.map(
                     (collection: ServerCorpus, index: number) => (
-                        <CollectionItem
+                        <Collection
                             key={index}
                             collectionId={index}
                             collection={collection}

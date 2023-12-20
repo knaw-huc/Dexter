@@ -80,7 +80,7 @@ const formToServer = (data: ServerCorpus) => {
     return newData
 }
 
-export function NewCollection(props: NewCollectionProps) {
+export function CollectionForm(props: NewCollectionProps) {
     const {sourcesState} = React.useContext(sourcesContext)
     const {collectionsState} = React.useContext(collectionsContext)
     const {dispatchError} = useContext(errorContext)

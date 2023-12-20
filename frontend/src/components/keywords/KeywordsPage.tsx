@@ -4,7 +4,7 @@ import { red } from "@mui/material/colors";
 import React from "react";
 import { ServerKeyword } from "../../model/DexterModel";
 import { deleteKeyword, getKeywords } from "../../utils/API";
-import { NewKeywords } from "./NewKeywords";
+import { KeywordsForm } from "./KeywordsForm";
 
 const DeleteIconStyled = styled(DeleteIcon)`
   margin-left: 5px;
@@ -15,7 +15,7 @@ const DeleteIconStyled = styled(DeleteIcon)`
   }
 `;
 
-export const KeywordList = () => {
+export const KeywordsPage = () => {
   const [keywords, setKeywords] = React.useState<ServerKeyword[]>();
 
   React.useEffect(() => {
@@ -40,7 +40,7 @@ export const KeywordList = () => {
 
   return (
     <>
-      <NewKeywords setKeywords={setKeywords} />
+      <KeywordsForm setKeywords={setKeywords} />
       {keywords &&
         keywords.map((keyword: ServerKeyword, index: number) => (
           <div key={index}>

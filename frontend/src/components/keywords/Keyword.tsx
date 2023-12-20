@@ -18,7 +18,7 @@ const DeleteIconStyled = styled(DeleteIcon)`
   }
 `;
 
-export const KeywordContent = (props: KeywordContentProps) => {
+export const Keyword = (props: KeywordContentProps) => {
   return (
     <>
       {props.keywords &&

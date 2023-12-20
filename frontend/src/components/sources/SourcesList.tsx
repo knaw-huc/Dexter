@@ -2,7 +2,7 @@ import React, {useContext} from "react"
 import {ServerSource} from "../../model/DexterModel"
 import {Actions} from "../../state/actions"
 import {sourcesContext} from "../../state/sources/sourcesContext"
-import {SourceItem} from "./SourceItem"
+import {Source} from "./Source"
 import styled from "@emotion/styled"
 import Button from "@mui/material/Button"
 import {getSources} from "../../utils/API"
@@ -14,7 +14,7 @@ const FilterRow = styled.div`
   flex-direction: row;
 `;
 
-export function SourcesList() {
+export function SourcesPage() {
   const { sourcesState, dispatchSources } = React.useContext(sourcesContext);
   const [showForm, setShowForm] = React.useState(false);
     const {dispatchError} = useContext(errorContext)
@@ -62,7 +62,7 @@ export function SourcesList() {
       )}
       {sourcesState.sources &&
         sourcesState.sources.map((source: ServerSource, index: number) => (
-          <SourceItem
+          <Source
             key={index}
             sourceId={index}
             source={source}

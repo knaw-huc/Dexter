@@ -3,7 +3,7 @@ import {Link, useParams} from "react-router-dom"
 import {ServerCorpus, ServerKeyword, ServerLanguage, ServerSource} from "../../model/DexterModel"
 import {collectionsContext} from "../../state/collections/collectionContext"
 import {Actions} from "../../state/actions"
-import {NewCollection} from "./NewCollection"
+import {CollectionForm} from "./CollectionForm"
 import styled from "@emotion/styled"
 import Button from "@mui/material/Button"
 import {errorContext} from "../../state/error/errorContext"
@@ -15,15 +15,15 @@ import {
     getLanguagesCorpora,
     getSourcesInCorpus,
 } from "../../utils/API"
-import {KeywordContent} from "../keywords/KeywordContent"
-import {LanguagesContent} from "../languages/LanguagesContent"
-import {SourceItemDropdown} from "../sources/SourceItemDropdown"
+import {Keyword} from "../keywords/Keyword"
+import {Languages} from "../languages/Languages"
+import {SourcePreview} from "../sources/SourcePreview"
 
 const Wrapper = styled.div`
   overflow: auto;
 `;
 
-export const CollectionItemContent = () => {
+export const CollectionPage = () => {
   const [collection, setCollection] = React.useState<ServerCorpus>(null);
   const [sources, setSources] = React.useState<ServerSource[]>(null);
   const [keywords, setKeywords] = React.useState<ServerKeyword[]>(null);
@@ -154,21 +154,21 @@ export const CollectionItemContent = () => {
           </p>
           <div>
             <strong>Keywords:</strong>{" "}
-            <KeywordContent
+            <Keyword
               keywords={keywords}
               onDelete={deleteKeywordHandler}
             />
           </div>
           <div>
             <strong>Languages:</strong>{" "}
-            <LanguagesContent
+            <Languages
               languages={languages}
               onDelete={deleteLanguageHandler}
             />
           </div>
           <strong>Sources:</strong>{" "}
           {sources.map((source, index) => (
-            <SourceItemDropdown
+            <SourcePreview
               key={index}
               source={source}
               corpusId={collection.id}
@@ -177,7 +177,7 @@ export const CollectionItemContent = () => {
         </>
       )}
       {collectionsState.editColMode && (
-        <NewCollection
+        <CollectionForm
           show={showForm}
           onEdit={editHandler}
           edit={collectionsState.editColMode}

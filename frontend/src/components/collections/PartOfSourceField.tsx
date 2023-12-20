@@ -30,12 +30,6 @@ export const PartOfSourceField = (props: PartOfSourceFieldProps) => {
       return;
     }
 
-    const warning = window.confirm(
-      "Are you sure you wish to delete this source from this corpus?"
-    );
-
-    if (warning === false) return;
-
     await deleteSourceFromCorpus(props.corpusId, source.id);
     props.setValue(
       "sourceIds",

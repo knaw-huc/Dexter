@@ -24,7 +24,7 @@ const DeleteIconStyled = styled(DeleteIcon)`
   }
 `;
 
-export const SourceItem = (props: SourceItemProps) => {
+export const Source = (props: SourceItemProps) => {
     const { dispatchSources } = React.useContext(sourcesContext);
     const {dispatchError} = useContext(errorContext)
 

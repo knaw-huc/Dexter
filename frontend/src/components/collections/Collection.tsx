@@ -24,7 +24,7 @@ const DeleteIconStyled = styled(DeleteIcon)`
   }
 `;
 
-export function CollectionItem(props: CollectionItemProps) {
+export function Collection(props: CollectionItemProps) {
     const { dispatchCollections } = React.useContext(collectionsContext)
     const {dispatchError} = useContext(errorContext)
 

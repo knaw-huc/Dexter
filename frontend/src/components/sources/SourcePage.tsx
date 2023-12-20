@@ -12,8 +12,8 @@ import { sourcesContext } from "../../state/sources/sourcesContext";
 import { deleteKeywordFromSourceWithWarning } from "../../utils/deleteKeywordFromSourceWithWarning";
 import { deleteLanguageFromSourceWithWarning } from "../../utils/deleteLanguageFromSourceWithWarning";
 import { getKeywordsSources, getLanguagesSources, getSourceById } from "../../utils/API";
-import { KeywordContent } from "../keywords/KeywordContent";
-import { LanguagesContent } from "../languages/LanguagesContent";
+import { Keyword } from "../keywords/Keyword";
+import { Languages } from "../languages/Languages";
 import { SourceForm } from "./SourceForm";
 
 export const SourcePage = () => {
@@ -116,14 +116,14 @@ export const SourcePage = () => {
                     </p>
                     <div>
                         <strong>Keywords:</strong>{" "}
-                        <KeywordContent
+                        <Keyword
                             keywords={keywords}
                             onDelete={deleteKeywordHandler}
                         />
                     </div>
                     <div>
                         <strong>Languages:</strong>{" "}
-                        <LanguagesContent
+                        <Languages
                             languages={languages}
                             onDelete={deleteLanguageHandler}
                         />
