@@ -28,16 +28,16 @@ export const CollectionItemContent = () => {
   const [sources, setSources] = React.useState<ServerSource[]>(null);
   const [keywords, setKeywords] = React.useState<ServerKeyword[]>(null);
   const [languages, setLanguages] = React.useState<ServerLanguage[]>(null);
-    const {setError} = useContext(errorContext)
+    const {dispatchError} = useContext(errorContext)
 
   const params = useParams();
 
-  const { collectionsState, collectionsDispatch } =
+  const { collectionsState, dispatchCollections } =
     React.useContext(collectionsContext);
   const [showForm, setShowForm] = React.useState(false);
 
   const formShowHandler = () => {
-    collectionsDispatch({
+    dispatchCollections({
       type: Actions.SET_TOEDITCOL,
       toEditCol: collection,
     });
@@ -50,7 +50,7 @@ export const CollectionItemContent = () => {
   };
 
   const editHandler = (boolean: boolean) => {
-    collectionsDispatch({
+    dispatchCollections({
       type: Actions.SET_EDITCOLMODE,
       editColMode: boolean,
     });
@@ -58,7 +58,7 @@ export const CollectionItemContent = () => {
 
   const doGetCollectionById = async (id: string) => {
     const response = await getCollectionById(id)
-        .catch(setError);
+        .catch(dispatchError);
     if(!response) {
         return;
     }

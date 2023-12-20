@@ -10,8 +10,8 @@ import {errorContext} from "../state/error/errorContext"
 
 export function LoginAvatar() {
     const [isLoggingIn, setLoggingIn] = useState(false)
-    const {setUser} = useContext(userContext)
-    const {setError} = useContext(errorContext)
+    const {dispatchUser} = useContext(userContext)
+    const {dispatchError} = useContext(errorContext)
 
     useEffect(() => {
         if (!isLoggingIn) {
@@ -27,13 +27,13 @@ export function LoginAvatar() {
     function tryLogin() {
         login()
             .then(
-                r => setUser({username: r.name})
+                r => dispatchUser({username: r.name})
             ).catch(
                 e => {
                     if(e.response.status === 401) {
-                        setError(new Error("Could not login: username & password incorrect"))
+                        dispatchError(new Error("Could not login: username & password incorrect"))
                     } else {
-                        setError(new Error("Error while logging in"))
+                        dispatchError(new Error("Error while logging in"))
                     }
                 }
         )

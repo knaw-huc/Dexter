@@ -15,20 +15,20 @@ const FilterRow = styled.div`
 `;
 
 export function SourcesList() {
-  const { sources, setSources } = React.useContext(sourcesContext);
+  const { sourcesState, dispatchSources } = React.useContext(sourcesContext);
   const [showForm, setShowForm] = React.useState(false);
-    const {setError} = useContext(errorContext)
+    const {dispatchError} = useContext(errorContext)
   const refetchSources = async () => {
     getSources().then(function (sources) {
-      setSources({
+      dispatchSources({
         type: Actions.SET_SOURCES,
         sources: sources,
       });
-    }).catch(setError);
+    }).catch(dispatchError);
   };
 
   const handleSelected = (selected: ServerSource | undefined) => {
-    return setSources({
+    return dispatchSources({
       type: Actions.SET_SELECTEDSOURCE,
       selectedSource: selected,
     });
@@ -60,8 +60,8 @@ export function SourcesList() {
           refetch={refetchSources}
         />
       )}
-      {sources.sources &&
-        sources.sources.map((source: ServerSource, index: number) => (
+      {sourcesState.sources &&
+        sourcesState.sources.map((source: ServerSource, index: number) => (
           <SourceItem
             key={index}
             sourceId={index}

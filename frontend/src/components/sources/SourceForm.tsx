@@ -82,7 +82,7 @@ const formToServer = (data: ServerSource) => {
 }
 
 export function SourceForm(props: NewSourceProps) {
-    const {sources} = React.useContext(sourcesContext)
+    const {sourcesState} = React.useContext(sourcesContext)
     const {
         register,
         handleSubmit,
@@ -292,7 +292,7 @@ export function SourceForm(props: NewSourceProps) {
             />
             <p style={{color: "red"}}>{errors.rights?.message}</p>
             <Label>Access</Label>
-            <AccessField control={control} edit={sources.editSourceMode}/>
+            <AccessField control={control} edit={sourcesState.editSourceMode}/>
 
             <Label>Location</Label>
             <TextFieldStyled
@@ -315,14 +315,14 @@ export function SourceForm(props: NewSourceProps) {
                 control={control}
                 sourceId={props.sourceToEdit && props.sourceToEdit.id}
                 setValueSource={setValue}
-                edit={sources.editSourceMode}
+                edit={sourcesState.editSourceMode}
             />
             <Label>Languages</Label>
             <LanguagesField
                 control={control}
                 sourceId={props.sourceToEdit && props.sourceToEdit.id}
                 setValueSource={setValue}
-                edit={sources.editSourceMode}
+                edit={sourcesState.editSourceMode}
             />
             <Button variant="contained" type="submit">
                 Submit

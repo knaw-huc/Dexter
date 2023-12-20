@@ -23,11 +23,11 @@ export const SourcePage = () => {
 
     const params = useParams();
 
-    const { sources, setSources } = React.useContext(sourcesContext);
+    const { sourcesState, dispatchSources } = React.useContext(sourcesContext);
     const [showForm, setShowForm] = React.useState(false);
 
     const formShowHandler = () => {
-        setSources({
+        dispatchSources({
             type: Actions.SET_TOEDITSOURCE,
             toEditSource: source,
         });
@@ -40,7 +40,7 @@ export const SourcePage = () => {
     };
 
     const editHandler = (boolean: boolean) => {
-        setSources({
+        dispatchSources({
             type: Actions.SET_EDITSOURCEMODE,
             editSourceMode: boolean,
         });
@@ -130,12 +130,12 @@ export const SourcePage = () => {
                     </div>
                 </>
             )}
-            {sources.editSourceMode && (
+            {sourcesState.editSourceMode && (
                 <SourceForm
                     show={showForm}
                     onEdit={editHandler}
-                    edit={sources.editSourceMode}
-                    sourceToEdit={sources.toEditSource}
+                    edit={sourcesState.editSourceMode}
+                    sourceToEdit={sourcesState.toEditSource}
                     onClose={formCloseHandler}
                     refetchSource={refetchSource}
                 />

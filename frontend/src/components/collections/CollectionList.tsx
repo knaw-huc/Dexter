@@ -15,22 +15,22 @@ const FilterRow = styled.div`
 `
 
 export function CollectionList() {
-    const {collectionsState, collectionsDispatch} =
+    const {collectionsState, dispatchCollections} =
         useContext(collectionsContext)
     const [showForm, setShowForm] = React.useState(false)
-    const {setError} = useContext(errorContext)
+    const {dispatchError} = useContext(errorContext)
 
     const refetchCollections = () => {
         getCollections().then(function (collections) {
-            collectionsDispatch({
+            dispatchCollections({
                 type: Actions.SET_COLLECTIONS,
                 collections: collections,
             })
-        }).catch(setError)
+        }).catch(dispatchError)
     }
 
     const handleSelected = (selected?: ServerCorpus) => {
-        return collectionsDispatch({type: Actions.SET_SELECTEDCOLLECTION, selectedCollection: selected})
+        return dispatchCollections({type: Actions.SET_SELECTEDCOLLECTION, selectedCollection: selected})
     }
 
     const formShowHandler = () => {

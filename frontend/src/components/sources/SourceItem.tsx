@@ -25,8 +25,8 @@ const DeleteIconStyled = styled(DeleteIcon)`
 `;
 
 export const SourceItem = (props: SourceItemProps) => {
-    const { setSources } = React.useContext(sourcesContext);
-    const {setError} = useContext(errorContext)
+    const { dispatchSources } = React.useContext(sourcesContext);
+    const {dispatchError} = useContext(errorContext)
 
     const toggleClick = () => {
         console.log(props.source.id);
@@ -42,11 +42,11 @@ export const SourceItem = (props: SourceItemProps) => {
 
         await deleteSource(id);
         getSources().then(function (sources) {
-            setSources({
+            dispatchSources({
                 type: Actions.SET_SOURCES,
                 sources: sources,
             });
-        }).catch(setError);
+        }).catch(dispatchError);
     };
 
     return (

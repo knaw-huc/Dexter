@@ -81,9 +81,9 @@ const formToServer = (data: ServerCorpus) => {
 }
 
 export function NewCollection(props: NewCollectionProps) {
-    const {sources} = React.useContext(sourcesContext)
+    const {sourcesState} = React.useContext(sourcesContext)
     const {collectionsState} = React.useContext(collectionsContext)
-    const {setError} = useContext(errorContext)
+    const {dispatchError} = useContext(errorContext)
     const {
         register,
         handleSubmit,
@@ -322,7 +322,7 @@ export function NewCollection(props: NewCollectionProps) {
                     <Label>Add sources to corpus</Label>
                     <PartOfSourceField
                         control={control}
-                        sources={sources.sources}
+                        sources={sourcesState.sources}
                         corpusId={props.colToEdit && props.colToEdit.id}
                         setValue={setValue}
                         edit={collectionsState.editColMode}

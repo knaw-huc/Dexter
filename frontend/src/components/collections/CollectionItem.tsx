@@ -25,8 +25,8 @@ const DeleteIconStyled = styled(DeleteIcon)`
 `;
 
 export function CollectionItem(props: CollectionItemProps) {
-    const { collectionsDispatch } = React.useContext(collectionsContext)
-    const {setError} = useContext(errorContext)
+    const { dispatchCollections } = React.useContext(collectionsContext)
+    const {dispatchError} = useContext(errorContext)
 
   const toggleClick = () => {
     props.onSelect(props.collection);
@@ -40,14 +40,14 @@ export function CollectionItem(props: CollectionItemProps) {
     if (warning === false) return;
 
         await deleteCollection(collection.id)
-            .catch(setError);
+            .catch(dispatchError);
       getCollections()
             .then(function (collections) {
-                collectionsDispatch({
+                dispatchCollections({
                     type: Actions.SET_COLLECTIONS,
                     collections: collections
                 })
-            }).catch(setError);
+            }).catch(dispatchError);
     }
 
   return (

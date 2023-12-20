@@ -7,12 +7,12 @@ import {
 
 interface CollectionsContext {
   collectionsState: CollectionsState;
-  collectionsDispatch: React.Dispatch<CollectionsAction>;
+  dispatchCollections: React.Dispatch<CollectionsAction>;
 }
 
 const initCollectionsContext: CollectionsContext = {
   collectionsState: initState,
-  collectionsDispatch: null,
+  dispatchCollections: null,
 };
 
 export const collectionsContext = React.createContext<CollectionsContext>(
