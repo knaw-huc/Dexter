@@ -16,12 +16,12 @@ interface PartOfSourceFieldProps {
   edit: boolean;
 }
 
-export const PartOfSourceField = (props: PartOfSourceFieldProps) => {
+export const SelectSourceField = (props: PartOfSourceFieldProps) => {
   const { control } = props;
   const [inputValue, setInputValue] = React.useState("");
   const selectedItems = useWatch({ control, name: "sourceIds" });
 
-  const deleteSourceFromSourceHandler = async (source: ServerSource) => {
+  const deleteSourceFromCorpusHandler = async (source: ServerSource) => {
     if (!props.edit) {
       props.setValue(
         "sourceIds",
@@ -73,7 +73,7 @@ export const PartOfSourceField = (props: PartOfSourceFieldProps) => {
                     key={index}
                     {...getTagProps({ index })}
                     onDelete={() => {
-                      deleteSourceFromSourceHandler(source);
+                      deleteSourceFromCorpusHandler(source);
                     }}
                   />
                 ))

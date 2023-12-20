@@ -22,7 +22,7 @@ import {
 } from "../../utils/API"
 import {KeywordsField} from "../keywords/KeywordsField"
 import {LanguagesField} from "../languages/LanguagesField"
-import {PartOfSourceField} from "./PartOfSourceField"
+import {SelectSourceField} from "./SelectSourceField"
 import {SubCorpusField} from "./SubCorpusField"
 import {errorContext} from "../../state/error/errorContext"
 import ScrollableModal from "../common/ScrollableModal"
@@ -320,7 +320,7 @@ export function CollectionForm(props: NewCollectionProps) {
                         edit={collectionsState.editColMode}
                     />
                     <Label>Add sources to corpus</Label>
-                    <PartOfSourceField
+                    <SelectSourceField
                         control={control}
                         sources={sourcesState.sources}
                         corpusId={props.colToEdit && props.colToEdit.id}
