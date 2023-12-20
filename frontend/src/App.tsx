@@ -1,5 +1,5 @@
 import React from "react"
-import {Route, Routes} from "react-router-dom"
+import {Navigate, Route, Routes} from "react-router-dom"
 import {CollectionList} from "./components/collections/CollectionList"
 import {SourcesList} from "./components/sources/SourcesList"
 import {Page} from "./components/Page"
@@ -15,6 +15,7 @@ export function App() {
         <Providers>
             <Routes>
                 <Route path="/" element={<Page/>}>
+                    <Route path="/" element={<Navigate to="/corpora"/>}/>
                     <Route path="/corpora" element={<CollectionList/>}/>
                     <Route path="/corpora/:corpusId" element={<CollectionItemContent/>}/>
                     <Route path="/sources" element={<SourcesList/>}/>

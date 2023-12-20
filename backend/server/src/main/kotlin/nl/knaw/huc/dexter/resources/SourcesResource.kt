@@ -67,7 +67,6 @@ class SourcesResource(private val jdbi: Jdbi) {
             log.info("deleteSource[${user.name}] deleting: $src")
             dao.delete(id)
             Response.noContent().build()
-
         }
 
     @GET

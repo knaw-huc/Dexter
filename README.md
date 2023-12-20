@@ -4,6 +4,8 @@ This project aims at building a much-needed solution for referencing and for cre
 
 ## Development
 
+Checkout `development` branch.
+
 - Start database:
 ```shell
 docker-compose up -d postgres
