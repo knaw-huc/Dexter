@@ -8,7 +8,6 @@ import * as yup from "yup"
 import {ServerCorpus, ServerKeyword, ServerLanguage, ServerSource,} from "../../model/DexterModel"
 import {collectionsContext} from "../../state/collections/collectionContext"
 import {sourcesContext} from "../../state/sources/sourcesContext"
-import {AccessField} from "../access/AccessField"
 import {
     addKeywordsToCorpus,
     addLanguagesToCorpus,
@@ -26,6 +25,8 @@ import {SelectSourceField} from "./SelectSourceField"
 import {SubCorpusField} from "./SubCorpusField"
 import {errorContext} from "../../state/error/errorContext"
 import ScrollableModal from "../common/ScrollableModal"
+import {ValidatedSelectField} from "../common/ValidatedSelectField"
+import {accessOptions} from "../../model/AccessOptions"
 
 type NewCollectionProps = {
     refetch?: () => void;
@@ -91,6 +92,7 @@ export function CollectionForm(props: NewCollectionProps) {
         setValue,
         control,
         formState: {errors},
+        watch
     } = useForm<ServerCorpus>({
         resolver: yupResolver(schema),
         mode: "onBlur",
@@ -103,7 +105,6 @@ export function CollectionForm(props: NewCollectionProps) {
         },
     })
     const onSubmit: SubmitHandler<ServerCorpus> = async (data) => {
-        console.log(data)
 
         if (!props.edit) {
             const dataToServer = formToServer(data)
@@ -118,7 +119,7 @@ export function CollectionForm(props: NewCollectionProps) {
                 (await addSourcesToCorpus(corpusId, dataToServer.sourceIds))
                 await props.refetch()
             } catch (error) {
-                console.log(error)
+                dispatchError(error)
             }
             props.onClose()
         } else {
@@ -162,7 +163,7 @@ export function CollectionForm(props: NewCollectionProps) {
                     await addSourcesToCorpus(id, updatedDataToServer.sourceIds)
                     await props.refetchCol()
                 } catch (error) {
-                    console.log(error)
+                    dispatchError(error)
                 }
             }
             doUpdateCollection(props.colToEdit.id, data)
@@ -212,6 +213,7 @@ export function CollectionForm(props: NewCollectionProps) {
             fields.map((field: any) => {
                 setValue(field, data[field])
             })
+            register("access")
         }
 
         if (props.edit && props.colToEdit) {
@@ -265,24 +267,14 @@ export function CollectionForm(props: NewCollectionProps) {
                         {...register("rights", {required: true})}
                     />
                     <p style={{color: "red"}}>{errors.rights?.message}</p>
-                    <Label>Access</Label>
-                    <AccessField
-                        control={control}
-                        edit={collectionsState.editColMode}
+                    <ValidatedSelectField
+                        label="Access"
+                        errorMessage={errors.access?.message}
+                        selectedOption={watch("access")}
+                        onSelectOption={v => setValue("access", v)}
+                        options={accessOptions}
                     />
-                    {/* <Label>Access</Label>
-            <TextFieldStyled
-              error={errors.access ? true : false}
-              select
-              fullWidth
-              // defaultValue=""
-              inputProps={register("access", { required: true })}
-            >
-              <MenuItem value="Open">Open</MenuItem>
-              <MenuItem value="Restricted">Restricted</MenuItem>
-              <MenuItem value="Closed">Closed</MenuItem>
-            </TextFieldStyled>
-            <p style={{ color: "red" }}>{errors.access?.message}</p> */}
+
                     <Label>Location</Label>
                     <TextFieldStyled
                         fullWidth

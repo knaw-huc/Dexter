@@ -138,7 +138,6 @@ class CorporaResource(private val jdbi: Jdbi) {
             dao.getLanguages(corpus.id)
         }
 
-
     @DELETE
     @Path("$ID_PATH/$LANGUAGES/{languageId}")
     fun deleteLanguage(

@@ -29,7 +29,6 @@ export const Source = (props: SourceItemProps) => {
     const {dispatchError} = useContext(errorContext)
 
     const toggleClick = () => {
-        console.log(props.source.id);
         props.onSelect(props.source);
     };
 

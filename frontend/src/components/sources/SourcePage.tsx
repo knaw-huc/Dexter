@@ -52,11 +52,9 @@ export const SourcePage = () => {
 
         const kws = await getKeywordsSources(response.id);
         setKeywords(kws);
-        console.log(kws);
 
         const langs = await getLanguagesSources(response.id);
         setLanguages(langs);
-        console.log(langs);
     };
 
     React.useEffect(() => {

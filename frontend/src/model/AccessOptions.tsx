@@ -1,0 +1,1 @@
+export const accessOptions = ["Open", "Restricted", "Closed"]

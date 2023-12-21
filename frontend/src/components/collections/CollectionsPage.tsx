@@ -3,7 +3,7 @@ import React, {useContext, useEffect} from "react"
 import {ServerCorpus} from "../../model/DexterModel"
 import {Actions} from "../../state/actions"
 import {collectionsContext} from "../../state/collections/collectionContext"
-import {Collection} from "./Collection"
+import {CollectionLink} from "./CollectionLink"
 import {CollectionForm} from "./CollectionForm"
 import styled from "@emotion/styled"
 import {errorContext} from "../../state/error/errorContext"
@@ -60,17 +60,20 @@ export function CollectionsPage() {
                     refetch={refetchCollections}
                 />
             )}
-            {collectionsState.collections &&
-                collectionsState.collections.map(
-                    (collection: ServerCorpus, index: number) => (
-                        <Collection
-                            key={index}
-                            collectionId={index}
-                            collection={collection}
-                            onSelect={handleSelected}
-                        />
-                    )
-                )}
+            {collectionsState.collections && (
+                <ul>
+                    {collectionsState.collections.map(
+                        (collection: ServerCorpus, index: number) => (
+                            <CollectionLink
+                                key={index}
+                                collectionId={index}
+                                collection={collection}
+                                onSelect={handleSelected}
+                            />
+                        )
+                    )}
+                </ul>
+            )}
         </>
     )
 }

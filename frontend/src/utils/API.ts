@@ -306,7 +306,7 @@ export const deleteKeywordFromSource = async (
 
 export const addSourcesToCorpus = async (
     corpusId: string,
-    sourceIds: string
+    sourceIds: string[]
 ): Promise<ServerSource[]> => {
     const response = await fetch(`/api/corpora/${corpusId}/sources`, {
         method: "POST",

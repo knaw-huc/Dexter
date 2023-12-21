@@ -1,31 +1,55 @@
-import styled from "@emotion/styled"
 import {yupResolver} from "@hookform/resolvers/yup"
 import Button from "@mui/material/Button"
-import TextField from "@mui/material/TextField"
-import React, {useState} from "react"
-import {SubmitHandler, useForm, UseFormRegisterReturn} from "react-hook-form"
+import React, {useEffect, useState} from "react"
+import {SubmitHandler, useForm} from "react-hook-form"
 import * as yup from "yup"
-import {Access, ServerCorpus, ServerKeyword, ServerLanguage, ServerSource, Source,} from "../../model/DexterModel"
+import {ServerCorpus, ServerKeyword, ServerLanguage, ServerSource, Source} from "../../model/DexterModel"
 import {sourcesContext} from "../../state/sources/sourcesContext"
-import {AccessField} from "../access/AccessField"
 import {
     addKeywordsToSource,
     addLanguagesToSource,
+    addSourcesToCorpus,
     createSource,
     getKeywordsSources,
     getLanguagesSources,
     getSourceById,
+    postImport,
+    ResponseError,
     updateSource,
 } from "../../utils/API"
 import ScrollableModal from "../common/ScrollableModal"
 import {KeywordsField} from "../keywords/KeywordsField"
 import {LanguagesField} from "../languages/LanguagesField"
 import {Alert} from "@mui/material"
-import {postImport} from "../../utils/API"
 import isUrl from "../../utils/isUrl"
 import {useDebounce} from "../../utils/useDebounce"
+import {Label} from "../common/Label"
+import {ValidatedSelectField} from "../common/ValidatedSelectField"
+import {ERROR_MESSAGE_CLASS, ErrorMsg} from "../common/ErrorMsg"
+import {TextFieldWithError} from "./TextFieldWithError"
+import {TextFieldStyled} from "./TextFieldStyled"
+import {accessOptions} from "../../model/AccessOptions"
 
-type NewSourceProps = {
+const formFields = [
+    "externalRef",
+    "title",
+    "description",
+    "creator",
+    "rights",
+    "access",
+    "location",
+    "earliest",
+    "latest",
+    "notes",
+    "keywords",
+    "languages",
+]
+
+type BackendError = Pick<Error, "message">
+type FormField = string | "generic"
+type BackendErrorByField = { field: FormField, error: BackendError }
+
+type SourceFormProps = {
     refetch?: () => void;
     show?: boolean;
     onClose?: () => void;
@@ -33,30 +57,15 @@ type NewSourceProps = {
     sourceToEdit?: ServerSource | undefined;
     onEdit?: (boolean: boolean) => void;
     refetchSource?: () => void;
+    corpusId?: string;
 };
-
-const TextFieldStyled = styled(TextField)`
-  display: block;
-`
-
-const Label = styled.label`
-  font-weight: bold;
-`
-const Select = styled.select`
-  display: block;
-  text-transform: capitalize;
-`
-
-const Option = styled.option`
-  text-transform: capitalize;
-`
 
 const schema = yup.object({
     title: yup.string().required("Title is required"),
     description: yup.string().required("Description is required"),
     creator: yup.string().required("Creator is required"),
     rights: yup.string().required("Rights is required"),
-    access: yup.string().required("Access is required"),
+    access: yup.string().oneOf(accessOptions).required("Access is required"),
 })
 
 const formToServer = (data: ServerSource) => {
@@ -76,12 +85,10 @@ const formToServer = (data: ServerSource) => {
             return corpus.id
         })
     }
-
-    console.log(newData)
     return newData
 }
 
-export function SourceForm(props: NewSourceProps) {
+export function SourceForm(props: SourceFormProps) {
     const {sourcesState} = React.useContext(sourcesContext)
     const {
         register,
@@ -101,7 +108,7 @@ export function SourceForm(props: NewSourceProps) {
     const [isExternalRefLoading, setExternalRefLoading] = useState(false)
     const externalRef = watch("externalRef")
     const debouncedExternalRef = useDebounce<string>(externalRef, 500)
-
+    const [backendError, setBackendError] = useState<BackendErrorByField>()
 
     async function importMetadata() {
         if (isExternalRefLoading) {
@@ -127,7 +134,7 @@ export function SourceForm(props: NewSourceProps) {
     }
 
     const onSubmit: SubmitHandler<ServerSource> = async (data) => {
-        console.log(data)
+        setBackendError(null)
 
         if (!props.edit) {
             const dataToServer = formToServer(data)
@@ -138,47 +145,68 @@ export function SourceForm(props: NewSourceProps) {
                 (await addKeywordsToSource(sourceId, dataToServer.keywords))
                 dataToServer.languages &&
                 (await addLanguagesToSource(sourceId, dataToServer.languages))
+                props.corpusId &&
+                (await addSourcesToCorpus(props.corpusId, [sourceId]))
                 await props.refetch()
+                props.onClose()
             } catch (error) {
-                console.log(error)
+                await setBackendErrors(error)
             }
-            props.onClose()
         } else {
-            const updatedDataToServer: any = data
-            if (updatedDataToServer.keywords) {
-                updatedDataToServer.keywords = updatedDataToServer.keywords.map(
-                    (kw: ServerKeyword) => {
-                        return kw.id
-                    }
-                )
-            }
-
-            if (updatedDataToServer.languages) {
-                updatedDataToServer.languages = updatedDataToServer.languages.map(
-                    (language: ServerLanguage) => {
-                        return language.id
-                    }
-                )
-            }
-
             const doUpdateSource = async (id: string, updatedData: ServerSource) => {
                 try {
+                    const updatedDataToServer: any = data
+                    if (updatedDataToServer.keywords) {
+                        updatedDataToServer.keywords = updatedDataToServer.keywords.map(
+                            (kw: ServerKeyword) => {
+                                return kw.id
+                            }
+                        )
+                    }
+
+                    if (updatedDataToServer.languages) {
+                        updatedDataToServer.languages = updatedDataToServer.languages.map(
+                            (language: ServerLanguage) => {
+                                return language.id
+                            }
+                        )
+                    }
                     await updateSource(id, updatedData)
                     await addKeywordsToSource(id, updatedDataToServer.keywords)
                     await addLanguagesToSource(id, updatedDataToServer.languages)
                     await props.refetchSource()
                 } catch (error) {
-                    console.log(error)
+                    await setBackendErrors(error)
                 }
             }
             doUpdateSource(props.sourceToEdit.id, data)
             props.onClose()
         }
+
+        async function setBackendErrors(error: ResponseError) {
+            const errorResponseBody = await error.response.json()
+            if (errorResponseBody.message.includes("SOURCES_UNIQUE_TITLE_CONSTRAINT")) {
+                setBackendError({field: "title", error: {message: "Title already exists"}})
+            } else {
+                setBackendError({field: "generic", error: {message: errorResponseBody.message}})
+            }
+        }
     }
+
+    useEffect(() => {
+        const hasErrors = Object.keys(errors).length || backendError?.field
+        if (!hasErrors) {
+            return
+        }
+        document
+            .querySelector(`.${ERROR_MESSAGE_CLASS}`)
+            ?.scrollIntoView({behavior: "smooth"})
+    }, [errors, backendError])
+
 
     React.useEffect(() => {
         const doGetSourceById = async (id: string) => {
-            const data: any = await getSourceById(id)
+            const data: ServerSource = await getSourceById(id)
             const keywords = await getKeywordsSources(id)
             const languages = await getLanguagesSources(id)
 
@@ -189,23 +217,7 @@ export function SourceForm(props: NewSourceProps) {
                 return language
             })
 
-            data.access = data.access.charAt(0).toUpperCase() + data.access.slice(1)
-
-            const fields = [
-                "externalRef",
-                "title",
-                "description",
-                "creator",
-                "rights",
-                "access",
-                "location",
-                "earliest",
-                "latest",
-                "notes",
-                "keywords",
-                "languages",
-            ]
-            fields.map((field: any) => {
+            formFields.map((field: keyof ServerSource) => {
                 setValue(field, data[field])
             })
         }
@@ -227,18 +239,31 @@ export function SourceForm(props: NewSourceProps) {
         reset() //Should later be moved to a useEffect
     }
 
+    function getErrorMessage(field: keyof ServerSource): string | undefined {
+        if (errors[field]?.message) {
+            return errors[field].message
+        }
+        if (backendError?.field === field) {
+            return backendError.error.message
+        }
+    }
+
     return <ScrollableModal
         show={props.show}
         handleClose={handleClose}
     >
         <h1>Create new source</h1>
         <form onSubmit={handleSubmit(onSubmit)}>
-            <Label>External reference</Label>
-            <TextFieldStyled
-                fullWidth
-                margin="dense"
+            {backendError?.field === "generic" && <Alert className={ERROR_MESSAGE_CLASS} severity="error">
+                Could not save: {backendError.error.message}
+            </Alert>}
+
+            <TextFieldWithError
+                label="External Reference"
                 {...register("externalRef")}
+                errorMessage={getErrorMessage("externalRef")}
             />
+
             <Alert
                 severity="info"
                 aria-disabled={isExternalRefLoading}
@@ -257,59 +282,74 @@ export function SourceForm(props: NewSourceProps) {
             {externalRefError && <Alert severity="error">
                 Could not import: {externalRefError.message}
             </Alert>}
-            <Label>Title</Label>
-            <TextFieldStyled
-                fullWidth
-                margin="dense"
-                error={errors.title ? true : false}
-                {...register("title", {required: true})}
-            />
-            <p style={{color: "red"}}>{errors.title?.message}</p>
-            <Label>Description</Label>
-            <TextFieldStyled
-                fullWidth
-                margin="dense"
+
+            <>
+                <Label
+                    style={{textTransform: "capitalize"}}
+                >
+                    Title
+                </Label>
+                <TextFieldStyled
+                    fullWidth={true}
+                    margin="dense"
+                    {...register("title")}
+                    error={!!getErrorMessage("title")}
+                />
+                {getErrorMessage("title") && <ErrorMsg msg={getErrorMessage("title")}/>}
+            </>
+
+            <TextFieldWithError
+                label="Description"
+                {...register("description", {required: true})}
+                errorMessage={getErrorMessage("description")}
                 multiline
                 rows={6}
-                error={errors.description ? true : false}
-                {...register("description", {required: true})}
             />
-            <p style={{color: "red"}}>{errors.description?.message}</p>
-            <Label>Creator</Label>
-            <TextFieldStyled
-                fullWidth
-                margin="dense"
-                error={errors.creator ? true : false}
-                {...register("creator", {required: true})}
-            />
-            <p style={{color: "red"}}>{errors.creator?.message}</p>
-            <Label>Rights</Label>
-            <TextFieldStyled
-                fullWidth
-                margin="dense"
-                error={errors.rights ? true : false}
-                {...register("rights", {required: true})}
-            />
-            <p style={{color: "red"}}>{errors.rights?.message}</p>
-            <Label>Access</Label>
-            <AccessField control={control} edit={sourcesState.editSourceMode}/>
 
-            <Label>Location</Label>
-            <TextFieldStyled
-                fullWidth
-                margin="dense"
+            <TextFieldWithError
+                label="Creator"
+                {...register("creator")}
+                errorMessage={getErrorMessage("creator")}
+            />
+
+            <TextFieldWithError
+                label="Rights"
+                {...register("rights")}
+                errorMessage={getErrorMessage("rights")}
+            />
+
+            <ValidatedSelectField
+                label="Access"
+                errorMessage={getErrorMessage("access")}
+                selectedOption={watch("access")}
+                onSelectOption={(e) => setValue("access", e)}
+                options={accessOptions}
+            />
+
+            <TextFieldWithError
+                label="Location"
                 {...register("location")}
+                errorMessage={getErrorMessage("location")}
             />
-            <Label>Earliest</Label>
-            <TextFieldStyled
-                fullWidth
-                margin="dense"
+
+            <TextFieldWithError
+                label="Earliest"
                 {...register("earliest")}
+                errorMessage={getErrorMessage("earliest")}
             />
-            <Label>Latest</Label>
-            <TextFieldStyled fullWidth margin="dense" {...register("latest")} />
-            <Label>Notes</Label>
-            <TextFieldStyled fullWidth margin="dense" {...register("notes")} />
+
+            <TextFieldWithError
+                label="Latest"
+                {...register("latest")}
+                errorMessage={getErrorMessage("latest")}
+            />
+
+            <TextFieldWithError
+                label="Notes"
+                {...register("notes")}
+                errorMessage={getErrorMessage("notes")}
+            />
+
             <Label>Keywords</Label>
             <KeywordsField
                 control={control}
@@ -317,6 +357,8 @@ export function SourceForm(props: NewSourceProps) {
                 setValueSource={setValue}
                 edit={sourcesState.editSourceMode}
             />
+            <ErrorMsg msg={getErrorMessage("keywords")}/>
+
             <Label>Languages</Label>
             <LanguagesField
                 control={control}
@@ -324,6 +366,8 @@ export function SourceForm(props: NewSourceProps) {
                 setValueSource={setValue}
                 edit={sourcesState.editSourceMode}
             />
+            <ErrorMsg msg={getErrorMessage("languages")}/>
+
             <Button variant="contained" type="submit">
                 Submit
             </Button>
@@ -334,16 +378,5 @@ export function SourceForm(props: NewSourceProps) {
     </ScrollableModal>
 }
 
-export function AccessSelectionField(props: { registered: UseFormRegisterReturn }) {
-    const options = Object
-        .values(Access)
-    return <Select {...props.registered}>
-        {options.map(access => <Option
-            key={access}
-            value={access}
-        >
-            {access}
-        </Option>)
-        }
-    </Select>
-}
+
+
