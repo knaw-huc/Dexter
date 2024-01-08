@@ -7,7 +7,7 @@ export interface CollectionsState {
   collections: ServerCorpus[];
   filteredCollections: ServerCorpus[];
   selectedCollection: ServerCorpus | undefined;
-  editColMode: boolean;
+  editCollection: boolean;
   toEditCol: ServerCorpus | undefined;
 }
 
@@ -15,7 +15,7 @@ export const initState: CollectionsState = {
   collections: null,
   filteredCollections: null,
   selectedCollection: undefined,
-  editColMode: false,
+  editCollection: false,
   toEditCol: undefined,
 };
 

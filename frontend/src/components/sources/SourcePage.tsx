@@ -15,6 +15,7 @@ import { getKeywordsSources, getLanguagesSources, getSourceById } from "../../ut
 import { Keyword } from "../keywords/Keyword";
 import { Languages } from "../languages/Languages";
 import { SourceForm } from "./SourceForm";
+import {EditButton} from "../common/EditButton"
 
 export const SourcePage = () => {
     const [source, setSource] = React.useState<ServerSource>(null);
@@ -79,9 +80,7 @@ export const SourcePage = () => {
         <div>
             {source && keywords && languages && (
                 <>
-                    <Button variant="contained" onClick={formShowHandler}>
-                        Edit
-                    </Button>
+                    <EditButton onEdit={formShowHandler}/>
                     <p>
                         <strong>External reference:</strong> {source.externalRef}
                     </p>

@@ -9,7 +9,7 @@ import {red} from "@mui/material/colors"
 import {deleteCollection, getCollections} from "../../utils/API"
 import {errorContext} from "../../state/error/errorContext"
 
-type CollectionItemProps = {
+type CorpusLinkProps = {
     collectionId: React.Key;
     collection: ServerCorpus;
     onSelect: (selected: ServerCorpus | undefined) => void;
@@ -25,7 +25,7 @@ const DeleteIconStyled = styled(DeleteIcon)`
   }
 `
 
-export function CollectionLink(props: CollectionItemProps) {
+export function CorpusLink(props: CorpusLinkProps) {
     const {dispatchCollections} = React.useContext(collectionsContext)
     const {dispatchError} = useContext(errorContext)
 

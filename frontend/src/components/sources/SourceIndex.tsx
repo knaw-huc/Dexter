@@ -4,17 +4,17 @@ import {Actions} from "../../state/actions"
 import {sourcesContext} from "../../state/sources/sourcesContext"
 import {Source} from "./Source"
 import styled from "@emotion/styled"
-import Button from "@mui/material/Button"
 import {getSources} from "../../utils/API"
 import {errorContext} from "../../state/error/errorContext"
 import {SourceForm} from "./SourceForm"
+import {AddNewSourceButton} from "./AddNewSourceButton"
 
 const FilterRow = styled.div`
   display: flex;
   flex-direction: row;
 `;
 
-export function SourcesPage() {
+export function SourceIndex() {
   const { sourcesState, dispatchSources } = React.useContext(sourcesContext);
   const [showForm, setShowForm] = React.useState(false);
     const {dispatchError} = useContext(errorContext)
@@ -34,29 +34,15 @@ export function SourcesPage() {
     });
   };
 
-  const formShowHandler = () => {
-    setShowForm(true);
-  };
-
-  const formCloseHandler = () => {
-    setShowForm(false);
-  };
-
   return (
     <>
       <FilterRow>
-        <Button
-          variant="contained"
-          style={{ marginLeft: "10px" }}
-          onClick={formShowHandler}
-        >
-          Add new source
-        </Button>
+          <AddNewSourceButton onClick={() => setShowForm(true)}/>
       </FilterRow>
       {showForm && (
         <SourceForm
           show={showForm}
-          onClose={formCloseHandler}
+          onClose={() => setShowForm(false)}
           refetch={refetchSources}
         />
       )}

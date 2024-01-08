@@ -252,7 +252,7 @@ export function SourceForm(props: SourceFormProps) {
         show={props.show}
         handleClose={handleClose}
     >
-        <h1>Create new source</h1>
+        <h1>{props.edit ? "Edit source" : "Create new source"}</h1>
         <form onSubmit={handleSubmit(onSubmit)}>
             {backendError?.field === "generic" && <Alert className={ERROR_MESSAGE_CLASS} severity="error">
                 Could not save: {backendError.error.message}

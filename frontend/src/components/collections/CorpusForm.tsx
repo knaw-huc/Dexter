@@ -81,7 +81,7 @@ const formToServer = (data: ServerCorpus) => {
     return newData
 }
 
-export function CollectionForm(props: NewCollectionProps) {
+export function CorpusForm(props: NewCollectionProps) {
     const {sourcesState} = React.useContext(sourcesContext)
     const {collectionsState} = React.useContext(collectionsContext)
     const {dispatchError} = useContext(errorContext)
@@ -239,13 +239,13 @@ export function CollectionForm(props: NewCollectionProps) {
                 show={props.show}
                 handleClose={handleClose}
             >
-                <h1>Create new corpus</h1>
+                <h1>{props.edit ? "Edit corpus" : "Create new corpus"}</h1>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <Label>Title</Label>
                     <TextFieldStyled
                         fullWidth
                         margin="dense"
-                        error={errors.title ? true : false}
+                        error={!!errors.title}
                         {...register("title")}
                     />
                     <p style={{color: "red"}}>{errors.title?.message}</p>
@@ -255,7 +255,7 @@ export function CollectionForm(props: NewCollectionProps) {
                         margin="dense"
                         multiline
                         rows={6}
-                        error={errors.description ? true : false}
+                        error={!!errors.description}
                         {...register("description", {required: true})}
                     />
                     <p style={{color: "red"}}>{errors.description?.message}</p>
@@ -263,7 +263,7 @@ export function CollectionForm(props: NewCollectionProps) {
                     <TextFieldStyled
                         fullWidth
                         margin="dense"
-                        error={errors.rights ? true : false}
+                        error={!!errors.rights}
                         {...register("rights", {required: true})}
                     />
                     <p style={{color: "red"}}>{errors.rights?.message}</p>
@@ -302,14 +302,14 @@ export function CollectionForm(props: NewCollectionProps) {
                         control={control}
                         corpusId={props.colToEdit && props.colToEdit.id}
                         setValueCorpus={setValue}
-                        edit={collectionsState.editColMode}
+                        edit={collectionsState.editCollection}
                     />
                     <Label>Languages</Label>
                     <LanguagesField
                         control={control}
                         corpusId={props.colToEdit && props.colToEdit.id}
                         setValueCorpus={setValue}
-                        edit={collectionsState.editColMode}
+                        edit={collectionsState.editCollection}
                     />
                     <Label>Add sources to corpus</Label>
                     <SelectSourceField
@@ -317,7 +317,7 @@ export function CollectionForm(props: NewCollectionProps) {
                         sources={sourcesState.sources}
                         corpusId={props.colToEdit && props.colToEdit.id}
                         setValue={setValue}
-                        edit={collectionsState.editColMode}
+                        edit={collectionsState.editCollection}
                     />
                     <Label>Add corpus to which main corpus?</Label>
                     <SubCorpusField

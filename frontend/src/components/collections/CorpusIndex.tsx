@@ -3,18 +3,20 @@ import React, {useContext, useEffect} from "react"
 import {ServerCorpus} from "../../model/DexterModel"
 import {Actions} from "../../state/actions"
 import {collectionsContext} from "../../state/collections/collectionContext"
-import {CollectionLink} from "./CollectionLink"
-import {CollectionForm} from "./CollectionForm"
+import {CorpusLink} from "./CorpusLink"
+import {CorpusForm} from "./CorpusForm"
 import styled from "@emotion/styled"
 import {errorContext} from "../../state/error/errorContext"
 import {getCollections} from "../../utils/API"
+import {AddIconStyled} from "../common/AddIconStyled"
+import {ButtonWithIcon} from "../common/ButtonWithIcon"
 
 const FilterRow = styled.div`
   display: flex;
   flex-direction: row;
 `
 
-export function CollectionsPage() {
+export function CorpusIndex() {
     const {collectionsState, dispatchCollections} =
         useContext(collectionsContext)
     const [showForm, setShowForm] = React.useState(false)
@@ -44,17 +46,17 @@ export function CollectionsPage() {
     return (
         <>
             <FilterRow>
-                {/* <FilterBySubject selected={filteredSubject} onChangeFilter={filterChangeHandler} toFilter="Collections" /> */}
-                <Button
+                <ButtonWithIcon
                     variant="contained"
                     style={{marginLeft: "10px"}}
                     onClick={formShowHandler}
                 >
-                    Add new corpus
-                </Button>
+                    <AddIconStyled/>
+                    Corpus
+                </ButtonWithIcon>
             </FilterRow>
             {showForm && (
-                <CollectionForm
+                <CorpusForm
                     show={showForm}
                     onClose={formCloseHandler}
                     refetch={refetchCollections}
@@ -64,7 +66,7 @@ export function CollectionsPage() {
                 <ul>
                     {collectionsState.collections.map(
                         (collection: ServerCorpus, index: number) => (
-                            <CollectionLink
+                            <CorpusLink
                                 key={index}
                                 collectionId={index}
                                 collection={collection}

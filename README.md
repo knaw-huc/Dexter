@@ -83,50 +83,43 @@ graph TD
     START((start))
 
     AU[action of user]
-    AR[🤖 action of rolodex]
+    AR["🤖 action of rolodex"]
     EN[/entities/]
     
-    START
-    --> LOGIN[login@rolodex]
-    --> HOME[view dashboard]
+    START --> LOGIN["login@rolodex"]
+    LOGIN --> HOME[view dashboard]
     
-    START
-    --> SEARCH[search@AAMU website]
-    --> VIEWITEM[view specific source]
-    --> COPYHANDLER[copy source handle]
-    --> ADDHANDLER[add handle to corpus source]
-    --> IMPORTHANDLER["🤖 import meta data"]
-    --> ADDMETADATA["🤖 add meta data to corpus source"]
-    --> VCI[/corpus source/]
+    START --> SEARCH["search@AAMU website"]
+    SEARCH --> VIEWITEM[view specific source]
+    VIEWITEM --> COPYHANDLER[copy source handle]
+    COPYHANDLER --> ADDHANDLER[add handle to corpus source]
+    ADDHANDLER --> IMPORTHANDLER["🤖 import meta data"]
+    IMPORTHANDLER --> ADDMETADATA["🤖 add meta data to corpus source"]
+    ADDMETADATA --> VCI[/corpus source/]
     
     %% corpus sources:
-    HOME
-    --> CVC[create corpus]
-    --> VC[/corpus/]
+    HOME --> CVC[create corpus]
+    CVC --> VC[/corpus/]
     
-    VC
-    --> AVC[add corpus source]
-    --> VCI
+    VC --> AVC[add corpus source]
+    AVC --> VCI
     
     %% tag:
-    HOME
-    --> CTAG[create tag]
-    --> TAG[/tag/]
-    --> ATAG[add tag]
-    --> VCI
+    HOME --> CTAG[create tag]
+    CTAG --> TAG[/tag/]
+    TAG --> ATAG[add tag]
+    ATAG --> VCI
     
     TAG-->SORTVC
     
-    HOME
-    --> VIEWVC[view corpus]
-    --> SORTVC[sort/filter corpus]
-    --> VIEWVCI[view corpus source]
-    --> VCI
+    HOME --> VIEWVC[view corpus]
+    VIEWVC --> SORTVC[sort/filter corpus]
+    SORTVC --> VIEWVCI[view corpus source]
+    VIEWVCI --> VCI
     
-    VCI
-    -.-> |"(must have, possibly after demo)"|ANN[annotate]
-    --> ANNT[annotate text in recogito-js]
-    --> WANN[/web annotation/]
+    VCI -.-> |"(must have, possibly after demo)"|ANN[annotate]
+    ANN --> ANNT[annotate text in recogito-js]
+    ANNT --> WANN[/web annotation/]
 ```
 
 ## Workflow including search and multimedia annotating
