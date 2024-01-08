@@ -1,13 +1,13 @@
 import React from "react"
 import {Navigate, Route, Routes} from "react-router-dom"
-import {CorpusIndex} from "./components/collections/CorpusIndex"
+import {CorpusIndex} from "./components/corpus/CorpusIndex"
 import {Page} from "./components/Page"
-import {CorpusPage} from "./components/collections/CorpusPage"
+import {CorpusPage} from "./components/corpus/CorpusPage"
 import CssBaseline from "@mui/material/CssBaseline"
-import {KeywordsPage} from "./components/keywords/KeywordsPage"
-import {SourcePage} from "./components/sources/SourcePage"
+import {KeywordsPage} from "./components/keyword/KeywordsPage"
+import {SourcePage} from "./components/source/SourcePage"
 import {Providers} from "./Providers"
-import {SourceIndex} from "./components/sources/SourceIndex"
+import {SourceIndex} from "./components/source/SourceIndex"
 
 export function App() {
     return <>

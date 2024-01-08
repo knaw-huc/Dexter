@@ -19,8 +19,8 @@ import {
     getSourcesInCorpus,
     updateCollection,
 } from "../../utils/API"
-import {KeywordsField} from "../keywords/KeywordsField"
-import {LanguagesField} from "../languages/LanguagesField"
+import {KeywordsField} from "../keyword/KeywordsField"
+import {LanguagesField} from "../language/LanguagesField"
 import {SelectSourceField} from "./SelectSourceField"
 import {SubCorpusField} from "./SubCorpusField"
 import {errorContext} from "../../state/error/errorContext"

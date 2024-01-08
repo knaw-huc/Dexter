@@ -12,8 +12,8 @@ import { sourcesContext } from "../../state/sources/sourcesContext";
 import { deleteKeywordFromSourceWithWarning } from "../../utils/deleteKeywordFromSourceWithWarning";
 import { deleteLanguageFromSourceWithWarning } from "../../utils/deleteLanguageFromSourceWithWarning";
 import { getKeywordsSources, getLanguagesSources, getSourceById } from "../../utils/API";
-import { Keyword } from "../keywords/Keyword";
-import { Languages } from "../languages/Languages";
+import { Keyword } from "../keyword/Keyword";
+import { Languages } from "../language/Languages";
 import { SourceForm } from "./SourceForm";
 import {EditButton} from "../common/EditButton"
 

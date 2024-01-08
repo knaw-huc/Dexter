@@ -18,8 +18,8 @@ import {
     updateSource,
 } from "../../utils/API"
 import ScrollableModal from "../common/ScrollableModal"
-import {KeywordsField} from "../keywords/KeywordsField"
-import {LanguagesField} from "../languages/LanguagesField"
+import {KeywordsField} from "../keyword/KeywordsField"
+import {LanguagesField} from "../language/LanguagesField"
 import {Alert} from "@mui/material"
 import isUrl from "../../utils/isUrl"
 import {useDebounce} from "../../utils/useDebounce"
