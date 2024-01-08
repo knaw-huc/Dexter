@@ -6,17 +6,11 @@ import { Actions } from "../actions";
 export interface CollectionsState {
   collections: ServerCorpus[];
   filteredCollections: ServerCorpus[];
-  selectedCollection: ServerCorpus | undefined;
-  editCollection: boolean;
-  toEditCol: ServerCorpus | undefined;
 }
 
 export const initState: CollectionsState = {
   collections: null,
   filteredCollections: null,
-  selectedCollection: undefined,
-  editCollection: false,
-  toEditCol: undefined,
 };
 
 interface SetCollections {
@@ -29,27 +23,9 @@ interface SetFilteredCollections {
   filteredCollections: ServerCorpus[];
 }
 
-interface SetSelectedCollection {
-  type: Actions.SET_SELECTEDCOLLECTION;
-  selectedCollection: ServerCorpus | undefined;
-}
-
-interface SetEditColMode {
-  type: Actions.SET_EDITCOLMODE;
-  editColMode: boolean;
-}
-
-interface SetToEditCol {
-  type: Actions.SET_TOEDITCOL;
-  toEditCol: ServerCorpus | undefined;
-}
-
 export type CollectionsAction =
   | SetCollections
-  | SetFilteredCollections
-  | SetSelectedCollection
-  | SetEditColMode
-  | SetToEditCol;
+  | SetFilteredCollections;
 
 export const useCollectionsState = (): [
   CollectionsState,
@@ -67,12 +43,6 @@ const collectionsReducer = (
       return setCollections(state, action);
     case Actions.SET_FILTEREDCOLLECTIONS:
       return setFilteredCollections(state, action);
-    case Actions.SET_SELECTEDCOLLECTION:
-      return setSelectedCollection(state, action);
-    case Actions.SET_EDITCOLMODE:
-      return setEditColMode(state, action);
-    case Actions.SET_TOEDITCOL:
-      return setToEditCol(state, action);
     default:
       break;
   }
@@ -94,29 +64,5 @@ function setFilteredCollections(
   return {
     ...state,
     filteredCollections: action.filteredCollections,
-  };
-}
-
-function setSelectedCollection(
-  state: CollectionsState,
-  action: SetSelectedCollection
-) {
-  return {
-    ...state,
-    selectedCollection: action.selectedCollection,
-  };
-}
-
-function setEditColMode(state: CollectionsState, action: SetEditColMode) {
-  return {
-    ...state,
-    editColMode: action.editColMode,
-  };
-}
-
-function setToEditCol(state: CollectionsState, action: SetToEditCol) {
-  return {
-    ...state,
-    toEditCol: action.toEditCol,
   };
 }

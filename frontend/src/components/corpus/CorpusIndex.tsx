@@ -10,6 +10,7 @@ import {errorContext} from "../../state/error/errorContext"
 import {getCollections} from "../../utils/API"
 import {AddIconStyled} from "../common/AddIconStyled"
 import {ButtonWithIcon} from "../common/ButtonWithIcon"
+import {Grid} from "@mui/material"
 
 const FilterRow = styled.div`
   display: flex;
@@ -31,25 +32,12 @@ export function CorpusIndex() {
         }).catch(dispatchError)
     }
 
-    const handleSelected = (selected?: ServerCorpus) => {
-        return dispatchCollections({type: Actions.SET_SELECTEDCOLLECTION, selectedCollection: selected})
-    }
-
-    const formShowHandler = () => {
-        setShowForm(true)
-    }
-
-    const formCloseHandler = () => {
-        setShowForm(false)
-    }
-
     return (
         <>
             <FilterRow>
                 <ButtonWithIcon
                     variant="contained"
-                    style={{marginLeft: "10px"}}
-                    onClick={formShowHandler}
+                    onClick={() => setShowForm(true)}
                 >
                     <AddIconStyled/>
                     Corpus
@@ -58,23 +46,29 @@ export function CorpusIndex() {
             {showForm && (
                 <CorpusForm
                     show={showForm}
-                    onClose={formCloseHandler}
+                    onClose={() => setShowForm(false)}
                     refetch={refetchCollections}
                 />
             )}
             {collectionsState.collections && (
-                <ul>
+                <Grid
+                    container
+                    spacing={2}
+                    sx={{pl: 0.1, pr: 1, mt: 2, mb: 2}}
+                >
                     {collectionsState.collections.map(
-                        (collection: ServerCorpus, index: number) => (
+                        (collection: ServerCorpus, index: number) => <Grid
+                            item
+                            xs={4}
+                            height="150px"
+                            key={index}
+                        >
                             <CorpusLink
-                                key={index}
                                 collectionId={index}
                                 collection={collection}
-                                onSelect={handleSelected}
                             />
-                        )
-                    )}
-                </ul>
+                        </Grid>)}
+                </Grid>
             )}
         </>
     )

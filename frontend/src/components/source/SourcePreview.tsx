@@ -7,6 +7,7 @@ import {styleInlineIcon} from "../../utils/styleInlineIcon"
 import {useNavigate} from "react-router-dom"
 import ClearIcon from "@mui/icons-material/Clear"
 import {Card, CardContent} from "@mui/material"
+import {ClippedP} from "../common/ClippedP"
 
 interface SourceItemDropdownProps {
     source: ServerSource;
@@ -45,7 +46,7 @@ export const SourcePreview = (props: SourceItemDropdownProps) => {
             >
                 {props.source.title}
             </HeaderLink>
-            <p>{props.source.description}</p>
+            <ClippedP>{props.source.description}</ClippedP>
         </CardContent>
     </Card>
 }

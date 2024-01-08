@@ -1,6 +1,6 @@
 import React, {useContext} from "react"
 import {ServerCorpus} from "../../model/DexterModel"
-import {Link} from "react-router-dom"
+import {Link, useNavigate} from "react-router-dom"
 import styled from "@emotion/styled"
 import {collectionsContext} from "../../state/collections/collectionContext"
 import {Actions} from "../../state/actions"
@@ -8,11 +8,13 @@ import DeleteIcon from "@mui/icons-material/Delete"
 import {red} from "@mui/material/colors"
 import {deleteCollection, getCollections} from "../../utils/API"
 import {errorContext} from "../../state/error/errorContext"
+import {Card, CardContent} from "@mui/material"
+import {HeaderLink} from "../common/HeaderLink"
+import {ClippedP} from "../common/ClippedP"
 
 type CorpusLinkProps = {
     collectionId: React.Key;
     collection: ServerCorpus;
-    onSelect: (selected: ServerCorpus | undefined) => void;
 };
 
 const DeleteIconStyled = styled(DeleteIcon)`
@@ -28,11 +30,7 @@ const DeleteIconStyled = styled(DeleteIcon)`
 export function CorpusLink(props: CorpusLinkProps) {
     const {dispatchCollections} = React.useContext(collectionsContext)
     const {dispatchError} = useContext(errorContext)
-
-    const toggleClick = () => {
-        props.onSelect(props.collection)
-    }
-
+    const navigate = useNavigate()
     const handleDelete = async (collection: ServerCorpus) => {
         const warning = window.confirm(
             "Are you sure you wish to delete this corpus?"
@@ -51,16 +49,26 @@ export function CorpusLink(props: CorpusLinkProps) {
             }).catch(dispatchError)
     }
 
-    return <li key={props.collectionId}>
-        <Link
-            to={`/corpora/${props.collection.id}`}
-            key={props.collectionId}
-            onClick={toggleClick}
+    return <Card
+        style={{height: "100%"}}
+    >
+        <CardContent
+            style={{height: "100%"}}
         >
-            {props.collection.parentId
-                ? props.collection.title + " (" + "subcorpus" + ")"
-                : props.collection.title}
-        </Link>
-        <DeleteIconStyled onClick={() => handleDelete(props.collection)}/>
-    </li>
+            <DeleteIconStyled
+                style={{float: "right"}}
+                onClick={() => handleDelete(props.collection)}
+            />
+            <HeaderLink
+                key={props.collectionId}
+                onClick={() => navigate(`/corpora/${props.collection.id}`)}
+            >
+                {props.collection.parentId
+                    ? props.collection.title + " (" + "subcorpus" + ")"
+                    : props.collection.title}
+            </HeaderLink>
+            <ClippedP>{props.collection.description}</ClippedP>
+        </CardContent>
+    </Card>
 }
+

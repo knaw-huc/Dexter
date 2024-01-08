@@ -32,9 +32,8 @@ type NewCollectionProps = {
     refetch?: () => void;
     show?: boolean;
     onClose?: () => void;
-    edit?: boolean;
-    colToEdit?: ServerCorpus | undefined;
-    onEdit?: (boolean: boolean) => void;
+    isEditing?: boolean;
+    corpusToEdit?: ServerCorpus | undefined;
     refetchCol?: () => void;
 };
 
@@ -106,7 +105,7 @@ export function CorpusForm(props: NewCollectionProps) {
     })
     const onSubmit: SubmitHandler<ServerCorpus> = async (data) => {
 
-        if (!props.edit) {
+        if (!props.isEditing) {
             const dataToServer = formToServer(data)
             try {
                 const newCollection = await createCollection(dataToServer)
@@ -166,7 +165,7 @@ export function CorpusForm(props: NewCollectionProps) {
                     dispatchError(error)
                 }
             }
-            doUpdateCollection(props.colToEdit.id, data)
+            doUpdateCollection(props.corpusToEdit.id, data)
             props.onClose()
         }
     }
@@ -216,30 +215,20 @@ export function CorpusForm(props: NewCollectionProps) {
             register("access")
         }
 
-        if (props.edit && props.colToEdit) {
-            doGetCollectionById(props.colToEdit.id)
+        if (props.isEditing && props.corpusToEdit) {
+            doGetCollectionById(props.corpusToEdit.id)
         } else {
             return
         }
-    }, [props.edit, setValue])
-
-    const handleClose = () => {
-        props.onClose()
-
-        if (props.edit) {
-            props.onEdit(false)
-        }
-
-        reset() //Should later be moved to a useEffect
-    }
+    }, [props.isEditing, setValue])
 
     return (
         <>
             <ScrollableModal
                 show={props.show}
-                handleClose={handleClose}
+                handleClose={props.onClose}
             >
-                <h1>{props.edit ? "Edit corpus" : "Create new corpus"}</h1>
+                <h1>{props.isEditing ? "Edit corpus" : "Create new corpus"}</h1>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <Label>Title</Label>
                     <TextFieldStyled
@@ -300,24 +289,24 @@ export function CorpusForm(props: NewCollectionProps) {
                     <Label>Keywords</Label>
                     <KeywordsField
                         control={control}
-                        corpusId={props.colToEdit && props.colToEdit.id}
+                        corpusId={props.corpusToEdit && props.corpusToEdit.id}
                         setValueCorpus={setValue}
-                        edit={collectionsState.editCollection}
+                        edit={props.isEditing}
                     />
                     <Label>Languages</Label>
                     <LanguagesField
                         control={control}
-                        corpusId={props.colToEdit && props.colToEdit.id}
+                        corpusId={props.corpusToEdit && props.corpusToEdit.id}
                         setValueCorpus={setValue}
-                        edit={collectionsState.editCollection}
+                        edit={props.isEditing}
                     />
                     <Label>Add sources to corpus</Label>
                     <SelectSourceField
                         control={control}
                         sources={sourcesState.sources}
-                        corpusId={props.colToEdit && props.colToEdit.id}
+                        corpusId={props.corpusToEdit && props.corpusToEdit.id}
                         setValue={setValue}
-                        edit={collectionsState.editCollection}
+                        edit={props.isEditing}
                     />
                     <Label>Add corpus to which main corpus?</Label>
                     <SubCorpusField
@@ -328,7 +317,7 @@ export function CorpusForm(props: NewCollectionProps) {
                         Submit
                     </Button>
                 </form>
-                <Button variant="contained" onClick={handleClose}>
+                <Button variant="contained" onClick={props.onClose}>
                     Close
                 </Button>
             </ScrollableModal>

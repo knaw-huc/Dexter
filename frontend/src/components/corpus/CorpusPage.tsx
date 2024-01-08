@@ -53,34 +53,21 @@ export const CorpusPage = () => {
     const [keywords, setKeywords] = React.useState<ServerKeyword[]>(null)
     const [languages, setLanguages] = React.useState<ServerLanguage[]>(null)
     const {dispatchError} = useContext(errorContext)
-
     const params = useParams()
+
     const corpusId = params.corpusId
 
-    const {collectionsState, dispatchCollections} = useContext(collectionsContext)
     const {sourcesState} = useContext(sourcesContext)
-    const [showCollectionForm, setShowCollectionForm] = React.useState(false)
+    const [showCorpusForm, setShowCorpusForm] = React.useState(false)
     const [showSourceForm, setShowSourceForm] = React.useState(false)
     const [showLinkSourceForm, setShowLinkSourceForm] = React.useState(false)
 
     const handleShowForm = () => {
-        dispatchCollections({
-            type: Actions.SET_TOEDITCOL,
-            toEditCol: corpus,
-        })
-        handleEdit(true)
-        setShowCollectionForm(true)
+        setShowCorpusForm(true)
     }
 
     const handleCloseForm = () => {
-        setShowCollectionForm(false)
-    }
-
-    const handleEdit = (boolean: boolean) => {
-        dispatchCollections({
-            type: Actions.SET_EDITCOLMODE,
-            editColMode: boolean,
-        })
+        setShowCorpusForm(false)
     }
 
     const doGetCollectionById = async (id: string) => {
@@ -196,7 +183,7 @@ export const CorpusPage = () => {
                     <AddNewSourceButton onClick={() => setShowSourceForm(true)}/>
                     <LinkSourceButton onClick={() => setShowLinkSourceForm(true)}/>
 
-                    <Grid
+                    {sources && <Grid
                         container
                         spacing={2}
                         sx={{pl: 0.1, pr: 1, mt: 2, mb: 2}}
@@ -215,7 +202,7 @@ export const CorpusPage = () => {
                                 />
                             </Grid>
                         ))}
-                    </Grid>
+                    </Grid>}
 
                     {showLinkSourceForm && <LinkSourceForm
                         all={sourcesState.sources}
@@ -226,12 +213,11 @@ export const CorpusPage = () => {
                     />}
                 </>
             )}
-            {collectionsState.editCollection && (
+            {showCorpusForm && (
                 <CorpusForm
-                    show={showCollectionForm}
-                    onEdit={handleEdit}
-                    edit={collectionsState.editCollection}
-                    colToEdit={collectionsState.toEditCol}
+                    isEditing={true}
+                    show={showCorpusForm}
+                    corpusToEdit={corpus}
                     onClose={handleCloseForm}
                     refetchCol={refetchCollection}
                 />
