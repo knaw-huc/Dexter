@@ -69,7 +69,7 @@ export const CorpusPage = () => {
         const langs = await getLanguagesCorpora(response.id)
         setLanguages(langs)
 
-        doGetSourcesInCorpus(corpusId)
+        await doGetSourcesInCorpus(corpusId)
     }
 
     useEffect(() => {

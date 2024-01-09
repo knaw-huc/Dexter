@@ -243,6 +243,14 @@ export function CorpusForm(props: NewCollectionProps) {
     const allSources = sourcesState.sources
     const selectedSources = watch("sources")
 
+    function unlinkSource(sourceId: string) {
+        return setValue("sources", selectedSources.filter(s => s.id !== sourceId))
+    }
+
+    function linkSource(sourceId: string) {
+        return setValue("sources", [...selectedSources, allSources.find(s => s.id === sourceId)])
+    }
+
     if(!isLoaded) {
         return null;
     }
@@ -328,8 +336,8 @@ export function CorpusForm(props: NewCollectionProps) {
                     <LinkSourceField
                         all={allSources}
                         selected={selectedSources}
-                        onLinkSource={sourceId => setValue("sources", [...selectedSources, allSources.find(s => s.id === sourceId)])}
-                        onUnlinkSource={sourceId => setValue("sources", selectedSources.filter(s => s.id !== sourceId))}
+                        onLinkSource={linkSource}
+                        onUnlinkSource={unlinkSource}
                     />
                     <Label>Add corpus to which main corpus?</Label>
                     <SubCorpusField
