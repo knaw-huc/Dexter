@@ -2,10 +2,17 @@ import styled from "@emotion/styled"
 import {yupResolver} from "@hookform/resolvers/yup"
 import Button from "@mui/material/Button"
 import TextField from "@mui/material/TextField"
-import React, {useContext} from "react"
+import React, {useContext, useState} from "react"
 import {SubmitHandler, useForm} from "react-hook-form"
 import * as yup from "yup"
-import {ServerCorpus, ServerKeyword, ServerLanguage, ServerSource,} from "../../model/DexterModel"
+import {
+    ServerCorpus,
+    ServerFormCorpus,
+    ServerKeyword,
+    ServerLanguage,
+    ServerResultCorpus,
+    ServerSource,
+} from "../../model/DexterModel"
 import {collectionsContext} from "../../state/collections/collectionContext"
 import {sourcesContext} from "../../state/sources/sourcesContext"
 import {
@@ -13,28 +20,27 @@ import {
     addLanguagesToCorpus,
     addSourcesToCorpus,
     createCollection,
+    deleteSourceFromCorpus,
     getCollectionById,
     getKeywordsCorpora,
     getLanguagesCorpora,
-    getSourcesInCorpus,
-    updateCollection,
+    getSourcesInCorpus, updateCorpus,
 } from "../../utils/API"
 import {KeywordsField} from "../keyword/KeywordsField"
 import {LanguagesField} from "../language/LanguagesField"
-import {SelectSourceField} from "./SelectSourceField"
 import {SubCorpusField} from "./SubCorpusField"
 import {errorContext} from "../../state/error/errorContext"
 import ScrollableModal from "../common/ScrollableModal"
 import {ValidatedSelectField} from "../common/ValidatedSelectField"
 import {accessOptions} from "../../model/AccessOptions"
+import {LinkSourceField} from "./LinkSourceField"
+import {Actions} from "../../state/actions"
 
 type NewCollectionProps = {
-    refetch?: () => void;
     show?: boolean;
     onClose?: () => void;
     isEditing?: boolean;
-    corpusToEdit?: ServerCorpus | undefined;
-    refetchCol?: () => void;
+    corpusToEdit?: ServerResultCorpus | undefined;
 };
 
 const TextFieldStyled = styled(TextField)`
@@ -87,7 +93,6 @@ export function CorpusForm(props: NewCollectionProps) {
     const {
         register,
         handleSubmit,
-        reset,
         setValue,
         control,
         formState: {errors},
@@ -98,100 +103,109 @@ export function CorpusForm(props: NewCollectionProps) {
         defaultValues: {
             keywords: [],
             languages: [],
-            sourceIds: [],
-            parentId: null,
+            sources: [],
+            parent: null,
             access: null,
         },
     })
-    const onSubmit: SubmitHandler<ServerCorpus> = async (data) => {
+    const [isInit, setInit] = useState(false)
+    const [isLoaded, setLoaded] = useState(false)
+    const {dispatchCollections} = React.useContext(collectionsContext)
+    const onSubmit: SubmitHandler<ServerCorpus> = async (data: ServerCorpus) => {
 
         if (!props.isEditing) {
-            const dataToServer = formToServer(data)
+            const serverCreateForm = formToServer(data)
             try {
-                const newCollection = await createCollection(dataToServer)
+                const newCollection = await createCollection(serverCreateForm)
                 const corpusId = newCollection.id
-                dataToServer.keywords &&
-                (await addKeywordsToCorpus(corpusId, dataToServer.keywords))
-                dataToServer.languages &&
-                (await addLanguagesToCorpus(corpusId, dataToServer.languages))
-                dataToServer.sourceIds &&
-                (await addSourcesToCorpus(corpusId, dataToServer.sourceIds))
-                await props.refetch()
+                serverCreateForm.keywords &&
+                (await addKeywordsToCorpus(corpusId, serverCreateForm.keywords))
+                serverCreateForm.languages &&
+                (await addLanguagesToCorpus(corpusId, serverCreateForm.languages))
+                serverCreateForm.sourceIds &&
+                (await addSourcesToCorpus(corpusId, serverCreateForm.sourceIds))
+
+                updateCollectionStore()
+
             } catch (error) {
                 dispatchError(error)
             }
-            props.onClose()
         } else {
-            const updatedDataToServer: any = data
-            if (updatedDataToServer.keywords) {
-                updatedDataToServer.keywords = updatedDataToServer.keywords.map(
-                    (kw: ServerKeyword) => {
-                        return kw.id
-                    }
-                )
-            }
-
-            if (updatedDataToServer.languages) {
-                updatedDataToServer.languages = updatedDataToServer.languages.map(
-                    (language: ServerLanguage) => {
-                        return language.id
-                    }
-                )
-            }
-
-            if (updatedDataToServer.sourceIds) {
-                updatedDataToServer.sourceIds = updatedDataToServer.sourceIds.map(
-                    (source: ServerSource) => {
-                        return source.id
-                    }
-                )
-            }
-
-            if (updatedDataToServer.parentId) {
-                updatedDataToServer.parentId = updatedDataToServer.parentId.id
-            }
-
-            const doUpdateCollection = async (
+            const submitCorpusToBackend = async (
                 id: string,
                 updatedData: ServerCorpus
             ) => {
                 try {
-                    await updateCollection(id, updatedData)
-                    await addKeywordsToCorpus(id, updatedDataToServer.keywords)
-                    await addLanguagesToCorpus(id, updatedDataToServer.languages)
-                    await addSourcesToCorpus(id, updatedDataToServer.sourceIds)
-                    await props.refetchCol()
+                    const serverUpdateForm: ServerFormCorpus = {
+                        ...data,
+                    }
+                    const keywordsUpdate = data.keywords.map(
+                        (kw: ServerKeyword) => {
+                            return kw.id
+                        }
+                    )
+                    await addKeywordsToCorpus(id, keywordsUpdate)
+
+                    const languagesUpdate = data.languages.map(
+                        (language: ServerLanguage) => {
+                            return language.id
+                        }
+                    )
+                    await addLanguagesToCorpus(id, languagesUpdate)
+
+                    if (serverUpdateForm.parentId) {
+                        serverUpdateForm.parentId = data.parent.id
+                    }
+
+                    await updateCorpus(id, updatedData)
+                    const sourceIdsUpdate = data.sources.map(s => s.id)
+                    const responseSources = await addSourcesToCorpus(id, sourceIdsUpdate)
+                    const idsToDelete = responseSources
+                        .map(s => s.id)
+                        .filter(ls => !sourceIdsUpdate.includes(ls))
+                    for (const idToDelete of idsToDelete) {
+                        await deleteSourceFromCorpus(id, idToDelete)
+                    }
+
+                    updateCollectionStore()
+
                 } catch (error) {
                     dispatchError(error)
                 }
             }
-            doUpdateCollection(props.corpusToEdit.id, data)
-            props.onClose()
+            submitCorpusToBackend(props.corpusToEdit.id, data)
+
         }
+
+        props.onClose()
+
+        function updateCollectionStore() {
+            const collectionsUpdate = [...collectionsState.collections]
+            const toReplace = collectionsUpdate.findIndex(c => c.id === data.id)
+            collectionsUpdate[toReplace] = data
+            dispatchCollections({
+                type: Actions.SET_COLLECTIONS,
+                collections: collectionsUpdate,
+            })
+        }
+
     }
 
     React.useEffect(() => {
         const doGetCollectionById = async (id: string) => {
-            const data: any = await getCollectionById(id)
-            const keywords = await getKeywordsCorpora(id)
-            const languages = await getLanguagesCorpora(id)
-            const sources = await getSourcesInCorpus(id)
+            setInit(true)
+            const serverCorpus = await getCollectionById(id)
+            const data: ServerCorpus = {
+                ...serverCorpus,
+                keywords: await getKeywordsCorpora(id),
+                languages: await getLanguagesCorpora(id),
+                sources: await getSourcesInCorpus(id),
+                parent: serverCorpus.parentId && await getCollectionById(serverCorpus.parentId)
+            }
 
-            data.keywords = keywords.map((keyword) => {
-                return keyword
-            })
-            data.languages = languages.map((language) => {
-                return language
-            })
-            data.sourceIds = sources.map((source) => {
-                return source
-            })
-
-            data.access = data.access.charAt(0).toUpperCase() + data.access.slice(1)
-
-            if (data.parentId) {
-                const parentId = data.parentId
-                data.parentId = await getCollectionById(parentId)
+            if (serverCorpus.parentId) {
+                const parentId = serverCorpus.parentId
+                data.parent = await getCollectionById(parentId)
             }
 
             const fields = [
@@ -207,21 +221,31 @@ export function CorpusForm(props: NewCollectionProps) {
                 "notes",
                 "keywords",
                 "languages",
-                "sourceIds",
+                "sources",
             ]
-            fields.map((field: any) => {
+            fields.map((field: keyof ServerCorpus) => {
                 setValue(field, data[field])
             })
             register("access")
+            setLoaded(true)
         }
-
+        if(isInit) {
+            return;
+        }
         if (props.isEditing && props.corpusToEdit) {
             doGetCollectionById(props.corpusToEdit.id)
         } else {
-            return
+            setInit(true)
+            setLoaded(true)
         }
-    }, [props.isEditing, setValue])
+    }, [isInit, isLoaded])
 
+    const allSources = sourcesState.sources
+    const selectedSources = watch("sources")
+
+    if(!isLoaded) {
+        return null;
+    }
     return (
         <>
             <ScrollableModal
@@ -301,12 +325,11 @@ export function CorpusForm(props: NewCollectionProps) {
                         edit={props.isEditing}
                     />
                     <Label>Add sources to corpus</Label>
-                    <SelectSourceField
-                        control={control}
-                        sources={sourcesState.sources}
-                        corpusId={props.corpusToEdit && props.corpusToEdit.id}
-                        setValue={setValue}
-                        edit={props.isEditing}
+                    <LinkSourceField
+                        all={allSources}
+                        selected={selectedSources}
+                        onLinkSource={sourceId => setValue("sources", [...selectedSources, allSources.find(s => s.id === sourceId)])}
+                        onUnlinkSource={sourceId => setValue("sources", selectedSources.filter(s => s.id !== sourceId))}
                     />
                     <Label>Add corpus to which main corpus?</Label>
                     <SubCorpusField

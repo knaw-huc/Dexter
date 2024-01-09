@@ -1,24 +1,72 @@
+type UUID = string;
+type LocalDate = string;
+type LocalDateTime = string;
+
+/**
+ * Corpus form as required by server
+ */
+export type ServerFormCorpus = {
+    title: string,
+    description: string,
+    rights: string,
+    access: Access,
+    parentId?: UUID,
+    location?: string,
+    earliest?: LocalDate,
+    latest?: LocalDate,
+    contributor?: string,
+    notes?: string
+}
+
+/**
+ * Corpus result as sent by server
+ */
+export type ServerResultCorpus = {
+    id: UUID,
+    parentId?: UUID,
+    title: string,
+    description: string,
+    rights: string,
+    access: Access,
+    location: string,
+    earliest?: LocalDateTime,
+    latest?: LocalDateTime,
+    contributor?: string,
+    notes?: string,
+    createdBy: UUID,
+    createdAt: LocalDateTime,
+    updatedAt: LocalDateTime
+}
+
+/**
+ * All server resources combined
+ */
 export interface ServerCorpus {
   id: string;
-  parentId: string | null;
+  parent?: {
+      id: string, title: string
+  };
   title: string;
   description: string;
   rights: string;
-  access: string;
-  location: string | null;
-  earliest: string | null;
-  latest: string | null;
-  contributor: string | null;
-  notes: string | null;
+  access: Access;
+  location?: string;
+  earliest?: string;
+  latest?: string;
+  contributor?: string;
+  notes?: string;
   createdBy: string;
   createdAt: string;
   updatedAt: string;
   keywords: ServerKeyword[];
   languages: ServerLanguage[];
-  sourceIds: string[];
+  sources: ServerSource[];
 }
 
 export interface FormCorpus {
+  sourceIds: string[]
+  languages: any
+  keywords: any
   title: string;
   description: string;
   rights: string;
@@ -57,9 +105,9 @@ export interface ServerKeyword {
 }
 
 export enum Access {
-    CLOSED = "closed",
-    RESTRICTED = "restricted",
-    OPEN = "open"
+    CLOSED = "Closed",
+    RESTRICTED = "Restricted",
+    OPEN = "Open"
 }
 
 export interface Source {

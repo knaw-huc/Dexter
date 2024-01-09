@@ -3,9 +3,10 @@ import {FormControl, MenuItem, Select, SelectProps} from "@mui/material"
 import {CustomFieldProps} from "./CustomFieldProps"
 import {Label} from "./Label"
 import {ErrorMsg} from "./ErrorMsg"
+import {Access} from "../../model/DexterModel"
 
 export type SelectFieldProps = SelectProps & CustomFieldProps & {
-    onSelectOption: (selected: string) => void
+    onSelectOption: (selected: Access) => void
     selectedOption: string,
     options: string[]
 };
@@ -21,7 +22,7 @@ export function ValidatedSelectField(props: SelectFieldProps) {
             <Select
                 value={selectedOption || "placeholder"}
                 onChange={(e) => {
-                    return onSelectOption(e.target.value)
+                    return onSelectOption(e.target.value as Access)
                 }}
             >
                <MenuItem

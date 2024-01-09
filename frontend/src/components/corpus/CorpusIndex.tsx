@@ -23,15 +23,6 @@ export function CorpusIndex() {
     const [showForm, setShowForm] = React.useState(false)
     const {dispatchError} = useContext(errorContext)
 
-    const refetchCollections = () => {
-        getCollections().then(function (collections) {
-            dispatchCollections({
-                type: Actions.SET_COLLECTIONS,
-                collections: collections,
-            })
-        }).catch(dispatchError)
-    }
-
     return (
         <>
             <FilterRow>
@@ -47,7 +38,6 @@ export function CorpusIndex() {
                 <CorpusForm
                     show={showForm}
                     onClose={() => setShowForm(false)}
-                    refetch={refetchCollections}
                 />
             )}
             {collectionsState.collections && (

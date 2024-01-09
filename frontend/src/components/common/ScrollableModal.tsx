@@ -18,15 +18,20 @@ const modalStyle = {
 
 type ScrollModalProps = PropsWithChildren & {
     show: boolean,
-    handleClose: () => void
+    handleClose: () => void,
+    fullHeight?: boolean
 }
 
 export default function ScrollableModal(props: ScrollModalProps) {
+    const newModalStyle = {... modalStyle}
+    if(props.fullHeight === false) {
+        delete newModalStyle.height;
+    }
     return <Modal
         open={props.show}
         onClose={props.handleClose}
     >
-        <Box sx={modalStyle}>
+        <Box sx={newModalStyle}>
             {props.children}
         </Box>
     </Modal>

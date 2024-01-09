@@ -1,4 +1,12 @@
-import {FormKeyword, ServerCorpus, ServerKeyword, ServerLanguage, ServerSource, Source} from "../model/DexterModel"
+import {
+    FormKeyword,
+    ServerCorpus, ServerFormCorpus,
+    ServerKeyword,
+    ServerLanguage,
+    ServerResultCorpus,
+    ServerSource,
+    Source
+} from "../model/DexterModel"
 
 const headers = {
     "Content-Type": "application/json"
@@ -38,7 +46,7 @@ export const getCollections = async (): Promise<ServerCorpus[]> => {
     return fetchValidated("/api/corpora")
 }
 
-export const getCollectionById = async (id: string): Promise<ServerCorpus> => {
+export const getCollectionById = async (id: string): Promise<ServerResultCorpus> => {
     return fetchValidated(`/api/corpora/${id}`)
 }
 
@@ -55,8 +63,8 @@ export const createCollection = async (
     return response.json()
 }
 
-export const updateCollection = async (
-    id: string, updatedCorpus: ServerCorpus
+export const updateCorpus = async (
+    id: string, updatedCorpus: ServerFormCorpus
 ): Promise<ServerCorpus> => {
     const path = `/api/corpora/${id}`
     const response = await fetch(path, {

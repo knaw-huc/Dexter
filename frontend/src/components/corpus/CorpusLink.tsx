@@ -63,7 +63,7 @@ export function CorpusLink(props: CorpusLinkProps) {
                 key={props.collectionId}
                 onClick={() => navigate(`/corpora/${props.collection.id}`)}
             >
-                {props.collection.parentId
+                {props.collection.parent
                     ? props.collection.title + " (" + "subcorpus" + ")"
                     : props.collection.title}
             </HeaderLink>

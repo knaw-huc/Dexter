@@ -1,6 +1,6 @@
 import React, {useContext, useEffect} from "react"
 import {Link, useParams} from "react-router-dom"
-import {ServerCorpus, ServerKeyword, ServerLanguage, ServerSource} from "../../model/DexterModel"
+import {ServerCorpus, ServerKeyword, ServerLanguage, ServerResultCorpus, ServerSource} from "../../model/DexterModel"
 import {collectionsContext} from "../../state/collections/collectionContext"
 import {Actions} from "../../state/actions"
 import {CorpusForm} from "./CorpusForm"
@@ -31,28 +31,13 @@ import {Grid} from "@mui/material"
 const Wrapper = styled.div`
   overflow: auto;
 `
-const gridContainer = {
-    display: "grid",
-    gridTemplateColumns: "repeat(5, 1fr)"
-}
-
-// Variable number of columns
-const gridContainer2 = {
-    display: "grid",
-    gridAutoColumns: "1fr",
-    gridAutoFlow: "column"
-}
-
-const gridItem = {
-    margin: "8px",
-    border: "1px solid red"
-}
 export const CorpusPage = () => {
-    const [corpus, setCorpus] = React.useState<ServerCorpus>(null)
+    const [corpus, setCorpus] = React.useState<ServerResultCorpus>(null)
     const [sources, setSources] = React.useState<ServerSource[]>(null)
     const [keywords, setKeywords] = React.useState<ServerKeyword[]>(null)
     const [languages, setLanguages] = React.useState<ServerLanguage[]>(null)
     const {dispatchError} = useContext(errorContext)
+    const {collectionsState} = useContext(collectionsContext)
     const params = useParams()
 
     const corpusId = params.corpusId
@@ -76,27 +61,24 @@ export const CorpusPage = () => {
         if (!response) {
             return
         }
-        setCorpus(response as ServerCorpus)
+        setCorpus(response)
 
         const kws = await getKeywordsCorpora(response.id)
         setKeywords(kws)
 
         const langs = await getLanguagesCorpora(response.id)
         setLanguages(langs)
-    }
 
-    const doGetSourcesInCorpus = async (corpusId: string) => {
-        const srcs = await getSourcesInCorpus(corpusId)
-        setSources(srcs)
+        doGetSourcesInCorpus(corpusId)
     }
 
     useEffect(() => {
         doGetCollectionById(corpusId)
-        doGetSourcesInCorpus(corpusId)
-    }, [corpusId])
+    }, [collectionsState, corpusId])
 
-    const refetchCollection = async () => {
-        await doGetCollectionById(corpusId)
+    const doGetSourcesInCorpus = async (corpusId: string) => {
+        const srcs = await getSourcesInCorpus(corpusId)
+        setSources(srcs)
     }
 
     const deleteLanguageHandler = async (language: ServerLanguage) => {
@@ -107,7 +89,6 @@ export const CorpusPage = () => {
         if (warning === false) return
 
         await deleteLanguageFromCorpus(corpusId, language.id)
-        await refetchCollection()
     }
 
     const deleteKeywordHandler = async (keyword: ServerKeyword) => {
@@ -118,8 +99,6 @@ export const CorpusPage = () => {
         if (warning === false) return
 
         await deleteKeywordFromCorpus(corpusId, keyword.id)
-
-        await refetchCollection()
     }
 
     const unlinkSource = async (corpusId: string, sourceId: string) => {
@@ -156,7 +135,7 @@ export const CorpusPage = () => {
                     <h1>{corpus.title || "Untitled"}</h1>
                     {corpus.description && <p>{corpus.description}</p>}
                     <p  style={{textTransform: "capitalize"}}>
-                        {["rights", "access", "location", "earliest", "latest", "contributor", "notes"].map((field: keyof ServerCorpus, i) => [
+                        {["rights", "access", "location", "earliest", "latest", "contributor", "notes"].map((field: keyof ServerResultCorpus, i) => [
                             i > 0 && <Spacer key={i}/>,
                             <SourceField
                                 key={field}
@@ -219,13 +198,11 @@ export const CorpusPage = () => {
                     show={showCorpusForm}
                     corpusToEdit={corpus}
                     onClose={handleCloseForm}
-                    refetchCol={refetchCollection}
                 />
             )}
             <SourceForm
                 show={showSourceForm}
                 onClose={() => setShowSourceForm(false)}
-                refetch={refetchCollection}
                 corpusId={corpusId}
             />
 
@@ -235,8 +212,8 @@ export const CorpusPage = () => {
 
 export function SourceField(
     props: {
-        fieldName: keyof ServerCorpus,
-        resource: ServerCorpus
+        fieldName: keyof ServerResultCorpus,
+        resource: ServerResultCorpus
     }
 ) {
     const value = String(props.resource[props.fieldName])
