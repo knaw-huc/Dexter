@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from "react"
+import React, {useContext, useEffect, useState} from "react"
 import {Link, useParams} from "react-router-dom"
 import {ServerKeyword, ServerLanguage, ServerResultCorpus, ServerSource} from "../../model/DexterModel"
 import {collectionsContext} from "../../state/collections/collectionContext"
@@ -7,7 +7,8 @@ import styled from "@emotion/styled"
 import {errorContext} from "../../state/error/errorContext"
 import {
     addSourcesToCorpus,
-    deleteKeywordFromCorpus, deleteKeywordFromSource,
+    deleteKeywordFromCorpus,
+    deleteKeywordFromSource,
     deleteLanguageFromCorpus,
     deleteSourceFromCorpus,
     getCollectionById,
@@ -26,15 +27,19 @@ import {sourcesContext} from "../../state/sources/sourcesContext"
 import _ from "lodash"
 import {Grid} from "@mui/material"
 import {KeywordList} from "../keyword/KeywordList"
+import {SourceField} from "./SourceField"
+import {Spacer} from "./Spacer"
+import {ButtonWithIcon} from "../common/ButtonWithIcon"
+import {FilterIconStyled} from "../common/FilterIconStyled"
 
 const Wrapper = styled.div`
   overflow: auto;
 `
 export const CorpusPage = () => {
-    const [corpus, setCorpus] = React.useState<ServerResultCorpus>(null)
-    const [sources, setSources] = React.useState<ServerSource[]>(null)
-    const [keywords, setKeywords] = React.useState<ServerKeyword[]>(null)
-    const [languages, setLanguages] = React.useState<ServerLanguage[]>(null)
+    const [corpus, setCorpus] = useState<ServerResultCorpus>(null)
+    const [sources, setSources] = useState<ServerSource[]>(null)
+    const [keywords, setKeywords] = useState<ServerKeyword[]>(null)
+    const [languages, setLanguages] = useState<ServerLanguage[]>(null)
     const {dispatchError} = useContext(errorContext)
     const {collectionsState} = useContext(collectionsContext)
     const params = useParams()
@@ -42,9 +47,10 @@ export const CorpusPage = () => {
     const corpusId = params.corpusId
 
     const {sourcesState} = useContext(sourcesContext)
-    const [showCorpusForm, setShowCorpusForm] = React.useState(false)
-    const [showSourceForm, setShowSourceForm] = React.useState(false)
-    const [showLinkSourceForm, setShowLinkSourceForm] = React.useState(false)
+    const [showCorpusForm, setShowCorpusForm] = useState(false)
+    const [showSourceForm, setShowSourceForm] = useState(false)
+    const [showLinkSourceForm, setShowLinkSourceForm] = useState(false)
+    const [selectedKeywords, setSelectedKeywords] = useState<ServerKeyword[]>([])
 
     const handleShowForm = () => {
         setShowCorpusForm(true)
@@ -156,6 +162,11 @@ export const CorpusPage = () => {
                     <AddNewSourceButton onClick={() => setShowSourceForm(true)}/>
                     <LinkSourceButton onClick={() => setShowLinkSourceForm(true)}/>
 
+                    <FilterSourceByKeywords
+                        all={sources.map(s => s.keywords).flat()}
+                        selected={selectedKeywords}
+                        onChangeSelected={update => setSelectedKeywords(update)}
+                    />
                     {sources && <Grid
                         container
                         spacing={2}
@@ -205,24 +216,32 @@ export const CorpusPage = () => {
     )
 }
 
-export function SourceField(
-    props: {
-        fieldName: keyof ServerResultCorpus,
-        resource: ServerResultCorpus
+export function FilterSourceByKeywords(props: {
+    all: ServerKeyword[],
+    selected: ServerKeyword[],
+    onChangeSelected: (keys: ServerKeyword[]) => void
+}) {
+    console.log("keywords, all:", props.all, "selected:", props.selected)
+    const [isOpen, setOpen] = useState(!!props.selected.length)
+
+    if (!isOpen) {
+        return <FilterButton
+            onClick={() => setOpen(true)}
+        />
     }
-) {
-    const value = String(props.resource[props.fieldName])
-    if (!value) {
-        return null
-    }
-    const label = String(props.fieldName)
-    return <span>
-        <span style={{textTransform: "lowercase", color: "grey"}}>{label}:</span>
-        {" "}
-        <strong>{value}</strong>
-    </span>
+
+
 }
 
-function Spacer() {
-    return <span style={{display: "inline-block", color: "grey", margin: "0.75em"}}> | </span>
+export function FilterButton(props: {
+    onClick: () => void
+}) {
+    return <ButtonWithIcon
+        variant="contained"
+        style={{float: "right"}}
+        onClick={props.onClick}
+    >
+        <FilterIconStyled/>
+        Keyword
+    </ButtonWithIcon>
 }

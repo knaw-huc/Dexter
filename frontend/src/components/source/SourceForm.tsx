@@ -352,10 +352,8 @@ export function SourceForm(props: SourceFormProps) {
 
             <Label>Keywords</Label>
             <KeywordField
-                control={control}
-                sourceId={props.sourceToEdit && props.sourceToEdit.id}
-                setValueSource={setValue}
-                edit={sourcesState.editSourceMode}
+                selected={watch("keywords")}
+                onChangeSelected={selected => setValue("keywords", selected)}
             />
             <ErrorMsg msg={getErrorMessage("keywords")}/>
 

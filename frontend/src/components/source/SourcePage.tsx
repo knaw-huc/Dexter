@@ -16,6 +16,7 @@ import { Keyword } from "../keyword/Keyword";
 import { Languages } from "../language/Languages";
 import { SourceForm } from "./SourceForm";
 import {EditButton} from "../common/EditButton"
+import {KeywordList} from "../keyword/KeywordList"
 
 export const SourcePage = () => {
     const [source, setSource] = React.useState<ServerSource>(null);
@@ -113,7 +114,7 @@ export const SourcePage = () => {
                     </p>
                     <div>
                         <strong>Keywords:</strong>{" "}
-                        <Keyword
+                        <KeywordList
                             keywords={keywords}
                             onDelete={deleteKeywordHandler}
                         />

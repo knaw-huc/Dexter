@@ -1,188 +1,106 @@
-import { Autocomplete, Chip, TextField } from "@mui/material";
-import match from "autosuggest-highlight/match";
-import parse from "autosuggest-highlight/parse";
-import React from "react";
-import { Controller, UseFormSetValue, useWatch } from "react-hook-form";
-import {
-  FormKeyword,
-  ServerCorpus,
-  ServerKeyword,
-  ServerSource,
-} from "../../model/DexterModel";
-import { useDebounce } from "../../utils/useDebounce";
-import {
-  deleteKeywordFromCorpus,
-  deleteKeywordFromSource,
-  getKeywordsAutocomplete,
-} from "../../utils/API";
+import {Autocomplete, Chip, TextField} from "@mui/material"
+import match from "autosuggest-highlight/match"
+import parse from "autosuggest-highlight/parse"
+import React from "react"
+import {ServerKeyword,} from "../../model/DexterModel"
+import {useDebounce} from "../../utils/useDebounce"
+import {getKeywordsAutocomplete,} from "../../utils/API"
 
 interface KeywordsFieldProps {
-  edit?: boolean;
-  corpusId?: string | undefined;
-  sourceId?: string | undefined;
-  control: any;
-  setValueCorpus?: UseFormSetValue<ServerCorpus>;
-  setValueSource?: UseFormSetValue<ServerSource>;
+    selected: ServerKeyword[];
+    onChangeSelected: (selected: ServerKeyword[]) => void
 }
 
-const MIN_AUTOCOMPLETE_LENGTH = 1;
+const MIN_AUTOCOMPLETE_LENGTH = 1
 
 export const KeywordField = (props: KeywordsFieldProps) => {
-  const { control } = props;
-  const [keywords, setKeywords] = React.useState<FormKeyword[]>([]);
-  const [inputValue, setInputValue] = React.useState("");
-  const [loading, setLoading] = React.useState(false);
-  const debouncedInput = useDebounce<string>(inputValue, 250);
-  const selectedItems = useWatch({ control, name: "keywords" });
+    const [suggestions, setSuggestions] = React.useState<ServerKeyword[]>([])
+    const [inputValue, setInputValue] = React.useState("")
+    const [loading, setLoading] = React.useState(false)
+    const debouncedInput = useDebounce<string>(inputValue, 250)
 
-  async function autoComplete(input: string) {
-
-      // TODO: why can't I send two characters?!
-      
-    const result = await getKeywordsAutocomplete(input);
-    setKeywords(result);
-    setLoading(false);
-  }
-
-  const deleteKeywordHandler = (keyword: ServerKeyword) => {
-    if (!props.edit) {
-      if (props.setValueCorpus) {
-        props.setValueCorpus(
-          "keywords",
-          selectedItems.filter((entry: ServerKeyword) => entry !== keyword)
-        );
-      }
-
-      if (props.setValueSource) {
-        props.setValueSource(
-          "keywords",
-          selectedItems.filter((entry: ServerKeyword) => entry !== keyword)
-        );
-      }
+    async function autoComplete(input: string) {
+        const result = await getKeywordsAutocomplete(input)
+        setSuggestions(result)
+        setLoading(false)
     }
 
-    if (props.corpusId) {
-      deleteKeywordFromCorpusHandler(props.corpusId, keyword);
+    const deleteKeyword = (keyword: ServerKeyword) => {
+        if (!window.confirm(
+            "Are you sure you wish to delete this keyword?"
+        )) {
+            return
+        }
+        const newSelected = props.selected.filter(k => k.id !== keyword.id)
+        props.onChangeSelected(newSelected)
     }
 
-    if (props.sourceId) {
-      deleteKeywordFromSourceHandler(props.sourceId, keyword);
-    }
-  };
+    React.useEffect(() => {
+        if (debouncedInput.length >= MIN_AUTOCOMPLETE_LENGTH) {
+            autoComplete(debouncedInput)
+            setLoading(true)
+        }
+    }, [debouncedInput])
 
-  const deleteKeywordFromCorpusHandler = async (
-    corpusId: string,
-    keyword: ServerKeyword
-  ) => {
-    const warning = window.confirm(
-      `Are you sure you wish to remove ${keyword.val}?`
-    );
-
-    if (warning === false) return;
-
-    await deleteKeywordFromCorpus(corpusId, keyword.id);
-
-    props.setValueCorpus(
-      "keywords",
-      selectedItems.filter((entry: ServerKeyword) => entry !== keyword)
-    );
-  };
-
-  const deleteKeywordFromSourceHandler = async (
-    sourceId: string,
-    keyword: ServerKeyword
-  ) => {
-    const warning = window.confirm(
-      "Are you sure you wish to delete this keyword?"
-    );
-
-    if (warning === false) return;
-
-    await deleteKeywordFromSource(sourceId, keyword.id);
-    props.setValueSource(
-      "keywords",
-      selectedItems.filter((entry: ServerKeyword) => entry !== keyword)
-    );
-  };
-
-  React.useEffect(() => {
-    if (debouncedInput.length >= MIN_AUTOCOMPLETE_LENGTH) {
-      autoComplete(debouncedInput);
-      setLoading(true);
-    }
-  }, [debouncedInput]);
-
-  return (
-    <div>
-      {keywords && (
-        <Controller
-          control={props.control}
-          name={"keywords"}
-          render={({ field: { onChange, value } }) => (
-            <Autocomplete
-              inputValue={inputValue}
-              open={debouncedInput.length >= MIN_AUTOCOMPLETE_LENGTH}
-              onInputChange={async (event, value) => {
-                setInputValue(value);
-              }}
-              multiple={true}
-              loading={loading}
-              id="keywords-autocomplete"
-              options={keywords}
-              getOptionLabel={(keyword: FormKeyword) => keyword.val}
-              filterOptions={(x) => x}
-              isOptionEqualToValue={(option, value) => option.val === value.val}
-              value={value}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  margin="dense"
-                  label="Search and select keywords"
-                  value={value}
-                />
-              )}
-              renderTags={(tagValue, getTagProps) =>
-                tagValue.map((keyword, index) => (
-                  <Chip
+    return <Autocomplete
+        inputValue={inputValue}
+        open={debouncedInput.length >= MIN_AUTOCOMPLETE_LENGTH}
+        onInputChange={async (event, value) => {
+            setInputValue(value)
+        }}
+        multiple={true}
+        loading={loading}
+        id="keywords-autocomplete"
+        options={suggestions}
+        getOptionLabel={(keyword: ServerKeyword) => keyword.val}
+        filterOptions={(x) => x}
+        isOptionEqualToValue={(option, value) => option.val === value.val}
+        value={props.selected}
+        renderInput={(params) => (
+            <TextField
+                {...params}
+                margin="dense"
+                label="Search and select keywords"
+                value={inputValue}
+            />
+        )}
+        renderTags={(tagValue, getTagProps) =>
+            tagValue.map((keyword, index) => (
+                <Chip
                     label={keyword.val}
                     key={index}
-                    {...getTagProps({ index })}
+                    {...getTagProps({index})}
                     onDelete={() => {
-                      deleteKeywordHandler(keyword);
+                        deleteKeyword(keyword)
                     }}
-                  />
-                ))
-              }
-              onChange={(_, data) => {
-                onChange(data);
-              }}
-              renderOption={(props, option, { inputValue }) => {
-                const matches = match(option.val, inputValue, {
-                  insideWords: true,
-                });
-                const parts = parse(option.val, matches);
+                />
+            ))
+        }
+        onChange={(_, data) => {
+            props.onChangeSelected(data as ServerKeyword[])
+        }}
+        renderOption={(props, option, {inputValue}) => {
+            const matches = match(option.val, inputValue, {
+                insideWords: true,
+            })
+            const parts = parse(option.val, matches)
 
-                return (
-                  <li {...props}>
+            return (
+                <li {...props}>
                     <div>
-                      {parts.map((part, index) => (
-                        <span
-                          key={index}
-                          style={{
-                            fontWeight: part.highlight ? 700 : 400,
-                          }}
-                        >
+                        {parts.map((part, index) => (
+                            <span
+                                key={index}
+                                style={{
+                                    fontWeight: part.highlight ? 700 : 400,
+                                }}
+                            >
                           {part.text}
                         </span>
-                      ))}
+                        ))}
                     </div>
-                  </li>
-                );
-              }}
-            />
-          )}
-        />
-      )}
-    </div>
-  );
-};
+                </li>
+            )
+        }}
+    />
+}

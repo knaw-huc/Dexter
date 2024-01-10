@@ -320,10 +320,8 @@ export function CorpusForm(props: NewCollectionProps) {
                     <TextFieldStyled fullWidth margin="dense" {...register("notes")} />
                     <Label>Keywords</Label>
                     <KeywordField
-                        control={control}
-                        corpusId={props.corpusToEdit && props.corpusToEdit.id}
-                        setValueCorpus={setValue}
-                        edit={props.isEditing}
+                        selected={watch("keywords")}
+                        onChangeSelected={selected => setValue("keywords", selected)}
                     />
                     <Label>Languages</Label>
                     <LanguagesField
