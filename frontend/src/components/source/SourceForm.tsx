@@ -3,13 +3,15 @@ import Button from "@mui/material/Button"
 import React, {useEffect, useState} from "react"
 import {SubmitHandler, useForm} from "react-hook-form"
 import * as yup from "yup"
-import {ServerCorpus, ServerKeyword, ServerLanguage, ServerSource} from "../../model/DexterModel"
+import {ServerCorpus, ServerFormSource, ServerKeyword, ServerLanguage, ServerSource} from "../../model/DexterModel"
 import {sourcesContext} from "../../state/sources/sourcesContext"
 import {
     addKeywordsToSource,
     addLanguagesToSource,
     addSourcesToCorpus,
     createSource,
+    deleteKeywordFromSource,
+    deleteLanguageFromSource,
     getKeywordsSources,
     getLanguagesSources,
     getSourceById,
@@ -153,28 +155,32 @@ export function SourceForm(props: SourceFormProps) {
                 await setBackendErrors(error)
             }
         } else {
-            const doUpdateSource = async (id: string, updatedData: ServerSource) => {
+            const doUpdateSource = async (id: string, data: ServerSource) => {
                 try {
-                    const updatedDataToServer: any = data
-                    if (updatedDataToServer.keywords) {
-                        updatedDataToServer.keywords = updatedDataToServer.keywords.map(
-                            (kw: ServerKeyword) => {
-                                return kw.id
-                            }
-                        )
+                    const updatedDataToServer: ServerFormSource = {
+                        ...data
+                    };
+                    await updateSource(id, updatedDataToServer)
+
+                    const keywordsUpdate = data.keywords.map(kw => kw.id)
+                    const responseKeywords = await addKeywordsToSource(id, keywordsUpdate)
+                    const keysToDelete = responseKeywords
+                        .map(s => s.id)
+                        .filter(ls => !keywordsUpdate.includes(ls))
+                    for (const keyToDelete of keysToDelete) {
+                        await deleteKeywordFromSource(id, keyToDelete)
                     }
 
-                    if (updatedDataToServer.languages) {
-                        updatedDataToServer.languages = updatedDataToServer.languages.map(
-                            (language: ServerLanguage) => {
-                                return language.id
-                            }
-                        )
+                    const languagesUpdate = data.languages.map(l => l.id)
+                    const responseLanguages = await addLanguagesToSource(id, languagesUpdate)
+                    const languagesToDelete = responseLanguages
+                        .map(l => l.id)
+                        .filter(ls => !languagesUpdate.includes(ls))
+                    for (const languageToDelete of languagesToDelete) {
+                        await deleteLanguageFromSource(id, languageToDelete)
                     }
-                    await updateSource(id, updatedData)
-                    await addKeywordsToSource(id, updatedDataToServer.keywords)
-                    await addLanguagesToSource(id, updatedDataToServer.languages)
-                    await props.refetchSource()
+
+                    props.refetchSource()
                 } catch (error) {
                     await setBackendErrors(error)
                 }

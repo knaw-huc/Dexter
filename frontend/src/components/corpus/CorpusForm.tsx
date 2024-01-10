@@ -17,9 +17,9 @@ import {collectionsContext} from "../../state/collections/collectionContext"
 import {sourcesContext} from "../../state/sources/sourcesContext"
 import {
     addKeywordsToCorpus,
-    addLanguagesToCorpus,
+    addLanguagesToCorpus, addLanguagesToSource,
     addSourcesToCorpus,
-    createCollection,
+    createCollection, deleteKeywordFromCorpus, deleteLanguageFromCorpus, deleteLanguageFromSource,
     deleteSourceFromCorpus,
     getCollectionById,
     getKeywordsCorpora,
@@ -139,32 +139,38 @@ export function CorpusForm(props: NewCollectionProps) {
                     const serverUpdateForm: ServerFormCorpus = {
                         ...data,
                     }
-                    const keywordsUpdate = data.keywords.map(
-                        (kw: ServerKeyword) => {
-                            return kw.id
-                        }
-                    )
-                    await addKeywordsToCorpus(id, keywordsUpdate)
 
-                    const languagesUpdate = data.languages.map(
-                        (language: ServerLanguage) => {
-                            return language.id
-                        }
-                    )
-                    await addLanguagesToCorpus(id, languagesUpdate)
+                    await updateCorpus(id, serverUpdateForm)
+
+                    const keywordsUpdate = data.keywords.map(kw => kw.id)
+                    const responseKeywords = await addKeywordsToCorpus(id, keywordsUpdate)
+                    const keysToDelete = responseKeywords
+                        .map(s => s.id)
+                        .filter(ls => !keywordsUpdate.includes(ls))
+                    for (const keyToDelete of keysToDelete) {
+                        await deleteKeywordFromCorpus(id, keyToDelete)
+                    }
+
+                    const languagesUpdate = data.languages.map(l => l.id)
+                    const responseLanguages = await addLanguagesToCorpus(id, languagesUpdate)
+                    const languagesToDelete = responseLanguages
+                        .map(l => l.id)
+                        .filter(ls => !languagesUpdate.includes(ls))
+                    for (const languageToDelete of languagesToDelete) {
+                        await deleteLanguageFromCorpus(id, languageToDelete)
+                    }
 
                     if (serverUpdateForm.parentId) {
                         serverUpdateForm.parentId = data.parent.id
                     }
 
-                    await updateCorpus(id, updatedData)
                     const sourceIdsUpdate = data.sources.map(s => s.id)
                     const responseSources = await addSourcesToCorpus(id, sourceIdsUpdate)
-                    const idsToDelete = responseSources
+                    const sourcesToDelete = responseSources
                         .map(s => s.id)
                         .filter(ls => !sourceIdsUpdate.includes(ls))
-                    for (const idToDelete of idsToDelete) {
-                        await deleteSourceFromCorpus(id, idToDelete)
+                    for (const sourceToDelete of sourcesToDelete) {
+                        await deleteSourceFromCorpus(id, sourceToDelete)
                     }
 
                     updateCollectionStore()

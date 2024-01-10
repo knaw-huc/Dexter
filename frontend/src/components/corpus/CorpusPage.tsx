@@ -221,7 +221,6 @@ export function FilterSourceByKeywords(props: {
     selected: ServerKeyword[],
     onChangeSelected: (keys: ServerKeyword[]) => void
 }) {
-    console.log("keywords, all:", props.all, "selected:", props.selected)
     const [isOpen, setOpen] = useState(!!props.selected.length)
 
     if (!isOpen) {
