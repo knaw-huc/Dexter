@@ -359,7 +359,14 @@ export function SourceForm(props: SourceFormProps) {
             <Label>Keywords</Label>
             <KeywordField
                 selected={watch("keywords")}
-                onChangeSelected={selected => setValue("keywords", selected)}
+                onChangeSelected={selected => {
+                    if (!window.confirm(
+                        "Are you sure you wish to delete this keyword?"
+                    )) {
+                        return
+                    }
+                    setValue("keywords", selected)
+                }}
             />
             <ErrorMsg msg={getErrorMessage("keywords")}/>
 

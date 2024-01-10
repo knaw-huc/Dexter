@@ -23,11 +23,6 @@ export default class ErrorHandler extends Component<ErrorBoundaryProps, ErrorBou
         }
     }
 
-    static getDerivedStateFromProps(props: ErrorBoundaryProps, state: {error: Error}) {
-        console.error(props.error)
-        return {error: props.error}
-    }
-
     componentDidCatch(error: Error) {
         console.error(error)
     }

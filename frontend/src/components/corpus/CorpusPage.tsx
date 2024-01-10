@@ -36,7 +36,7 @@ const Wrapper = styled.div`
 `
 export const CorpusPage = () => {
     const [corpus, setCorpus] = useState<ServerResultCorpus>(null)
-    const [sources, setSources] = useState<ServerSource[]>(null)
+    const [corpusSources, setCorpusSources] = useState<ServerSource[]>(null)
     const [keywords, setKeywords] = useState<ServerKeyword[]>(null)
     const [languages, setLanguages] = useState<ServerLanguage[]>(null)
     const {dispatchError} = useContext(errorContext)
@@ -49,7 +49,7 @@ export const CorpusPage = () => {
     const [showCorpusForm, setShowCorpusForm] = useState(false)
     const [showSourceForm, setShowSourceForm] = useState(false)
     const [showLinkSourceForm, setShowLinkSourceForm] = useState(false)
-    const [selectedKeywords, setSelectedKeywords] = useState<ServerKeyword[]>([])
+    const [filterKeywords, setFilterKeywords] = useState<ServerKeyword[]>([])
 
     const handleShowForm = () => {
         setShowCorpusForm(true)
@@ -82,7 +82,7 @@ export const CorpusPage = () => {
 
     const doGetSourcesInCorpus = async (corpusId: string) => {
         const sources = await getSourcesInCorpus(corpusId)
-        setSources(sources)
+        setCorpusSources(sources)
     }
 
     const handleDeleteLanguage = async (language: ServerLanguage) => {
@@ -103,26 +103,30 @@ export const CorpusPage = () => {
 
     const deleteSourceKeyword = async (sourceId: string, keywordId: string) => {
         await deleteKeywordFromSource(sourceId, keywordId)
-        setSources(sources.filter(s => s.id !== keywordId))
+        setCorpusSources(corpusSources.filter(s => s.id !== keywordId))
     }
 
     const unlinkSource = async (corpusId: string, sourceId: string) => {
         await deleteSourceFromCorpus(corpusId, sourceId)
-        setSources(sources => sources.filter(s => s.id !== sourceId))
+        setCorpusSources(sources => sources.filter(s => s.id !== sourceId))
     }
 
     const linkSource = async (corpusId: string, sourceId: string) => {
         await addSourcesToCorpus(corpusId, [sourceId])
-        setSources(prev =>
+        setCorpusSources(prev =>
             _.uniqBy([...prev, sourcesState.sources.find(s => s.id === sourceId)], "id")
         )
     }
 
     const simpleSourceField = ["rights", "access", "location", "earliest", "latest", "contributor", "notes"]
 
+    const filteredCorpusSources = filterKeywords.length ? corpusSources?.filter(
+        cs => cs.keywords.find(csk => filterKeywords.find(k => k.id === csk.id))
+    ) : corpusSources
+
     return (
         <Wrapper>
-            {corpus && sources && keywords && languages && (
+            {corpus && corpusSources && keywords && languages && (
                 <>
                     <EditButton onEdit={handleShowForm}/>
                     <h1>
@@ -165,18 +169,18 @@ export const CorpusPage = () => {
                         </Grid>
                         <Grid item xs={6} md={8}>
                             <FilterSourceByKeywords
-                                all={_.uniqBy(sources.map(s => s.keywords).flat(), "val")}
-                                selected={selectedKeywords}
-                                onChangeSelected={update => setSelectedKeywords(update)}
+                                all={_.uniqBy(corpusSources.map(s => s.keywords).flat(), "val")}
+                                selected={filterKeywords}
+                                onChangeSelected={update => setFilterKeywords(update)}
                             />
                         </Grid>
                     </Grid>
-                    {sources && <Grid
+                    {corpusSources && <Grid
                         container
                         spacing={2}
                         sx={{pl: 0.1, pr: 1, mt: 2, mb: 2}}
                     >
-                        {sources.map(source => (
+                        {filteredCorpusSources.map(source => (
                             <Grid
                                 item
                                 xs={4}
@@ -195,7 +199,7 @@ export const CorpusPage = () => {
 
                     {showLinkSourceForm && <LinkSourceForm
                         all={sourcesState.sources}
-                        selected={sources}
+                        selected={corpusSources}
                         onLinkSource={sourceId => linkSource(corpusId, sourceId)}
                         onUnlinkSource={sourceId => unlinkSource(corpusId, sourceId)}
                         onClose={() => setShowLinkSourceForm(false)}

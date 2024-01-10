@@ -30,11 +30,6 @@ export const KeywordField = (props: KeywordsFieldProps) => {
     }
 
     const deleteKeyword = (keyword: ServerKeyword) => {
-        if (!window.confirm(
-            "Are you sure you wish to delete this keyword?"
-        )) {
-            return
-        }
         const newSelected = props.selected.filter(k => k.id !== keyword.id)
         props.onChangeSelected(newSelected)
     }

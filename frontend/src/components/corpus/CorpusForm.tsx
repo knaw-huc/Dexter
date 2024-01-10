@@ -327,7 +327,14 @@ export function CorpusForm(props: NewCollectionProps) {
                     <Label>Keywords</Label>
                     <KeywordField
                         selected={watch("keywords")}
-                        onChangeSelected={selected => setValue("keywords", selected)}
+                        onChangeSelected={selected => {
+                            if (!window.confirm(
+                                "Are you sure you wish to delete this keyword?"
+                            )) {
+                                return
+                            }
+                            setValue("keywords", selected)
+                        }}
                     />
                     <Label>Languages</Label>
                     <LanguagesField
