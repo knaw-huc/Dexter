@@ -1,12 +1,12 @@
 import styled from "@emotion/styled"
 import {blue} from "@mui/material/colors"
-import {clippedStyle} from "./ClippedP"
+import {clampedStyle} from "./PClamped"
 
-export const HeaderLink = styled.h4`
+export const HeaderLinkClamped = styled.h4`
   margin-top: 0;
   margin-bottom: 0;
   
-  ${clippedStyle}
+  ${clampedStyle}
   
   &:hover {
     cursor: pointer;

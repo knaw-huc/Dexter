@@ -1,12 +1,12 @@
-import styled from "@emotion/styled";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { red } from "@mui/material/colors";
+import styled from "@emotion/styled"
+import DeleteIcon from "@mui/icons-material/Delete"
+import {red} from "@mui/material/colors"
 import React, {useContext} from "react"
-import { Link } from "react-router-dom";
-import { ServerSource } from "../../model/DexterModel";
-import { Actions } from "../../state/actions";
-import { sourcesContext } from "../../state/sources/sourcesContext";
-import { deleteSource, getSources } from "../../utils/API";
+import {Link} from "react-router-dom"
+import {ServerSource} from "../../model/DexterModel"
+import {Actions} from "../../state/actions"
+import {sourcesContext} from "../../state/sources/sourcesContext"
+import {deleteSource, getSourcesWithResources} from "../../utils/API"
 import {errorContext} from "../../state/error/errorContext"
 
 type SourceItemProps = {
@@ -40,7 +40,7 @@ export const Source = (props: SourceItemProps) => {
         if (warning === false) return;
 
         await deleteSource(id);
-        getSources().then(function (sources) {
+        getSourcesWithResources().then(function (sources) {
             dispatchSources({
                 type: Actions.SET_SOURCES,
                 sources: sources,

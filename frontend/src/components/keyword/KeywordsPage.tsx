@@ -1,53 +1,41 @@
-import styled from "@emotion/styled";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { red } from "@mui/material/colors";
-import React from "react";
-import { ServerKeyword } from "../../model/DexterModel";
-import { deleteKeyword, getKeywords } from "../../utils/API";
-import { KeywordsForm } from "./KeywordsForm";
-
-const DeleteIconStyled = styled(DeleteIcon)`
-  margin-left: 5px;
-  color: gray;
-  &:hover {
-    cursor: pointer;
-    color: ${red[700]};
-  }
-`;
+import React, {useState} from "react"
+import {ServerKeyword} from "../../model/DexterModel"
+import {deleteKeyword, getKeywords} from "../../utils/API"
+import {KeywordForm} from "./KeywordForm"
+import {KeywordList} from "./KeywordList"
 
 export const KeywordsPage = () => {
-  const [keywords, setKeywords] = React.useState<ServerKeyword[]>();
+    const [keywords, setKeywords] = useState<ServerKeyword[]>([])
 
-  React.useEffect(() => {
-    doGetKeywords();
-  }, []);
+    React.useEffect(() => {
+        doGetKeywords()
+    }, [])
 
-  const doGetKeywords = async () => {
-    const kw = await getKeywords();
-    setKeywords(kw);
-  };
+    const doGetKeywords = async () => {
+        const kw = await getKeywords()
+        setKeywords(kw)
+    }
 
-  const handleDelete = async (id: string) => {
-    const warning = window.confirm(
-      "Are you sure you wish to delete this keyword?"
-    );
+    const handleDelete = (keyword: ServerKeyword) => {
+        const warning = window.confirm(
+            "Are you sure you wish to delete this keyword?"
+        )
 
-    if (warning === false) return;
+        if (warning === false) return
 
-    await deleteKeyword(id);
-    await doGetKeywords();
-  };
+        deleteKeyword(keyword.id).then(
+            () => doGetKeywords()
+        )
+    }
 
-  return (
-    <>
-      <KeywordsForm setKeywords={setKeywords} />
-      {keywords &&
-        keywords.map((keyword: ServerKeyword, index: number) => (
-          <div key={index}>
-            {keyword.id} {keyword.val}{" "}
-            {<DeleteIconStyled onClick={() => handleDelete(keyword.id)} />}
-          </div>
-        ))}
+    return <>
+        <KeywordForm
+            setKeywords={setKeywords}
+        />
+        <KeywordList
+            keywords={keywords}
+            onDelete={handleDelete}
+        />
     </>
-  );
-};
+}
+

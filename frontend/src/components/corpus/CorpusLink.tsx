@@ -9,8 +9,8 @@ import {red} from "@mui/material/colors"
 import {deleteCollection, getCollections} from "../../utils/API"
 import {errorContext} from "../../state/error/errorContext"
 import {Card, CardContent} from "@mui/material"
-import {HeaderLink} from "../common/HeaderLink"
-import {ClippedP} from "../common/ClippedP"
+import {HeaderLinkClamped} from "../common/HeaderLinkClamped"
+import {PClamped} from "../common/PClamped"
 
 type CorpusLinkProps = {
     collectionId: React.Key;
@@ -59,15 +59,15 @@ export function CorpusLink(props: CorpusLinkProps) {
                 style={{float: "right"}}
                 onClick={() => handleDelete(props.collection)}
             />
-            <HeaderLink
+            <HeaderLinkClamped
                 key={props.collectionId}
                 onClick={() => navigate(`/corpora/${props.collection.id}`)}
             >
                 {props.collection.parent
                     ? props.collection.title + " (" + "subcorpus" + ")"
                     : props.collection.title}
-            </HeaderLink>
-            <ClippedP>{props.collection.description}</ClippedP>
+            </HeaderLinkClamped>
+            <PClamped>{props.collection.description}</PClamped>
         </CardContent>
     </Card>
 }

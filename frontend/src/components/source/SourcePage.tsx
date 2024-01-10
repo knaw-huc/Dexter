@@ -48,14 +48,14 @@ export const SourcePage = () => {
     };
 
     const doGetSourceById = async (id: string) => {
-        const response = await getSourceById(id);
-        setSource(response as ServerSource);
+        const source = await getSourceById(id);
+        setSource(source);
 
-        const kws = await getKeywordsSources(response.id);
-        setKeywords(kws);
+        const keywords = await getKeywordsSources(source.id);
+        setKeywords(keywords);
 
-        const langs = await getLanguagesSources(response.id);
-        setLanguages(langs);
+        const languages = await getLanguagesSources(source.id);
+        setLanguages(languages);
     };
 
     React.useEffect(() => {

@@ -1,14 +1,13 @@
 import React, {useContext, useEffect} from "react"
 import {Link, useParams} from "react-router-dom"
-import {ServerCorpus, ServerKeyword, ServerLanguage, ServerResultCorpus, ServerSource} from "../../model/DexterModel"
+import {ServerKeyword, ServerLanguage, ServerResultCorpus, ServerSource} from "../../model/DexterModel"
 import {collectionsContext} from "../../state/collections/collectionContext"
-import {Actions} from "../../state/actions"
 import {CorpusForm} from "./CorpusForm"
 import styled from "@emotion/styled"
 import {errorContext} from "../../state/error/errorContext"
 import {
     addSourcesToCorpus,
-    deleteKeywordFromCorpus,
+    deleteKeywordFromCorpus, deleteKeywordFromSource,
     deleteLanguageFromCorpus,
     deleteSourceFromCorpus,
     getCollectionById,
@@ -16,7 +15,6 @@ import {
     getLanguagesCorpora,
     getSourcesInCorpus,
 } from "../../utils/API"
-import {Keyword} from "../keyword/Keyword"
 import {Languages} from "../language/Languages"
 import {SourcePreview} from "../source/SourcePreview"
 import {SourceForm} from "../source/SourceForm"
@@ -27,6 +25,7 @@ import {LinkSourceForm} from "./LinkSourceForm"
 import {sourcesContext} from "../../state/sources/sourcesContext"
 import _ from "lodash"
 import {Grid} from "@mui/material"
+import {KeywordList} from "../keyword/KeywordList"
 
 const Wrapper = styled.div`
   overflow: auto;
@@ -63,11 +62,11 @@ export const CorpusPage = () => {
         }
         setCorpus(response)
 
-        const kws = await getKeywordsCorpora(response.id)
-        setKeywords(kws)
+        const keywords = await getKeywordsCorpora(response.id)
+        setKeywords(keywords)
 
-        const langs = await getLanguagesCorpora(response.id)
-        setLanguages(langs)
+        const languages = await getLanguagesCorpora(response.id)
+        setLanguages(languages)
 
         await doGetSourcesInCorpus(corpusId)
     }
@@ -77,11 +76,11 @@ export const CorpusPage = () => {
     }, [collectionsState, corpusId])
 
     const doGetSourcesInCorpus = async (corpusId: string) => {
-        const srcs = await getSourcesInCorpus(corpusId)
-        setSources(srcs)
+        const sources = await getSourcesInCorpus(corpusId)
+        setSources(sources)
     }
 
-    const deleteLanguageHandler = async (language: ServerLanguage) => {
+    const handleDeleteLanguage = async (language: ServerLanguage) => {
         const warning = window.confirm(
             "Are you sure you wish to delete this language?"
         )
@@ -91,23 +90,18 @@ export const CorpusPage = () => {
         await deleteLanguageFromCorpus(corpusId, language.id)
     }
 
-    const deleteKeywordHandler = async (keyword: ServerKeyword) => {
-        const warning = window.confirm(
-            "Are you sure you wish to delete this keyword?"
-        )
-
-        if (warning === false) return
-
+    const deleteCorpusKeyword = async (keyword: ServerKeyword) => {
         await deleteKeywordFromCorpus(corpusId, keyword.id)
+        const update = keywords.filter(k => k.id !== keyword.id)
+        setKeywords(update)
+    }
+
+    const deleteSourceKeyword = async (sourceId: string, keywordId: string) => {
+        await deleteKeywordFromSource(sourceId, keywordId)
+        setSources(sources.filter(s => s.id !== keywordId))
     }
 
     const unlinkSource = async (corpusId: string, sourceId: string) => {
-        if (!window.confirm(
-            "Are you sure you wish to remove this source from this corpus?\n" +
-            "The source will still be available under sources."
-        )) {
-            return
-        }
         await deleteSourceFromCorpus(corpusId, sourceId)
         setSources(sources => sources.filter(s => s.id !== sourceId))
     }
@@ -119,23 +113,29 @@ export const CorpusPage = () => {
         )
     }
 
+    const simpleSourceField = ["rights", "access", "location", "earliest", "latest", "contributor", "notes"]
 
     return (
         <Wrapper>
             {corpus && sources && keywords && languages && (
                 <>
                     <EditButton onEdit={handleShowForm}/>
-
+                    <h1>
+                        {corpus.title || "Untitled"}
+                    </h1>
                     {corpus.parentId && <p>
                         <strong>Parent ID:</strong>{" "}
                         <Link to={`/corpora/${corpus.parentId}`}>
                             {corpus.parentId}
                         </Link>
                     </p>}
-                    <h1>{corpus.title || "Untitled"}</h1>
                     {corpus.description && <p>{corpus.description}</p>}
-                    <p  style={{textTransform: "capitalize"}}>
-                        {["rights", "access", "location", "earliest", "latest", "contributor", "notes"].map((field: keyof ServerResultCorpus, i) => [
+                    {!_.isEmpty(keywords) && <KeywordList
+                        keywords={keywords}
+                        onDelete={deleteCorpusKeyword}
+                    />}
+                    <p style={{textTransform: "capitalize"}}>
+                        {simpleSourceField.map((field: keyof ServerResultCorpus, i) => [
                             i > 0 && <Spacer key={i}/>,
                             <SourceField
                                 key={field}
@@ -144,18 +144,12 @@ export const CorpusPage = () => {
                             />
                         ])}
                     </p>
-                    {!_.isEmpty(keywords) && <div>
-                        <h4>Keywords:</h4>
-                        <Keyword
-                            keywords={keywords}
-                            onDelete={deleteKeywordHandler}
-                        />
-                    </div>}
+
                     {!_.isEmpty(languages) && <div>
                         <h4>Languages:</h4>
                         <Languages
                             languages={languages}
-                            onDelete={deleteLanguageHandler}
+                            onDelete={handleDeleteLanguage}
                         />
                     </div>}
                     <h2>Sources</h2>
@@ -171,13 +165,14 @@ export const CorpusPage = () => {
                             <Grid
                                 item
                                 xs={4}
-                                height="150px"
+                                height="180px"
                                 key={source.id}
                             >
                                 <SourcePreview
                                     source={source}
                                     corpusId={corpus.id}
                                     onUnlinkSource={() => unlinkSource(corpus.id, source.id)}
+                                    onDeleteKeyword={k => deleteSourceKeyword(source.id, k.id)}
                                 />
                             </Grid>
                         ))}

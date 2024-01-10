@@ -34,9 +34,9 @@ class KeywordsResource(private val jdbi: Jdbi) {
     @POST
     @Path(AUTOCOMPLETE)
     fun getKeywordLike(key: String): List<ResultKeyword> =
-        key.takeIf { it.length > 2 }
+        key.takeIf { it.length > 0 }
             ?.let { keywords().like("%$it%") }
-            ?: throw BadRequestException("key length MUST be > 2 (but was ${key.length}: '$key')")
+            ?: throw BadRequestException("key length MUST be > 0 (but was ${key.length}: '$key')")
 
     @POST
     @Consumes(APPLICATION_JSON)

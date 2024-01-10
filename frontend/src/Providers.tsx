@@ -7,7 +7,7 @@ import {useErrorState} from "./state/error/errorReducer"
 import {useUserState} from "./state/user/userReducer"
 import {errorContext} from "./state/error/errorContext"
 import {userContext} from "./state/user/userContext"
-import {getCollections, getSources} from "./utils/API"
+import {getCollections, getSourcesWithResources} from "./utils/API"
 import {Actions} from "./state/actions"
 
 export const Providers = (props: PropsWithChildren) => {
@@ -28,7 +28,7 @@ export const Providers = (props: PropsWithChildren) => {
                     })
                 }).catch(dispatchError)
 
-            getSources()
+            getSourcesWithResources()
                 .then(function (sources) {
                     dispatchSources({
                         type: Actions.SET_SOURCES,

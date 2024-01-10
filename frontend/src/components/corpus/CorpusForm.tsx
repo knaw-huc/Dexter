@@ -26,7 +26,7 @@ import {
     getLanguagesCorpora,
     getSourcesInCorpus, updateCorpus,
 } from "../../utils/API"
-import {KeywordsField} from "../keyword/KeywordsField"
+import {KeywordField} from "../keyword/KeywordField"
 import {LanguagesField} from "../language/LanguagesField"
 import {SubCorpusField} from "./SubCorpusField"
 import {errorContext} from "../../state/error/errorContext"
@@ -319,7 +319,7 @@ export function CorpusForm(props: NewCollectionProps) {
                     <Label>Notes</Label>
                     <TextFieldStyled fullWidth margin="dense" {...register("notes")} />
                     <Label>Keywords</Label>
-                    <KeywordsField
+                    <KeywordField
                         control={control}
                         corpusId={props.corpusToEdit && props.corpusToEdit.id}
                         setValueCorpus={setValue}

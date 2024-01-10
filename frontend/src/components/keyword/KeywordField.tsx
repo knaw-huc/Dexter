@@ -25,7 +25,9 @@ interface KeywordsFieldProps {
   setValueSource?: UseFormSetValue<ServerSource>;
 }
 
-export const KeywordsField = (props: KeywordsFieldProps) => {
+const MIN_AUTOCOMPLETE_LENGTH = 1;
+
+export const KeywordField = (props: KeywordsFieldProps) => {
   const { control } = props;
   const [keywords, setKeywords] = React.useState<FormKeyword[]>([]);
   const [inputValue, setInputValue] = React.useState("");
@@ -34,10 +36,12 @@ export const KeywordsField = (props: KeywordsFieldProps) => {
   const selectedItems = useWatch({ control, name: "keywords" });
 
   async function autoComplete(input: string) {
+
+      // TODO: why can't I send two characters?!
+      
     const result = await getKeywordsAutocomplete(input);
     setKeywords(result);
     setLoading(false);
-    //return result
   }
 
   const deleteKeywordHandler = (keyword: ServerKeyword) => {
@@ -102,7 +106,7 @@ export const KeywordsField = (props: KeywordsFieldProps) => {
   };
 
   React.useEffect(() => {
-    if (debouncedInput.length > 2) {
+    if (debouncedInput.length >= MIN_AUTOCOMPLETE_LENGTH) {
       autoComplete(debouncedInput);
       setLoading(true);
     }
@@ -117,7 +121,7 @@ export const KeywordsField = (props: KeywordsFieldProps) => {
           render={({ field: { onChange, value } }) => (
             <Autocomplete
               inputValue={inputValue}
-              open={debouncedInput.length > 2}
+              open={debouncedInput.length >= MIN_AUTOCOMPLETE_LENGTH}
               onInputChange={async (event, value) => {
                 setInputValue(value);
               }}

@@ -3,7 +3,7 @@ import Button from "@mui/material/Button"
 import React, {useEffect, useState} from "react"
 import {SubmitHandler, useForm} from "react-hook-form"
 import * as yup from "yup"
-import {ServerCorpus, ServerKeyword, ServerLanguage, ServerSource, Source} from "../../model/DexterModel"
+import {ServerCorpus, ServerKeyword, ServerLanguage, ServerSource} from "../../model/DexterModel"
 import {sourcesContext} from "../../state/sources/sourcesContext"
 import {
     addKeywordsToSource,
@@ -18,7 +18,7 @@ import {
     updateSource,
 } from "../../utils/API"
 import ScrollableModal from "../common/ScrollableModal"
-import {KeywordsField} from "../keyword/KeywordsField"
+import {KeywordField} from "../keyword/KeywordField"
 import {LanguagesField} from "../language/LanguagesField"
 import {Alert} from "@mui/material"
 import isUrl from "../../utils/isUrl"
@@ -126,7 +126,7 @@ export function SourceForm(props: SourceFormProps) {
         } else {
             Object.keys(tmsImport.imported).forEach(key => {
                 if (tmsImport.imported[key]) {
-                    setValue(key as keyof Source, tmsImport.imported[key])
+                    setValue(key as keyof ServerSource, tmsImport.imported[key])
                 }
             })
         }
@@ -351,7 +351,7 @@ export function SourceForm(props: SourceFormProps) {
             />
 
             <Label>Keywords</Label>
-            <KeywordsField
+            <KeywordField
                 control={control}
                 sourceId={props.sourceToEdit && props.sourceToEdit.id}
                 setValueSource={setValue}

@@ -4,7 +4,7 @@ import {Actions} from "../../state/actions"
 import {sourcesContext} from "../../state/sources/sourcesContext"
 import {Source} from "./Source"
 import styled from "@emotion/styled"
-import {getSources} from "../../utils/API"
+import {getSourcesWithResources} from "../../utils/API"
 import {errorContext} from "../../state/error/errorContext"
 import {SourceForm} from "./SourceForm"
 import {AddNewSourceButton} from "./AddNewSourceButton"
@@ -19,7 +19,7 @@ export function SourceIndex() {
   const [showForm, setShowForm] = React.useState(false);
     const {dispatchError} = useContext(errorContext)
   const refetchSources = async () => {
-    getSources().then(function (sources) {
+    getSourcesWithResources().then(function (sources) {
       dispatchSources({
         type: Actions.SET_SOURCES,
         sources: sources,

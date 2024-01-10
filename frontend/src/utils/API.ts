@@ -1,11 +1,13 @@
 import {
     FormKeyword,
-    ServerCorpus, ServerFormCorpus,
+    ServerCorpus,
+    ServerFormCorpus,
+    ServerFormSource,
     ServerKeyword,
     ServerLanguage,
     ServerResultCorpus,
-    ServerSource,
-    Source
+    ServerResultSource,
+    ServerSource
 } from "../model/DexterModel"
 
 const headers = {
@@ -85,15 +87,28 @@ export const deleteCollection = async (id: string): Promise<void> => {
     validateResponse({response})
 }
 
-export const getSources = async (): Promise<ServerSource[]> => {
+export const getSourcesWithResources = async (): Promise<ServerSource[]> => {
+    const serverResults = await getSources();
+    return Promise.all(serverResults.map(addSourceResources));
+}
+async function addSourceResources(result: ServerResultSource): Promise<ServerSource> {
+    return {
+        ...result,
+        keywords: await getKeywordsSources(result.id),
+        languages: await getLanguagesSources(result.id)
+    }
+}
+
+export const getSources = async (): Promise<ServerResultSource[]> => {
     return fetchValidated("/api/sources")
 }
 
 export async function getSourceById(id: string): Promise<ServerSource> {
-    return fetchValidated(`/api/sources/${id}`)
+    const serverResult = await fetchValidated(`/api/sources/${id}`)
+    return addSourceResources(serverResult)
 }
 
-export const createSource = async (newSource: Source): Promise<ServerSource> => {
+export const createSource = async (newSource: ServerFormSource): Promise<ServerResultSource> => {
     const path = "/api/sources"
     const response = await fetch(path, {
         headers,
@@ -326,7 +341,8 @@ export const addSourcesToCorpus = async (
 };
 
 export const getSourcesInCorpus = async (corpusId: string): Promise<ServerSource[]> => {
-    return fetchValidated(`/api/corpora/${corpusId}/sources`)
+    const serverResults: ServerResultSource[] = await fetchValidated(`/api/corpora/${corpusId}/sources`)
+    return Promise.all(serverResults.map(addSourceResources));
 };
 
 export const deleteSourceFromCorpus = async (

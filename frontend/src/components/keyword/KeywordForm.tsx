@@ -9,15 +9,15 @@ type NewKeywordsProps = {
     setKeywords: React.Dispatch<React.SetStateAction<ServerKeyword[]>>;
 };
 
-export function KeywordsForm(props: NewKeywordsProps) {
+export function KeywordForm(props: NewKeywordsProps) {
     const {dispatchError} = useContext(errorContext)
     const [keyword, setKeyword] = useState("")
 
     async function createKeyword() {
         try {
             await createKeywords({val: keyword})
-            const kw = await getKeywords()
-            props.setKeywords(kw)
+            const all = await getKeywords()
+            props.setKeywords(all)
             setKeyword("")
         } catch (error) {
             dispatchError(error)
@@ -33,7 +33,7 @@ export function KeywordsForm(props: NewKeywordsProps) {
                         variant="outlined"
                         placeholder="Add keyword..."
                         value={keyword}
-                        onKeyDown={(e) => {
+                        onKeyDown={e => {
                             if (e.key === 'Enter') {
                                 e.preventDefault();
                                 createKeyword()
