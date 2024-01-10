@@ -29,8 +29,7 @@ import {Grid} from "@mui/material"
 import {KeywordList} from "../keyword/KeywordList"
 import {SourceField} from "./SourceField"
 import {Spacer} from "./Spacer"
-import {ButtonWithIcon} from "../common/ButtonWithIcon"
-import {FilterIconStyled} from "../common/FilterIconStyled"
+import {FilterSourceByKeywords} from "./FilterSourceByKeywords"
 
 const Wrapper = styled.div`
   overflow: auto;
@@ -159,14 +158,19 @@ export const CorpusPage = () => {
                         />
                     </div>}
                     <h2>Sources</h2>
-                    <AddNewSourceButton onClick={() => setShowSourceForm(true)}/>
-                    <LinkSourceButton onClick={() => setShowLinkSourceForm(true)}/>
-
-                    <FilterSourceByKeywords
-                        all={sources.map(s => s.keywords).flat()}
-                        selected={selectedKeywords}
-                        onChangeSelected={update => setSelectedKeywords(update)}
-                    />
+                    <Grid container spacing={2}>
+                        <Grid item xs={6} md={4}>
+                            <AddNewSourceButton onClick={() => setShowSourceForm(true)}/>
+                            <LinkSourceButton onClick={() => setShowLinkSourceForm(true)}/>
+                        </Grid>
+                        <Grid item xs={6} md={8}>
+                            <FilterSourceByKeywords
+                                all={_.uniqBy(sources.map(s => s.keywords).flat(), "val")}
+                                selected={selectedKeywords}
+                                onChangeSelected={update => setSelectedKeywords(update)}
+                            />
+                        </Grid>
+                    </Grid>
                     {sources && <Grid
                         container
                         spacing={2}
@@ -216,31 +220,3 @@ export const CorpusPage = () => {
     )
 }
 
-export function FilterSourceByKeywords(props: {
-    all: ServerKeyword[],
-    selected: ServerKeyword[],
-    onChangeSelected: (keys: ServerKeyword[]) => void
-}) {
-    const [isOpen, setOpen] = useState(!!props.selected.length)
-
-    if (!isOpen) {
-        return <FilterButton
-            onClick={() => setOpen(true)}
-        />
-    }
-
-
-}
-
-export function FilterButton(props: {
-    onClick: () => void
-}) {
-    return <ButtonWithIcon
-        variant="contained"
-        style={{float: "right"}}
-        onClick={props.onClick}
-    >
-        <FilterIconStyled/>
-        Keyword
-    </ButtonWithIcon>
-}

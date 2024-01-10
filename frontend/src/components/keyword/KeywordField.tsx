@@ -1,4 +1,4 @@
-import {Autocomplete, Chip, TextField} from "@mui/material"
+import {Autocomplete, Chip, TextField, TextFieldProps} from "@mui/material"
 import match from "autosuggest-highlight/match"
 import parse from "autosuggest-highlight/parse"
 import React from "react"
@@ -9,6 +9,8 @@ import {getKeywordsAutocomplete,} from "../../utils/API"
 interface KeywordsFieldProps {
     selected: ServerKeyword[];
     onChangeSelected: (selected: ServerKeyword[]) => void
+    suggestions?: ServerKeyword[]
+    size?: 'small' | 'medium'
 }
 
 const MIN_AUTOCOMPLETE_LENGTH = 1
@@ -20,7 +22,9 @@ export const KeywordField = (props: KeywordsFieldProps) => {
     const debouncedInput = useDebounce<string>(inputValue, 250)
 
     async function autoComplete(input: string) {
-        const result = await getKeywordsAutocomplete(input)
+        const result = props.suggestions
+            ? getSuggestions(props, input)
+            : await getKeywordsAutocomplete(input)
         setSuggestions(result)
         setLoading(false)
     }
@@ -56,14 +60,7 @@ export const KeywordField = (props: KeywordsFieldProps) => {
         filterOptions={(x) => x}
         isOptionEqualToValue={(option, value) => option.val === value.val}
         value={props.selected}
-        renderInput={(params) => (
-            <TextField
-                {...params}
-                margin="dense"
-                label="Search and select keywords"
-                value={inputValue}
-            />
-        )}
+        renderInput={renderInputField}
         renderTags={(tagValue, getTagProps) =>
             tagValue.map((keyword, index) => (
                 <Chip
@@ -73,6 +70,7 @@ export const KeywordField = (props: KeywordsFieldProps) => {
                     onDelete={() => {
                         deleteKeyword(keyword)
                     }}
+                    size={props.size ? props.size : "medium"}
                 />
             ))
         }
@@ -103,4 +101,21 @@ export const KeywordField = (props: KeywordsFieldProps) => {
             )
         }}
     />
+
+    function renderInputField(
+        params: TextFieldProps
+    ): JSX.Element {
+        return <TextField
+            {...params}
+            label="Search and select keywords"
+            value={inputValue}
+            size={props.size ? props.size : "medium"}
+        />
+    }
+}
+
+function getSuggestions(props: KeywordsFieldProps, input: string) {
+    return props.suggestions
+        .filter(s => s.val.includes(input))
+        .sort((s1, s2) => s1.val > s2.val ? 1 : -1)
 }

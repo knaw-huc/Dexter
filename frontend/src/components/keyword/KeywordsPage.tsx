@@ -32,10 +32,12 @@ export const KeywordsPage = () => {
         <KeywordForm
             setKeywords={setKeywords}
         />
-        <KeywordList
-            keywords={keywords}
-            onDelete={handleDelete}
-        />
+        <div style={{marginTop: "1em"}}>
+            <KeywordList
+                keywords={keywords}
+                onDelete={handleDelete}
+            />
+        </div>
     </>
 }
 
