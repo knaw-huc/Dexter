@@ -1,6 +1,7 @@
 package nl.knaw.huc.dexter.db
 
 import nl.knaw.huc.dexter.api.*
+import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.kotlin.BindKotlin
 import org.jdbi.v3.sqlobject.kotlin.RegisterKotlinMapper
 import org.jdbi.v3.sqlobject.statement.SqlQuery
@@ -56,6 +57,19 @@ interface CorporaDao {
 
     @SqlQuery("select s.* from corpora_sources cs join sources s on cs.source_id = s.id where corpus_id = :corpusId")
     fun getSources(corpusId: UUID): List<ResultSource>
+
+    @SqlQuery(
+        "select distinct on (s.id) s.* " +
+                "from corpora_sources cs " +
+                "  join sources s on cs.source_id = s.id " +
+                "  join sources_keywords sk on s.id = sk.source_id " +
+                "where corpus_id = :corpusId " +
+                "and sk.key_id in (<tags>)"
+    )
+    fun getSourcesByTags(
+        corpusId: UUID,
+        @BindList("tags") tags: List<Int>
+    ): List<ResultSource>
 
     @SqlUpdate("insert into corpora_sources (corpus_id,source_id) values (:corpusId, :sourceId) on conflict do nothing")
     fun addSource(corpusId: UUID, sourceId: UUID)

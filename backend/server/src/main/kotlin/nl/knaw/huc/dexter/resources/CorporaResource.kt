@@ -151,9 +151,16 @@ class CorporaResource(private val jdbi: Jdbi) {
 
     @GET
     @Path("$ID_PATH/$SOURCES")
-    fun getSources(@PathParam(ID_PARAM) corpusId: UUID) =
+    fun getSources(
+        @PathParam(ID_PARAM) corpusId: UUID,
+        @QueryParam("tags") tags: List<Int> = emptyList()
+    ) =
         onExistingCorpus(corpusId) { dao, corpus ->
-            dao.getSources(corpus.id)
+            if (tags.isEmpty()) {
+                dao.getSources(corpus.id)
+            } else {
+                dao.getSourcesByTags(corpus.id, tags)
+            }
         }
 
     @POST
