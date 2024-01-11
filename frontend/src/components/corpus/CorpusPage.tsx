@@ -5,7 +5,8 @@ import {
     ServerKeyword,
     ServerLanguage,
     ServerResultCorpus,
-    ServerResultSource, ServerSource
+    ServerResultSource,
+    ServerSource
 } from "../../model/DexterModel"
 import {CorpusForm} from "./CorpusForm"
 import styled from "@emotion/styled"
@@ -82,7 +83,7 @@ export const CorpusPage = () => {
         initResources(corpusId)
     }, [corpusId])
 
-    const handleDeleteLanguage = async (language: ServerLanguage) => {
+    const deleteLanguage = async (language: ServerLanguage) => {
         const warning = window.confirm(
             "Are you sure you wish to delete this language?"
         )
@@ -102,11 +103,13 @@ export const CorpusPage = () => {
 
     const deleteSourceKeyword = async (sourceId: string, keywordId: string) => {
         await deleteKeywordFromSource(sourceId, keywordId)
-        setCorpus(corpus => ({
-            ...corpus,
-            sources: corpus.sources.filter(s => s.id !== keywordId)
-        }))
-
+        _.remove(
+            corpus.sources
+                .find(s => s.id === sourceId)
+                .keywords,
+            k => k.id === keywordId
+        )
+        setCorpus({...corpus})
     }
 
     const unlinkSource = async (corpusId: string, sourceId: string) => {
@@ -161,7 +164,7 @@ export const CorpusPage = () => {
                         <h4>Languages:</h4>
                         <Languages
                             languages={corpus.languages}
-                            onDelete={handleDeleteLanguage}
+                            onDelete={deleteLanguage}
                         />
                     </div>}
                     <h2>Sources</h2>

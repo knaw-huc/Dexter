@@ -295,11 +295,6 @@ export function CorpusForm(props: CorpusFormProps) {
                     <KeywordField
                         selected={watch("keywords")}
                         onChangeSelected={selected => {
-                            if (!window.confirm(
-                                "Are you sure you wish to delete this keyword?"
-                            )) {
-                                return
-                            }
                             setValue("keywords", selected)
                         }}
                     />
