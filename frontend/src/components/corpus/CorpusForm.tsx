@@ -6,25 +6,25 @@ import React, {useContext, useState} from "react"
 import {SubmitHandler, useForm} from "react-hook-form"
 import * as yup from "yup"
 import {
+    AccessOptions,
     ServerCorpus,
     ServerFormCorpus,
     ServerKeyword,
     ServerLanguage,
     ServerResultCorpus,
+    ServerResultSource,
     ServerSource,
 } from "../../model/DexterModel"
-import {collectionsContext} from "../../state/collections/collectionContext"
-import {sourcesContext} from "../../state/sources/sourcesContext"
 import {
     addKeywordsToCorpus,
-    addLanguagesToCorpus, addLanguagesToSource,
+    addLanguagesToCorpus,
+    addSourceResources,
     addSourcesToCorpus,
-    createCollection, deleteKeywordFromCorpus, deleteLanguageFromCorpus, deleteLanguageFromSource,
+    createCollection,
+    deleteKeywordFromCorpus,
+    deleteLanguageFromCorpus,
     deleteSourceFromCorpus,
-    getCollectionById,
-    getKeywordsCorpora,
-    getLanguagesCorpora,
-    getSourcesInCorpus, updateCorpus,
+    updateCorpus,
 } from "../../utils/API"
 import {KeywordField} from "../keyword/KeywordField"
 import {LanguagesField} from "../language/LanguagesField"
@@ -32,15 +32,14 @@ import {SubCorpusField} from "./SubCorpusField"
 import {errorContext} from "../../state/error/errorContext"
 import ScrollableModal from "../common/ScrollableModal"
 import {ValidatedSelectField} from "../common/ValidatedSelectField"
-import {accessOptions} from "../../model/AccessOptions"
 import {LinkSourceField} from "./LinkSourceField"
-import {Actions} from "../../state/actions"
 
-type NewCollectionProps = {
-    show?: boolean;
-    onClose?: () => void;
-    isEditing?: boolean;
-    corpusToEdit?: ServerResultCorpus | undefined;
+type CorpusFormProps = {
+    corpusToEdit?: ServerCorpus | undefined,
+    parentOptions: ServerResultCorpus[],
+    sourceOptions: ServerResultSource[],
+    onSave: (edited: ServerCorpus) => void,
+    onClose: () => void,
 };
 
 const TextFieldStyled = styled(TextField)`
@@ -86,9 +85,7 @@ const formToServer = (data: ServerCorpus) => {
     return newData
 }
 
-export function CorpusForm(props: NewCollectionProps) {
-    const {sourcesState} = React.useContext(sourcesContext)
-    const {collectionsState} = React.useContext(collectionsContext)
+export function CorpusForm(props: CorpusFormProps) {
     const {dispatchError} = useContext(errorContext)
     const {
         register,
@@ -110,10 +107,10 @@ export function CorpusForm(props: NewCollectionProps) {
     })
     const [isInit, setInit] = useState(false)
     const [isLoaded, setLoaded] = useState(false)
-    const {dispatchCollections} = React.useContext(collectionsContext)
+
     const onSubmit: SubmitHandler<ServerCorpus> = async (data: ServerCorpus) => {
 
-        if (!props.isEditing) {
+        if (!props.corpusToEdit) {
             const serverCreateForm = formToServer(data)
             try {
                 const newCollection = await createCollection(serverCreateForm)
@@ -125,16 +122,12 @@ export function CorpusForm(props: NewCollectionProps) {
                 serverCreateForm.sourceIds &&
                 (await addSourcesToCorpus(corpusId, serverCreateForm.sourceIds))
 
-                updateCollectionStore()
-
             } catch (error) {
                 dispatchError(error)
             }
         } else {
-            const submitCorpusToBackend = async (
-                id: string,
-                updatedData: ServerCorpus
-            ) => {
+            const submitCorpusToBackend = async () => {
+                const id = props.corpusToEdit.id;
                 try {
                     const serverUpdateForm: ServerFormCorpus = {
                         ...data,
@@ -172,48 +165,19 @@ export function CorpusForm(props: NewCollectionProps) {
                     for (const sourceToDelete of sourcesToDelete) {
                         await deleteSourceFromCorpus(id, sourceToDelete)
                     }
-
-                    updateCollectionStore()
-
                 } catch (error) {
                     dispatchError(error)
                 }
             }
-            submitCorpusToBackend(props.corpusToEdit.id, data)
-
+            submitCorpusToBackend()
         }
 
-        props.onClose()
-
-        function updateCollectionStore() {
-            const collectionsUpdate = [...collectionsState.collections]
-            const toReplace = collectionsUpdate.findIndex(c => c.id === data.id)
-            collectionsUpdate[toReplace] = data
-            dispatchCollections({
-                type: Actions.SET_COLLECTIONS,
-                collections: collectionsUpdate,
-            })
-        }
-
+        props.onSave(data)
     }
 
     React.useEffect(() => {
-        const doGetCollectionById = async (id: string) => {
+        const initFormFields = async () => {
             setInit(true)
-            const serverCorpus = await getCollectionById(id)
-            const data: ServerCorpus = {
-                ...serverCorpus,
-                keywords: await getKeywordsCorpora(id),
-                languages: await getLanguagesCorpora(id),
-                sources: await getSourcesInCorpus(id),
-                parent: serverCorpus.parentId && await getCollectionById(serverCorpus.parentId)
-            }
-
-            if (serverCorpus.parentId) {
-                const parentId = serverCorpus.parentId
-                data.parent = await getCollectionById(parentId)
-            }
-
             const fields = [
                 "parentId",
                 "title",
@@ -230,7 +194,7 @@ export function CorpusForm(props: NewCollectionProps) {
                 "sources",
             ]
             fields.map((field: keyof ServerCorpus) => {
-                setValue(field, data[field])
+                setValue(field, props.corpusToEdit[field])
             })
             register("access")
             setLoaded(true)
@@ -238,23 +202,26 @@ export function CorpusForm(props: NewCollectionProps) {
         if(isInit) {
             return;
         }
-        if (props.isEditing && props.corpusToEdit) {
-            doGetCollectionById(props.corpusToEdit.id)
+        if (props.corpusToEdit) {
+            initFormFields()
         } else {
             setInit(true)
             setLoaded(true)
         }
     }, [isInit, isLoaded])
 
-    const allSources = sourcesState.sources
+    const allSources = props.sourceOptions
     const selectedSources = watch("sources")
 
     function unlinkSource(sourceId: string) {
         return setValue("sources", selectedSources.filter(s => s.id !== sourceId))
     }
 
-    function linkSource(sourceId: string) {
-        return setValue("sources", [...selectedSources, allSources.find(s => s.id === sourceId)])
+    async function linkSource(sourceId: string) {
+        const newSource = await addSourceResources(
+            allSources.find(s => s.id === sourceId)
+        )
+        return setValue("sources", [...selectedSources, newSource])
     }
 
     if(!isLoaded) {
@@ -263,10 +230,10 @@ export function CorpusForm(props: NewCollectionProps) {
     return (
         <>
             <ScrollableModal
-                show={props.show}
+                show={true}
                 handleClose={props.onClose}
             >
-                <h1>{props.isEditing ? "Edit corpus" : "Create new corpus"}</h1>
+                <h1>{props.corpusToEdit ? "Edit corpus" : "Create new corpus"}</h1>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <Label>Title</Label>
                     <TextFieldStyled
@@ -299,7 +266,7 @@ export function CorpusForm(props: NewCollectionProps) {
                         errorMessage={errors.access?.message}
                         selectedOption={watch("access")}
                         onSelectOption={v => setValue("access", v)}
-                        options={accessOptions}
+                        options={AccessOptions}
                     />
 
                     <Label>Location</Label>
@@ -341,11 +308,11 @@ export function CorpusForm(props: NewCollectionProps) {
                         control={control}
                         corpusId={props.corpusToEdit && props.corpusToEdit.id}
                         setValueCorpus={setValue}
-                        edit={props.isEditing}
+                        edit={!!props.corpusToEdit}
                     />
                     <Label>Add sources to corpus</Label>
                     <LinkSourceField
-                        all={allSources}
+                        options={allSources}
                         selected={selectedSources}
                         onLinkSource={linkSource}
                         onUnlinkSource={unlinkSource}
@@ -353,7 +320,7 @@ export function CorpusForm(props: NewCollectionProps) {
                     <Label>Add corpus to which main corpus?</Label>
                     <SubCorpusField
                         control={control}
-                        corpora={collectionsState.collections}
+                        corpora={props.parentOptions}
                     />
                     <Button variant="contained" type="submit">
                         Submit

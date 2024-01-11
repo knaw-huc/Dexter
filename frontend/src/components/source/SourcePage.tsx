@@ -1,70 +1,49 @@
-import styled from "@emotion/styled";
-import Button from "@mui/material/Button";
-import React from "react";
-import { useParams } from "react-router-dom";
-import {
-    ServerKeyword,
-    ServerLanguage,
-    ServerSource,
-} from "../../model/DexterModel";
-import { Actions } from "../../state/actions";
-import { sourcesContext } from "../../state/sources/sourcesContext";
-import { deleteKeywordFromSourceWithWarning } from "../../utils/deleteKeywordFromSourceWithWarning";
-import { deleteLanguageFromSourceWithWarning } from "../../utils/deleteLanguageFromSourceWithWarning";
-import { getKeywordsSources, getLanguagesSources, getSourceById } from "../../utils/API";
-import { Keyword } from "../keyword/Keyword";
-import { Languages } from "../language/Languages";
-import { SourceForm } from "./SourceForm";
+import React from "react"
+import {useParams} from "react-router-dom"
+import {ServerKeyword, ServerLanguage, ServerSource,} from "../../model/DexterModel"
+import {deleteKeywordFromSourceWithWarning} from "../../utils/deleteKeywordFromSourceWithWarning"
+import {deleteLanguageFromSourceWithWarning} from "../../utils/deleteLanguageFromSourceWithWarning"
+import {getKeywordsSources, getLanguagesSources, getSourceById} from "../../utils/API"
+import {Languages} from "../language/Languages"
+import {SourceForm} from "./SourceForm"
 import {EditButton} from "../common/EditButton"
 import {KeywordList} from "../keyword/KeywordList"
 
 export const SourcePage = () => {
+    const params = useParams();
+    const sourceId = params.sourceId
+
     const [source, setSource] = React.useState<ServerSource>(null);
     const [keywords, setKeywords] = React.useState<ServerKeyword[]>(null);
     const [languages, setLanguages] = React.useState<ServerLanguage[]>(null);
 
-    const params = useParams();
 
-    const { sourcesState, dispatchSources } = React.useContext(sourcesContext);
     const [showForm, setShowForm] = React.useState(false);
 
-    const formShowHandler = () => {
-        dispatchSources({
-            type: Actions.SET_TOEDITSOURCE,
-            toEditSource: source,
-        });
-        editHandler(true);
-        setShowForm(true);
-    };
-
-    const formCloseHandler = () => {
+    const handleSaveForm = () => {
+        initSource()
         setShowForm(false);
     };
 
-    const editHandler = (boolean: boolean) => {
-        dispatchSources({
-            type: Actions.SET_EDITSOURCEMODE,
-            editSourceMode: boolean,
-        });
-    };
-
-    const doGetSourceById = async (id: string) => {
-        const source = await getSourceById(id);
+    const initSource = async () => {
+        const source = await getSourceById(sourceId);
         setSource(source);
 
-        const keywords = await getKeywordsSources(source.id);
+        const keywords = await getKeywordsSources(sourceId);
         setKeywords(keywords);
 
-        const languages = await getLanguagesSources(source.id);
+        const languages = await getLanguagesSources(sourceId);
         setLanguages(languages);
     };
 
     React.useEffect(() => {
-        doGetSourceById(params.sourceId);
-    }, [params.sourceId]);
+        if(sourceId) {
+            initSource();
+        }
+    }, [sourceId]);
 
     const refetchSource = async () => {
-        await doGetSourceById(params.sourceId);
+        await initSource();
     };
 
     const deleteLanguageHandler = async (language: ServerLanguage) => {
@@ -81,7 +60,9 @@ export const SourcePage = () => {
         <div>
             {source && keywords && languages && (
                 <>
-                    <EditButton onEdit={formShowHandler}/>
+                    <EditButton onEdit={() => {
+                        setShowForm(true);
+                    }}/>
                     <p>
                         <strong>External reference:</strong> {source.externalRef}
                     </p>
@@ -128,16 +109,13 @@ export const SourcePage = () => {
                     </div>
                 </>
             )}
-            {sourcesState.editSourceMode && (
-                <SourceForm
-                    show={showForm}
-                    onEdit={editHandler}
-                    edit={sourcesState.editSourceMode}
-                    sourceToEdit={sourcesState.toEditSource}
-                    onClose={formCloseHandler}
-                    refetchSource={refetchSource}
-                />
-            )}
+            {showForm && <SourceForm
+                sourceToEdit={source}
+                onSave={handleSaveForm}
+                onClose={() => {
+                    setShowForm(false);
+                }}
+            />}
         </div>
     );
 };

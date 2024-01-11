@@ -1,5 +1,4 @@
 import React from "react"
-import {Actions} from "../actions"
 
 export interface UserState {
     username: string

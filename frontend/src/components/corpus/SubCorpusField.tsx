@@ -4,10 +4,10 @@ import match from "autosuggest-highlight/match";
 import parse from "autosuggest-highlight/parse";
 import React from "react";
 import { Controller } from "react-hook-form";
-import { ServerCorpus } from "../../model/DexterModel";
+import {ServerCorpus, ServerResultCorpus} from "../../model/DexterModel"
 
 interface SubCorpusFieldProps {
-  corpora: ServerCorpus[];
+  corpora: ServerResultCorpus[];
   control: any;
 }
 

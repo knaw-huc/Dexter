@@ -44,11 +44,11 @@ async function fetchValidated(path: string) {
     return response.json()
 }
 
-export const getCollections = async (): Promise<ServerCorpus[]> => {
+export const getCorpora = async (): Promise<ServerCorpus[]> => {
     return fetchValidated("/api/corpora")
 }
 
-export const getCollectionById = async (id: string): Promise<ServerResultCorpus> => {
+export const getCorpusById = async (id: string): Promise<ServerResultCorpus> => {
     return fetchValidated(`/api/corpora/${id}`)
 }
 
@@ -87,15 +87,37 @@ export const deleteCollection = async (id: string): Promise<void> => {
     validateResponse({response})
 }
 
+export const getCorpusWithResourcesById = async (id: string): Promise<ServerCorpus> => {
+    const serverResult = await getCorpusById(id);
+    return addCorpusResources(serverResult);
+}
+export const getCorporaWithResources = async (): Promise<ServerCorpus[]> => {
+    const serverResults = await getCorpora();
+    return Promise.all(serverResults.map(addCorpusResources));
+}
+async function addCorpusResources(result: ServerResultCorpus): Promise<ServerCorpus> {
+    return {
+        ...result,
+        keywords: await getKeywordsCorpora(result.id),
+        languages: await getLanguagesCorpora(result.id),
+        sources: await getSourcesInCorpusWithResources(result.id)
+    }
+}
+
 export const getSourcesWithResources = async (): Promise<ServerSource[]> => {
     const serverResults = await getSources();
     return Promise.all(serverResults.map(addSourceResources));
 }
-async function addSourceResources(result: ServerResultSource): Promise<ServerSource> {
+
+export const getSourcesInCorpusWithResources = async (id: string): Promise<ServerSource[]> => {
+    const serverResults = await getSourcesInCorpus(id);
+    return Promise.all(serverResults.map(addSourceResources));
+}
+export async function addSourceResources(result: ServerResultSource): Promise<ServerSource> {
     return {
         ...result,
         keywords: await getKeywordsSources(result.id),
-        languages: await getLanguagesSources(result.id)
+        languages: await getLanguagesSources(result.id),
     }
 }
 

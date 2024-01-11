@@ -1,4 +1,4 @@
-import {ServerSource} from "../../model/DexterModel"
+import {ServerResultSource, ServerSource} from "../../model/DexterModel"
 import React, {useState} from "react"
 import Autocomplete from "@mui/material/Autocomplete"
 import TextField from "@mui/material/TextField"
@@ -7,8 +7,8 @@ import match from "autosuggest-highlight/match"
 import parse from "autosuggest-highlight/parse"
 
 export type LinkSourceFieldProps = {
-    all: ServerSource[],
-    selected: ServerSource[],
+    options: ServerResultSource[],
+    selected: ServerResultSource[],
     onLinkSource: (sourceId: string) => void,
     onUnlinkSource: (sourceId: string) => void
 }
@@ -23,7 +23,7 @@ export function LinkSourceField(props: LinkSourceFieldProps) {
         }}
         multiple={true}
         id="partofsource-autocomplete"
-        options={props.all}
+        options={props.options}
         getOptionLabel={(source: ServerSource) => source.title}
         filterOptions={(x) => x}
         isOptionEqualToValue={(option, value) =>

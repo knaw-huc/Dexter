@@ -76,7 +76,14 @@ export type ServerResultSource = {
 export type ServerSource = ServerResultSource & {
     keywords: ServerKeyword[];
     languages: ServerLanguage[];
-    partOfCorpus?: string[];
+}
+
+/**
+ * Source including all child resources
+ */
+export type ServerSourceWithResourceIds = ServerResultSource & {
+    keywords: string[];
+    languages: string[];
 }
 
 export type ServerFormSource = {
@@ -102,6 +109,7 @@ export enum Access {
     RESTRICTED = "Restricted",
     OPEN = "Open"
 }
+export const AccessOptions = ["Open", "Restricted", "Closed"]
 
 export interface FormKeyword {
     val: string;

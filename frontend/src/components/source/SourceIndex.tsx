@@ -1,60 +1,67 @@
-import React, {useContext} from "react"
+import React, {useEffect, useState} from "react"
 import {ServerSource} from "../../model/DexterModel"
-import {Actions} from "../../state/actions"
-import {sourcesContext} from "../../state/sources/sourcesContext"
-import {Source} from "./Source"
+import {SourceLi} from "./SourceLi"
 import styled from "@emotion/styled"
 import {getSourcesWithResources} from "../../utils/API"
-import {errorContext} from "../../state/error/errorContext"
 import {SourceForm} from "./SourceForm"
 import {AddNewSourceButton} from "./AddNewSourceButton"
+import {useNavigate} from "react-router-dom"
 
 const FilterRow = styled.div`
   display: flex;
   flex-direction: row;
-`;
+`
 
 export function SourceIndex() {
-  const { sourcesState, dispatchSources } = React.useContext(sourcesContext);
-  const [showForm, setShowForm] = React.useState(false);
-    const {dispatchError} = useContext(errorContext)
-  const refetchSources = async () => {
-    getSourcesWithResources().then(function (sources) {
-      dispatchSources({
-        type: Actions.SET_SOURCES,
-        sources: sources,
-      });
-    }).catch(dispatchError);
-  };
+    const navigate = useNavigate()
 
-  const handleSelected = (selected: ServerSource | undefined) => {
-    return dispatchSources({
-      type: Actions.SET_SELECTEDSOURCE,
-      selectedSource: selected,
-    });
-  };
+    const [showForm, setShowForm] = React.useState(false)
+    const [sources, setSources] = useState<ServerSource[]>()
+    const [isInit, setInit] = useState(false)
 
-  return (
-    <>
-      <FilterRow>
-          <AddNewSourceButton onClick={() => setShowForm(true)}/>
-      </FilterRow>
-      {showForm && (
-        <SourceForm
-          show={showForm}
-          onClose={() => setShowForm(false)}
-          refetch={refetchSources}
-        />
-      )}
-      {sourcesState.sources &&
-        sourcesState.sources.map((source: ServerSource, index: number) => (
-          <Source
-            key={index}
-            sourceId={index}
-            source={source}
-            onSelect={handleSelected}
-          />
-        ))}
-    </>
-  );
+    useEffect(() => {
+        async function initResources() {
+            setInit(true)
+            setSources(await getSourcesWithResources())
+        }
+
+        if (!isInit) {
+            initResources()
+        }
+    }, [isInit])
+
+    const handleSelected = (selected: ServerSource) => {
+        navigate(`/sources/${selected.id}`)
+    }
+
+    const handleDelete = (source: ServerSource) => {
+        setSources(sources => sources.filter(s => s.id !== source.id))
+    }
+
+    function handleSaveSource(update: ServerSource) {
+        setSources(sources =>
+            sources.map(s => s.id === update.id ? update : s)
+        )
+    }
+
+    return (
+        <>
+            <FilterRow>
+                <AddNewSourceButton onClick={() => setShowForm(true)}/>
+            </FilterRow>
+            {showForm && <SourceForm
+                onClose={() => setShowForm(false)}
+                onSave={handleSaveSource}
+            />}
+            {sources && sources.map((source: ServerSource, index: number) => (
+                <SourceLi
+                    key={index}
+                    sourceId={index}
+                    source={source}
+                    onSelect={handleSelected}
+                    onDelete={() => handleDelete(source)}
+                />
+            ))}
+        </>
+    )
 }

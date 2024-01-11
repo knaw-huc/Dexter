@@ -1,13 +1,10 @@
-import Button from "@mui/material/Button"
-import React, {useContext, useEffect} from "react"
-import {ServerCorpus} from "../../model/DexterModel"
-import {Actions} from "../../state/actions"
-import {collectionsContext} from "../../state/collections/collectionContext"
-import {CorpusLink} from "./CorpusLink"
+import React, {useContext, useEffect, useState} from "react"
+import {ServerCorpus, ServerResultSource} from "../../model/DexterModel"
+import {CorpusPreview} from "./CorpusPreview"
 import {CorpusForm} from "./CorpusForm"
 import styled from "@emotion/styled"
 import {errorContext} from "../../state/error/errorContext"
-import {getCollections} from "../../utils/API"
+import {getCorporaWithResources, getSources} from "../../utils/API"
 import {AddIconStyled} from "../common/AddIconStyled"
 import {ButtonWithIcon} from "../common/ButtonWithIcon"
 import {Grid} from "@mui/material"
@@ -18,10 +15,38 @@ const FilterRow = styled.div`
 `
 
 export function CorpusIndex() {
-    const {collectionsState, dispatchCollections} =
-        useContext(collectionsContext)
     const [showForm, setShowForm] = React.useState(false)
     const {dispatchError} = useContext(errorContext)
+    const [corpora, setCorpora] = useState<ServerCorpus[]>()
+    const [sourceOptions, setSourceOptions] = useState<ServerResultSource[]>()
+    const [isInit, setInit] = useState(false)
+
+    const initResources = async () => {
+        const corporaWithResources = await getCorporaWithResources()
+            .catch(dispatchError)
+        if (!corporaWithResources) {
+            dispatchError(new Error(`No corpora found`))
+            return
+        }
+        setCorpora(corporaWithResources)
+        setSourceOptions(await getSources())
+    }
+
+    useEffect(() => {
+        if(!isInit) {
+            setInit(true)
+            initResources()
+        }
+    }, [isInit])
+
+    function handleDelete(corpus: ServerCorpus) {
+        setCorpora(corpora => corpora.filter(c => c.id !== corpus.id))
+    }
+
+    function handleSave(update: ServerCorpus) {
+        setCorpora(corpora => [...corpora, update])
+        setShowForm(false)
+    }
 
     return (
         <>
@@ -36,26 +61,29 @@ export function CorpusIndex() {
             </FilterRow>
             {showForm && (
                 <CorpusForm
-                    show={showForm}
+                    parentOptions={corpora}
+                    sourceOptions={sourceOptions}
+                    onSave={handleSave}
                     onClose={() => setShowForm(false)}
                 />
             )}
-            {collectionsState.collections && (
+            {corpora && (
                 <Grid
                     container
                     spacing={2}
                     sx={{pl: 0.1, pr: 1, mt: 2, mb: 2}}
                 >
-                    {collectionsState.collections.map(
-                        (collection: ServerCorpus, index: number) => <Grid
+                    {corpora.map(
+                        (corpus: ServerCorpus, index: number) => <Grid
                             item
                             xs={4}
                             height="150px"
                             key={index}
                         >
-                            <CorpusLink
+                            <CorpusPreview
                                 collectionId={index}
-                                collection={collection}
+                                collection={corpus}
+                                onDelete={() => handleDelete(corpus)}
                             />
                         </Grid>)}
                 </Grid>

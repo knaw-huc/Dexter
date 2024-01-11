@@ -1,18 +1,16 @@
 import styled from "@emotion/styled"
 import DeleteIcon from "@mui/icons-material/Delete"
 import {red} from "@mui/material/colors"
-import React, {useContext} from "react"
 import {Link} from "react-router-dom"
 import {ServerSource} from "../../model/DexterModel"
-import {Actions} from "../../state/actions"
-import {sourcesContext} from "../../state/sources/sourcesContext"
-import {deleteSource, getSourcesWithResources} from "../../utils/API"
-import {errorContext} from "../../state/error/errorContext"
+import {deleteSource} from "../../utils/API"
+import React from "react"
 
 type SourceItemProps = {
     sourceId: React.Key;
     source: ServerSource;
     onSelect: (selected: ServerSource | undefined) => void;
+    onDelete: () => void
 };
 
 const DeleteIconStyled = styled(DeleteIcon)`
@@ -24,10 +22,7 @@ const DeleteIconStyled = styled(DeleteIcon)`
   }
 `;
 
-export const Source = (props: SourceItemProps) => {
-    const { dispatchSources } = React.useContext(sourcesContext);
-    const {dispatchError} = useContext(errorContext)
-
+export const SourceLi = (props: SourceItemProps) => {
     const toggleClick = () => {
         props.onSelect(props.source);
     };
@@ -40,12 +35,7 @@ export const Source = (props: SourceItemProps) => {
         if (warning === false) return;
 
         await deleteSource(id);
-        getSourcesWithResources().then(function (sources) {
-            dispatchSources({
-                type: Actions.SET_SOURCES,
-                sources: sources,
-            });
-        }).catch(dispatchError);
+        props.onDelete()
     };
 
     return (

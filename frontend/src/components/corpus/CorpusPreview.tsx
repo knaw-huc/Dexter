@@ -1,20 +1,19 @@
 import React, {useContext} from "react"
 import {ServerCorpus} from "../../model/DexterModel"
-import {Link, useNavigate} from "react-router-dom"
+import {useNavigate} from "react-router-dom"
 import styled from "@emotion/styled"
-import {collectionsContext} from "../../state/collections/collectionContext"
-import {Actions} from "../../state/actions"
 import DeleteIcon from "@mui/icons-material/Delete"
 import {red} from "@mui/material/colors"
-import {deleteCollection, getCollections} from "../../utils/API"
+import {deleteCollection} from "../../utils/API"
 import {errorContext} from "../../state/error/errorContext"
 import {Card, CardContent} from "@mui/material"
 import {HeaderLinkClamped} from "../common/HeaderLinkClamped"
 import {PClamped} from "../common/PClamped"
 
-type CorpusLinkProps = {
+type CorpusPreviewProps = {
     collectionId: React.Key;
     collection: ServerCorpus;
+    onDelete: () => void
 };
 
 const DeleteIconStyled = styled(DeleteIcon)`
@@ -27,8 +26,7 @@ const DeleteIconStyled = styled(DeleteIcon)`
   }
 `
 
-export function CorpusLink(props: CorpusLinkProps) {
-    const {dispatchCollections} = React.useContext(collectionsContext)
+export function CorpusPreview(props: CorpusPreviewProps) {
     const {dispatchError} = useContext(errorContext)
     const navigate = useNavigate()
     const handleDelete = async (collection: ServerCorpus) => {
@@ -40,13 +38,7 @@ export function CorpusLink(props: CorpusLinkProps) {
 
         await deleteCollection(collection.id)
             .catch(dispatchError)
-        getCollections()
-            .then(function (collections) {
-                dispatchCollections({
-                    type: Actions.SET_COLLECTIONS,
-                    collections: collections
-                })
-            }).catch(dispatchError)
+        props.onDelete();
     }
 
     return <Card
