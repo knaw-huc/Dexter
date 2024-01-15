@@ -9,7 +9,9 @@ import {
     ServerKeyword,
     ServerLanguage,
     Source,
-    SourceUpdateWithResourceIds, SourceUpdate, UUID
+    SourceUpdate,
+    SourceUpdateWithResourceIds,
+    UUID
 } from "../../model/DexterModel"
 import {
     addKeywordsToSource,
@@ -22,7 +24,6 @@ import {
     getLanguagesSources,
     getSourceById,
     postImport,
-    ResponseError,
     updateSource,
 } from "../../utils/API"
 import ScrollableModal from "../common/ScrollableModal"
@@ -36,6 +37,7 @@ import {ValidatedSelectField} from "../common/ValidatedSelectField"
 import {ERROR_MESSAGE_CLASS, ErrorMsg} from "../common/ErrorMsg"
 import {TextFieldWithError} from "./TextFieldWithError"
 import {TextFieldStyled} from "./TextFieldStyled"
+import {ErrorByField, GenericFormError, setBackendErrors} from "../common/form/ErrorWithMessage"
 
 const formFields = [
     "externalRef",
@@ -52,9 +54,6 @@ const formFields = [
     "languages",
 ]
 
-type BackendError = Pick<Error, "message">
-type FormField = string | "generic"
-type BackendErrorByField = { field: FormField, error: BackendError }
 
 type SourceFormProps = {
     sourceToEdit?: Source;
@@ -101,7 +100,7 @@ export function SourceForm(props: SourceFormProps) {
     const [isExternalRefLoading, setExternalRefLoading] = useState(false)
     const externalRef = watch("externalRef")
     const debouncedExternalRef = useDebounce<string>(externalRef, 500)
-    const [backendError, setBackendError] = useState<BackendErrorByField>()
+    const [backendError, setBackendError] = useState<ErrorByField>()
 
     async function importMetadata() {
         if (isExternalRefLoading) {
@@ -133,7 +132,7 @@ export function SourceForm(props: SourceFormProps) {
                 : await createNewSource(data)
             props.onSave({id, ...data})
         } catch (error) {
-            await setBackendErrors(error)
+            await setBackendErrors(error, setBackendError)
         }
     }
 
@@ -182,15 +181,6 @@ export function SourceForm(props: SourceFormProps) {
             await addSourcesToCorpus(props.corpusId, [sourceId])
         }
         return sourceId;
-    }
-
-    async function setBackendErrors(error: ResponseError) {
-        const errorResponseBody = await error.response.json()
-        if (errorResponseBody.message.includes("SOURCES_UNIQUE_TITLE_CONSTRAINT")) {
-            setBackendError({field: "title", error: {message: "Title already exists"}})
-        } else {
-            setBackendError({field: "generic", error: {message: errorResponseBody.message}})
-        }
     }
 
     useEffect(() => {
@@ -244,9 +234,7 @@ export function SourceForm(props: SourceFormProps) {
     >
         <h1>{props.sourceToEdit ? "Edit source" : "Create new source"}</h1>
         <form onSubmit={handleSubmit(onSubmit)}>
-            {backendError?.field === "generic" && <Alert className={ERROR_MESSAGE_CLASS} severity="error">
-                Could not save: {backendError.error.message}
-            </Alert>}
+            <GenericFormError error={backendError}/>
 
             <TextFieldWithError
                 label="External Reference"

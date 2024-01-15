@@ -3,7 +3,7 @@ import {yupResolver} from "@hookform/resolvers/yup"
 import Button from "@mui/material/Button"
 import TextField from "@mui/material/TextField"
 import React, {useContext, useState} from "react"
-import {SubmitHandler, useForm} from "react-hook-form"
+import {useForm} from "react-hook-form"
 import * as yup from "yup"
 import {
     AccessOptions,
@@ -33,6 +33,7 @@ import {errorContext} from "../../state/error/errorContext"
 import ScrollableModal from "../common/ScrollableModal"
 import {ValidatedSelectField} from "../common/ValidatedSelectField"
 import {LinkSourceField} from "./LinkSourceField"
+import {ErrorByField, GenericFormError, setBackendErrors} from "../common/form/ErrorWithMessage"
 
 type CorpusFormProps = {
     corpusToEdit?: ServerCorpus | undefined,
@@ -86,7 +87,7 @@ const formToServer = (data: ServerCorpus) => {
 }
 
 export function CorpusForm(props: CorpusFormProps) {
-    const {dispatchError} = useContext(errorContext)
+    const [backendError, setBackendError] = useState<ErrorByField>()
     const {
         register,
         handleSubmit,
@@ -108,71 +109,76 @@ export function CorpusForm(props: CorpusFormProps) {
     const [isInit, setInit] = useState(false)
     const [isLoaded, setLoaded] = useState(false)
 
-    const onSubmit: SubmitHandler<ServerCorpus> = async (data: ServerCorpus) => {
+    async function createNewCorpus(data: ServerResultCorpus & {
+        parent?: { id: string; title: string };
+        keywords: ServerKeyword[];
+        languages: ServerLanguage[];
+        sources: Source[]
+    }) {
+        const serverCreateForm = formToServer(data)
+        const newCorpus = await createCollection(serverCreateForm)
+        const newId = newCorpus.id
+        serverCreateForm.keywords &&
+        (await addKeywordsToCorpus(newId, serverCreateForm.keywords))
+        serverCreateForm.languages &&
+        (await addLanguagesToCorpus(newId, serverCreateForm.languages))
+        serverCreateForm.sourceIds &&
+        (await addSourcesToCorpus(newId, serverCreateForm.sourceIds))
+        return newId
+    }
 
-        if (!props.corpusToEdit) {
-            const serverCreateForm = formToServer(data)
-            try {
-                const newCollection = await createCollection(serverCreateForm)
-                const corpusId = newCollection.id
-                serverCreateForm.keywords &&
-                (await addKeywordsToCorpus(corpusId, serverCreateForm.keywords))
-                serverCreateForm.languages &&
-                (await addLanguagesToCorpus(corpusId, serverCreateForm.languages))
-                serverCreateForm.sourceIds &&
-                (await addSourcesToCorpus(corpusId, serverCreateForm.sourceIds))
+    async function updateExistingCorpus(
+        data: ServerCorpus,
+        id: string
+    ) {
+        const updateId = props.corpusToEdit.id
+        const serverUpdateForm: ServerFormCorpus = {
+            ...data,
+        }
+        await updateCorpus(updateId, serverUpdateForm)
+        const keywordsUpdate = data.keywords.map(kw => kw.id)
+        const responseKeywords = await addKeywordsToCorpus(updateId, keywordsUpdate)
+        const keysToDelete = responseKeywords
+            .map(s => s.id)
+            .filter(ls => !keywordsUpdate.includes(ls))
+        for (const keyToDelete of keysToDelete) {
+            await deleteKeywordFromCorpus(updateId, keyToDelete)
+        }
+        const languagesUpdate = data.languages.map(l => l.id)
 
-            } catch (error) {
-                dispatchError(error)
-            }
-        } else {
-            const submitCorpusToBackend = async () => {
-                const id = props.corpusToEdit.id;
-                try {
-                    const serverUpdateForm: ServerFormCorpus = {
-                        ...data,
-                    }
+        const responseLanguages = await addLanguagesToCorpus(updateId, languagesUpdate)
+        const languagesToDelete = responseLanguages
+            .map(l => l.id)
+            .filter(ls => !languagesUpdate.includes(ls))
+        for (const languageToDelete of languagesToDelete) {
+            await deleteLanguageFromCorpus(id, languageToDelete)
+        }
+        if (serverUpdateForm.parentId) {
 
-                    await updateCorpus(id, serverUpdateForm)
+            serverUpdateForm.parentId = data.parent.id
+        }
+        const sourceIdsUpdate = data.sources.map(s => s.id)
 
-                    const keywordsUpdate = data.keywords.map(kw => kw.id)
-                    const responseKeywords = await addKeywordsToCorpus(id, keywordsUpdate)
-                    const keysToDelete = responseKeywords
-                        .map(s => s.id)
-                        .filter(ls => !keywordsUpdate.includes(ls))
-                    for (const keyToDelete of keysToDelete) {
-                        await deleteKeywordFromCorpus(id, keyToDelete)
-                    }
+        const responseSources = await addSourcesToCorpus(id, sourceIdsUpdate)
+        const sourcesToDelete = responseSources
+            .map(s => s.id)
+            .filter(ls => !sourceIdsUpdate.includes(ls))
+        for (const sourceToDelete of sourcesToDelete) {
+            await deleteSourceFromCorpus(updateId, sourceToDelete)
+        }
+        return id;
+    }
 
-                    const languagesUpdate = data.languages.map(l => l.id)
-                    const responseLanguages = await addLanguagesToCorpus(id, languagesUpdate)
-                    const languagesToDelete = responseLanguages
-                        .map(l => l.id)
-                        .filter(ls => !languagesUpdate.includes(ls))
-                    for (const languageToDelete of languagesToDelete) {
-                        await deleteLanguageFromCorpus(id, languageToDelete)
-                    }
-
-                    if (serverUpdateForm.parentId) {
-                        serverUpdateForm.parentId = data.parent.id
-                    }
-
-                    const sourceIdsUpdate = data.sources.map(s => s.id)
-                    const responseSources = await addSourcesToCorpus(id, sourceIdsUpdate)
-                    const sourcesToDelete = responseSources
-                        .map(s => s.id)
-                        .filter(ls => !sourceIdsUpdate.includes(ls))
-                    for (const sourceToDelete of sourcesToDelete) {
-                        await deleteSourceFromCorpus(id, sourceToDelete)
-                    }
-                } catch (error) {
-                    dispatchError(error)
-                }
-            }
-            submitCorpusToBackend()
+    async function onSubmit(data: ServerCorpus) {
+        try {
+            const id = !props.corpusToEdit
+                ? await createNewCorpus(data)
+                : await updateExistingCorpus(data, props.corpusToEdit.id);
+            props.onSave({id, ...data})
+        } catch (e) {
+            await setBackendErrors(e, setBackendError)
         }
 
-        props.onSave(data)
     }
 
     React.useEffect(() => {
@@ -199,8 +205,8 @@ export function CorpusForm(props: CorpusFormProps) {
             register("access")
             setLoaded(true)
         }
-        if(isInit) {
-            return;
+        if (isInit) {
+            return
         }
         if (props.corpusToEdit) {
             initFormFields()
@@ -224,8 +230,8 @@ export function CorpusForm(props: CorpusFormProps) {
         return setValue("sources", [...selectedSources, newSource])
     }
 
-    if(!isLoaded) {
-        return null;
+    if (!isLoaded) {
+        return null
     }
     return (
         <>
@@ -234,6 +240,7 @@ export function CorpusForm(props: CorpusFormProps) {
                 handleClose={props.onClose}
             >
                 <h1>{props.corpusToEdit ? "Edit corpus" : "Create new corpus"}</h1>
+                <GenericFormError error={backendError}/>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <Label>Title</Label>
                     <TextFieldStyled

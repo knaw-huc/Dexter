@@ -91,11 +91,7 @@ export const getCorpusWithResourcesById = async (id: string): Promise<ServerCorp
     const serverResult = await getCorpusById(id);
     return addCorpusResources(serverResult);
 }
-export const getCorporaWithResources = async (): Promise<ServerCorpus[]> => {
-    const serverResults = await getCorpora();
-    return Promise.all(serverResults.map(addCorpusResources));
-}
-async function addCorpusResources(result: ServerResultCorpus): Promise<ServerCorpus> {
+export async function addCorpusResources(result: ServerResultCorpus): Promise<ServerCorpus> {
     return {
         ...result,
         keywords: await getKeywordsCorpora(result.id),

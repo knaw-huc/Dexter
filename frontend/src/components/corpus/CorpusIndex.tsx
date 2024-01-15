@@ -4,7 +4,7 @@ import {CorpusPreview} from "./CorpusPreview"
 import {CorpusForm} from "./CorpusForm"
 import styled from "@emotion/styled"
 import {errorContext} from "../../state/error/errorContext"
-import {getCorporaWithResources, getSources} from "../../utils/API"
+import {addCorpusResources, getCorpora, getSources} from "../../utils/API"
 import {AddIconStyled} from "../common/AddIconStyled"
 import {ButtonWithIcon} from "../common/ButtonWithIcon"
 import {Grid} from "@mui/material"
@@ -22,14 +22,15 @@ export function CorpusIndex() {
     const [isInit, setInit] = useState(false)
 
     const initResources = async () => {
-        const corporaWithResources = await getCorporaWithResources()
-            .catch(dispatchError)
-        if (!corporaWithResources) {
-            dispatchError(new Error(`No corpora found`))
-            return
+        try {
+            const corpora = await getCorpora()
+            setCorpora(corpora)
+            setSourceOptions(await getSources())
+            const corporaComplete = await Promise.all(corpora.map(addCorpusResources));
+            setCorpora(corporaComplete)
+        } catch (e) {
+            dispatchError(e)
         }
-        setCorpora(corporaWithResources)
-        setSourceOptions(await getSources())
     }
 
     useEffect(() => {
