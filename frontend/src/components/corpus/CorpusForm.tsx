@@ -13,7 +13,7 @@ import {
     ServerLanguage,
     ServerResultCorpus,
     ServerResultSource,
-    ServerSource,
+    Source,
 } from "../../model/DexterModel"
 import {
     addKeywordsToCorpus,
@@ -70,7 +70,7 @@ const formToServer = (data: ServerCorpus) => {
         })
     }
     if (newData.sourceIds) {
-        newData.sourceIds = newData.sourceIds.map((source: ServerSource) => {
+        newData.sourceIds = newData.sourceIds.map((source: Source) => {
             return source.id
         })
     }

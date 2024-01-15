@@ -5,12 +5,11 @@ import {SubmitHandler, useForm} from "react-hook-form"
 import * as yup from "yup"
 import {
     AccessOptions,
-    ServerCorpus,
     ServerFormSource,
     ServerKeyword,
     ServerLanguage,
-    ServerSource,
-    ServerSourceWithResourceIds
+    Source,
+    SourceUpdateWithResourceIds, SourceUpdate, UUID
 } from "../../model/DexterModel"
 import {
     addKeywordsToSource,
@@ -58,9 +57,9 @@ type FormField = string | "generic"
 type BackendErrorByField = { field: FormField, error: BackendError }
 
 type SourceFormProps = {
-    sourceToEdit?: ServerSource;
+    sourceToEdit?: Source;
     corpusId?: string;
-    onSave: (data: ServerSource) => void
+    onSave: (data: Source) => void
     onClose: () => void;
 };
 
@@ -72,7 +71,7 @@ const schema = yup.object({
     access: yup.string().oneOf(AccessOptions).required("Access is required"),
 })
 
-const formToServer = (data: ServerSource): ServerSourceWithResourceIds => {
+const formToServer = (data: SourceUpdate): SourceUpdateWithResourceIds => {
     return {
         ...data,
         keywords: data.keywords?.map((kw: ServerKeyword) => {
@@ -88,12 +87,11 @@ export function SourceForm(props: SourceFormProps) {
     const {
         register,
         handleSubmit,
-        reset,
         setValue,
         control,
         formState: {errors},
         watch
-    } = useForm<ServerSource>({
+    } = useForm<Source>({
         resolver: yupResolver(schema),
         mode: "onBlur",
         defaultValues: {keywords: [], languages: [], access: null},
@@ -121,72 +119,69 @@ export function SourceForm(props: SourceFormProps) {
         } else {
             Object.keys(tmsImport.imported).forEach(key => {
                 if (tmsImport.imported[key]) {
-                    setValue(key as keyof ServerSource, tmsImport.imported[key])
+                    setValue(key as keyof Source, tmsImport.imported[key])
                 }
             })
         }
         setExternalRefLoading(false)
     }
 
-    const onSubmit: SubmitHandler<ServerSource> = async (data) => {
-        setBackendError(null)
-        if (!props.sourceToEdit) {
-            await createNewSource(data)
-        } else {
-            await updateExistingSource(props.sourceToEdit.id, data)
-        }
-        props.onSave(data)
-    }
-
-    async function updateExistingSource(id: string, data: ServerSource) {
+    const onSubmit: SubmitHandler<Source> = async (data: SourceUpdate) => {
         try {
-            const updatedDataToServer: ServerFormSource = {
-                ...data
-            }
-            await updateSource(id, updatedDataToServer)
-
-            const keywordsUpdate = data.keywords.map(kw => kw.id)
-            const responseKeywords = await addKeywordsToSource(id, keywordsUpdate)
-            const keysToDelete = responseKeywords
-                .map(s => s.id)
-                .filter(ls => !keywordsUpdate.includes(ls))
-            for (const keyToDelete of keysToDelete) {
-                await deleteKeywordFromSource(id, keyToDelete)
-            }
-
-            const languagesUpdate = data.languages.map(l => l.id)
-            const responseLanguages = await addLanguagesToSource(id, languagesUpdate)
-            const languagesToDelete = responseLanguages
-                .map(l => l.id)
-                .filter(ls => !languagesUpdate.includes(ls))
-            for (const languageToDelete of languagesToDelete) {
-                await deleteLanguageFromSource(id, languageToDelete)
-            }
+            const id: UUID = props.sourceToEdit
+                ? await updateExistingSource(props.sourceToEdit.id, data)
+                : await createNewSource(data)
+            props.onSave({id, ...data})
         } catch (error) {
             await setBackendErrors(error)
         }
+    }
+
+    async function updateExistingSource(
+        id: string,
+        data: SourceUpdate
+    ): Promise<UUID> {
+        const updatedDataToServer: ServerFormSource = {
+            ...data
+        }
+        await updateSource(id, updatedDataToServer)
+
+        const keywordsUpdate = data.keywords.map(kw => kw.id)
+        const responseKeywords = await addKeywordsToSource(id, keywordsUpdate)
+        const keysToDelete = responseKeywords
+            .map(s => s.id)
+            .filter(ls => !keywordsUpdate.includes(ls))
+        for (const keyToDelete of keysToDelete) {
+            await deleteKeywordFromSource(id, keyToDelete)
+        }
+
+        const languagesUpdate = data.languages.map(l => l.id)
+        const responseLanguages = await addLanguagesToSource(id, languagesUpdate)
+        const languagesToDelete = responseLanguages
+            .map(l => l.id)
+            .filter(ls => !languagesUpdate.includes(ls))
+        for (const languageToDelete of languagesToDelete) {
+            await deleteLanguageFromSource(id, languageToDelete)
+        }
+        return id;
     }
 
     async function createNewSource(
-        data: ServerSource,
-    ) {
+        data: SourceUpdate,
+    ): Promise<UUID> {
         const dataToServer = formToServer(data)
-        try {
-            const newSource = await createSource(dataToServer)
-            const sourceId = newSource.id
-            if (dataToServer.keywords) {
-                await addKeywordsToSource(sourceId, dataToServer.keywords)
-            }
-            if (dataToServer.languages) {
-                await addLanguagesToSource(sourceId, dataToServer.languages)
-            }
-            if (props.corpusId) {
-                await addSourcesToCorpus(props.corpusId, [sourceId])
-            }
-            props.onSave(data)
-        } catch (error) {
-            await setBackendErrors(error)
+        const newSource = await createSource(dataToServer)
+        const sourceId = newSource.id
+        if (dataToServer.keywords) {
+            await addKeywordsToSource(sourceId, dataToServer.keywords)
         }
+        if (dataToServer.languages) {
+            await addLanguagesToSource(sourceId, dataToServer.languages)
+        }
+        if (props.corpusId) {
+            await addSourcesToCorpus(props.corpusId, [sourceId])
+        }
+        return sourceId;
     }
 
     async function setBackendErrors(error: ResponseError) {
@@ -211,7 +206,7 @@ export function SourceForm(props: SourceFormProps) {
 
     React.useEffect(() => {
         const doGetSourceById = async (id: string) => {
-            const data: ServerSource = await getSourceById(id)
+            const data: Source = await getSourceById(id)
             const keywords = await getKeywordsSources(id)
             const languages = await getLanguagesSources(id)
 
@@ -222,7 +217,7 @@ export function SourceForm(props: SourceFormProps) {
                 return language
             })
 
-            formFields.map((field: keyof ServerSource) => {
+            formFields.map((field: keyof Source) => {
                 setValue(field, data[field])
             })
         }
@@ -234,7 +229,7 @@ export function SourceForm(props: SourceFormProps) {
         }
     }, [props.sourceToEdit, setValue])
 
-    function getErrorMessage(field: keyof ServerSource): string | undefined {
+    function getErrorMessage(field: keyof Source): string | undefined {
         if (errors[field]?.message) {
             return errors[field].message
         }

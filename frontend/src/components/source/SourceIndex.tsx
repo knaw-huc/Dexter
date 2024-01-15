@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react"
-import {ServerSource} from "../../model/DexterModel"
+import {Source} from "../../model/DexterModel"
 import {SourceLi} from "./SourceLi"
 import styled from "@emotion/styled"
 import {getSourcesWithResources} from "../../utils/API"
@@ -16,7 +16,7 @@ export function SourceIndex() {
     const navigate = useNavigate()
 
     const [showForm, setShowForm] = React.useState(false)
-    const [sources, setSources] = useState<ServerSource[]>()
+    const [sources, setSources] = useState<Source[]>()
     const [isInit, setInit] = useState(false)
 
     useEffect(() => {
@@ -30,38 +30,35 @@ export function SourceIndex() {
         }
     }, [isInit])
 
-    const handleSelected = (selected: ServerSource) => {
+    const handleSelected = (selected: Source) => {
         navigate(`/sources/${selected.id}`)
     }
 
-    const handleDelete = (source: ServerSource) => {
+    const handleDelete = (source: Source) => {
         setSources(sources => sources.filter(s => s.id !== source.id))
     }
 
-    function handleSaveSource(update: ServerSource) {
-        setSources(sources =>
-            sources.map(s => s.id === update.id ? update : s)
-        )
+    function handleSaveSource(newSource: Source) {
+        setSources(sources => [...sources, newSource])
+        setShowForm(false)
     }
 
-    return (
-        <>
-            <FilterRow>
-                <AddNewSourceButton onClick={() => setShowForm(true)}/>
-            </FilterRow>
-            {showForm && <SourceForm
-                onClose={() => setShowForm(false)}
-                onSave={handleSaveSource}
-            />}
-            {sources && sources.map((source: ServerSource, index: number) => (
-                <SourceLi
-                    key={index}
-                    sourceId={index}
-                    source={source}
-                    onSelect={handleSelected}
-                    onDelete={() => handleDelete(source)}
-                />
-            ))}
-        </>
-    )
+    return <>
+        <FilterRow>
+            <AddNewSourceButton onClick={() => setShowForm(true)}/>
+        </FilterRow>
+        {showForm && <SourceForm
+            onClose={() => setShowForm(false)}
+            onSave={handleSaveSource}
+        />}
+        {sources && sources.map((source: Source, index: number) => (
+            <SourceLi
+                key={index}
+                sourceId={index}
+                source={source}
+                onSelect={handleSelected}
+                onDelete={() => handleDelete(source)}
+            />
+        ))}
+    </>
 }

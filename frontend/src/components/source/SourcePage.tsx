@@ -1,9 +1,15 @@
 import React from "react"
 import {useParams} from "react-router-dom"
-import {ServerKeyword, ServerLanguage, ServerSource,} from "../../model/DexterModel"
+import {ServerKeyword, ServerLanguage, Source,} from "../../model/DexterModel"
 import {deleteKeywordFromSourceWithWarning} from "../../utils/deleteKeywordFromSourceWithWarning"
 import {deleteLanguageFromSourceWithWarning} from "../../utils/deleteLanguageFromSourceWithWarning"
-import {getKeywordsSources, getLanguagesSources, getSourceById} from "../../utils/API"
+import {
+    addSourceResources,
+    getKeywordsSources,
+    getLanguagesSources,
+    getSourceById,
+    getSourcesWithResources
+} from "../../utils/API"
 import {Languages} from "../language/Languages"
 import {SourceForm} from "./SourceForm"
 import {EditButton} from "../common/EditButton"
@@ -13,27 +19,17 @@ export const SourcePage = () => {
     const params = useParams();
     const sourceId = params.sourceId
 
-    const [source, setSource] = React.useState<ServerSource>(null);
-    const [keywords, setKeywords] = React.useState<ServerKeyword[]>(null);
-    const [languages, setLanguages] = React.useState<ServerLanguage[]>(null);
-
-
+    const [source, setSource] = React.useState<Source>(null);
     const [showForm, setShowForm] = React.useState(false);
 
-    const handleSaveForm = () => {
-        initSource()
+    const handleSaveForm = (update: Source) => {
+        setSource(update)
         setShowForm(false);
     };
 
     const initSource = async () => {
-        const source = await getSourceById(sourceId);
+        const source = await addSourceResources(await getSourceById(sourceId));
         setSource(source);
-
-        const keywords = await getKeywordsSources(sourceId);
-        setKeywords(keywords);
-
-        const languages = await getLanguagesSources(sourceId);
-        setLanguages(languages);
     };
 
     React.useEffect(() => {
@@ -58,7 +54,7 @@ export const SourcePage = () => {
 
     return (
         <div>
-            {source && keywords && languages && (
+            {source && (
                 <>
                     <EditButton onEdit={() => {
                         setShowForm(true);
@@ -96,14 +92,14 @@ export const SourcePage = () => {
                     <div>
                         <strong>Keywords:</strong>{" "}
                         <KeywordList
-                            keywords={keywords}
+                            keywords={source.keywords}
                             onDelete={deleteKeywordHandler}
                         />
                     </div>
                     <div>
                         <strong>Languages:</strong>{" "}
                         <Languages
-                            languages={languages}
+                            languages={source.languages}
                             onDelete={deleteLanguageHandler}
                         />
                     </div>

@@ -9,7 +9,7 @@ import {
   FormLanguage,
   ServerCorpus,
   ServerLanguage,
-  ServerSource,
+  Source,
 } from "../../model/DexterModel";
 import { useDebounce } from "../../utils/useDebounce";
 import {
@@ -24,7 +24,7 @@ interface LanguagesFieldProps {
   sourceId?: string | undefined;
   control: any;
   setValueCorpus?: UseFormSetValue<ServerCorpus>;
-  setValueSource?: UseFormSetValue<ServerSource>;
+  setValueSource?: UseFormSetValue<Source>;
 }
 
 export const LanguagesField = (props: LanguagesFieldProps) => {

@@ -7,7 +7,7 @@ import {
     ServerLanguage,
     ServerResultCorpus,
     ServerResultSource,
-    ServerSource
+    Source
 } from "../model/DexterModel"
 
 const headers = {
@@ -104,16 +104,16 @@ async function addCorpusResources(result: ServerResultCorpus): Promise<ServerCor
     }
 }
 
-export const getSourcesWithResources = async (): Promise<ServerSource[]> => {
+export const getSourcesWithResources = async (): Promise<Source[]> => {
     const serverResults = await getSources();
     return Promise.all(serverResults.map(addSourceResources));
 }
 
-export const getSourcesInCorpusWithResources = async (id: string): Promise<ServerSource[]> => {
+export const getSourcesInCorpusWithResources = async (id: string): Promise<Source[]> => {
     const serverResults = await getSourcesInCorpus(id);
     return Promise.all(serverResults.map(addSourceResources));
 }
-export async function addSourceResources(result: ServerResultSource): Promise<ServerSource> {
+export async function addSourceResources(result: ServerResultSource): Promise<Source> {
     return {
         ...result,
         keywords: await getKeywordsSources(result.id),
@@ -125,7 +125,7 @@ export const getSources = async (): Promise<ServerResultSource[]> => {
     return fetchValidated("/api/sources")
 }
 
-export async function getSourceById(id: string): Promise<ServerSource> {
+export async function getSourceById(id: string): Promise<Source> {
     const serverResult = await fetchValidated(`/api/sources/${id}`)
     return addSourceResources(serverResult)
 }
@@ -144,7 +144,7 @@ export const createSource = async (newSource: ServerFormSource): Promise<ServerR
 export const updateSource = async (
     id: string,
     updatedSource: ServerFormSource
-): Promise<ServerSource> => {
+): Promise<Source> => {
     const path = `/api/sources/${id}`
     const response = await fetch(path, {
         headers,
@@ -352,7 +352,7 @@ export const deleteKeywordFromSource = async (
 export const addSourcesToCorpus = async (
     corpusId: string,
     sourceIds: string[]
-): Promise<ServerSource[]> => {
+): Promise<Source[]> => {
     const response = await fetch(`/api/corpora/${corpusId}/sources`, {
         method: "POST",
         headers: headers,
@@ -362,7 +362,7 @@ export const addSourcesToCorpus = async (
     return response.json();
 };
 
-export const getSourcesInCorpus = async (corpusId: string): Promise<ServerSource[]> => {
+export const getSourcesInCorpus = async (corpusId: string): Promise<Source[]> => {
     const serverResults: ServerResultSource[] = await fetchValidated(`/api/corpora/${corpusId}/sources`)
     return Promise.all(serverResults.map(addSourceResources));
 };

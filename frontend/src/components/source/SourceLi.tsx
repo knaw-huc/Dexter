@@ -2,14 +2,14 @@ import styled from "@emotion/styled"
 import DeleteIcon from "@mui/icons-material/Delete"
 import {red} from "@mui/material/colors"
 import {Link} from "react-router-dom"
-import {ServerSource} from "../../model/DexterModel"
+import {Source} from "../../model/DexterModel"
 import {deleteSource} from "../../utils/API"
 import React from "react"
 
 type SourceItemProps = {
     sourceId: React.Key;
-    source: ServerSource;
-    onSelect: (selected: ServerSource | undefined) => void;
+    source: Source;
+    onSelect: (selected: Source | undefined) => void;
     onDelete: () => void
 };
 

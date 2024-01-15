@@ -1,7 +1,7 @@
 import styled from "@emotion/styled"
 import {red} from "@mui/material/colors"
 import React from "react"
-import {ServerKeyword, ServerSource} from "../../model/DexterModel"
+import {ServerKeyword, Source} from "../../model/DexterModel"
 import {HeaderLinkClamped} from "../common/HeaderLinkClamped"
 import {styleInlineIcon} from "../../utils/styleInlineIcon"
 import {useNavigate} from "react-router-dom"
@@ -12,7 +12,7 @@ import {KeywordList} from "../keyword/KeywordList"
 
 interface SourceItemDropdownProps {
     onDeleteKeyword: (keyword: ServerKeyword) => void
-    source: ServerSource;
+    source: Source;
     corpusId: string;
     onUnlinkSource: () => void
 }

@@ -6,7 +6,7 @@ import {
     ServerLanguage,
     ServerResultCorpus,
     ServerResultSource,
-    ServerSource
+    Source
 } from "../../model/DexterModel"
 import {CorpusForm} from "./CorpusForm"
 import styled from "@emotion/styled"
@@ -52,17 +52,17 @@ export const CorpusPage = () => {
     const [showLinkSourceForm, setShowLinkSourceForm] = useState(false)
     const [filterKeywords, setFilterKeywords] = useState<ServerKeyword[]>([])
 
-    const handleSaveCorpusForm = (corpus: ServerCorpus) => {
+    const handleSaveCorpus = (corpus: ServerCorpus) => {
         setCorpus(corpus)
         setShowCorpusForm(false)
     }
 
-    const handleSaveSourceForm = (update: ServerSource) => {
+    const handleSaveSource = (update: Source) => {
         setCorpus(corpus => ({
             ...corpus,
-            source: corpus.sources.map(s => s.id === update.id ? update : s)
+            sources: [...corpus.sources, update]
         }))
-        setShowCorpusForm(false)
+        setShowSourceForm(false)
     }
 
     const initResources = async (id: string) => {
@@ -218,13 +218,13 @@ export const CorpusPage = () => {
                     parentOptions={parentOptions}
                     sourceOptions={sourceOptions}
                     onClose={() => setShowCorpusForm(false)}
-                    onSave={handleSaveCorpusForm}
+                    onSave={handleSaveCorpus}
                 />
             )}
             {showSourceForm && <SourceForm
                 corpusId={corpusId}
                 onClose={() => setShowSourceForm(false)}
-                onSave={handleSaveSourceForm}
+                onSave={handleSaveSource}
             />}
 
         </Wrapper>

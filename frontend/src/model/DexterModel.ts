@@ -1,6 +1,6 @@
-type UUID = string;
-type LocalDate = string;
-type LocalDateTime = string;
+export type UUID = string;
+export type LocalDate = string;
+export type LocalDateTime = string;
 
 /**
  * Corpus form as required by server
@@ -47,7 +47,7 @@ export type ServerCorpus = ServerResultCorpus & {
     };
     keywords: ServerKeyword[];
     languages: ServerLanguage[];
-    sources: ServerSource[];
+    sources: Source[];
 }
 
 /**
@@ -73,15 +73,23 @@ export type ServerResultSource = {
 /**
  * Source including all child resources
  */
-export type ServerSource = ServerResultSource & {
+export type Source = ServerResultSource & {
     keywords: ServerKeyword[];
     languages: ServerLanguage[];
 }
 
 /**
- * Source including all child resources
+ * Source update
  */
-export type ServerSourceWithResourceIds = ServerResultSource & {
+export type SourceUpdate = Omit<Source, "id">
+
+/**
+ * Source including all child resource IDs
+ */
+export type SourceUpdateWithResourceIds = Omit<
+    SourceUpdate,
+    "keywords" | "languages"
+> & {
     keywords: string[];
     languages: string[];
 }
