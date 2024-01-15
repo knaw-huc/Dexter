@@ -25,6 +25,7 @@ const DeleteIconStyled = styled(DeleteIcon)`
 `
 const ListItemStyled = styled(ListItem)`
   &:hover {
+    cursor: pointer;
     background: ${grey[100]};
   }
 `

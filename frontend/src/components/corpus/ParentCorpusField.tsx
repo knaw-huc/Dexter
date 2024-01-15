@@ -11,7 +11,7 @@ interface SubCorpusFieldProps {
   control: any;
 }
 
-export const SubCorpusField = (props: SubCorpusFieldProps) => {
+export const ParentCorpusField = (props: SubCorpusFieldProps) => {
   const [inputValue, setInputValue] = React.useState("");
 
   return (

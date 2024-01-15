@@ -77,7 +77,7 @@ export const CorpusPage = () => {
             ...corpusWithResources
         })
         setSourceOptions(await getSources())
-        setParentOptions(await getCorpora())
+        setParentOptions(await getCorpora().then(all => all.filter(c => c.id !== id)))
     }
 
     useEffect(() => {

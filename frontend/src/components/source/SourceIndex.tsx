@@ -1,12 +1,12 @@
-import React, {useEffect, useState} from "react"
+import React, {useContext, useEffect, useState} from "react"
 import {Source} from "../../model/DexterModel"
 import {SourceItem} from "./SourceItem"
 import styled from "@emotion/styled"
-import {getSourcesWithResources} from "../../utils/API"
+import {addCorpusResources, getCorpora, getSources, getSourcesWithResources} from "../../utils/API"
 import {SourceForm} from "./SourceForm"
 import {AddNewSourceButton} from "./AddNewSourceButton"
-import {useNavigate} from "react-router-dom"
 import {List} from "@mui/material"
+import {errorContext} from "../../state/error/errorContext"
 
 const FilterRow = styled.div`
   display: flex;
@@ -14,19 +14,22 @@ const FilterRow = styled.div`
 `
 
 export function SourceIndex() {
-    const navigate = useNavigate()
-
     const [showForm, setShowForm] = React.useState(false)
     const [sources, setSources] = useState<Source[]>()
     const [isInit, setInit] = useState(false)
+    const {dispatchError} = useContext(errorContext)
 
     useEffect(() => {
         async function initResources() {
-            setInit(true)
-            setSources(await getSourcesWithResources())
+            try {
+                setSources(await getSourcesWithResources())
+            } catch (e) {
+                dispatchError(e)
+            }
         }
 
         if (!isInit) {
+            setInit(true)
             initResources()
         }
     }, [isInit])
@@ -48,18 +51,19 @@ export function SourceIndex() {
             onClose={() => setShowForm(false)}
             onSave={handleSaveSource}
         />}
-        {sources && <List
-            sx={{mt: "1em"}}
-        >
-            {sources.map((source: Source, index: number) => (
-                    <SourceItem
-                        key={index}
-                        sourceId={index}
-                        source={source}
-                        onDelete={() => handleDelete(source)}
-                    />
-                )
-            )}
-        </List>}
+        {sources && (
+            <List
+                sx={{mt: "1em"}}
+            >
+                {sources.map((source: Source, index: number) => (
+                        <SourceItem
+                            key={index}
+                            sourceId={index}
+                            source={source}
+                            onDelete={() => handleDelete(source)}
+                        />
+                    )
+                )}
+            </List>)}
     </>
 }

@@ -28,7 +28,7 @@ import {
 } from "../../utils/API"
 import {KeywordField} from "../keyword/KeywordField"
 import {LanguagesField} from "../language/LanguagesField"
-import {SubCorpusField} from "./SubCorpusField"
+import {ParentCorpusField} from "./ParentCorpusField"
 import ScrollableModal from "../common/ScrollableModal"
 import {ValidatedSelectField} from "../common/ValidatedSelectField"
 import {LinkSourceField} from "./LinkSourceField"
@@ -45,11 +45,9 @@ type CorpusFormProps = {
     onSave: (edited: ServerCorpus) => void,
     onClose: () => void,
 };
-
-const TextFieldStyled = styled(TextField)`
+styled(TextField)`
   display: block;
 `
-
 const Label = styled.label`
   font-weight: bold;
 `
@@ -312,8 +310,8 @@ export function CorpusForm(props: CorpusFormProps) {
                         onUnlinkSource={unlinkSource}
                     />
                     <ErrorMsg msg={getErrorMessage("sources")}/>
-                    <Label>Add corpus to which main corpus?</Label>
-                    <SubCorpusField
+                    <Label>Add current corpus to parent corpus</Label>
+                    <ParentCorpusField
                         control={control}
                         corpora={props.parentOptions}
                     />
