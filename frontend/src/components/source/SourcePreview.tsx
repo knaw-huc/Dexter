@@ -1,14 +1,11 @@
-import styled from "@emotion/styled"
-import {red} from "@mui/material/colors"
 import React from "react"
 import {ServerKeyword, Source} from "../../model/DexterModel"
 import {HeaderLinkClamped} from "../common/HeaderLinkClamped"
-import {styleInlineIcon} from "../../utils/styleInlineIcon"
 import {useNavigate} from "react-router-dom"
-import ClearIcon from "@mui/icons-material/Clear"
 import {Card, CardContent, Grid} from "@mui/material"
 import {PClamped} from "../common/PClamped"
 import {KeywordList} from "../keyword/KeywordList"
+import {CloseInlineIcon} from "../common/CloseInlineIcon"
 
 interface SourceItemDropdownProps {
     onDeleteKeyword: (keyword: ServerKeyword) => void
@@ -16,16 +13,6 @@ interface SourceItemDropdownProps {
     corpusId: string;
     onUnlinkSource: () => void
 }
-
-const UnlinkInlineIcon = styled(styleInlineIcon(ClearIcon))`
-  margin-left: 5px;
-  color: gray;
-
-  &:hover {
-    cursor: pointer;
-    color: ${red[700]};
-  }
-`
 
 export const SourcePreview = (props: SourceItemDropdownProps) => {
     const navigate = useNavigate()
@@ -41,7 +28,7 @@ export const SourcePreview = (props: SourceItemDropdownProps) => {
                     item
                     sx={{height: "110px"}}
                 >
-                    <UnlinkInlineIcon
+                    <CloseInlineIcon
                         style={{float: "right", top: 0}}
                         onClick={(e: React.MouseEvent<HTMLInputElement>) => {
                             e.stopPropagation()

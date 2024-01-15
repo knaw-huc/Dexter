@@ -59,14 +59,10 @@ export const SourcePage = () => {
                     <EditButton onEdit={() => {
                         setShowForm(true);
                     }}/>
+                    <h1>{source.title}</h1>
+                    <p>{source.description}</p>
                     <p>
                         <strong>External reference:</strong> {source.externalRef}
-                    </p>
-                    <p>
-                        <strong>Title:</strong> {source.title}
-                    </p>
-                    <p>
-                        <strong>Description:</strong> {source.description}
                     </p>
                     <p>
                         <strong>Creator:</strong> {source.creator}
@@ -91,10 +87,11 @@ export const SourcePage = () => {
                     </p>
                     <div>
                         <strong>Keywords:</strong>{" "}
-                        <KeywordList
+                        <div style={{padding: "0.5em 0 1em"}}><KeywordList
                             keywords={source.keywords}
                             onDelete={deleteKeywordHandler}
                         />
+                        </div>
                     </div>
                     <div>
                         <strong>Languages:</strong>{" "}

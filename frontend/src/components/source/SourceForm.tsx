@@ -36,8 +36,8 @@ import {Label} from "../common/Label"
 import {ValidatedSelectField} from "../common/ValidatedSelectField"
 import {ERROR_MESSAGE_CLASS, ErrorMsg} from "../common/ErrorMsg"
 import {TextFieldWithError} from "./TextFieldWithError"
-import {TextFieldStyled} from "./TextFieldStyled"
 import {ErrorByField, FormError, setBackendErrors} from "../common/FormError"
+import {CloseInlineIcon} from "../common/CloseInlineIcon"
 
 const formFields = [
     "externalRef",
@@ -232,6 +232,10 @@ export function SourceForm(props: SourceFormProps) {
         show={true}
         handleClose={props.onClose}
     >
+        <CloseInlineIcon
+            style={{float: "right", top: 0}}
+            onClick={props.onClose}
+        />
         <h1>{props.sourceToEdit ? "Edit source" : "Create new source"}</h1>
         <form onSubmit={handleSubmit(onSubmit)}>
             <FormError error={backendError}/>
@@ -343,9 +347,6 @@ export function SourceForm(props: SourceFormProps) {
                 Submit
             </Button>
         </form>
-        <Button variant="contained" onClick={props.onClose}>
-            Close
-        </Button>
     </ScrollableModal>
 }
 

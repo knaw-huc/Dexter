@@ -36,6 +36,7 @@ import {ErrorByField, FormError, setBackendErrors} from "../common/FormError"
 import {TextFieldWithError} from "../source/TextFieldWithError"
 import {ErrorMsg} from "../common/ErrorMsg"
 import _ from "lodash"
+import {CloseInlineIcon} from "../common/CloseInlineIcon"
 
 type CorpusFormProps = {
     corpusToEdit?: ServerCorpus | undefined,
@@ -259,6 +260,10 @@ export function CorpusForm(props: CorpusFormProps) {
                 show={true}
                 handleClose={props.onClose}
             >
+                <CloseInlineIcon
+                    style={{float: "right", top: 0}}
+                    onClick={props.onClose}
+                />
                 <h1>{props.corpusToEdit ? "Edit corpus" : "Create new corpus"}</h1>
                 <FormError error={backendError}/>
                 <form onSubmit={handleSubmit(onSubmit)}>
@@ -317,9 +322,6 @@ export function CorpusForm(props: CorpusFormProps) {
                     </Button>
                 </form>
                 <ErrorMsg msg={getErrorMessage("parentId")}/>
-                <Button variant="contained" onClick={props.onClose}>
-                    Close
-                </Button>
             </ScrollableModal>
         </>
     )
