@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from "react"
 import {Source} from "../../model/DexterModel"
-import {SourceLi} from "./SourceLi"
+import {SourceItem} from "./SourceItem"
 import styled from "@emotion/styled"
 import {getSourcesWithResources} from "../../utils/API"
 import {SourceForm} from "./SourceForm"
 import {AddNewSourceButton} from "./AddNewSourceButton"
 import {useNavigate} from "react-router-dom"
+import {List} from "@mui/material"
 
 const FilterRow = styled.div`
   display: flex;
@@ -30,10 +31,6 @@ export function SourceIndex() {
         }
     }, [isInit])
 
-    const handleSelected = (selected: Source) => {
-        navigate(`/sources/${selected.id}`)
-    }
-
     const handleDelete = (source: Source) => {
         setSources(sources => sources.filter(s => s.id !== source.id))
     }
@@ -51,14 +48,18 @@ export function SourceIndex() {
             onClose={() => setShowForm(false)}
             onSave={handleSaveSource}
         />}
-        {sources && sources.map((source: Source, index: number) => (
-            <SourceLi
-                key={index}
-                sourceId={index}
-                source={source}
-                onSelect={handleSelected}
-                onDelete={() => handleDelete(source)}
-            />
-        ))}
+        {sources && <List
+            sx={{mt: "1em"}}
+        >
+            {sources.map((source: Source, index: number) => (
+                    <SourceItem
+                        key={index}
+                        sourceId={index}
+                        source={source}
+                        onDelete={() => handleDelete(source)}
+                    />
+                )
+            )}
+        </List>}
     </>
 }
