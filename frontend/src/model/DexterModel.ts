@@ -51,7 +51,7 @@ export type ServerCorpus = ServerResultCorpus & {
 }
 
 /**
- * Corpus result as sent by server
+ * Source result as send by server
  */
 export type ServerResultSource = {
     id: UUID,

@@ -12,6 +12,7 @@ import {CorpusForm} from "./CorpusForm"
 import styled from "@emotion/styled"
 import {errorContext} from "../../state/error/errorContext"
 import {
+    addSourceResources,
     addSourcesToCorpus,
     deleteKeywordFromCorpus,
     deleteKeywordFromSource,
@@ -122,6 +123,11 @@ export const CorpusPage = () => {
 
     const linkSource = async (corpusId: string, sourceId: string) => {
         await addSourcesToCorpus(corpusId, [sourceId])
+        const toLink = await addSourceResources(sourceOptions.find(s => s.id === sourceId));
+        setCorpus(corpus => ({
+            ...corpus,
+            sources: [...corpus.sources, toLink]
+        }))
     }
 
     const simpleSourceField = ["rights", "access", "location", "earliest", "latest", "contributor", "notes"]

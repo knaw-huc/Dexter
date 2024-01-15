@@ -226,10 +226,9 @@ export function CorpusForm(props: CorpusFormProps) {
     }
 
     async function linkSource(sourceId: string) {
-        const newSource = await addSourceResources(
-            allSources.find(s => s.id === sourceId)
-        )
-        return setValue("sources", [...selectedSources, newSource])
+        const toAdd = allSources.find(s => s.id === sourceId)
+        const withResources = await addSourceResources(toAdd)
+        return setValue("sources", [...selectedSources, withResources])
     }
 
     function getErrorMessage(field: keyof ServerCorpus): string | undefined {
