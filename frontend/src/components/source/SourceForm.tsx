@@ -37,7 +37,7 @@ import {ValidatedSelectField} from "../common/ValidatedSelectField"
 import {ERROR_MESSAGE_CLASS, ErrorMsg} from "../common/ErrorMsg"
 import {TextFieldWithError} from "./TextFieldWithError"
 import {TextFieldStyled} from "./TextFieldStyled"
-import {ErrorByField, GenericFormError, setBackendErrors} from "../common/form/ErrorWithMessage"
+import {ErrorByField, FormError, setBackendErrors} from "../common/FormError"
 
 const formFields = [
     "externalRef",
@@ -234,7 +234,7 @@ export function SourceForm(props: SourceFormProps) {
     >
         <h1>{props.sourceToEdit ? "Edit source" : "Create new source"}</h1>
         <form onSubmit={handleSubmit(onSubmit)}>
-            <GenericFormError error={backendError}/>
+            <FormError error={backendError}/>
 
             <TextFieldWithError
                 label="External Reference"
@@ -261,20 +261,13 @@ export function SourceForm(props: SourceFormProps) {
                 Could not import: {externalRefError.message}
             </Alert>}
 
-            <>
-                <Label
-                    style={{textTransform: "capitalize"}}
-                >
-                    Title
-                </Label>
-                <TextFieldStyled
-                    fullWidth={true}
-                    margin="dense"
-                    {...register("title")}
-                    error={!!getErrorMessage("title")}
-                />
-                {getErrorMessage("title") && <ErrorMsg msg={getErrorMessage("title")}/>}
-            </>
+            <TextFieldWithError
+                label="Title"
+                {...register("title", {required: true})}
+                errorMessage={getErrorMessage("title")}
+                multiline
+                rows={6}
+            />
 
             <TextFieldWithError
                 label="Description"

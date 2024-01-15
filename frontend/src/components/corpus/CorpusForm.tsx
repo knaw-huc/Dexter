@@ -29,11 +29,13 @@ import {
 import {KeywordField} from "../keyword/KeywordField"
 import {LanguagesField} from "../language/LanguagesField"
 import {SubCorpusField} from "./SubCorpusField"
-import {errorContext} from "../../state/error/errorContext"
 import ScrollableModal from "../common/ScrollableModal"
 import {ValidatedSelectField} from "../common/ValidatedSelectField"
 import {LinkSourceField} from "./LinkSourceField"
-import {ErrorByField, GenericFormError, setBackendErrors} from "../common/form/ErrorWithMessage"
+import {ErrorByField, FormError, setBackendErrors} from "../common/FormError"
+import {TextFieldWithError} from "../source/TextFieldWithError"
+import {ErrorMsg} from "../common/ErrorMsg"
+import _ from "lodash"
 
 type CorpusFormProps = {
     corpusToEdit?: ServerCorpus | undefined,
@@ -230,6 +232,25 @@ export function CorpusForm(props: CorpusFormProps) {
         return setValue("sources", [...selectedSources, newSource])
     }
 
+    function getErrorMessage(field: keyof ServerCorpus): string | undefined {
+        if (errors[field]?.message) {
+            return errors[field].message
+        }
+        if (backendError?.field === field) {
+            return backendError.error.message
+        }
+    }
+
+    function renderFormField(
+        fieldName: keyof ServerCorpus
+    ) {
+        return <TextFieldWithError
+            label={_.capitalize(fieldName)}
+            {...register(fieldName, {required: true})}
+            errorMessage={getErrorMessage(fieldName)}
+        />
+    }
+
     if (!isLoaded) {
         return null
     }
@@ -240,34 +261,11 @@ export function CorpusForm(props: CorpusFormProps) {
                 handleClose={props.onClose}
             >
                 <h1>{props.corpusToEdit ? "Edit corpus" : "Create new corpus"}</h1>
-                <GenericFormError error={backendError}/>
+                <FormError error={backendError}/>
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    <Label>Title</Label>
-                    <TextFieldStyled
-                        fullWidth
-                        margin="dense"
-                        error={!!errors.title}
-                        {...register("title")}
-                    />
-                    <p style={{color: "red"}}>{errors.title?.message}</p>
-                    <Label>Description</Label>
-                    <TextFieldStyled
-                        fullWidth
-                        margin="dense"
-                        multiline
-                        rows={6}
-                        error={!!errors.description}
-                        {...register("description", {required: true})}
-                    />
-                    <p style={{color: "red"}}>{errors.description?.message}</p>
-                    <Label>Rights</Label>
-                    <TextFieldStyled
-                        fullWidth
-                        margin="dense"
-                        error={!!errors.rights}
-                        {...register("rights", {required: true})}
-                    />
-                    <p style={{color: "red"}}>{errors.rights?.message}</p>
+                    {renderFormField("title")}
+                    {renderFormField("description")}
+                    {renderFormField("rights")}
                     <ValidatedSelectField
                         label="Access"
                         errorMessage={errors.access?.message}
@@ -275,29 +273,17 @@ export function CorpusForm(props: CorpusFormProps) {
                         onSelectOption={v => setValue("access", v)}
                         options={AccessOptions}
                     />
-
-                    <Label>Location</Label>
-                    <TextFieldStyled
-                        fullWidth
-                        margin="dense"
-                        {...register("location")}
+                    {renderFormField("location")}
+                    {renderFormField("earliest")}
+                    {renderFormField("latest")}
+                    {renderFormField("contributor")}
+                    <TextFieldWithError
+                        label="notes"
+                        {...register("notes", {required: true})}
+                        errorMessage={getErrorMessage("notes")}
+                        multiline
+                        rows={6}
                     />
-                    <Label>Earliest</Label>
-                    <TextFieldStyled
-                        fullWidth
-                        margin="dense"
-                        {...register("earliest")}
-                    />
-                    <Label>Latest</Label>
-                    <TextFieldStyled fullWidth margin="dense" {...register("latest")} />
-                    <Label>Contributor</Label>
-                    <TextFieldStyled
-                        fullWidth
-                        margin="dense"
-                        {...register("contributor")}
-                    />
-                    <Label>Notes</Label>
-                    <TextFieldStyled fullWidth margin="dense" {...register("notes")} />
                     <Label>Keywords</Label>
                     <KeywordField
                         selected={watch("keywords")}
@@ -305,6 +291,7 @@ export function CorpusForm(props: CorpusFormProps) {
                             setValue("keywords", selected)
                         }}
                     />
+                    <ErrorMsg msg={getErrorMessage("keywords")}/>
                     <Label>Languages</Label>
                     <LanguagesField
                         control={control}
@@ -312,6 +299,7 @@ export function CorpusForm(props: CorpusFormProps) {
                         setValueCorpus={setValue}
                         edit={!!props.corpusToEdit}
                     />
+                    <ErrorMsg msg={getErrorMessage("languages")}/>
                     <Label>Add sources to corpus</Label>
                     <LinkSourceField
                         options={allSources}
@@ -319,6 +307,7 @@ export function CorpusForm(props: CorpusFormProps) {
                         onLinkSource={linkSource}
                         onUnlinkSource={unlinkSource}
                     />
+                    <ErrorMsg msg={getErrorMessage("sources")}/>
                     <Label>Add corpus to which main corpus?</Label>
                     <SubCorpusField
                         control={control}
@@ -328,6 +317,7 @@ export function CorpusForm(props: CorpusFormProps) {
                         Submit
                     </Button>
                 </form>
+                <ErrorMsg msg={getErrorMessage("parentId")}/>
                 <Button variant="contained" onClick={props.onClose}>
                     Close
                 </Button>

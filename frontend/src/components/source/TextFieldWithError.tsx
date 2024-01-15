@@ -1,4 +1,4 @@
-import React, {forwardRef} from "react"
+import React, {forwardRef, useEffect, useRef} from "react"
 import {Label} from "../common/Label"
 import {StandardTextFieldProps} from "@mui/material/TextField"
 import {UseFormRegisterReturn} from "react-hook-form"
@@ -22,8 +22,16 @@ export const TextFieldWithError = forwardRef<
     ref
 ) {
     const {label, errorMessage, ...textFieldProps} = props
+    const fieldRef = useRef(null);
+    useEffect(() => {
+        if(errorMessage) {
+            fieldRef.current?.scrollIntoView({behavior: 'smooth'});
+        }
+    }, [errorMessage, fieldRef.current])
 
-    return <>
+    return <span
+        ref={fieldRef}
+    >
         <Label
             style={{textTransform: "capitalize"}}
         >
@@ -40,5 +48,5 @@ export const TextFieldWithError = forwardRef<
             inputRef={ref}
         />
         {errorMessage && <ErrorMsg msg={errorMessage}/>}
-    </>
+    </span>
 })
