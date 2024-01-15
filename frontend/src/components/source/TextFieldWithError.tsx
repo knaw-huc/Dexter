@@ -46,6 +46,8 @@ export const TextFieldWithError = forwardRef<
             onChange={textFieldProps.onChange}
             onBlur={textFieldProps.onBlur}
             inputRef={ref}
+
+            {...props}
         />
         {errorMessage && <ErrorMsg msg={errorMessage}/>}
     </span>

@@ -7,7 +7,7 @@ import React from "react";
 import { Controller, UseFormSetValue, useWatch } from "react-hook-form";
 import {
   FormLanguage,
-  ServerCorpus,
+  Corpus,
   ServerLanguage,
   Source,
 } from "../../model/DexterModel";
@@ -23,7 +23,7 @@ interface LanguagesFieldProps {
   corpusId?: string | undefined;
   sourceId?: string | undefined;
   control: any;
-  setValueCorpus?: UseFormSetValue<ServerCorpus>;
+  setValueCorpus?: UseFormSetValue<Corpus>;
   setValueSource?: UseFormSetValue<Source>;
 }
 

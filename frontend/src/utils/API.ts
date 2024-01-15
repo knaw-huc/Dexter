@@ -1,6 +1,6 @@
 import {
     FormKeyword,
-    ServerCorpus,
+    Corpus,
     ServerFormCorpus,
     ServerFormSource,
     ServerKeyword,
@@ -44,7 +44,7 @@ async function fetchValidated(path: string) {
     return response.json()
 }
 
-export const getCorpora = async (): Promise<ServerCorpus[]> => {
+export const getCorpora = async (): Promise<Corpus[]> => {
     return fetchValidated("/api/corpora")
 }
 
@@ -53,8 +53,8 @@ export const getCorpusById = async (id: string): Promise<ServerResultCorpus> => 
 }
 
 export const createCollection = async (
-    newCorpus: ServerCorpus
-): Promise<ServerCorpus> => {
+    newCorpus: ServerFormCorpus
+): Promise<Corpus> => {
     const path = "/api/corpora"
     const response = await fetch(path, {
         headers,
@@ -67,7 +67,7 @@ export const createCollection = async (
 
 export const updateCorpus = async (
     id: string, updatedCorpus: ServerFormCorpus
-): Promise<ServerCorpus> => {
+): Promise<Corpus> => {
     const path = `/api/corpora/${id}`
     const response = await fetch(path, {
         headers,
@@ -87,16 +87,17 @@ export const deleteCollection = async (id: string): Promise<void> => {
     validateResponse({response})
 }
 
-export const getCorpusWithResourcesById = async (id: string): Promise<ServerCorpus> => {
+export const getCorpusWithResourcesById = async (id: string): Promise<Corpus> => {
     const serverResult = await getCorpusById(id);
     return addCorpusResources(serverResult);
 }
-export async function addCorpusResources(result: ServerResultCorpus): Promise<ServerCorpus> {
+export async function addCorpusResources(result: ServerResultCorpus): Promise<Corpus> {
     return {
         ...result,
         keywords: await getKeywordsCorpora(result.id),
         languages: await getLanguagesCorpora(result.id),
-        sources: await getSourcesInCorpusWithResources(result.id)
+        sources: await getSourcesInCorpusWithResources(result.id),
+        parent: result.parentId && await getCorpusById(result.parentId)
     }
 }
 

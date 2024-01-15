@@ -41,14 +41,32 @@ export type ServerResultCorpus = {
 /**
  * Corpus including child resources
  */
-export type ServerCorpus = ServerResultCorpus & {
-    parent?: {
-        id: string, title: string
-    };
+export type Corpus = Omit<ServerResultCorpus, "parentId"> & {
+    parent?: ServerResultCorpus;
     keywords: ServerKeyword[];
     languages: ServerLanguage[];
     sources: Source[];
 }
+
+/**
+ * Source update
+ */
+export type CorpusFormSubmit = Omit<Corpus, "id">
+
+/**
+ * Corpus including all child resource IDs
+ */
+export type CorpusUpdateWithResourceIds = Omit<
+    CorpusFormSubmit,
+    "sources" | "languages" | "keywords" | "parent"
+> & {
+    sources: UUID[]
+    keywords: UUID[];
+    languages: UUID[];
+    parentId: UUID
+}
+
+
 
 /**
  * Source result as send by server
@@ -81,17 +99,17 @@ export type Source = ServerResultSource & {
 /**
  * Source update
  */
-export type SourceUpdate = Omit<Source, "id">
+export type SourceFormSubmit = Omit<Source, "id">
 
 /**
  * Source including all child resource IDs
  */
 export type SourceUpdateWithResourceIds = Omit<
-    SourceUpdate,
+    SourceFormSubmit,
     "keywords" | "languages"
 > & {
-    keywords: string[];
-    languages: string[];
+    keywords: UUID[];
+    languages: UUID[];
 }
 
 export type ServerFormSource = {

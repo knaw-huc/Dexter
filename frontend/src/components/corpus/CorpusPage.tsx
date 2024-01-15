@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from "react"
 import {Link, useParams} from "react-router-dom"
 import {
-    ServerCorpus,
+    Corpus,
     ServerKeyword,
     ServerLanguage,
     ServerResultCorpus,
@@ -40,7 +40,7 @@ const Wrapper = styled.div`
   overflow: auto;
 `
 export const CorpusPage = () => {
-    const [corpus, setCorpus] = useState<ServerCorpus>(null)
+    const [corpus, setCorpus] = useState<Corpus>(null)
     const [sourceOptions, setSourceOptions] = useState<ServerResultSource[]>(null)
     const [parentOptions, setParentOptions] = useState<ServerResultCorpus[]>(null)
     const {dispatchError} = useContext(errorContext)
@@ -53,7 +53,7 @@ export const CorpusPage = () => {
     const [showLinkSourceForm, setShowLinkSourceForm] = useState(false)
     const [filterKeywords, setFilterKeywords] = useState<ServerKeyword[]>([])
 
-    const handleSaveCorpus = (corpus: ServerCorpus) => {
+    const handleSaveCorpus = (corpus: Corpus) => {
         setCorpus(corpus)
         setShowCorpusForm(false)
     }
@@ -141,15 +141,19 @@ export const CorpusPage = () => {
             {corpus && (
                 <>
                     <EditButton onEdit={() => setShowCorpusForm(true)}/>
-                    <h1>
-                        {corpus.title || "Untitled"}
-                    </h1>
-                    {corpus.parentId && <p>
-                        <strong>Parent ID:</strong>{" "}
-                        <Link to={`/corpora/${corpus.parentId}`}>
-                            {corpus.parentId}
+                    {corpus.parent && <p
+                        style={{marginBottom: 0}}
+                    >
+                        <Link
+                            to={`/corpora/${corpus.parent.id}`}
+                            style={{color: "black"}}
+                        >
+                            {corpus.parent.title} &gt;
                         </Link>
                     </p>}
+                    <h1 style={{marginTop: 0}}>
+                        {corpus.title || "Untitled"}
+                    </h1>
                     {corpus.description && <p>{corpus.description}</p>}
                     {!_.isEmpty(corpus.keywords) && <KeywordList
                         keywords={corpus.keywords}

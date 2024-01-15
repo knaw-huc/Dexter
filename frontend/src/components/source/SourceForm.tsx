@@ -3,16 +3,7 @@ import Button from "@mui/material/Button"
 import React, {useEffect, useState} from "react"
 import {SubmitHandler, useForm} from "react-hook-form"
 import * as yup from "yup"
-import {
-    AccessOptions,
-    ServerFormSource,
-    ServerKeyword,
-    ServerLanguage,
-    Source,
-    SourceUpdate,
-    SourceUpdateWithResourceIds,
-    UUID
-} from "../../model/DexterModel"
+import {AccessOptions, Source, SourceFormSubmit, SourceUpdateWithResourceIds, UUID} from "../../model/DexterModel"
 import {
     addKeywordsToSource,
     addLanguagesToSource,
@@ -70,18 +61,6 @@ const schema = yup.object({
     access: yup.string().oneOf(AccessOptions).required("Access is required"),
 })
 
-const formToServer = (data: SourceUpdate): SourceUpdateWithResourceIds => {
-    return {
-        ...data,
-        keywords: data.keywords?.map((kw: ServerKeyword) => {
-            return kw.id
-        }) || [],
-        languages: data.languages?.map((language: ServerLanguage) => {
-            return language.id
-        }) || [],
-    }
-}
-
 export function SourceForm(props: SourceFormProps) {
     const {
         register,
@@ -125,11 +104,11 @@ export function SourceForm(props: SourceFormProps) {
         setExternalRefLoading(false)
     }
 
-    const onSubmit: SubmitHandler<Source> = async (data: SourceUpdate) => {
+    async function onSubmit(data: SourceFormSubmit) {
+        const id: UUID = props.sourceToEdit
+            ? await updateExistingSource(props.sourceToEdit.id, data)
+            : await createNewSource(data)
         try {
-            const id: UUID = props.sourceToEdit
-                ? await updateExistingSource(props.sourceToEdit.id, data)
-                : await createNewSource(data)
             props.onSave({id, ...data})
         } catch (error) {
             await setBackendErrors(error, setBackendError)
@@ -138,27 +117,24 @@ export function SourceForm(props: SourceFormProps) {
 
     async function updateExistingSource(
         id: string,
-        data: SourceUpdate
+        data: SourceFormSubmit
     ): Promise<UUID> {
-        const updatedDataToServer: ServerFormSource = {
-            ...data
-        }
-        await updateSource(id, updatedDataToServer)
+        await updateSource(id, data)
 
-        const keywordsUpdate = data.keywords.map(kw => kw.id)
-        const responseKeywords = await addKeywordsToSource(id, keywordsUpdate)
+        const keywordIds = data.keywords.map(k => k.id)
+        const responseKeywords = await addKeywordsToSource(id, keywordIds)
         const keysToDelete = responseKeywords
             .map(s => s.id)
-            .filter(ls => !keywordsUpdate.includes(ls))
+            .filter(ls => !keywordIds.includes(ls))
         for (const keyToDelete of keysToDelete) {
             await deleteKeywordFromSource(id, keyToDelete)
         }
 
-        const languagesUpdate = data.languages.map(l => l.id)
-        const responseLanguages = await addLanguagesToSource(id, languagesUpdate)
+        const languageIds = data.languages.map(l => l.id)
+        const responseLanguages = await addLanguagesToSource(id, languageIds)
         const languagesToDelete = responseLanguages
             .map(l => l.id)
-            .filter(ls => !languagesUpdate.includes(ls))
+            .filter(ls => !languageIds.includes(ls))
         for (const languageToDelete of languagesToDelete) {
             await deleteLanguageFromSource(id, languageToDelete)
         }
@@ -166,18 +142,17 @@ export function SourceForm(props: SourceFormProps) {
     }
 
     async function createNewSource(
-        data: SourceUpdate,
+        data: SourceFormSubmit,
     ): Promise<UUID> {
-        const dataToServer = formToServer(data)
-        const newSource = await createSource(dataToServer)
+        const newSource = await createSource(data)
         const sourceId = newSource.id
-        if (dataToServer.keywords) {
-            await addKeywordsToSource(sourceId, dataToServer.keywords)
+        if (data.keywords?.length) {
+            await addKeywordsToSource(sourceId, data.keywords.map(k => k.id))
         }
-        if (dataToServer.languages) {
-            await addLanguagesToSource(sourceId, dataToServer.languages)
+        if (data.languages?.length) {
+            await addLanguagesToSource(sourceId, data.languages.map(l => l.id))
         }
-        if (props.corpusId) {
+        if (props.corpusId?.length) {
             await addSourcesToCorpus(props.corpusId, [sourceId])
         }
         return sourceId;

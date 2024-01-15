@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from "react"
-import {ServerCorpus, ServerResultSource} from "../../model/DexterModel"
+import {Corpus, ServerResultSource} from "../../model/DexterModel"
 import {CorpusPreview} from "./CorpusPreview"
 import {CorpusForm} from "./CorpusForm"
 import styled from "@emotion/styled"
@@ -17,7 +17,7 @@ const FilterRow = styled.div`
 export function CorpusIndex() {
     const [showForm, setShowForm] = React.useState(false)
     const {dispatchError} = useContext(errorContext)
-    const [corpora, setCorpora] = useState<ServerCorpus[]>()
+    const [corpora, setCorpora] = useState<Corpus[]>()
     const [sourceOptions, setSourceOptions] = useState<ServerResultSource[]>()
     const [isInit, setInit] = useState(false)
 
@@ -40,11 +40,11 @@ export function CorpusIndex() {
         }
     }, [isInit])
 
-    function handleDelete(corpus: ServerCorpus) {
+    function handleDelete(corpus: Corpus) {
         setCorpora(corpora => corpora.filter(c => c.id !== corpus.id))
     }
 
-    function handleSave(update: ServerCorpus) {
+    function handleSave(update: Corpus) {
         setCorpora(corpora => [...corpora, update])
         setShowForm(false)
     }
@@ -75,15 +75,14 @@ export function CorpusIndex() {
                     sx={{pl: 0.1, pr: 1, mt: 2, mb: 2}}
                 >
                     {corpora.map(
-                        (corpus: ServerCorpus, index: number) => <Grid
+                        (corpus: Corpus, index: number) => <Grid
                             item
                             xs={4}
                             height="150px"
                             key={index}
                         >
                             <CorpusPreview
-                                collectionId={index}
-                                collection={corpus}
+                                corpus={corpus}
                                 onDelete={() => handleDelete(corpus)}
                             />
                         </Grid>)}

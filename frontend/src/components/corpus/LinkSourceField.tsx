@@ -24,12 +24,12 @@ export function LinkSourceField(props: LinkSourceFieldProps) {
             setInputValue(value)
         }}
         multiple={true}
-        id="partofsource-autocomplete"
+        id="link-source-autocomplete"
         options={props.options}
         getOptionLabel={(source: Source) => source.title}
         filterOptions={(all) => all.filter(source => normalizeToSearch(source.title).includes(normalizedInput))}
         isOptionEqualToValue={(option, value) =>
-            option.title === value.title
+            option.title === value?.title
         }
         filterSelectedOptions
         value={props.selected}

@@ -2,19 +2,10 @@ import styled from "@emotion/styled"
 import {yupResolver} from "@hookform/resolvers/yup"
 import Button from "@mui/material/Button"
 import TextField from "@mui/material/TextField"
-import React, {useContext, useState} from "react"
+import React, {useState} from "react"
 import {useForm} from "react-hook-form"
 import * as yup from "yup"
-import {
-    AccessOptions,
-    ServerCorpus,
-    ServerFormCorpus,
-    ServerKeyword,
-    ServerLanguage,
-    ServerResultCorpus,
-    ServerResultSource,
-    Source,
-} from "../../model/DexterModel"
+import {AccessOptions, Corpus, CorpusFormSubmit, ServerResultCorpus, ServerResultSource,} from "../../model/DexterModel"
 import {
     addKeywordsToCorpus,
     addLanguagesToCorpus,
@@ -39,10 +30,10 @@ import _ from "lodash"
 import {CloseInlineIcon} from "../common/CloseInlineIcon"
 
 type CorpusFormProps = {
-    corpusToEdit?: ServerCorpus | undefined,
+    corpusToEdit?: Corpus,
     parentOptions: ServerResultCorpus[],
     sourceOptions: ServerResultSource[],
-    onSave: (edited: ServerCorpus) => void,
+    onSave: (edited: Corpus) => void,
     onClose: () => void,
 };
 styled(TextField)`
@@ -59,34 +50,6 @@ const schema = yup.object({
     access: yup.string().required("Access is required"),
 })
 
-const formToServer = (data: ServerCorpus) => {
-    const newData: any = data
-    if (newData.keywords) {
-        newData.keywords = newData.keywords.map((kw: ServerKeyword) => {
-            return kw.id
-        })
-    }
-    if (newData.languages) {
-        newData.languages = newData.languages.map((language: ServerLanguage) => {
-            return language.id
-        })
-    }
-    if (newData.sourceIds) {
-        newData.sourceIds = newData.sourceIds.map((source: Source) => {
-            return source.id
-        })
-    }
-    if (newData.parentId) {
-        newData.parentId = newData.parentId
-            .map((corpus: ServerCorpus) => {
-                return corpus.id
-            })
-            .toString()
-    }
-
-    return newData
-}
-
 export function CorpusForm(props: CorpusFormProps) {
     const [backendError, setBackendError] = useState<ErrorByField>()
     const {
@@ -96,7 +59,7 @@ export function CorpusForm(props: CorpusFormProps) {
         control,
         formState: {errors},
         watch
-    } = useForm<ServerCorpus>({
+    } = useForm<Corpus>({
         resolver: yupResolver(schema),
         mode: "onBlur",
         defaultValues: {
@@ -110,71 +73,68 @@ export function CorpusForm(props: CorpusFormProps) {
     const [isInit, setInit] = useState(false)
     const [isLoaded, setLoaded] = useState(false)
 
-    async function createNewCorpus(data: ServerResultCorpus & {
-        parent?: { id: string; title: string };
-        keywords: ServerKeyword[];
-        languages: ServerLanguage[];
-        sources: Source[]
-    }) {
-        const serverCreateForm = formToServer(data)
-        const newCorpus = await createCollection(serverCreateForm)
-        const newId = newCorpus.id
-        serverCreateForm.keywords &&
-        (await addKeywordsToCorpus(newId, serverCreateForm.keywords))
-        serverCreateForm.languages &&
-        (await addLanguagesToCorpus(newId, serverCreateForm.languages))
-        serverCreateForm.sourceIds &&
-        (await addSourcesToCorpus(newId, serverCreateForm.sourceIds))
-        return newId
+    async function createNewCorpus(
+        data: CorpusFormSubmit
+    ) {
+        const newCorpus = await createCollection(data)
+        const corpusId = newCorpus.id
+        if (data.keywords?.length) {
+            await addKeywordsToCorpus(corpusId, data.keywords.map(k => k.id))
+        }
+        if (data.languages?.length) {
+            await addLanguagesToCorpus(corpusId, data.languages.map(l => l.id))
+        }
+        if (data.sources) {
+            await addSourcesToCorpus(corpusId, data.sources.map(s => s.id))
+        }
+        return corpusId
     }
 
     async function updateExistingCorpus(
-        data: ServerCorpus,
-        id: string
+        id: string,
+        data: CorpusFormSubmit
     ) {
         const updateId = props.corpusToEdit.id
-        const serverUpdateForm: ServerFormCorpus = {
+
+        await updateCorpus(updateId, {
             ...data,
-        }
-        await updateCorpus(updateId, serverUpdateForm)
-        const keywordsUpdate = data.keywords.map(kw => kw.id)
-        const responseKeywords = await addKeywordsToCorpus(updateId, keywordsUpdate)
+            parentId: data.parent?.id
+        })
+
+        const keywordIds = data.keywords.map(k => k.id)
+        const responseKeywords = await addKeywordsToCorpus(updateId, keywordIds)
         const keysToDelete = responseKeywords
             .map(s => s.id)
-            .filter(ls => !keywordsUpdate.includes(ls))
+            .filter(ls => !keywordIds.includes(ls))
         for (const keyToDelete of keysToDelete) {
             await deleteKeywordFromCorpus(updateId, keyToDelete)
         }
-        const languagesUpdate = data.languages.map(l => l.id)
 
-        const responseLanguages = await addLanguagesToCorpus(updateId, languagesUpdate)
+        const languageIds = data.languages.map(l => l.id)
+        const responseLanguages = await addLanguagesToCorpus(updateId, languageIds)
         const languagesToDelete = responseLanguages
             .map(l => l.id)
-            .filter(ls => !languagesUpdate.includes(ls))
+            .filter(ls => !languageIds.includes(ls))
         for (const languageToDelete of languagesToDelete) {
             await deleteLanguageFromCorpus(id, languageToDelete)
         }
-        if (serverUpdateForm.parentId) {
 
-            serverUpdateForm.parentId = data.parent.id
-        }
-        const sourceIdsUpdate = data.sources.map(s => s.id)
-
-        const responseSources = await addSourcesToCorpus(id, sourceIdsUpdate)
+        const sourceIds = data.sources.map(s => s.id)
+        const responseSources = await addSourcesToCorpus(id, sourceIds)
         const sourcesToDelete = responseSources
             .map(s => s.id)
-            .filter(ls => !sourceIdsUpdate.includes(ls))
+            .filter(ls => !sourceIds.includes(ls))
         for (const sourceToDelete of sourcesToDelete) {
             await deleteSourceFromCorpus(updateId, sourceToDelete)
         }
-        return id;
+        return id
     }
 
-    async function onSubmit(data: ServerCorpus) {
+    async function onSubmit(data: CorpusFormSubmit) {
+        const id = !props.corpusToEdit
+            ? await createNewCorpus(data)
+            : await updateExistingCorpus(props.corpusToEdit.id, data)
         try {
-            const id = !props.corpusToEdit
-                ? await createNewCorpus(data)
-                : await updateExistingCorpus(data, props.corpusToEdit.id);
             props.onSave({id, ...data})
         } catch (e) {
             await setBackendErrors(e, setBackendError)
@@ -186,7 +146,7 @@ export function CorpusForm(props: CorpusFormProps) {
         const initFormFields = async () => {
             setInit(true)
             const fields = [
-                "parentId",
+                "parent",
                 "title",
                 "description",
                 "rights",
@@ -200,7 +160,7 @@ export function CorpusForm(props: CorpusFormProps) {
                 "languages",
                 "sources",
             ]
-            fields.map((field: keyof ServerCorpus) => {
+            fields.map((field: keyof Corpus) => {
                 setValue(field, props.corpusToEdit[field])
             })
             register("access")
@@ -219,18 +179,27 @@ export function CorpusForm(props: CorpusFormProps) {
 
     const allSources = props.sourceOptions
     const selectedSources = watch("sources")
+    const selectedParent = watch("parent")
 
-    function unlinkSource(sourceId: string) {
+    function handleUnlinkSource(sourceId: string) {
         return setValue("sources", selectedSources.filter(s => s.id !== sourceId))
     }
 
-    async function linkSource(sourceId: string) {
+    async function handleLinkSource(sourceId: string) {
         const toAdd = allSources.find(s => s.id === sourceId)
         const withResources = await addSourceResources(toAdd)
         return setValue("sources", [...selectedSources, withResources])
     }
 
-    function getErrorMessage(field: keyof ServerCorpus): string | undefined {
+    async function handleSelectParentCorpus(corpusId: string) {
+        return setValue("parent", props.parentOptions.find(o => o.id === corpusId))
+    }
+
+    async function handleDeleteParentCorpus() {
+        return setValue("parent", undefined)
+    }
+
+    function getErrorMessage(field: keyof Corpus): string | undefined {
         if (errors[field]?.message) {
             return errors[field].message
         }
@@ -240,7 +209,7 @@ export function CorpusForm(props: CorpusFormProps) {
     }
 
     function renderFormField(
-        fieldName: keyof ServerCorpus
+        fieldName: keyof Corpus
     ) {
         return <TextFieldWithError
             label={_.capitalize(fieldName)}
@@ -266,7 +235,13 @@ export function CorpusForm(props: CorpusFormProps) {
                 <FormError error={backendError}/>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     {renderFormField("title")}
-                    {renderFormField("description")}
+                    <TextFieldWithError
+                        label="Description"
+                        {...register("description", {required: true})}
+                        errorMessage={getErrorMessage("description")}
+                        multiline
+                        rows={6}
+                    />
                     {renderFormField("rights")}
                     <ValidatedSelectField
                         label="Access"
@@ -306,20 +281,22 @@ export function CorpusForm(props: CorpusFormProps) {
                     <LinkSourceField
                         options={allSources}
                         selected={selectedSources}
-                        onLinkSource={linkSource}
-                        onUnlinkSource={unlinkSource}
+                        onLinkSource={handleLinkSource}
+                        onUnlinkSource={handleUnlinkSource}
                     />
                     <ErrorMsg msg={getErrorMessage("sources")}/>
-                    <Label>Add current corpus to parent corpus</Label>
+                    <Label>Add to main corpus</Label>
                     <ParentCorpusField
-                        control={control}
-                        corpora={props.parentOptions}
+                        selected={selectedParent}
+                        options={props.parentOptions}
+                        onSelectParentCorpus={handleSelectParentCorpus}
+                        onDeleteParentCorpus={handleDeleteParentCorpus}
                     />
                     <Button variant="contained" type="submit">
                         Submit
                     </Button>
                 </form>
-                <ErrorMsg msg={getErrorMessage("parentId")}/>
+                <ErrorMsg msg={getErrorMessage("parent")}/>
             </ScrollableModal>
         </>
     )

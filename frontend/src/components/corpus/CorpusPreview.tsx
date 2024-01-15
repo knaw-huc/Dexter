@@ -1,9 +1,9 @@
 import React, {useContext} from "react"
-import {ServerCorpus} from "../../model/DexterModel"
+import {Corpus} from "../../model/DexterModel"
 import {useNavigate} from "react-router-dom"
 import styled from "@emotion/styled"
 import DeleteIcon from "@mui/icons-material/Delete"
-import {red} from "@mui/material/colors"
+import {grey, red} from "@mui/material/colors"
 import {deleteCollection} from "../../utils/API"
 import {errorContext} from "../../state/error/errorContext"
 import {Card, CardContent} from "@mui/material"
@@ -11,8 +11,7 @@ import {HeaderLinkClamped} from "../common/HeaderLinkClamped"
 import {PClamped} from "../common/PClamped"
 
 type CorpusPreviewProps = {
-    collectionId: React.Key;
-    collection: ServerCorpus;
+    corpus: Corpus;
     onDelete: () => void
 };
 
@@ -29,7 +28,7 @@ const DeleteIconStyled = styled(DeleteIcon)`
 export function CorpusPreview(props: CorpusPreviewProps) {
     const {dispatchError} = useContext(errorContext)
     const navigate = useNavigate()
-    const handleDelete = async (collection: ServerCorpus) => {
+    const handleDelete = async (collection: Corpus) => {
         const warning = window.confirm(
             "Are you sure you wish to delete this corpus?"
         )
@@ -41,6 +40,7 @@ export function CorpusPreview(props: CorpusPreviewProps) {
         props.onDelete();
     }
 
+    const corpus = props.corpus
     return <Card
         style={{height: "100%"}}
     >
@@ -49,17 +49,14 @@ export function CorpusPreview(props: CorpusPreviewProps) {
         >
             <DeleteIconStyled
                 style={{float: "right"}}
-                onClick={() => handleDelete(props.collection)}
+                onClick={() => handleDelete(corpus)}
             />
             <HeaderLinkClamped
-                key={props.collectionId}
-                onClick={() => navigate(`/corpora/${props.collection.id}`)}
+                onClick={() => navigate(`/corpora/${corpus.id}`)}
             >
-                {props.collection.parent
-                    ? props.collection.title + " (" + "subcorpus" + ")"
-                    : props.collection.title}
+                {corpus.title}
             </HeaderLinkClamped>
-            <PClamped>{props.collection.description}</PClamped>
+            <PClamped>{corpus.description}</PClamped>
         </CardContent>
     </Card>
 }
