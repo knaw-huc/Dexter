@@ -1,14 +1,13 @@
 package nl.knaw.huc.dexter.resources
 
 import io.dropwizard.auth.Auth
-import nl.knaw.huc.dexter.api.FormCorpus
-import nl.knaw.huc.dexter.api.ResourcePaths
+import nl.knaw.huc.dexter.api.*
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PARAM
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PATH
 import nl.knaw.huc.dexter.api.ResourcePaths.KEYWORDS
 import nl.knaw.huc.dexter.api.ResourcePaths.LANGUAGES
 import nl.knaw.huc.dexter.api.ResourcePaths.SOURCES
-import nl.knaw.huc.dexter.api.ResultCorpus
+import nl.knaw.huc.dexter.api.ResourcePaths.WITH_RESOURCES
 import nl.knaw.huc.dexter.auth.DexterUser
 import nl.knaw.huc.dexter.auth.RoleNames
 import nl.knaw.huc.dexter.db.CorporaDao
@@ -32,12 +31,55 @@ class CorporaResource(private val jdbi: Jdbi) {
     private val log = LoggerFactory.getLogger(javaClass)
 
     @GET
-    fun getCorporaList() = corpora().list()
+    fun getCorporaList(): List<ResultCorpus> {
+        return corpora().list()
+    }
+
+    @GET
+    @Path(WITH_RESOURCES)
+    fun getCorporaWithResourcesList(): List<ResultCorpusWithResources> {
+        log.info("get all corpora with resources")
+        return jdbi.inTransaction<List<ResultCorpusWithResources>, Exception>(REPEATABLE_READ) { handle ->
+            handle.attach(CorporaDao::class.java).let { dao ->
+                dao.list().map { c -> findCorpusWithResources(dao, c.id) }
+            }
+        }
+    }
 
     @GET
     @Path(ID_PATH)
     fun getCorpus(@PathParam(ID_PARAM) id: UUID): ResultCorpus =
         corpora().find(id) ?: corpusNotFound(id)
+
+    @GET
+    @Path("$ID_PATH/$WITH_RESOURCES")
+    fun findCorpusWithResources(@PathParam(ID_PARAM) id: UUID): ResultCorpusWithResources {
+        log.info("get corpus $id with resources")
+        return jdbi.inTransaction<ResultCorpusWithResources, Exception>(REPEATABLE_READ) { handle ->
+            handle.attach(CorporaDao::class.java).let {
+                dao -> findCorpusWithResources(dao, id)
+            }
+        }
+    }
+
+    private fun findCorpusWithResources(
+        dao: CorporaDao,
+        id: UUID
+    ): ResultCorpusWithResources {
+        val found = dao.find(id) ?: corpusNotFound(id)
+        return found.toResultCorpusWithResources(
+            if (found.parentId != null) dao.find(found.parentId) else null,
+            dao.getKeywords(found.id),
+            dao.getLanguages(found.id),
+            dao.getSources(found.id).map { s ->
+                s.toResultSourceWithResources(
+                    dao.getKeywords(s.id),
+                    dao.getLanguages(s.id)
+                )
+            }
+        )
+    }
+
 
     @POST
     @Consumes(APPLICATION_JSON)
@@ -169,7 +211,7 @@ class CorporaResource(private val jdbi: Jdbi) {
     fun addSources(@PathParam(ID_PARAM) corpusId: UUID, sourceIds: List<UUID>) =
         onExistingCorpus(corpusId) { dao, corpus ->
             log.info("addSources: corpusId=${corpus.id}, sourceIds=$sourceIds")
-            sourceIds.forEach {sourceId -> dao.addSource(corpus.id, sourceId)}
+            sourceIds.forEach { sourceId -> dao.addSource(corpus.id, sourceId) }
             dao.getSources(corpus.id)
         }
 

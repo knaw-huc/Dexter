@@ -17,6 +17,8 @@ object ResourcePaths {
     const val AUTOCOMPLETE = "autocomplete"
     const val LOGIN = "login"
 
+    const val WITH_RESOURCES = "with-resources"
+
     // params
     const val ID_PARAM = "id"
     const val ID_PATH = "{$ID_PARAM}"

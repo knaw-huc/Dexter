@@ -5,11 +5,10 @@ import TextField from "@mui/material/TextField"
 import React, {useState} from "react"
 import {useForm} from "react-hook-form"
 import * as yup from "yup"
-import {AccessOptions, Corpus, CorpusFormSubmit, ServerResultCorpus, ServerResultSource,} from "../../model/DexterModel"
+import {AccessOptions, Corpus, CorpusFormSubmit, Source,} from "../../model/DexterModel"
 import {
     addKeywordsToCorpus,
     addLanguagesToCorpus,
-    addSourceResources,
     addSourcesToCorpus,
     createCollection,
     deleteKeywordFromCorpus,
@@ -31,8 +30,8 @@ import {CloseInlineIcon} from "../common/CloseInlineIcon"
 
 type CorpusFormProps = {
     corpusToEdit?: Corpus,
-    parentOptions: ServerResultCorpus[],
-    sourceOptions: ServerResultSource[],
+    parentOptions: Corpus[],
+    sourceOptions: Source[],
     onSave: (edited: Corpus) => void,
     onClose: () => void,
 };
@@ -144,7 +143,6 @@ export function CorpusForm(props: CorpusFormProps) {
 
     React.useEffect(() => {
         const initFormFields = async () => {
-            setInit(true)
             const fields = [
                 "parent",
                 "title",
@@ -166,14 +164,13 @@ export function CorpusForm(props: CorpusFormProps) {
             register("access")
             setLoaded(true)
         }
-        if (isInit) {
-            return
-        }
-        if (props.corpusToEdit) {
-            initFormFields()
-        } else {
+        if (!isInit) {
             setInit(true)
-            setLoaded(true)
+            if (props.corpusToEdit) {
+                initFormFields()
+            } else {
+                setLoaded(true)
+            }
         }
     }, [isInit, isLoaded])
 
@@ -187,8 +184,7 @@ export function CorpusForm(props: CorpusFormProps) {
 
     async function handleLinkSource(sourceId: string) {
         const toAdd = allSources.find(s => s.id === sourceId)
-        const withResources = await addSourceResources(toAdd)
-        return setValue("sources", [...selectedSources, withResources])
+        return setValue("sources", [...selectedSources, toAdd])
     }
 
     async function handleSelectParentCorpus(corpusId: string) {

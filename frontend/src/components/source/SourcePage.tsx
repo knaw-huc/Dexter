@@ -3,13 +3,7 @@ import {useParams} from "react-router-dom"
 import {ServerKeyword, ServerLanguage, Source,} from "../../model/DexterModel"
 import {deleteKeywordFromSourceWithWarning} from "../../utils/deleteKeywordFromSourceWithWarning"
 import {deleteLanguageFromSourceWithWarning} from "../../utils/deleteLanguageFromSourceWithWarning"
-import {
-    addSourceResources,
-    getKeywordsSources,
-    getLanguagesSources,
-    getSourceById,
-    getSourcesWithResources
-} from "../../utils/API"
+import {getSourceWithResourcesById} from "../../utils/API"
 import {Languages} from "../language/Languages"
 import {SourceForm} from "./SourceForm"
 import {EditButton} from "../common/EditButton"
@@ -28,7 +22,7 @@ export const SourcePage = () => {
     };
 
     const initSource = async () => {
-        const source = await addSourceResources(await getSourceById(sourceId));
+        const source = await getSourceWithResourcesById(sourceId);
         setSource(source);
     };
 

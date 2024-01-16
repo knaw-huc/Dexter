@@ -1,10 +1,10 @@
 import React, {useContext, useEffect, useState} from "react"
-import {Corpus, ServerResultSource} from "../../model/DexterModel"
+import {Corpus, Source} from "../../model/DexterModel"
 import {CorpusPreview} from "./CorpusPreview"
 import {CorpusForm} from "./CorpusForm"
 import styled from "@emotion/styled"
 import {errorContext} from "../../state/error/errorContext"
-import {addCorpusResources, getCorpora, getSources} from "../../utils/API"
+import {getCorporaWithResources, getSourcesWithResources} from "../../utils/API"
 import {AddIconStyled} from "../common/AddIconStyled"
 import {ButtonWithIcon} from "../common/ButtonWithIcon"
 import {Grid} from "@mui/material"
@@ -18,16 +18,13 @@ export function CorpusIndex() {
     const [showForm, setShowForm] = React.useState(false)
     const {dispatchError} = useContext(errorContext)
     const [corpora, setCorpora] = useState<Corpus[]>()
-    const [sourceOptions, setSourceOptions] = useState<ServerResultSource[]>()
+    const [sourceOptions, setSourceOptions] = useState<Source[]>()
     const [isInit, setInit] = useState(false)
 
     const initResources = async () => {
         try {
-            const corpora = await getCorpora()
-            setCorpora(corpora)
-            setSourceOptions(await getSources())
-            const corporaComplete = await Promise.all(corpora.map(addCorpusResources));
-            setCorpora(corporaComplete)
+            setCorpora(await getCorporaWithResources())
+            setSourceOptions(await getSourcesWithResources())
         } catch (e) {
             dispatchError(e)
         }

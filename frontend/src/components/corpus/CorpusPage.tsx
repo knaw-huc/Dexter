@@ -12,15 +12,14 @@ import {CorpusForm} from "./CorpusForm"
 import styled from "@emotion/styled"
 import {errorContext} from "../../state/error/errorContext"
 import {
-    addSourceResources,
     addSourcesToCorpus,
     deleteKeywordFromCorpus,
     deleteKeywordFromSource,
     deleteLanguageFromCorpus,
     deleteSourceFromCorpus,
-    getCorpora,
+    getCorporaWithResources,
     getCorpusWithResourcesById,
-    getSources,
+    getSourcesWithResources,
 } from "../../utils/API"
 import {Languages} from "../language/Languages"
 import {SourcePreview} from "../source/SourcePreview"
@@ -41,8 +40,8 @@ const Wrapper = styled.div`
 `
 export const CorpusPage = () => {
     const [corpus, setCorpus] = useState<Corpus>(null)
-    const [sourceOptions, setSourceOptions] = useState<ServerResultSource[]>(null)
-    const [parentOptions, setParentOptions] = useState<ServerResultCorpus[]>(null)
+    const [sourceOptions, setSourceOptions] = useState<Source[]>(null)
+    const [parentOptions, setParentOptions] = useState<Corpus[]>(null)
     const {dispatchError} = useContext(errorContext)
     const params = useParams()
 
@@ -76,8 +75,8 @@ export const CorpusPage = () => {
         setCorpus({
             ...corpusWithResources
         })
-        setSourceOptions(await getSources())
-        setParentOptions(await getCorpora().then(all => all.filter(c => c.id !== id)))
+        setSourceOptions(await getSourcesWithResources())
+        setParentOptions(await getCorporaWithResources().then(all => all.filter(c => c.id !== id)))
     }
 
     useEffect(() => {
@@ -123,7 +122,7 @@ export const CorpusPage = () => {
 
     const linkSource = async (corpusId: string, sourceId: string) => {
         await addSourcesToCorpus(corpusId, [sourceId])
-        const toLink = await addSourceResources(sourceOptions.find(s => s.id === sourceId));
+        const toLink = sourceOptions.find(s => s.id === sourceId);
         setCorpus(corpus => ({
             ...corpus,
             sources: [...corpus.sources, toLink]

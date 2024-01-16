@@ -1,14 +1,12 @@
 package nl.knaw.huc.dexter.resources
 
 import io.dropwizard.auth.Auth
-import nl.knaw.huc.dexter.api.FormSource
-import nl.knaw.huc.dexter.api.ResourcePaths
+import nl.knaw.huc.dexter.api.*
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PARAM
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PATH
 import nl.knaw.huc.dexter.api.ResourcePaths.KEYWORDS
 import nl.knaw.huc.dexter.api.ResourcePaths.LANGUAGES
-import nl.knaw.huc.dexter.api.ResultKeyword
-import nl.knaw.huc.dexter.api.ResultSource
+import nl.knaw.huc.dexter.api.ResourcePaths.WITH_RESOURCES
 import nl.knaw.huc.dexter.auth.DexterUser
 import nl.knaw.huc.dexter.auth.RoleNames
 import nl.knaw.huc.dexter.db.DaoBlock
@@ -35,8 +33,48 @@ class SourcesResource(private val jdbi: Jdbi) {
     fun getSourceList() = sources().list()
 
     @GET
+    @Path(WITH_RESOURCES)
+    fun getSourceWithResourcesList(): List<ResultSourceWithResources> {
+        log.info("get all sources with resources")
+        return jdbi.inTransaction<List<ResultSourceWithResources>, Exception>(REPEATABLE_READ) { handle ->
+            handle.attach(SourcesDao::class.java).let { dao ->
+                dao.list()
+                    .map { s ->
+                        s.toResultSourceWithResources(
+                            dao.getKeywords(s.id),
+                            dao.getLanguages(s.id)
+                        )
+                    }
+            }
+        }
+    }
+
+    @GET
     @Path(ID_PATH)
     fun getSource(@PathParam(ID_PARAM) id: UUID) = sources().find(id) ?: sourceNotFound(id)
+
+    @GET
+    @Path("$ID_PATH/$WITH_RESOURCES")
+    fun getSourceWithResources(@PathParam(ID_PARAM) id: UUID): ResultSourceWithResources {
+        log.info("get source $id with resources")
+        return jdbi.inTransaction<ResultSourceWithResources, Exception>(REPEATABLE_READ) { handle ->
+            handle.attach(SourcesDao::class.java).let { dao ->
+                findSourceWithResources(dao, id)
+            }
+        }
+    }
+
+    private fun findSourceWithResources(
+        dao: SourcesDao,
+        id: UUID
+    ): ResultSourceWithResources {
+        val found: ResultSource = dao.find(id) ?: sourceNotFound(id)
+        return found.toResultSourceWithResources(
+            dao.getKeywords(found.id),
+            dao.getLanguages(found.id)
+        )
+    }
+
 
     @POST
     @Consumes(APPLICATION_JSON)

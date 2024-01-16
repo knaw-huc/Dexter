@@ -1,9 +1,9 @@
 import {yupResolver} from "@hookform/resolvers/yup"
 import Button from "@mui/material/Button"
 import React, {useEffect, useState} from "react"
-import {SubmitHandler, useForm} from "react-hook-form"
+import {useForm} from "react-hook-form"
 import * as yup from "yup"
-import {AccessOptions, Source, SourceFormSubmit, SourceUpdateWithResourceIds, UUID} from "../../model/DexterModel"
+import {AccessOptions, Source, SourceFormSubmit, UUID} from "../../model/DexterModel"
 import {
     addKeywordsToSource,
     addLanguagesToSource,
@@ -11,9 +11,7 @@ import {
     createSource,
     deleteKeywordFromSource,
     deleteLanguageFromSource,
-    getKeywordsSources,
-    getLanguagesSources,
-    getSourceById,
+    getSourceWithResourcesById,
     postImport,
     updateSource,
 } from "../../utils/API"
@@ -171,17 +169,7 @@ export function SourceForm(props: SourceFormProps) {
 
     React.useEffect(() => {
         const doGetSourceById = async (id: string) => {
-            const data: Source = await getSourceById(id)
-            const keywords = await getKeywordsSources(id)
-            const languages = await getLanguagesSources(id)
-
-            data.keywords = keywords.map((keyword) => {
-                return keyword
-            })
-            data.languages = languages.map((language) => {
-                return language
-            })
-
+            const data: Source = await getSourceWithResourcesById(id)
             formFields.map((field: keyof Source) => {
                 setValue(field, data[field])
             })
