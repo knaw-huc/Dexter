@@ -12,7 +12,7 @@ export type SelectFieldProps = SelectProps & CustomFieldProps & {
 };
 
 export function ValidatedSelectField(props: SelectFieldProps) {
-    const {options, label, errorMessage, selectedOption, onSelectOption} = props
+    const {options, label, message, selectedOption, onSelectOption} = props
 
     return <>
         <FormControl fullWidth>
@@ -39,6 +39,6 @@ export function ValidatedSelectField(props: SelectFieldProps) {
                 ))}
             </Select>
         </FormControl>
-        <ErrorMsg msg={errorMessage}/>
+        <ErrorMsg msg={message}/>
     </>
 }

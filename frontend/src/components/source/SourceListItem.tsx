@@ -10,65 +10,65 @@ import {EditIconStyled} from "../common/EditButton"
 import {DeleteIconStyled} from "../common/DeleteIconStyled"
 
 type SourceItemProps = {
-    sourceId: React.Key;
     source: Source;
-    onDelete: () => void
+    onDelete: () => void,
+    onEdit: () => void
 };
 
-const ListItemStyled = styled(ListItem)`
+const ListItemButtonStyled = styled(ListItem)`
   &:hover {
     cursor: pointer;
     background: ${grey[100]};
   }
 `
 
-const ListItemButtonStyled = styled(ListItem)`
-  &:hover {
-    background: transparent;
-  }
-`
-
-export const SourceItem = (props: SourceItemProps) => {
+export const SourceListItem = (props: SourceItemProps) => {
     const navigate = useNavigate()
-    const handleSelect = () => {
+
+    function handleSelect() {
         navigate(`/sources/${props.source.id}`)
     }
 
-    const handleDelete = async (id: string) => {
+    function handleDelete(e: React.MouseEvent) {
+        e.stopPropagation();
         const warning = window.confirm(
             "Are you sure you wish to delete this source?"
         )
 
         if (warning === false) return
 
-        await deleteSource(id)
+        deleteSource(props.source.id).then(() => props.onDelete())
         props.onDelete()
     }
 
-    return <ListItemStyled
+    function handleEdit(e: MouseEvent) {
+        e.stopPropagation()
+        props.onEdit()
+    }
+
+    return <ListItemButtonStyled
+        onClick={handleSelect}
         secondaryAction={
             <span style={{color: grey[500]}}>
                 <EditIconStyled
-                    onClick={() => console.log('edit', props.source.id)}
+                    onClick={handleEdit}
                 />
                 <DeleteIconStyled
-                    onClick={() => handleDelete(props.source.id)}
+                    onClick={handleDelete}
                 />
             </span>
         }
-        sx={{ml:0, pl: 0}}
+        sx={{ml: 0, pl: 0}}
     >
-        <ListItemButtonStyled
-            onClick={handleSelect}
+        <ListItemAvatar
+            sx={{ml: "1em"}}
         >
-            <ListItemAvatar>
-                <Avatar>
-                    <TurnedInOutlinedIcon/>
-                </Avatar>
-            </ListItemAvatar>
-            <ListItemText>
-                {props.source.title}
-            </ListItemText>
-        </ListItemButtonStyled>
-    </ListItemStyled>
+            <Avatar>
+                <TurnedInOutlinedIcon/>
+            </Avatar>
+        </ListItemAvatar>
+        <ListItemText>
+            {props.source.title}
+        </ListItemText>
+    </ListItemButtonStyled>
 }

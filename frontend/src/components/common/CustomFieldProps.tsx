@@ -1,4 +1,4 @@
 export type CustomFieldProps = {
     label: string,
-    errorMessage?: string,
+    message?: string,
 }

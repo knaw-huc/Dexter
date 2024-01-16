@@ -139,8 +139,9 @@ export const CorpusPage = () => {
                             to={`/corpora/${corpus.parent.id}`}
                             style={{color: "black"}}
                         >
-                            {corpus.parent.title} &gt;
+                            {corpus.parent.title}
                         </Link>
+                        {" "}&gt;
                     </p>}
                     <h1 style={{marginTop: 0}}>
                         {corpus.title || "Untitled"}

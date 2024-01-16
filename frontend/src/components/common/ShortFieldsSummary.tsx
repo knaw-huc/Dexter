@@ -7,7 +7,7 @@ export function ShortFieldsSummary<T>(props: {
 ) {
     return <p style={{textTransform: "capitalize"}}>
         {props.fieldNames.map((field: keyof T, i) => [
-            i > 0 && <Spacer key={i}/>,
+            i > 0 && <Spacer key={`spacer-${i}`}/>,
             <ShortField<T>
                 key={i}
                 fieldName={field}

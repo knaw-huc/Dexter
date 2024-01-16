@@ -210,7 +210,7 @@ export function CorpusForm(props: CorpusFormProps) {
         return <TextFieldWithError
             label={_.capitalize(fieldName)}
             {...register(fieldName, {required: true})}
-            errorMessage={getErrorMessage(fieldName)}
+            message={getErrorMessage(fieldName)}
         />
     }
 
@@ -234,14 +234,14 @@ export function CorpusForm(props: CorpusFormProps) {
                     <TextFieldWithError
                         label="Description"
                         {...register("description", {required: true})}
-                        errorMessage={getErrorMessage("description")}
+                        message={getErrorMessage("description")}
                         multiline
                         rows={6}
                     />
                     {renderFormField("rights")}
                     <ValidatedSelectField
                         label="Access"
-                        errorMessage={errors.access?.message}
+                        message={errors.access?.message}
                         selectedOption={watch("access")}
                         onSelectOption={v => setValue("access", v)}
                         options={AccessOptions}
@@ -253,7 +253,7 @@ export function CorpusForm(props: CorpusFormProps) {
                     <TextFieldWithError
                         label="notes"
                         {...register("notes", {required: true})}
-                        errorMessage={getErrorMessage("notes")}
+                        message={getErrorMessage("notes")}
                         multiline
                         rows={6}
                     />
@@ -267,10 +267,10 @@ export function CorpusForm(props: CorpusFormProps) {
                     <ErrorMsg msg={getErrorMessage("keywords")}/>
                     <Label>Languages</Label>
                     <LanguagesField
-                        control={control}
-                        corpusId={props.corpusToEdit && props.corpusToEdit.id}
-                        setValueCorpus={setValue}
-                        edit={!!props.corpusToEdit}
+                        selected={watch("languages")}
+                        onChangeSelected={selected => {
+                            setValue("languages", selected)
+                        }}
                     />
                     <ErrorMsg msg={getErrorMessage("languages")}/>
                     <Label>Add sources to corpus</Label>

@@ -206,7 +206,7 @@ export function SourceForm(props: SourceFormProps) {
             <TextFieldWithError
                 label="External Reference"
                 {...register("externalRef")}
-                errorMessage={getErrorMessage("externalRef")}
+                message={getErrorMessage("externalRef")}
             />
 
             <Alert
@@ -222,7 +222,7 @@ export function SourceForm(props: SourceFormProps) {
                     import
                 </Button>
                 <p>Import and fill out found form fields with metadata from external reference</p>
-                <p>Note: will overwrite existing values</p>
+                <p>Note: importing overwrites existing values</p>
             </Alert>
             {externalRefError && <Alert severity="error">
                 Could not import: {externalRefError.message}
@@ -231,15 +231,13 @@ export function SourceForm(props: SourceFormProps) {
             <TextFieldWithError
                 label="Title"
                 {...register("title", {required: true})}
-                errorMessage={getErrorMessage("title")}
-                multiline
-                rows={6}
+                message={getErrorMessage("title")}
             />
 
             <TextFieldWithError
                 label="Description"
                 {...register("description", {required: true})}
-                errorMessage={getErrorMessage("description")}
+                message={getErrorMessage("description")}
                 multiline
                 rows={6}
             />
@@ -247,18 +245,18 @@ export function SourceForm(props: SourceFormProps) {
             <TextFieldWithError
                 label="Creator"
                 {...register("creator")}
-                errorMessage={getErrorMessage("creator")}
+                message={getErrorMessage("creator")}
             />
 
             <TextFieldWithError
                 label="Rights"
                 {...register("rights")}
-                errorMessage={getErrorMessage("rights")}
+                message={getErrorMessage("rights")}
             />
 
             <ValidatedSelectField
                 label="Access"
-                errorMessage={getErrorMessage("access")}
+                message={getErrorMessage("access")}
                 selectedOption={watch("access")}
                 onSelectOption={(e) => setValue("access", e)}
                 options={AccessOptions}
@@ -267,25 +265,25 @@ export function SourceForm(props: SourceFormProps) {
             <TextFieldWithError
                 label="Location"
                 {...register("location")}
-                errorMessage={getErrorMessage("location")}
+                message={getErrorMessage("location")}
             />
 
             <TextFieldWithError
                 label="Earliest"
                 {...register("earliest")}
-                errorMessage={getErrorMessage("earliest")}
+                message={getErrorMessage("earliest")}
             />
 
             <TextFieldWithError
                 label="Latest"
                 {...register("latest")}
-                errorMessage={getErrorMessage("latest")}
+                message={getErrorMessage("latest")}
             />
 
             <TextFieldWithError
                 label="Notes"
                 {...register("notes")}
-                errorMessage={getErrorMessage("notes")}
+                message={getErrorMessage("notes")}
             />
 
             <Label>Keywords</Label>
@@ -299,10 +297,10 @@ export function SourceForm(props: SourceFormProps) {
 
             <Label>Languages</Label>
             <LanguagesField
-                control={control}
-                sourceId={props.sourceToEdit && props.sourceToEdit.id}
-                setValueSource={setValue}
-                edit={!!props.sourceToEdit}
+                selected={watch("languages")}
+                onChangeSelected={selected => {
+                    setValue("languages", selected)
+                }}
             />
             <ErrorMsg msg={getErrorMessage("languages")}/>
 

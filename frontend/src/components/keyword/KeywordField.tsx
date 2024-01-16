@@ -29,7 +29,7 @@ export const KeywordField = (props: KeywordsFieldProps) => {
         setLoading(false)
     }
 
-    const deleteKeyword = (keyword: ServerKeyword) => {
+    const handleDeleteKeyword = (keyword: ServerKeyword) => {
         const newSelected = props.selected.filter(k => k.id !== keyword.id)
         props.onChangeSelected(newSelected)
     }
@@ -40,6 +40,16 @@ export const KeywordField = (props: KeywordsFieldProps) => {
             setLoading(true)
         }
     }, [debouncedInput])
+
+    function renderInputField(
+        params: TextFieldProps
+    ): JSX.Element {
+        return <TextField
+            {...params}
+            value={inputValue}
+            size={props.size ? props.size : "medium"}
+        />
+    }
 
     return <Autocomplete
         inputValue={inputValue}
@@ -63,7 +73,7 @@ export const KeywordField = (props: KeywordsFieldProps) => {
                     key={index}
                     {...getTagProps({index})}
                     onDelete={() => {
-                        deleteKeyword(keyword)
+                        handleDeleteKeyword(keyword)
                     }}
                     size={props.size ? props.size : "medium"}
                 />
@@ -96,17 +106,6 @@ export const KeywordField = (props: KeywordsFieldProps) => {
             )
         }}
     />
-
-    function renderInputField(
-        params: TextFieldProps
-    ): JSX.Element {
-        return <TextField
-            {...params}
-            label="Search and select keywords"
-            value={inputValue}
-            size={props.size ? props.size : "medium"}
-        />
-    }
 }
 
 function getSuggestions(props: KeywordsFieldProps, input: string) {

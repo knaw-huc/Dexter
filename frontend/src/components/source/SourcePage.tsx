@@ -34,18 +34,20 @@ export const SourcePage = () => {
         }
     }, [sourceId]);
 
-    const refetchSource = async () => {
-        await initSource();
-    };
-
     const handleDeleteLanguage = async (language: ServerLanguage) => {
         await deleteLanguageFromSourceWithWarning(language, params.sourceId);
-        await refetchSource();
+        setSource(source => ({
+            ...source,
+            languages: source.languages.filter(l => l.id !== language.id)
+        }))
     };
 
     const handleDeleteKeyword = async (keyword: ServerKeyword) => {
         await deleteKeywordFromSourceWithWarning(keyword, params.sourceId);
-        await refetchSource();
+        setSource(source => ({
+            ...source,
+            keywords: source.keywords.filter(k => k.id !== keyword.id)
+        }))
     };
 
     const shortSourceFields: (keyof Source)[] = ["location", "earliest", "latest", "rights", "access", "creator"]

@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from "react"
 import {Source} from "../../model/DexterModel"
-import {SourceItem} from "./SourceItem"
+import {SourceListItem} from "./SourceListItem"
 import styled from "@emotion/styled"
 import {getSourcesWithResources} from "../../utils/API"
 import {SourceForm} from "./SourceForm"
@@ -18,6 +18,7 @@ export function SourceIndex() {
     const [sources, setSources] = useState<Source[]>()
     const [isInit, setInit] = useState(false)
     const {dispatchError} = useContext(errorContext)
+    const [sourceToEdit, setSourceToEdit] = React.useState<Source>(null);
 
     useEffect(() => {
         async function initResources() {
@@ -38,8 +39,18 @@ export function SourceIndex() {
         setSources(sources => sources.filter(s => s.id !== source.id))
     }
 
-    function handleSaveSource(newSource: Source) {
-        setSources(sources => [...sources, newSource])
+    const handleEdit = (source: Source) => {
+        setSourceToEdit(source)
+        setShowForm(true)
+    }
+
+    function handleSaveSource(source: Source) {
+        if(sourceToEdit) {
+            setSources(sources => sources.map(s => s.id === source.id ? source : s))
+            setSourceToEdit(null)
+        } else {
+            setSources(sources => [...sources, source])
+        }
         setShowForm(false)
     }
 
@@ -50,20 +61,22 @@ export function SourceIndex() {
         {showForm && <SourceForm
             onClose={() => setShowForm(false)}
             onSave={handleSaveSource}
+            sourceToEdit={sourceToEdit}
         />}
         {sources && (
             <List
                 sx={{mt: "1em"}}
             >
                 {sources.map((source: Source, index: number) => (
-                        <SourceItem
+                        <SourceListItem
                             key={index}
-                            sourceId={index}
                             source={source}
                             onDelete={() => handleDelete(source)}
+                            onEdit={() => handleEdit(source)}
                         />
                     )
                 )}
-            </List>)}
+            </List>
+        )}
     </>
 }
