@@ -1,13 +1,6 @@
 import React, {useContext, useEffect, useState} from "react"
 import {Link, useParams} from "react-router-dom"
-import {
-    Corpus,
-    ServerKeyword,
-    ServerLanguage,
-    ServerResultCorpus,
-    ServerResultSource,
-    Source
-} from "../../model/DexterModel"
+import {Corpus, ServerKeyword, ServerLanguage, Source} from "../../model/DexterModel"
 import {CorpusForm} from "./CorpusForm"
 import styled from "@emotion/styled"
 import {errorContext} from "../../state/error/errorContext"
@@ -31,9 +24,8 @@ import {LinkSourceForm} from "./LinkSourceForm"
 import _ from "lodash"
 import {Grid} from "@mui/material"
 import {KeywordList} from "../keyword/KeywordList"
-import {SourceField} from "./SourceField"
-import {Spacer} from "./Spacer"
 import {FilterSourceByKeywords} from "./FilterSourceByKeywords"
+import {ShortFieldsSummary} from "../common/ShortFieldsSummary"
 
 const Wrapper = styled.div`
   overflow: auto;
@@ -51,19 +43,6 @@ export const CorpusPage = () => {
     const [showSourceForm, setShowSourceForm] = useState(false)
     const [showLinkSourceForm, setShowLinkSourceForm] = useState(false)
     const [filterKeywords, setFilterKeywords] = useState<ServerKeyword[]>([])
-
-    const handleSaveCorpus = (corpus: Corpus) => {
-        setCorpus(corpus)
-        setShowCorpusForm(false)
-    }
-
-    const handleSaveSource = (update: Source) => {
-        setCorpus(corpus => ({
-            ...corpus,
-            sources: [...corpus.sources, update]
-        }))
-        setShowSourceForm(false)
-    }
 
     const initResources = async (id: string) => {
         const corpusWithResources = await getCorpusWithResourcesById(id)
@@ -83,7 +62,20 @@ export const CorpusPage = () => {
         initResources(corpusId)
     }, [corpusId])
 
-    const deleteLanguage = async (language: ServerLanguage) => {
+    const handleSaveCorpus = (corpus: Corpus) => {
+        setCorpus(corpus)
+        setShowCorpusForm(false)
+    }
+
+    const handleSaveSource = (update: Source) => {
+        setCorpus(corpus => ({
+            ...corpus,
+            sources: [...corpus.sources, update]
+        }))
+        setShowSourceForm(false)
+    }
+
+    const handleDeleteLanguage = async (language: ServerLanguage) => {
         const warning = window.confirm(
             "Are you sure you wish to delete this language?"
         )
@@ -93,7 +85,7 @@ export const CorpusPage = () => {
         await deleteLanguageFromCorpus(corpusId, language.id)
     }
 
-    const deleteCorpusKeyword = async (keyword: ServerKeyword) => {
+    const handleDeleteCorpusKeyword = async (keyword: ServerKeyword) => {
         await deleteKeywordFromCorpus(corpusId, keyword.id)
         setCorpus(corpus => ({
             ...corpus,
@@ -101,7 +93,7 @@ export const CorpusPage = () => {
         }))
     }
 
-    const deleteSourceKeyword = async (sourceId: string, keywordId: string) => {
+    const handleDeleteSourceKeyword = async (sourceId: string, keywordId: string) => {
         await deleteKeywordFromSource(sourceId, keywordId)
         _.remove(
             corpus.sources
@@ -112,7 +104,7 @@ export const CorpusPage = () => {
         setCorpus({...corpus})
     }
 
-    const unlinkSource = async (corpusId: string, sourceId: string) => {
+    const handleUnlinkSource = async (corpusId: string, sourceId: string) => {
         await deleteSourceFromCorpus(corpusId, sourceId)
         setCorpus(corpus => ({
             ...corpus,
@@ -120,16 +112,16 @@ export const CorpusPage = () => {
         }))
     }
 
-    const linkSource = async (corpusId: string, sourceId: string) => {
+    const handleLinkSource = async (corpusId: string, sourceId: string) => {
         await addSourcesToCorpus(corpusId, [sourceId])
-        const toLink = sourceOptions.find(s => s.id === sourceId);
+        const toLink = sourceOptions.find(s => s.id === sourceId)
         setCorpus(corpus => ({
             ...corpus,
             sources: [...corpus.sources, toLink]
         }))
     }
 
-    const simpleSourceField = ["rights", "access", "location", "earliest", "latest", "contributor"]
+    const shortCorpusFields: (keyof Corpus)[]= ["location", "earliest", "latest", "rights", "access", "contributor"]
 
     const filteredCorpusSources = filterKeywords.length && corpus ? corpus.sources?.filter(
         cs => cs.keywords.find(csk => filterKeywords.find(k => k.id === csk.id))
@@ -156,24 +148,18 @@ export const CorpusPage = () => {
                     {corpus.description && <p>{corpus.description}</p>}
                     {!_.isEmpty(corpus.keywords) && <KeywordList
                         keywords={corpus.keywords}
-                        onDelete={deleteCorpusKeyword}
+                        onDelete={handleDeleteCorpusKeyword}
                     />}
-                    <p style={{textTransform: "capitalize"}}>
-                        {simpleSourceField.map((field: keyof ServerResultCorpus, i) => [
-                            i > 0 && <Spacer key={i}/>,
-                            <SourceField
-                                key={field}
-                                fieldName={field}
-                                resource={corpus}
-                            />
-                        ])}
-                    </p>
+                    <ShortFieldsSummary<Corpus>
+                        resource={corpus}
+                        fieldNames={shortCorpusFields}
+                    />
 
                     {!_.isEmpty(corpus.languages) && <div>
                         <h4>Languages:</h4>
                         <Languages
                             languages={corpus.languages}
-                            onDelete={deleteLanguage}
+                            onDelete={handleDeleteLanguage}
                         />
                     </div>}
                     {corpus.notes && <>
@@ -209,8 +195,8 @@ export const CorpusPage = () => {
                                 <SourcePreview
                                     source={source}
                                     corpusId={corpus.id}
-                                    onUnlinkSource={() => unlinkSource(corpus.id, source.id)}
-                                    onDeleteKeyword={k => deleteSourceKeyword(source.id, k.id)}
+                                    onUnlinkSource={() => handleUnlinkSource(corpus.id, source.id)}
+                                    onDeleteKeyword={k => handleDeleteSourceKeyword(source.id, k.id)}
                                 />
                             </Grid>
                         ))}
@@ -219,8 +205,8 @@ export const CorpusPage = () => {
                     {showLinkSourceForm && <LinkSourceForm
                         options={sourceOptions}
                         selected={corpus.sources}
-                        onLinkSource={sourceId => linkSource(corpusId, sourceId)}
-                        onUnlinkSource={sourceId => unlinkSource(corpusId, sourceId)}
+                        onLinkSource={sourceId => handleLinkSource(corpusId, sourceId)}
+                        onUnlinkSource={sourceId => handleUnlinkSource(corpusId, sourceId)}
                         onClose={() => setShowLinkSourceForm(false)}
                     />}
                 </>
@@ -243,4 +229,5 @@ export const CorpusPage = () => {
         </Wrapper>
     )
 }
+
 

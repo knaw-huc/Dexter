@@ -8,6 +8,8 @@ import {Languages} from "../language/Languages"
 import {SourceForm} from "./SourceForm"
 import {EditButton} from "../common/EditButton"
 import {KeywordList} from "../keyword/KeywordList"
+import _ from "lodash"
+import {ShortFieldsSummary} from "../common/ShortFieldsSummary"
 
 export const SourcePage = () => {
     const params = useParams();
@@ -36,15 +38,17 @@ export const SourcePage = () => {
         await initSource();
     };
 
-    const deleteLanguageHandler = async (language: ServerLanguage) => {
+    const handleDeleteLanguage = async (language: ServerLanguage) => {
         await deleteLanguageFromSourceWithWarning(language, params.sourceId);
         await refetchSource();
     };
 
-    const deleteKeywordHandler = async (keyword: ServerKeyword) => {
+    const handleDeleteKeyword = async (keyword: ServerKeyword) => {
         await deleteKeywordFromSourceWithWarning(keyword, params.sourceId);
         await refetchSource();
     };
+
+    const shortSourceFields: (keyof Source)[] = ["location", "earliest", "latest", "rights", "access", "creator"]
 
     return (
         <div>
@@ -55,46 +59,30 @@ export const SourcePage = () => {
                     }}/>
                     <h1>{source.title}</h1>
                     <p>{source.description}</p>
+                    {source.externalRef && <p>
+                        <strong>External reference:</strong> {source.externalRef}
+                    </p>}
+                    <div>
+                        <KeywordList
+                            keywords={source.keywords}
+                            onDelete={handleDeleteKeyword}
+                        />
+                    </div>
+                    <ShortFieldsSummary<Source>
+                        resource={source}
+                        fieldNames={shortSourceFields}
+                    />
                     {source.notes && <>
-                        <h4 style={{marginBottom: 0, lineHeight: 0}}>Notes</h4>
+                        <h2>Notes</h2>
                         <p>{source.notes}</p>
                     </>}
-                    <p>
-                        <strong>External reference:</strong> {source.externalRef}
-                    </p>
-                    <p>
-                        <strong>Creator:</strong> {source.creator}
-                    </p>
-                    <p>
-                        <strong>Rights:</strong> {source.rights}
-                    </p>
-                    <p>
-                        <strong>Access:</strong> {source.access}
-                    </p>
-                    <p>
-                        <strong>Location:</strong> {source.location}
-                    </p>
-                    <p>
-                        <strong>Earliest:</strong> {source.earliest}
-                    </p>
-                    <p>
-                        <strong>Latest:</strong> {source.latest}
-                    </p>
-                    <div>
-                        <strong>Keywords:</strong>{" "}
-                        <div style={{padding: "0.5em 0 1em"}}><KeywordList
-                            keywords={source.keywords}
-                            onDelete={deleteKeywordHandler}
-                        />
-                        </div>
-                    </div>
-                    <div>
-                        <strong>Languages:</strong>{" "}
+                    {!_.isEmpty(source.languages) && <div>
+                        <h4>Languages:</h4>
                         <Languages
                             languages={source.languages}
-                            onDelete={deleteLanguageHandler}
+                            onDelete={handleDeleteLanguage}
                         />
-                    </div>
+                    </div>}
                 </>
             )}
             {showForm && <SourceForm
