@@ -12,6 +12,7 @@ import nl.knaw.huc.dexter.auth.DexterUser
 import nl.knaw.huc.dexter.auth.RoleNames
 import nl.knaw.huc.dexter.db.CorporaDao
 import nl.knaw.huc.dexter.db.DaoBlock
+import nl.knaw.huc.dexter.db.SourcesDao
 import nl.knaw.huc.dexter.db.UsersDao
 import nl.knaw.huc.dexter.helpers.PsqlDiagnosticsHelper.Companion.diagnoseViolations
 import org.jdbi.v3.core.Jdbi
@@ -40,8 +41,12 @@ class CorporaResource(private val jdbi: Jdbi) {
     fun getCorporaWithResourcesList(): List<ResultCorpusWithResources> {
         log.info("get all corpora with resources")
         return jdbi.inTransaction<List<ResultCorpusWithResources>, Exception>(REPEATABLE_READ) { handle ->
-            handle.attach(CorporaDao::class.java).let { dao ->
-                dao.list().map { c -> findCorpusWithResources(dao, c.id) }
+            handle.attach(CorporaDao::class.java).let { corporaDao ->
+                handle.attach(SourcesDao::class.java).let { sourcesDao ->
+                    corporaDao.list().map { c ->
+;                        findCorpusWithResources(corporaDao, sourcesDao, c.id)
+                    }
+                }
             }
         }
     }
@@ -56,25 +61,28 @@ class CorporaResource(private val jdbi: Jdbi) {
     fun findCorpusWithResources(@PathParam(ID_PARAM) id: UUID): ResultCorpusWithResources {
         log.info("get corpus $id with resources")
         return jdbi.inTransaction<ResultCorpusWithResources, Exception>(REPEATABLE_READ) { handle ->
-            handle.attach(CorporaDao::class.java).let {
-                dao -> findCorpusWithResources(dao, id)
+            handle.attach(CorporaDao::class.java).let { corpusDao ->
+                handle.attach(SourcesDao::class.java).let { sourceDao ->
+                    findCorpusWithResources(corpusDao, sourceDao, id)
+                }
             }
         }
     }
 
     private fun findCorpusWithResources(
-        dao: CorporaDao,
+        corporaDao: CorporaDao,
+        sourcesDao: SourcesDao,
         id: UUID
     ): ResultCorpusWithResources {
-        val found = dao.find(id) ?: corpusNotFound(id)
+        val found = corporaDao.find(id) ?: corpusNotFound(id)
         return found.toResultCorpusWithResources(
-            if (found.parentId != null) dao.find(found.parentId) else null,
-            dao.getKeywords(found.id),
-            dao.getLanguages(found.id),
-            dao.getSources(found.id).map { s ->
+            if (found.parentId != null) corporaDao.find(found.parentId) else null,
+            corporaDao.getKeywords(found.id),
+            corporaDao.getLanguages(found.id),
+            corporaDao.getSources(found.id).map { s ->
                 s.toResultSourceWithResources(
-                    dao.getKeywords(s.id),
-                    dao.getLanguages(s.id)
+                    sourcesDao.getKeywords(s.id),
+                    sourcesDao.getLanguages(s.id)
                 )
             }
         )
