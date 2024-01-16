@@ -129,7 +129,7 @@ export const CorpusPage = () => {
         }))
     }
 
-    const simpleSourceField = ["rights", "access", "location", "earliest", "latest", "contributor", "notes"]
+    const simpleSourceField = ["rights", "access", "location", "earliest", "latest", "contributor"]
 
     const filteredCorpusSources = filterKeywords.length && corpus ? corpus.sources?.filter(
         cs => cs.keywords.find(csk => filterKeywords.find(k => k.id === csk.id))
@@ -176,6 +176,10 @@ export const CorpusPage = () => {
                             onDelete={deleteLanguage}
                         />
                     </div>}
+                    {corpus.notes && <>
+                        <h2>Notes</h2>
+                        <p>{corpus.notes}</p>
+                    </>}
                     <h2>Sources</h2>
                     <Grid container spacing={2}>
                         <Grid item xs={6} md={4}>

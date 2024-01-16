@@ -1,12 +1,13 @@
 import styled from "@emotion/styled"
-import DeleteIcon from "@mui/icons-material/Delete"
-import {grey, red} from "@mui/material/colors"
+import {grey} from "@mui/material/colors"
 import {Source} from "../../model/DexterModel"
 import {deleteSource} from "../../utils/API"
 import React from "react"
-import {Avatar, ListItem, ListItemAvatar, ListItemButton, ListItemText} from "@mui/material"
+import {Avatar, ListItem, ListItemAvatar, ListItemText} from "@mui/material"
 import TurnedInOutlinedIcon from "@mui/icons-material/TurnedInOutlined"
 import {useNavigate} from "react-router-dom"
+import {EditIconStyled} from "../common/EditButton"
+import {DeleteIconStyled} from "../common/DeleteIconStyled"
 
 type SourceItemProps = {
     sourceId: React.Key;
@@ -14,15 +15,6 @@ type SourceItemProps = {
     onDelete: () => void
 };
 
-const DeleteIconStyled = styled(DeleteIcon)`
-  margin-left: 5px;
-  color: gray;
-
-  &:hover {
-    cursor: pointer;
-    color: ${red[700]};
-  }
-`
 const ListItemStyled = styled(ListItem)`
   &:hover {
     cursor: pointer;
@@ -55,7 +47,14 @@ export const SourceItem = (props: SourceItemProps) => {
 
     return <ListItemStyled
         secondaryAction={
-            <DeleteIconStyled onClick={() => handleDelete(props.source.id)}/>
+            <span style={{color: grey[500]}}>
+                <EditIconStyled
+                    onClick={() => console.log('edit', props.source.id)}
+                />
+                <DeleteIconStyled
+                    onClick={() => handleDelete(props.source.id)}
+                />
+            </span>
         }
         sx={{ml:0, pl: 0}}
     >

@@ -55,6 +55,10 @@ export const SourcePage = () => {
                     }}/>
                     <h1>{source.title}</h1>
                     <p>{source.description}</p>
+                    {source.notes && <>
+                        <h4 style={{marginBottom: 0, lineHeight: 0}}>Notes</h4>
+                        <p>{source.notes}</p>
+                    </>}
                     <p>
                         <strong>External reference:</strong> {source.externalRef}
                     </p>
@@ -75,9 +79,6 @@ export const SourcePage = () => {
                     </p>
                     <p>
                         <strong>Latest:</strong> {source.latest}
-                    </p>
-                    <p>
-                        <strong>Notes:</strong> {source.notes}
                     </p>
                     <div>
                         <strong>Keywords:</strong>{" "}

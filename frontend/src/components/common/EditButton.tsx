@@ -6,6 +6,12 @@ import {ButtonWithIcon} from "./ButtonWithIcon"
 
 export const EditIconStyled = styled(styleButtonIcon(CreateIcon))`
   font-size: 1.4em;
+
+  &:hover {
+    cursor: pointer;
+    color: black;
+  }
+
 `
 
 export function EditButton(props: { onEdit: () => void }) {
