@@ -52,6 +52,7 @@ export const SourceListItem = (props: SourceItemProps) => {
         secondaryAction={
             <span style={{color: grey[500]}}>
                 <EditIconStyled
+                    hoverColor="black"
                     onClick={handleEdit}
                 />
                 <DeleteIconStyled
