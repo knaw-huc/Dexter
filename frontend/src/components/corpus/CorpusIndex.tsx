@@ -2,17 +2,14 @@ import React, {useContext, useEffect, useState} from "react"
 import {Corpus, Source} from "../../model/DexterModel"
 import {CorpusPreview} from "./CorpusPreview"
 import {CorpusForm} from "./CorpusForm"
-import styled from "@emotion/styled"
 import {errorContext} from "../../state/error/errorContext"
 import {getCorporaWithResources, getSourcesWithResources} from "../../utils/API"
 import {AddIconStyled} from "../common/AddIconStyled"
 import {ButtonWithIcon} from "../common/ButtonWithIcon"
 import {Grid} from "@mui/material"
-
-const FilterRow = styled.div`
-  display: flex;
-  flex-direction: row;
-`
+import Typography from "@mui/material/Typography"
+import {HeaderBreadCrumb} from "../common/breadcrumb/HeaderBreadCrumb"
+import {LastBreadCrumb} from "../common/breadcrumb/LastBreadCrumb"
 
 export function CorpusIndex() {
     const [showForm, setShowForm] = React.useState(false)
@@ -48,7 +45,11 @@ export function CorpusIndex() {
 
     return (
         <>
-            <FilterRow>
+            <div>
+                <HeaderBreadCrumb>
+                    <LastBreadCrumb text="Corpora"/>
+                </HeaderBreadCrumb>
+
                 <ButtonWithIcon
                     variant="contained"
                     onClick={() => setShowForm(true)}
@@ -56,7 +57,8 @@ export function CorpusIndex() {
                     <AddIconStyled/>
                     Corpus
                 </ButtonWithIcon>
-            </FilterRow>
+
+            </div>
             {showForm && (
                 <CorpusForm
                     parentOptions={corpora}

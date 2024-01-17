@@ -15,9 +15,9 @@ export function SourceIcon(props: SourceIconprops) {
         ...props,
         fontsize: props.fontSize ? props.fontSize : "inherit"
     };
-    return !props.filled ? <BookmarkBorderOutlinedIconStyled
+    return props.filled ? <TurnedInOutlinedIconStyled
         {...iconProps}
-    /> : <TurnedInOutlinedIconStyled
+    /> : <BookmarkBorderOutlinedIconStyled
         {...iconProps}
     />
 }

@@ -7,11 +7,9 @@ import {SourceForm} from "./SourceForm"
 import {AddNewSourceButton} from "./AddNewSourceButton"
 import {List} from "@mui/material"
 import {errorContext} from "../../state/error/errorContext"
-
-const FilterRow = styled.div`
-  display: flex;
-  flex-direction: row;
-`
+import {HeaderBreadCrumb} from "../common/breadcrumb/HeaderBreadCrumb"
+import Typography from "@mui/material/Typography"
+import {LastBreadCrumb} from "../common/breadcrumb/LastBreadCrumb"
 
 export function SourceIndex() {
     const [showForm, setShowForm] = React.useState(false)
@@ -55,9 +53,13 @@ export function SourceIndex() {
     }
 
     return <>
-        <FilterRow>
+        <div>
+            <HeaderBreadCrumb>
+                <LastBreadCrumb text="Sources"/>
+            </HeaderBreadCrumb>
+
             <AddNewSourceButton onClick={() => setShowForm(true)}/>
-        </FilterRow>
+        </div>
         {showForm && <SourceForm
             onClose={() => setShowForm(false)}
             onSave={handleSaveSource}

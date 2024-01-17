@@ -3,6 +3,8 @@ import {ServerKeyword} from "../../model/DexterModel"
 import {deleteKeyword, getKeywords} from "../../utils/API"
 import {KeywordForm} from "./KeywordForm"
 import {KeywordList} from "./KeywordList"
+import {HeaderBreadCrumb} from "../common/breadcrumb/HeaderBreadCrumb"
+import {LastBreadCrumb} from "../common/breadcrumb/LastBreadCrumb"
 
 export const KeywordsPage = () => {
     const [keywords, setKeywords] = useState<ServerKeyword[]>([])
@@ -29,6 +31,10 @@ export const KeywordsPage = () => {
     }
 
     return <>
+        <HeaderBreadCrumb>
+            <LastBreadCrumb text="Keywords"/>
+        </HeaderBreadCrumb>
+
         <KeywordForm
             setKeywords={setKeywords}
         />

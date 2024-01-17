@@ -1,7 +1,6 @@
 import React from "react"
 import {useParams} from "react-router-dom"
-import {ServerKeyword, ServerLanguage, Source,} from "../../model/DexterModel"
-import {deleteKeywordFromSourceWithWarning} from "../../utils/deleteKeywordFromSourceWithWarning"
+import {ServerLanguage, Source,} from "../../model/DexterModel"
 import {deleteLanguageFromSourceWithWarning} from "../../utils/deleteLanguageFromSourceWithWarning"
 import {getSourceWithResourcesById} from "../../utils/API"
 import {Languages} from "../language/Languages"
@@ -11,6 +10,9 @@ import {KeywordList} from "../keyword/KeywordList"
 import _ from "lodash"
 import {ShortFieldsSummary} from "../common/ShortFieldsSummary"
 import {SourceIcon} from "./SourceIcon"
+import {HeaderBreadCrumb} from "../common/breadcrumb/HeaderBreadCrumb"
+import {CorporaBreadCrumbLink} from "../corpus/CorporaBreadCrumbLink"
+import {SourcesBreadCrumbLink} from "./SourcesBreadCrumbLink"
 
 export const SourcePage = () => {
     const params = useParams();
@@ -25,8 +27,7 @@ export const SourcePage = () => {
     };
 
     const initSource = async () => {
-        const source = await getSourceWithResourcesById(sourceId);
-        setSource(source);
+        setSource(await getSourceWithResourcesById(sourceId));
     };
 
     React.useEffect(() => {
@@ -43,18 +44,15 @@ export const SourcePage = () => {
         }))
     };
 
-    const handleDeleteKeyword = async (keyword: ServerKeyword) => {
-        await deleteKeywordFromSourceWithWarning(keyword, params.sourceId);
-        setSource(source => ({
-            ...source,
-            keywords: source.keywords.filter(k => k.id !== keyword.id)
-        }))
-    };
-
     const shortSourceFields: (keyof Source)[] = ["location", "earliest", "latest", "rights", "access", "creator"]
 
     return (
         <div>
+            <HeaderBreadCrumb>
+                <SourcesBreadCrumbLink />
+
+            </HeaderBreadCrumb>
+
             {source && (
                 <>
                     <EditButton onEdit={() => {

@@ -1,12 +1,10 @@
 import React, {useContext, useEffect, useState} from "react"
-import {Link, useParams} from "react-router-dom"
+import {useParams} from "react-router-dom"
 import {Corpus, ServerKeyword, ServerLanguage, Source} from "../../model/DexterModel"
 import {CorpusForm} from "./CorpusForm"
-import styled from "@emotion/styled"
 import {errorContext} from "../../state/error/errorContext"
 import {
     addSourcesToCorpus,
-    deleteKeywordFromCorpus,
     deleteKeywordFromSource,
     deleteLanguageFromCorpus,
     deleteSourceFromCorpus,
@@ -27,10 +25,10 @@ import {KeywordList} from "../keyword/KeywordList"
 import {FilterSourceByKeywords} from "./FilterSourceByKeywords"
 import {ShortFieldsSummary} from "../common/ShortFieldsSummary"
 import {CorpusIcon} from "./CorpusIcon"
+import {HeaderBreadCrumb} from "../common/breadcrumb/HeaderBreadCrumb"
+import {CorporaBreadCrumbLink} from "./CorporaBreadCrumbLink"
+import {CorpusParentBreadCrumbLink} from "./CorpusParentBreadCrumbLink"
 
-const Wrapper = styled.div`
-  overflow: auto;
-`
 export const CorpusPage = () => {
     const [corpus, setCorpus] = useState<Corpus>(null)
     const [sourceOptions, setSourceOptions] = useState<Source[]>(null)
@@ -120,32 +118,26 @@ export const CorpusPage = () => {
         }))
     }
 
-    const shortCorpusFields: (keyof Corpus)[]= ["location", "earliest", "latest", "rights", "access", "contributor"]
+    const shortCorpusFields: (keyof Corpus)[] = ["location", "earliest", "latest", "rights", "access", "contributor"]
 
     const filteredCorpusSources = filterKeywords.length && corpus ? corpus.sources?.filter(
         cs => cs.keywords.find(csk => filterKeywords.find(k => k.id === csk.id))
     ) : corpus?.sources
 
     return (
-        <Wrapper>
+        <div>
+            <HeaderBreadCrumb>
+                <CorporaBreadCrumbLink />
+                {corpus?.parent && <CorpusParentBreadCrumbLink parent={corpus.parent}/>}
+            </HeaderBreadCrumb>
+
             {corpus && (
                 <>
                     <EditButton
                         onEdit={() => setShowCorpusForm(true)}
                     />
-                    {corpus.parent && <p
-                        style={{marginBottom: 0}}
-                    >
-                        <Link
-                            to={`/corpora/${corpus.parent.id}`}
-                            style={{color: "black"}}
-                        >
-                            {corpus.parent.title}
-                        </Link>
-                        {" "}&gt;
-                    </p>}
                     <h1 style={{marginTop: 0}}>
-                        <CorpusIcon />
+                        <CorpusIcon/>
                         {corpus.title || "Untitled"}
                     </h1>
                     {corpus.description && <p>{corpus.description}</p>}
@@ -228,7 +220,7 @@ export const CorpusPage = () => {
                 onSave={handleSaveSource}
             />}
 
-        </Wrapper>
+        </div>
     )
 }
 

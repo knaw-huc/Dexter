@@ -7,4 +7,5 @@
 - Handle errors and validation in all forms in unified way
 - Add loading indicators
 - Move complex business logic like resource loading and resource updates to custom hooks
+- Breadcrumb: show parent corpus in source breadcrumb
 
