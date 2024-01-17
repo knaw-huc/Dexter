@@ -31,9 +31,7 @@ export const KeywordsPage = () => {
     }
 
     return <>
-        <HeaderBreadCrumb>
-            <LastBreadCrumb text="Keywords"/>
-        </HeaderBreadCrumb>
+        <HeaderBreadCrumb />
 
         <KeywordForm
             setKeywords={setKeywords}

@@ -46,17 +46,19 @@ export function CorpusIndex() {
     return (
         <>
             <div>
-                <HeaderBreadCrumb>
-                    <LastBreadCrumb text="Corpora"/>
-                </HeaderBreadCrumb>
+                <HeaderBreadCrumb></HeaderBreadCrumb>
 
-                <ButtonWithIcon
-                    variant="contained"
-                    onClick={() => setShowForm(true)}
-                >
-                    <AddIconStyled/>
-                    Corpus
-                </ButtonWithIcon>
+                <div style={{float: "right"}}>
+                    <ButtonWithIcon
+                        variant="contained"
+                        onClick={() => setShowForm(true)}
+                    >
+                        <AddIconStyled/>
+                        Corpus
+                    </ButtonWithIcon>
+                </div>
+
+                <h1>Corpora</h1>
 
             </div>
             {showForm && (

@@ -58,11 +58,16 @@ export function SourceIndex() {
 
     return <>
         <div>
-            <HeaderBreadCrumb>
-                <LastBreadCrumb text="Sources"/>
-            </HeaderBreadCrumb>
+            <HeaderBreadCrumb />
 
-            <AddNewSourceButton onClick={() => setShowForm(true)}/>
+            <div style={{float: "right"}}>
+                <AddNewSourceButton
+                    onClick={() => setShowForm(true)}
+                />
+            </div>
+
+            <h1>Sources</h1>
+
         </div>
         {showForm && <SourceForm
             onClose={() => setShowForm(false)}
