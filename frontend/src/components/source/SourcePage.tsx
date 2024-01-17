@@ -8,7 +8,7 @@ import {SourceForm} from "./SourceForm"
 import {EditButton} from "../common/EditButton"
 import {KeywordList} from "../keyword/KeywordList"
 import _ from "lodash"
-import {ShortFieldsSummary} from "../common/ShortFieldsSummary"
+import {FieldLabel, ShortFieldsSummary} from "../common/ShortFieldsSummary"
 import {SourceIcon} from "./SourceIcon"
 import {HeaderBreadCrumb} from "../common/breadcrumb/HeaderBreadCrumb"
 import {SourcesBreadCrumbLink} from "./SourcesBreadCrumbLink"
@@ -81,9 +81,8 @@ export const SourcePage = () => {
                     </h1>
                     <p>{source.description}</p>
                     <div>
-                        <KeywordList
-                            keywords={source.keywords}
-                        />
+                        <FieldLabel label="Keywords"/>
+                        <KeywordList keywords={source.keywords}/>
                     </div>
                     <ShortFieldsSummary<Source>
                         resource={source}

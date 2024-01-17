@@ -52,7 +52,7 @@ export function SourceIndex() {
         setShowForm(false)
     }
 
-    function byCreatedAtDesc(s1: Source, s2: Source) {
+    function byUpdatedAtDesc(s1: Source, s2: Source) {
         return s1.createdAt < s2.createdAt ? 1 : -1
     }
 
@@ -74,7 +74,7 @@ export function SourceIndex() {
                 sx={{mt: "1em"}}
             >
                 {sources
-                    .sort(byCreatedAtDesc)
+                    .sort(byUpdatedAtDesc)
                     .map((source: Source, index: number) => (
                         <SourceListItem
                             key={index}
