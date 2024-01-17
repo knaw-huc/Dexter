@@ -8,6 +8,7 @@ import TurnedInOutlinedIcon from "@mui/icons-material/TurnedInOutlined"
 import {useNavigate} from "react-router-dom"
 import {EditIconStyled} from "../common/EditButton"
 import {DeleteIconStyled} from "../common/DeleteIconStyled"
+import {SourceIcon} from "./SourceIcon"
 
 type SourceItemProps = {
     source: Source;
@@ -64,7 +65,10 @@ export const SourceListItem = (props: SourceItemProps) => {
             sx={{ml: "1em"}}
         >
             <Avatar>
-                <TurnedInOutlinedIcon/>
+                <SourceIcon
+                    iconColor="white"
+                    isInline={false}
+                />
             </Avatar>
         </ListItemAvatar>
         <ListItemText>

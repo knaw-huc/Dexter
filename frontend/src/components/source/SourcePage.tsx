@@ -10,6 +10,7 @@ import {EditButton} from "../common/EditButton"
 import {KeywordList} from "../keyword/KeywordList"
 import _ from "lodash"
 import {ShortFieldsSummary} from "../common/ShortFieldsSummary"
+import {SourceIcon} from "./SourceIcon"
 
 export const SourcePage = () => {
     const params = useParams();
@@ -59,7 +60,12 @@ export const SourcePage = () => {
                     <EditButton onEdit={() => {
                         setShowForm(true);
                     }}/>
-                    <h1>{source.title}</h1>
+                    <h1>
+                        <SourceIcon
+                            verticalAlign="middle"
+                        />
+                        {source.title}
+                    </h1>
                     <p>{source.description}</p>
                     {source.externalRef && <p>
                         <strong>External reference:</strong> {source.externalRef}

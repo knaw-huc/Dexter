@@ -4,7 +4,7 @@ import styled from "@emotion/styled"
 import {styleButtonIcon} from "../../utils/styleButtonIcon"
 import {ButtonWithIcon} from "./ButtonWithIcon"
 
-type EditIconStyled = {
+type EditIconStyledProps = {
     hoverColor?: string
 }
 export const EditIconStyled = styled(styleButtonIcon(CreateIcon))`
@@ -12,7 +12,7 @@ export const EditIconStyled = styled(styleButtonIcon(CreateIcon))`
 
   &:hover {
     cursor: pointer;
-    color: ${(props: EditIconStyled) => props.hoverColor ? props.hoverColor : ""};
+    color: ${(props: EditIconStyledProps) => props.hoverColor ? props.hoverColor : ""};
   }
 
 `

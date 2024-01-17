@@ -6,6 +6,8 @@ import {Card, CardContent, Grid} from "@mui/material"
 import {PClamped} from "../common/PClamped"
 import {KeywordList} from "../keyword/KeywordList"
 import {CloseInlineIcon} from "../common/CloseInlineIcon"
+import {SourceIcon} from "./SourceIcon"
+import {grey} from "@mui/material/colors"
 
 interface SourceItemDropdownProps {
     onDeleteKeyword: (keyword: ServerKeyword) => void
@@ -38,6 +40,9 @@ export const SourcePreview = (props: SourceItemDropdownProps) => {
                     <HeaderLinkClamped
                         onClick={() => navigate(`/sources/${props.source.id}`)}
                     >
+                        <SourceIcon
+                            fontSize="small"
+                        />
                         {props.source.title}
                     </HeaderLinkClamped>
                     <PClamped>
