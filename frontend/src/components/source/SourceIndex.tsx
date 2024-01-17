@@ -52,6 +52,10 @@ export function SourceIndex() {
         setShowForm(false)
     }
 
+    function byCreatedAtDesc(s1: Source, s2: Source) {
+        return s1.createdAt < s2.createdAt ? 1 : -1
+    }
+
     return <>
         <div>
             <HeaderBreadCrumb>
@@ -69,7 +73,9 @@ export function SourceIndex() {
             <List
                 sx={{mt: "1em"}}
             >
-                {sources.map((source: Source, index: number) => (
+                {sources
+                    .sort(byCreatedAtDesc)
+                    .map((source: Source, index: number) => (
                         <SourceListItem
                             key={index}
                             source={source}

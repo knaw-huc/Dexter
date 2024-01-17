@@ -64,7 +64,6 @@ export function SourceForm(props: SourceFormProps) {
         register,
         handleSubmit,
         setValue,
-        control,
         formState: {errors},
         watch
     } = useForm<Source>({

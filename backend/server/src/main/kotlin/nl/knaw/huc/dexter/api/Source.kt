@@ -62,6 +62,7 @@ fun ResultSource.toResultSourceWithResources(
     languages: List<ResultLanguage>,
 ) = ResultSourceWithResources(
     id = id,
+    externalRef = externalRef,
     title = title,
     description = description,
     rights = rights,
