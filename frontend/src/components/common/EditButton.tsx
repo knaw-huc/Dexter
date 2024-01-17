@@ -9,7 +9,7 @@ type EditIconStyledProps = {
 }
 export const EditIconStyled = styled(styleButtonIcon(CreateIcon))`
   font-size: 1.4em;
-
+  
   &:hover {
     cursor: pointer;
     color: ${(props: EditIconStyledProps) => props.hoverColor ? props.hoverColor : ""};
@@ -20,7 +20,11 @@ export const EditIconStyled = styled(styleButtonIcon(CreateIcon))`
 export function EditButton(props: {
     onEdit: () => void
 }) {
-    return <ButtonWithIcon variant="contained" onClick={props.onEdit}>
+    return <ButtonWithIcon
+        variant="contained"
+        onClick={props.onEdit}
+        style={{float: "right"}}
+    >
         <EditIconStyled />
         Edit
     </ButtonWithIcon>
