@@ -5,6 +5,7 @@ import React from "react"
 import {ServerKeyword,} from "../../model/DexterModel"
 import {useDebounce} from "../../utils/useDebounce"
 import {getKeywordsAutocomplete,} from "../../utils/API"
+import {normalizeInput} from "../../utils/normalizeInput"
 
 interface KeywordsFieldProps {
     selected: ServerKeyword[];
@@ -22,10 +23,12 @@ export const KeywordField = (props: KeywordsFieldProps) => {
     const debouncedInput = useDebounce<string>(inputValue, 250)
 
     async function autoComplete(input: string) {
-        const result = props.suggestions
+        const options = props.suggestions
             ? getSuggestions(props, input)
             : await getKeywordsAutocomplete(input)
-        setSuggestions(result)
+        const withoutSelected = options
+            .filter(o => !props.selected.find(s => s.id === o.id))
+        setSuggestions(withoutSelected)
         setLoading(false)
     }
 
@@ -36,8 +39,8 @@ export const KeywordField = (props: KeywordsFieldProps) => {
 
     React.useEffect(() => {
         if (debouncedInput.length >= MIN_AUTOCOMPLETE_LENGTH) {
-            autoComplete(debouncedInput)
             setLoading(true)
+            autoComplete(debouncedInput)
         }
     }, [debouncedInput])
 
@@ -46,6 +49,7 @@ export const KeywordField = (props: KeywordsFieldProps) => {
     ): JSX.Element {
         return <TextField
             {...params}
+            placeholder="Search for keywords"
             value={inputValue}
             size={props.size ? props.size : "medium"}
         />
@@ -66,6 +70,7 @@ export const KeywordField = (props: KeywordsFieldProps) => {
         isOptionEqualToValue={(option, value) => option.val === value.val}
         value={props.selected}
         renderInput={renderInputField}
+        forcePopupIcon={false}
         renderTags={(tagValue, getTagProps) =>
             tagValue.map((keyword, index) => (
                 <Chip
@@ -110,6 +115,6 @@ export const KeywordField = (props: KeywordsFieldProps) => {
 
 function getSuggestions(props: KeywordsFieldProps, input: string) {
     return props.suggestions
-        .filter(s => s.val.includes(input))
+        .filter(s => normalizeInput(s.val).includes(normalizeInput((input))))
         .sort((s1, s2) => s1.val > s2.val ? 1 : -1)
 }

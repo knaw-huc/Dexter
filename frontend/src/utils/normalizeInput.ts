@@ -4,7 +4,7 @@
  * - remove diacritics
  * - to lowercase
  */
-export function normalizeToSearch(toNormalize: string) {
+export function normalizeInput(toNormalize: string) {
     return toNormalize
         .normalize("NFD")
         .replace(/\p{Diacritic}/gu, "")

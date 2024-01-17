@@ -5,7 +5,7 @@ import TextField from "@mui/material/TextField"
 import Chip from "@mui/material/Chip"
 import match from "autosuggest-highlight/match"
 import parse from "autosuggest-highlight/parse"
-import {normalizeToSearch} from "../../utils/normalizeToSearch"
+import {normalizeInput} from "../../utils/normalizeInput"
 
 export type LinkSourceFieldProps = {
     options: ServerResultSource[],
@@ -16,7 +16,7 @@ export type LinkSourceFieldProps = {
 
 export function LinkSourceField(props: LinkSourceFieldProps) {
     const [inputValue, setInputValue] = useState<string>("")
-    const normalizedInput = normalizeToSearch(inputValue);
+    const normalizedInput = normalizeInput(inputValue);
 
     return <Autocomplete
         inputValue={inputValue}
@@ -27,7 +27,7 @@ export function LinkSourceField(props: LinkSourceFieldProps) {
         id="link-source-autocomplete"
         options={props.options}
         getOptionLabel={(source: Source) => source.title}
-        filterOptions={(all) => all.filter(source => normalizeToSearch(source.title).includes(normalizedInput))}
+        filterOptions={(all) => all.filter(source => normalizeInput(source.title).includes(normalizedInput))}
         isOptionEqualToValue={(option, value) =>
             option.title === value?.title
         }

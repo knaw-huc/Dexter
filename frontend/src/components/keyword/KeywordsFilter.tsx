@@ -4,7 +4,7 @@ import {KeywordField} from "../keyword/KeywordField"
 import {ButtonWithIcon} from "../common/ButtonWithIcon"
 import {FilterIconStyled} from "../common/FilterIconStyled"
 
-export function FilterSourceByKeywords(props: {
+export function KeywordsFilter(props: {
     all: ServerKeyword[],
     selected: ServerKeyword[],
     onChangeSelected: (keys: ServerKeyword[]) => void

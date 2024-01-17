@@ -22,7 +22,7 @@ import {LinkSourceForm} from "./LinkSourceForm"
 import _ from "lodash"
 import {Grid} from "@mui/material"
 import {KeywordList} from "../keyword/KeywordList"
-import {FilterSourceByKeywords} from "./FilterSourceByKeywords"
+import {KeywordsFilter} from "../keyword/KeywordsFilter"
 import {ShortFieldsSummary} from "../common/ShortFieldsSummary"
 import {CorpusIcon} from "./CorpusIcon"
 import {HeaderBreadCrumb} from "../common/breadcrumb/HeaderBreadCrumb"
@@ -120,9 +120,22 @@ export const CorpusPage = () => {
 
     const shortCorpusFields: (keyof Corpus)[] = ["location", "earliest", "latest", "rights", "access", "contributor"]
 
-    const filteredCorpusSources = filterKeywords.length && corpus ? corpus.sources?.filter(
-        cs => cs.keywords.find(csk => filterKeywords.find(k => k.id === csk.id))
-    ) : corpus?.sources
+    function getFilteredCorpusSources() {
+        if(!corpus?.sources) {
+            return []
+        }
+        if(!filterKeywords.length) {
+            return corpus.sources;
+        }
+        return corpus.sources.filter(
+            cs => filterKeywords.every(
+                fk =>
+                    cs.keywords.find(csk => csk.id === fk.id)
+            )
+        )
+    }
+
+    const filteredCorpusSources = getFilteredCorpusSources()
 
     return (
         <div>
@@ -167,7 +180,7 @@ export const CorpusPage = () => {
                             <LinkSourceButton onClick={() => setShowLinkSourceForm(true)}/>
                         </Grid>
                         <Grid item xs={6} md={8}>
-                            <FilterSourceByKeywords
+                            <KeywordsFilter
                                 all={_.uniqBy(corpus.sources.map(s => s.keywords).flat(), "val")}
                                 selected={filterKeywords}
                                 onChangeSelected={update => setFilterKeywords(update)}
