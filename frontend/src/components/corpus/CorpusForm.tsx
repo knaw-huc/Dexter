@@ -27,6 +27,7 @@ import {TextFieldWithError} from "../source/TextFieldWithError"
 import {ErrorMsg} from "../common/ErrorMsg"
 import _ from "lodash"
 import {CloseInlineIcon} from "../common/CloseInlineIcon"
+import {SubmitButton} from "../common/SubmitButton"
 
 type CorpusFormProps = {
     corpusToEdit?: Corpus,
@@ -287,9 +288,7 @@ export function CorpusForm(props: CorpusFormProps) {
                         onSelectParentCorpus={handleSelectParentCorpus}
                         onDeleteParentCorpus={handleDeleteParentCorpus}
                     />
-                    <Button variant="contained" type="submit">
-                        Submit
-                    </Button>
+                    <SubmitButton />
                 </form>
                 <ErrorMsg msg={getErrorMessage("parent")}/>
             </ScrollableModal>

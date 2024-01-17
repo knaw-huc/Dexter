@@ -27,6 +27,7 @@ import {ERROR_MESSAGE_CLASS, ErrorMsg} from "../common/ErrorMsg"
 import {TextFieldWithError} from "./TextFieldWithError"
 import {ErrorByField, FormError, setBackendErrors} from "../common/FormError"
 import {CloseInlineIcon} from "../common/CloseInlineIcon"
+import {SubmitButton} from "../common/SubmitButton"
 
 const formFields = [
     "externalRef",
@@ -303,9 +304,7 @@ export function SourceForm(props: SourceFormProps) {
             />
             <ErrorMsg msg={getErrorMessage("languages")}/>
 
-            <Button variant="contained" type="submit">
-                Submit
-            </Button>
+            <SubmitButton />
         </form>
     </ScrollableModal>
 }
