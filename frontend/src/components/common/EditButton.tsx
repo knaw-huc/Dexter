@@ -4,19 +4,24 @@ import styled from "@emotion/styled"
 import {styleButtonIcon} from "../../utils/styleButtonIcon"
 import {ButtonWithIcon} from "./ButtonWithIcon"
 
+type EditIconStyled = {
+    hoverColor?: string
+}
 export const EditIconStyled = styled(styleButtonIcon(CreateIcon))`
   font-size: 1.4em;
 
   &:hover {
     cursor: pointer;
-    color: black;
+    color: ${(props: EditIconStyled) => props.hoverColor ? props.hoverColor : ""};
   }
 
 `
 
-export function EditButton(props: { onEdit: () => void }) {
+export function EditButton(props: {
+    onEdit: () => void
+}) {
     return <ButtonWithIcon variant="contained" onClick={props.onEdit}>
-        <EditIconStyled/>
+        <EditIconStyled />
         Edit
     </ButtonWithIcon>
 }

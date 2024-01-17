@@ -38,6 +38,8 @@ export const TextFieldWithError = forwardRef<
             {label}
         </Label>
         <TextFieldStyled
+            {...textFieldProps}
+
             fullWidth={true}
             margin="dense"
             error={!!message}
@@ -45,7 +47,6 @@ export const TextFieldWithError = forwardRef<
             onChange={textFieldProps.onChange}
             onBlur={textFieldProps.onBlur}
             inputRef={ref}
-
         />
         {message && <ErrorMsg msg={message}/>}
     </span>

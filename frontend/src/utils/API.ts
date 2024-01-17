@@ -60,7 +60,7 @@ export const getCorpusWithResourcesById = async (id: string): Promise<Corpus> =>
     return fetchValidated(`/api/corpora/${id}/with-resources`)
 }
 
-export const createCollection = async (
+export const createCorpus = async (
     newCorpus: ServerFormCorpus
 ): Promise<Corpus> => {
     const path = "/api/corpora"

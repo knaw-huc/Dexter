@@ -10,7 +10,7 @@ import {
     addKeywordsToCorpus,
     addLanguagesToCorpus,
     addSourcesToCorpus,
-    createCollection,
+    createCorpus,
     deleteKeywordFromCorpus,
     deleteLanguageFromCorpus,
     deleteSourceFromCorpus,
@@ -55,7 +55,6 @@ export function CorpusForm(props: CorpusFormProps) {
         register,
         handleSubmit,
         setValue,
-        control,
         formState: {errors},
         watch
     } = useForm<Corpus>({
@@ -75,7 +74,7 @@ export function CorpusForm(props: CorpusFormProps) {
     async function createNewCorpus(
         data: CorpusFormSubmit
     ) {
-        const newCorpus = await createCollection(data)
+        const newCorpus = await createCorpus(data)
         const corpusId = newCorpus.id
         if (data.keywords?.length) {
             await addKeywordsToCorpus(corpusId, data.keywords.map(k => k.id))

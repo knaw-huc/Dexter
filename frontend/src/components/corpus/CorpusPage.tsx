@@ -105,6 +105,12 @@ export const CorpusPage = () => {
     }
 
     const handleUnlinkSource = async (corpusId: string, sourceId: string) => {
+        const warning = window.confirm(
+            "Are you sure you wish to remove this source from this corpus?"
+        )
+
+        if (warning === false) return
+
         await deleteSourceFromCorpus(corpusId, sourceId)
         setCorpus(corpus => ({
             ...corpus,
@@ -131,7 +137,9 @@ export const CorpusPage = () => {
         <Wrapper>
             {corpus && (
                 <>
-                    <EditButton onEdit={() => setShowCorpusForm(true)}/>
+                    <EditButton
+                        onEdit={() => setShowCorpusForm(true)}
+                    />
                     {corpus.parent && <p
                         style={{marginBottom: 0}}
                     >
