@@ -1,10 +1,10 @@
 import React from "react"
 import {ResourceIconProps, styleResourceIcon} from "../../utils/styleResourceIcon"
-import TurnedInOutlinedIcon from "@mui/icons-material/TurnedInOutlined"
+import CollectionsBookmarkOutlinedIcon from "@mui/icons-material/CollectionsBookmarkOutlined"
 
-const TurnedInOutlinedIconStyled = styleResourceIcon(TurnedInOutlinedIcon)
-export function SourceIcon(props: ResourceIconProps) {
-    return <TurnedInOutlinedIconStyled
+const CollectionsBookmarkOutlinedIconStyled = styleResourceIcon(CollectionsBookmarkOutlinedIcon)
+export function CorpusIcon(props: ResourceIconProps) {
+    return <CollectionsBookmarkOutlinedIconStyled
         {...props}
         fontSize={props.fontSize ? props.fontSize : "inherit"}
     />

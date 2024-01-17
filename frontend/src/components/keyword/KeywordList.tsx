@@ -5,8 +5,8 @@ import React from "react"
 
 export function KeywordList(props: {
     keywords: ServerKeyword[]
-    onDelete: (keyword: ServerKeyword) => void
     sx?: any
+    onDelete?: (keyword: ServerKeyword) => void
 }) {
     return <Stack
         spacing={1}
@@ -17,11 +17,16 @@ export function KeywordList(props: {
         }}
     >
         {props.keywords?.map((keyword: ServerKeyword, index: number) => (
-            <KeywordChip
-                key={index}
-                keyword={keyword}
-                onDelete={() => props.onDelete(keyword)}
-            />
+            props.onDelete
+                ? <KeywordChip
+                    key={index}
+                    keyword={keyword}
+                    onDelete={() => props.onDelete && props.onDelete(keyword)}
+                />
+                : <KeywordChip
+                    key={index}
+                    keyword={keyword}
+                />
         ))}
     </Stack>
 }

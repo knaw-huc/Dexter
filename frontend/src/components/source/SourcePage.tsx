@@ -63,6 +63,7 @@ export const SourcePage = () => {
                     <h1>
                         <SourceIcon
                             verticalAlign="middle"
+                            fontSize="large"
                         />
                         {source.title}
                     </h1>
@@ -73,7 +74,6 @@ export const SourcePage = () => {
                     <div>
                         <KeywordList
                             keywords={source.keywords}
-                            onDelete={handleDeleteKeyword}
                         />
                     </div>
                     <ShortFieldsSummary<Source>

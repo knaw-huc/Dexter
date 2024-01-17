@@ -69,6 +69,7 @@ export const SourceListItem = (props: SourceItemProps) => {
                 <SourceIcon
                     iconColor="white"
                     isInline={false}
+                    filled={true}
                 />
             </Avatar>
         </ListItemAvatar>

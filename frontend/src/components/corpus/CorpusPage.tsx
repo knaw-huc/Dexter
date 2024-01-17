@@ -26,6 +26,7 @@ import {Grid} from "@mui/material"
 import {KeywordList} from "../keyword/KeywordList"
 import {FilterSourceByKeywords} from "./FilterSourceByKeywords"
 import {ShortFieldsSummary} from "../common/ShortFieldsSummary"
+import {CorpusIcon} from "./CorpusIcon"
 
 const Wrapper = styled.div`
   overflow: auto;
@@ -83,14 +84,6 @@ export const CorpusPage = () => {
         if (warning === false) return
 
         await deleteLanguageFromCorpus(corpusId, language.id)
-    }
-
-    const handleDeleteCorpusKeyword = async (keyword: ServerKeyword) => {
-        await deleteKeywordFromCorpus(corpusId, keyword.id)
-        setCorpus(corpus => ({
-            ...corpus,
-            keywords: corpus.keywords.filter(k => k.id !== keyword.id)
-        }))
     }
 
     const handleDeleteSourceKeyword = async (sourceId: string, keywordId: string) => {
@@ -152,12 +145,12 @@ export const CorpusPage = () => {
                         {" "}&gt;
                     </p>}
                     <h1 style={{marginTop: 0}}>
+                        <CorpusIcon />
                         {corpus.title || "Untitled"}
                     </h1>
                     {corpus.description && <p>{corpus.description}</p>}
                     {!_.isEmpty(corpus.keywords) && <KeywordList
                         keywords={corpus.keywords}
-                        onDelete={handleDeleteCorpusKeyword}
                     />}
                     <ShortFieldsSummary<Corpus>
                         resource={corpus}

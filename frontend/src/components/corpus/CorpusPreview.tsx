@@ -9,6 +9,7 @@ import {errorContext} from "../../state/error/errorContext"
 import {Card, CardContent} from "@mui/material"
 import {HeaderLinkClamped} from "../common/HeaderLinkClamped"
 import {PClamped} from "../common/PClamped"
+import {CorpusIcon} from "./CorpusIcon"
 
 type CorpusPreviewProps = {
     corpus: Corpus;
@@ -54,6 +55,7 @@ export function CorpusPreview(props: CorpusPreviewProps) {
             <HeaderLinkClamped
                 onClick={() => navigate(`/corpora/${corpus.id}`)}
             >
+                <CorpusIcon />
                 {corpus.title}
             </HeaderLinkClamped>
             <PClamped>{corpus.description}</PClamped>

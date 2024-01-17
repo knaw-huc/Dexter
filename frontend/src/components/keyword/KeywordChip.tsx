@@ -4,7 +4,7 @@ import React from "react"
 
 export function KeywordChip(props: {
     keyword: ServerKeyword,
-    onDelete: () => void
+    onDelete?: () => void,
 }) {
     return <Chip
         label={props.keyword.val}
