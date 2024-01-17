@@ -10,4 +10,4 @@
 - Breadcrumb: show parent corpus in source breadcrumb
 - Add developer guidelines to readme, describing best practises regarding:
   functional components, custom hooks for business logic, state management using zustand, styling with MUI and emotion, ...
-
+- Style languages, fix autocomplete languages`

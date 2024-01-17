@@ -82,17 +82,11 @@ export const CorpusPage = () => {
         if (warning === false) return
 
         await deleteLanguageFromCorpus(corpusId, language.id)
-    }
+        setCorpus(corpus => ({
+            ...corpus,
+            languages: corpus.languages.filter(l => l.id !== language.id)
+        }))
 
-    const handleDeleteSourceKeyword = async (sourceId: string, keywordId: string) => {
-        await deleteKeywordFromSource(sourceId, keywordId)
-        _.remove(
-            corpus.sources
-                .find(s => s.id === sourceId)
-                .keywords,
-            k => k.id === keywordId
-        )
-        setCorpus({...corpus})
     }
 
     const handleUnlinkSource = async (corpusId: string, sourceId: string) => {
