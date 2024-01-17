@@ -10,7 +10,6 @@ import {SourceIcon} from "./SourceIcon"
 import {grey} from "@mui/material/colors"
 
 interface SourceItemDropdownProps {
-    onDeleteKeyword: (keyword: ServerKeyword) => void
     source: Source;
     corpusId: string;
     onUnlinkSource: () => void
@@ -20,10 +19,15 @@ export const SourcePreview = (props: SourceItemDropdownProps) => {
     const navigate = useNavigate()
 
     return <Card
-        style={{height: "100%"}}
+        style={{
+            height: "100%",
+        }}
     >
         <CardContent
-            style={{height: "100%"}}
+            style={{
+                height: "100%",
+                paddingBottom: "1em"
+            }}
         >
             <Grid container>
                 <Grid
@@ -52,7 +56,6 @@ export const SourcePreview = (props: SourceItemDropdownProps) => {
                 <Grid item>
                     <KeywordList
                         keywords={props.source.keywords}
-                        onDelete={props.onDeleteKeyword}
                     />
                 </Grid>
             </Grid>

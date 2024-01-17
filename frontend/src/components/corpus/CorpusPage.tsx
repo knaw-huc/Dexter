@@ -197,14 +197,12 @@ export const CorpusPage = () => {
                             <Grid
                                 item
                                 xs={4}
-                                height="180px"
                                 key={source.id}
                             >
                                 <SourcePreview
                                     source={source}
                                     corpusId={corpus.id}
                                     onUnlinkSource={() => handleUnlinkSource(corpus.id, source.id)}
-                                    onDeleteKeyword={k => handleDeleteSourceKeyword(source.id, k.id)}
                                 />
                             </Grid>
                         ))}

@@ -2,6 +2,7 @@ import {ServerKeyword} from "../../model/DexterModel"
 import {Stack} from "@mui/material"
 import {KeywordChip} from "./KeywordChip"
 import React from "react"
+import styled from "@emotion/styled"
 
 export function KeywordList(props: {
     keywords: ServerKeyword[]
@@ -14,7 +15,8 @@ export function KeywordList(props: {
         sx={{
             ...props.sx,
             m: "0",
-            display: "inline-block"
+            display: "inline-block",
+            lineHeight: "2em"
         }}
     >
         {props.keywords?.map((keyword: ServerKeyword, index: number) => (

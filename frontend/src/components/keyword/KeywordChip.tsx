@@ -10,7 +10,10 @@ export function KeywordChip(props: {
         label={props.keyword.val}
         variant="outlined"
         onDelete={props.onDelete}
-        sx={{pr: "0.25em"}}
+        sx={{
+            marginLeft: "0 !important",
+            marginRight: "0.4em !important",
+        }}
         size="small"
     />
 }
