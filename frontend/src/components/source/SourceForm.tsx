@@ -18,7 +18,7 @@ import {
 import ScrollableModal from "../common/ScrollableModal"
 import {KeywordField} from "../keyword/KeywordField"
 import {LanguagesField} from "../language/LanguagesField"
-import {Alert} from "@mui/material"
+import {Alert, Grid} from "@mui/material"
 import isUrl from "../../utils/isUrl"
 import {useDebounce} from "../../utils/useDebounce"
 import {Label} from "../common/Label"
@@ -28,6 +28,7 @@ import {TextFieldWithError} from "./TextFieldWithError"
 import {ErrorByField, FormError, setBackendErrors} from "../common/FormError"
 import {CloseInlineIcon} from "../common/CloseInlineIcon"
 import {SubmitButton} from "../common/SubmitButton"
+import {ImportField} from "./ImportField"
 
 const formFields = [
     "externalRef",
@@ -79,7 +80,13 @@ export function SourceForm(props: SourceFormProps) {
     const debouncedExternalRef = useDebounce<string>(externalRef, 500)
     const [backendError, setBackendError] = useState<ErrorByField>()
 
-    async function importMetadata() {
+    async function handleImportMetadata() {
+        const warning = window.confirm(
+            "Importing overwrites existing values. Are you sure you want to import?"
+        );
+
+        if (warning === false) return;
+
         if (isExternalRefLoading) {
             return
         }
@@ -203,30 +210,13 @@ export function SourceForm(props: SourceFormProps) {
         <form onSubmit={handleSubmit(onSubmit)}>
             <FormError error={backendError}/>
 
-            <TextFieldWithError
+            <ImportField
                 label="External Reference"
                 {...register("externalRef")}
                 message={getErrorMessage("externalRef")}
+                onImport={handleImportMetadata}
+                canImport={!isExternalRefLoading && isImportableUrl(watch("externalRef"))}
             />
-
-            <Alert
-                severity="info"
-                aria-disabled={isExternalRefLoading}
-            >
-                <Button
-                    variant="contained"
-                    disableElevation
-                    onClick={() => importMetadata()}
-                    disabled={isExternalRefLoading}
-                >
-                    import
-                </Button>
-                <p>Import and fill out found form fields with metadata from external reference</p>
-                <p>Note: importing overwrites existing values</p>
-            </Alert>
-            {externalRefError && <Alert severity="error">
-                Could not import: {externalRefError.message}
-            </Alert>}
 
             <TextFieldWithError
                 label="Title"
@@ -309,5 +299,8 @@ export function SourceForm(props: SourceFormProps) {
     </ScrollableModal>
 }
 
-
+const IMPORTABLE_URL = new RegExp("https://hdl\\.handle\\.net/20\\.500\\.11840/([0-9]*)")
+function isImportableUrl(externalRef?: string): boolean {
+    return IMPORTABLE_URL.test(externalRef)
+}
 

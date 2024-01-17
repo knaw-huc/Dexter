@@ -8,7 +8,11 @@ export type ResourceIconProps = {
     verticalAlign?: "middle" | "bottom"
     isInline?: boolean
 }
-export const styleResourceIcon = (component: FC<ResourceIconProps>) => styled(component)`
+
+const propsToForward = ["fontSize"]
+export const styleResourceIcon = (component: FC<ResourceIconProps>) => styled(component, {
+    shouldForwardProp: (prop) => propsToForward.includes(prop)
+})`
   margin-right: ${(props: ResourceIconProps) => props.isInline !== false ? "0.4em" : "inherit"};
   color: ${(props: ResourceIconProps) => props.iconColor ?? grey[500]};
   vertical-align: ${(props: ResourceIconProps) => props.verticalAlign ?? "middle"}

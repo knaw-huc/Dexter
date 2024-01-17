@@ -1,4 +1,5 @@
 import React from "react"
+import {grey} from "@mui/material/colors"
 
 export function ShortFieldsSummary<T>(props: {
         fieldNames: (keyof T)[],
@@ -29,7 +30,7 @@ export function ShortField<T>(
     }
     const label = String(props.fieldName)
     return <span>
-        <span style={{textTransform: "lowercase", color: "grey"}}>{label}:</span>
+        <span style={{color: grey[600]}}>{label}:</span>
         {" "}
         <strong>{value}</strong>
     </span>

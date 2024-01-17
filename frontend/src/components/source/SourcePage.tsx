@@ -11,9 +11,23 @@ import _ from "lodash"
 import {ShortFieldsSummary} from "../common/ShortFieldsSummary"
 import {SourceIcon} from "./SourceIcon"
 import {HeaderBreadCrumb} from "../common/breadcrumb/HeaderBreadCrumb"
-import {CorporaBreadCrumbLink} from "../corpus/CorporaBreadCrumbLink"
 import {SourcesBreadCrumbLink} from "./SourcesBreadCrumbLink"
+import {blue, grey} from "@mui/material/colors"
+import isUrl from "../../utils/isUrl"
+import OpenInNewOutlinedIcon from "@mui/icons-material/OpenInNewOutlined"
+import styled from "@emotion/styled"
 
+const OpenInNewOutlinedIconStyled = styled(OpenInNewOutlinedIcon)`
+  margin-left: 0.4em;
+`
+const A = styled.a`
+  color: ${blue[600]};
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`
 export const SourcePage = () => {
     const params = useParams();
     const sourceId = params.sourceId
@@ -66,9 +80,6 @@ export const SourcePage = () => {
                         {source.title}
                     </h1>
                     <p>{source.description}</p>
-                    {source.externalRef && <p>
-                        <strong>External reference:</strong> {source.externalRef}
-                    </p>}
                     <div>
                         <KeywordList
                             keywords={source.keywords}
@@ -78,6 +89,15 @@ export const SourcePage = () => {
                         resource={source}
                         fieldNames={shortSourceFields}
                     />
+                    {source.externalRef && <p style={{marginTop: "-0.9em"}}>
+                        <span style={{color: grey[600]}}>External reference: </span>
+                        {isUrl(source.externalRef)
+                            ? <>
+                                <A href={source.externalRef} target="_blank" rel="noreferrer">{source.externalRef}</A>
+                                <OpenInNewOutlinedIconStyled fontSize="inherit"/>
+                            </>
+                            : <>{source.externalRef}</>}
+                    </p>}
                     {source.notes && <>
                         <h2>Notes</h2>
                         <p>{source.notes}</p>

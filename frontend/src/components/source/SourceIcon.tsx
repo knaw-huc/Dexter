@@ -13,7 +13,7 @@ type SourceIconprops = ResourceIconProps & {
 export function SourceIcon(props: SourceIconprops) {
     const iconProps = {
         ...props,
-        fontsize: props.fontSize ? props.fontSize : "inherit"
+        fontSize: props.fontSize ? props.fontSize : "inherit"
     };
     return props.filled ? <TurnedInOutlinedIconStyled
         {...iconProps}
