@@ -41,6 +41,7 @@ class LanguagesResource(private val jdbi: Jdbi) {
             .lineSequence()
             .also { validateHeaderLine(it.first()) }
             .drop(1) // Ignore CSV header line
+            .filter { line -> !line.isEmpty() }
             .map { line ->
                 languageFromTabSeparated(line).also { log.trace("Adding [${it.id}] -> [${it.refName}]") }
             }
@@ -50,7 +51,7 @@ class LanguagesResource(private val jdbi: Jdbi) {
             }
 
     private fun validateHeaderLine(headerLine: String) {
-        if (headerLine != "Id\tPart2B\tPart2T\tPart1\tScope\tLanguage_Type\tRef_Name\tComment") {
+        if (headerLine.lowercase() != "Id\tPart2B\tPart2T\tPart1\tScope\tLanguage_Type\tRef_Name\tComment".lowercase()) {
             log.warn("Invalid iso-639-3 code file, header was [$headerLine].")
             throw BadRequestException(
                 "Invalid iso-639-3 Code Set file, please get it from: $ISO_639_URL"
