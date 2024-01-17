@@ -30,12 +30,15 @@ export function ShortField<T>(
     }
     const label = String(props.fieldName)
     return <span>
-        <span style={{color: grey[600]}}>{label}:</span>
+        <FieldLabel label={label} />
         {" "}
         <strong>{value}</strong>
     </span>
 }
 
+export function FieldLabel(props: {label: string}) {
+    return <span style={{color: grey[600]}}>{props.label}:{" "}</span>;
+}
 export function Spacer() {
     return <span style={{display: "inline-block", color: "grey", margin: "0.75em"}}> | </span>
 }

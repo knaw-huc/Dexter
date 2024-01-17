@@ -23,7 +23,7 @@ import _ from "lodash"
 import {Grid} from "@mui/material"
 import {KeywordList} from "../keyword/KeywordList"
 import {KeywordsFilter} from "../keyword/KeywordsFilter"
-import {ShortFieldsSummary} from "../common/ShortFieldsSummary"
+import {FieldLabel, ShortFieldsSummary} from "../common/ShortFieldsSummary"
 import {CorpusIcon} from "./CorpusIcon"
 import {HeaderBreadCrumb} from "../common/breadcrumb/HeaderBreadCrumb"
 import {CorporaBreadCrumbLink} from "./CorporaBreadCrumbLink"
@@ -121,11 +121,11 @@ export const CorpusPage = () => {
     const shortCorpusFields: (keyof Corpus)[] = ["location", "earliest", "latest", "rights", "access", "contributor"]
 
     function getFilteredCorpusSources() {
-        if(!corpus?.sources) {
+        if (!corpus?.sources) {
             return []
         }
-        if(!filterKeywords.length) {
-            return corpus.sources;
+        if (!filterKeywords.length) {
+            return corpus.sources
         }
         return corpus.sources.filter(
             cs => filterKeywords.every(
@@ -140,7 +140,7 @@ export const CorpusPage = () => {
     return (
         <div>
             <HeaderBreadCrumb>
-                <CorporaBreadCrumbLink />
+                <CorporaBreadCrumbLink/>
                 {corpus?.parent && <CorpusParentBreadCrumbLink parent={corpus.parent}/>}
             </HeaderBreadCrumb>
 
@@ -154,9 +154,10 @@ export const CorpusPage = () => {
                         {corpus.title || "Untitled"}
                     </h1>
                     {corpus.description && <p>{corpus.description}</p>}
-                    {!_.isEmpty(corpus.keywords) && <KeywordList
-                        keywords={corpus.keywords}
-                    />}
+                    {!_.isEmpty(corpus.keywords) && <>
+                        <FieldLabel label="Keywords"/>
+                        <KeywordList keywords={corpus.keywords}/>
+                    </>}
                     <ShortFieldsSummary<Corpus>
                         resource={corpus}
                         fieldNames={shortCorpusFields}

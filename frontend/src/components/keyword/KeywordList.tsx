@@ -13,7 +13,8 @@ export function KeywordList(props: {
         direction="row"
         sx={{
             ...props.sx,
-            m: "0"
+            m: "0",
+            display: "inline-block"
         }}
     >
         {props.keywords?.map((keyword: ServerKeyword, index: number) => (

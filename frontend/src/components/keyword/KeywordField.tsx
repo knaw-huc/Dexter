@@ -49,7 +49,7 @@ export const KeywordField = (props: KeywordsFieldProps) => {
     ): JSX.Element {
         return <TextField
             {...params}
-            placeholder="Search for keywords"
+            placeholder="Filter by keywords"
             value={inputValue}
             size={props.size ? props.size : "medium"}
         />
