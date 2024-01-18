@@ -10,4 +10,9 @@
 - Breadcrumb: show parent corpus in source breadcrumb
 - Add developer guidelines to readme, describing best practises regarding:
   functional components, custom hooks for business logic, state management using zustand, styling with MUI and emotion, ...
-- Style languages, fix autocomplete languages`
+- Style languages, fix autocomplete languages
+- Show child corpora on corpus page
+- Style languages as keywords
+- Add delete buttons to source and corpus pages
+- Fix deleting of corpus with sources
+

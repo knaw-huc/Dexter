@@ -1,6 +1,5 @@
 import styled from "@emotion/styled"
 import {yupResolver} from "@hookform/resolvers/yup"
-import Button from "@mui/material/Button"
 import TextField from "@mui/material/TextField"
 import React, {useState} from "react"
 import {useForm} from "react-hook-form"
@@ -75,7 +74,10 @@ export function CorpusForm(props: CorpusFormProps) {
     async function createNewCorpus(
         data: CorpusFormSubmit
     ) {
-        const newCorpus = await createCorpus(data)
+        const newCorpus = await createCorpus({
+            ...data,
+            parentId: data.parent?.id
+        })
         const corpusId = newCorpus.id
         if (data.keywords?.length) {
             await addKeywordsToCorpus(corpusId, data.keywords.map(k => k.id))
