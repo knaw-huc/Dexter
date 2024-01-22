@@ -1,5 +1,4 @@
 import {yupResolver} from "@hookform/resolvers/yup"
-import Button from "@mui/material/Button"
 import React, {useEffect, useState} from "react"
 import {useForm} from "react-hook-form"
 import * as yup from "yup"
@@ -11,21 +10,20 @@ import {
     createSource,
     deleteKeywordFromSource,
     deleteLanguageFromSource,
-    getSourceWithResourcesById,
+    getSourceWithResourcesById, ImportResult,
     postImport,
     updateSource,
 } from "../../utils/API"
 import ScrollableModal from "../common/ScrollableModal"
 import {KeywordField} from "../keyword/KeywordField"
 import {LanguagesField} from "../language/LanguagesField"
-import {Alert, Grid} from "@mui/material"
 import isUrl from "../../utils/isUrl"
 import {useDebounce} from "../../utils/useDebounce"
 import {Label} from "../common/Label"
 import {ValidatedSelectField} from "../common/ValidatedSelectField"
 import {ERROR_MESSAGE_CLASS, ErrorMsg} from "../common/ErrorMsg"
 import {TextFieldWithError} from "./TextFieldWithError"
-import {ErrorByField, FormError, setBackendErrors} from "../common/FormError"
+import {ErrorByField, FormError, filterFormFieldErrors, toField} from "../common/FormError"
 import {CloseInlineIcon} from "../common/CloseInlineIcon"
 import {SubmitButton} from "../common/SubmitButton"
 import {ImportField} from "./ImportField"
@@ -74,31 +72,37 @@ export function SourceForm(props: SourceFormProps) {
         defaultValues: {keywords: [], languages: [], access: null},
     })
 
-    const [externalRefError, setExternalRefError] = useState<Error>(null)
     const [isExternalRefLoading, setExternalRefLoading] = useState(false)
     const externalRef = watch("externalRef")
     const debouncedExternalRef = useDebounce<string>(externalRef, 500)
-    const [backendError, setBackendError] = useState<ErrorByField>()
+    const [fieldError, setFieldError] = useState<ErrorByField>()
 
     async function handleImportMetadata() {
         const warning = window.confirm(
             "Importing overwrites existing values. Are you sure you want to import?"
-        );
+        )
 
-        if (warning === false) return;
+        if (warning === false) return
 
         if (isExternalRefLoading) {
             return
         }
         if (!isUrl(debouncedExternalRef)) {
-            setExternalRefError(new Error("Not an url"))
             return
         }
+
         setExternalRefLoading(true)
-        const tmsImport = await postImport(new URL(debouncedExternalRef))
-            .catch(setExternalRefError)
+        let tmsImport: ImportResult
+        try {
+            tmsImport = await postImport(new URL(debouncedExternalRef))
+        } catch (e) {
+            await filterFormFieldErrors(e, setFieldError)
+        }
         if (!tmsImport || !tmsImport.isValidExternalReference) {
-            setExternalRefError(new Error("Is not a valid external reference"))
+            setFieldError({
+                field: "externalRef",
+                error: {message: "Is not a valid external reference"}
+            })
         } else {
             Object.keys(tmsImport.imported).forEach(key => {
                 if (tmsImport.imported[key]) {
@@ -110,13 +114,13 @@ export function SourceForm(props: SourceFormProps) {
     }
 
     async function onSubmit(data: SourceFormSubmit) {
-        const id: UUID = props.sourceToEdit
-            ? await updateExistingSource(props.sourceToEdit.id, data)
-            : await createNewSource(data)
         try {
+            const id: UUID = props.sourceToEdit
+                ? await updateExistingSource(props.sourceToEdit.id, data)
+                : await createNewSource(data)
             props.onSave({id, ...data})
         } catch (error) {
-            await setBackendErrors(error, setBackendError)
+            await filterFormFieldErrors(error, setFieldError)
         }
     }
 
@@ -143,7 +147,7 @@ export function SourceForm(props: SourceFormProps) {
         for (const languageToDelete of languagesToDelete) {
             await deleteLanguageFromSource(id, languageToDelete)
         }
-        return id;
+        return id
     }
 
     async function createNewSource(
@@ -160,18 +164,18 @@ export function SourceForm(props: SourceFormProps) {
         if (props.corpusId?.length) {
             await addSourcesToCorpus(props.corpusId, [sourceId])
         }
-        return sourceId;
+        return sourceId
     }
 
     useEffect(() => {
-        const hasErrors = Object.keys(errors).length || backendError?.field
+        const hasErrors = Object.keys(errors).length || fieldError?.field
         if (!hasErrors) {
             return
         }
         document
             .querySelector(`.${ERROR_MESSAGE_CLASS}`)
             ?.scrollIntoView({behavior: "smooth"})
-    }, [errors, backendError])
+    }, [errors, fieldError])
 
 
     React.useEffect(() => {
@@ -193,8 +197,8 @@ export function SourceForm(props: SourceFormProps) {
         if (errors[field]?.message) {
             return errors[field].message
         }
-        if (backendError?.field === field) {
-            return backendError.error.message
+        if (fieldError?.field === field) {
+            return fieldError.error.message
         }
     }
 
@@ -208,7 +212,7 @@ export function SourceForm(props: SourceFormProps) {
         />
         <h1>{props.sourceToEdit ? "Edit source" : "Create new source"}</h1>
         <form onSubmit={handleSubmit(onSubmit)}>
-            <FormError error={backendError}/>
+            <FormError error={fieldError}/>
 
             <ImportField
                 label="External Reference"
@@ -294,12 +298,13 @@ export function SourceForm(props: SourceFormProps) {
             />
             <ErrorMsg msg={getErrorMessage("languages")}/>
 
-            <SubmitButton />
+            <SubmitButton/>
         </form>
     </ScrollableModal>
 }
 
 const IMPORTABLE_URL = new RegExp("https://hdl\\.handle\\.net/20\\.500\\.11840/([0-9]*)")
+
 function isImportableUrl(externalRef?: string): boolean {
     return IMPORTABLE_URL.test(externalRef)
 }

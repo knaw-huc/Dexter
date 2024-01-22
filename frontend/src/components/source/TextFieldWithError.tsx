@@ -23,12 +23,6 @@ export const TextFieldWithError = forwardRef<
 ) {
     const {label, message, ...textFieldProps} = props
     const fieldRef = useRef(null);
-    useEffect(() => {
-        if(message) {
-            fieldRef.current?.scrollIntoView({behavior: 'smooth'});
-        }
-    }, [message, fieldRef.current])
-
     return <span
         ref={fieldRef}
     >
@@ -37,6 +31,7 @@ export const TextFieldWithError = forwardRef<
         >
             {label}
         </Label>
+        {message && <ErrorMsg msg={message}/>}
         <TextFieldStyled
             {...textFieldProps}
 
@@ -48,6 +43,5 @@ export const TextFieldWithError = forwardRef<
             onBlur={textFieldProps.onBlur}
             inputRef={ref}
         />
-        {message && <ErrorMsg msg={message}/>}
     </span>
 })

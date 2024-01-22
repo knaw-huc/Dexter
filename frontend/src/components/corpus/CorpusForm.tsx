@@ -1,7 +1,7 @@
 import styled from "@emotion/styled"
 import {yupResolver} from "@hookform/resolvers/yup"
 import TextField from "@mui/material/TextField"
-import React, {useState} from "react"
+import React, {useEffect, useState} from "react"
 import {useForm} from "react-hook-form"
 import * as yup from "yup"
 import {AccessOptions, Corpus, CorpusFormSubmit, Source,} from "../../model/DexterModel"
@@ -21,7 +21,7 @@ import {ParentCorpusField} from "./ParentCorpusField"
 import ScrollableModal from "../common/ScrollableModal"
 import {ValidatedSelectField} from "../common/ValidatedSelectField"
 import {LinkSourceField} from "./LinkSourceField"
-import {ErrorByField, FormError, setBackendErrors} from "../common/FormError"
+import {ErrorByField, FormError, scrollToError, filterFormFieldErrors} from "../common/FormError"
 import {TextFieldWithError} from "../source/TextFieldWithError"
 import {ErrorMsg} from "../common/ErrorMsg"
 import _ from "lodash"
@@ -42,7 +42,7 @@ const Label = styled.label`
   font-weight: bold;
 `
 
-const schema = yup.object({
+const validationSchema = yup.object({
     title: yup.string().required("Title is required"),
     description: yup.string().required("Description is required"),
     rights: yup.string().required("Rights is required"),
@@ -58,7 +58,7 @@ export function CorpusForm(props: CorpusFormProps) {
         formState: {errors},
         watch
     } = useForm<Corpus>({
-        resolver: yupResolver(schema),
+        resolver: yupResolver(validationSchema),
         mode: "onBlur",
         defaultValues: {
             keywords: [],
@@ -132,18 +132,17 @@ export function CorpusForm(props: CorpusFormProps) {
     }
 
     async function onSubmit(data: CorpusFormSubmit) {
-        const id = !props.corpusToEdit
-            ? await createNewCorpus(data)
-            : await updateExistingCorpus(props.corpusToEdit.id, data)
         try {
+            const id = !props.corpusToEdit
+                ? await createNewCorpus(data)
+                : await updateExistingCorpus(props.corpusToEdit.id, data)
             props.onSave({id, ...data})
         } catch (e) {
-            await setBackendErrors(e, setBackendError)
+            await filterFormFieldErrors(e, setBackendError)
         }
-
     }
 
-    React.useEffect(() => {
+    useEffect(() => {
         const initFormFields = async () => {
             const fields = [
                 "parent",
@@ -175,6 +174,12 @@ export function CorpusForm(props: CorpusFormProps) {
             }
         }
     }, [isInit, isLoaded])
+
+    useEffect(() => {
+        if(backendError) {
+            scrollToError()
+        }
+    }, [backendError])
 
     const allSources = props.sourceOptions
     const selectedSources = watch("sources")

@@ -104,16 +104,16 @@ graph TD
     VC --> AVC[add corpus source]
     AVC --> VCI
     
-    %% tag:
-    HOME --> CTAG[create tag]
-    CTAG --> TAG[/tag/]
-    TAG --> ATAG[add tag]
-    ATAG --> VCI
+    %% keyword:
+    HOME --> CKEYWORD[create keyword]
+    CKEYWORD --> KEYWORD[/keyword/]
+    KEYWORD --> AKEYWORD[add keyword]
+    AKEYWORD --> VCI
     
-    TAG-->SORTVC
+    KEYWORD-->SORTVC
     
     HOME --> VIEWVC[view corpus]
-    VIEWVC --> SORTVC[sort/filter corpus]
+    VIEWVC --> SORTVC[sort/filter corpus sources]
     SORTVC --> VIEWVCI[view corpus source]
     VIEWVCI --> VCI
     
@@ -155,16 +155,16 @@ graph TD
     
     VCI-->ADBM[add dublin core metadata]-->VCI
 
-%% tag:
-    HOME --> CTAG[create tag]
-    CTAG-->TAG[/tag/]
-    TAG-->ATAG[add tag]
-    ATAG-->VCI
+%% keyword:
+    HOME --> CKEYWORD[create keyword]
+    CKEYWORD-->KEYWORD[/keyword/]
+    KEYWORD-->AKEYWORD[add keyword]
+    AKEYWORD-->VCI
 
 %% index:
     HOME --> VVC[view virtual collection]
     VVC-->VCIX[/virtual collection item index/]
-    VCIX-->SBTAG[sort by tag]-->VCIX
+    VCIX-->SBKEYWORD[sort by keyword]-->VCIX
     
     VCIX --> VI[view item]
     VI-->VCI
