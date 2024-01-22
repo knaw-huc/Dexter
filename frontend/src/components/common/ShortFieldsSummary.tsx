@@ -6,8 +6,10 @@ export function ShortFieldsSummary<T>(props: {
         resource: T
     }
 ) {
+    const fieldsToShow = props.fieldNames
+        .filter(name => props.resource[name])
     return <p style={{textTransform: "capitalize"}}>
-        {props.fieldNames.map((field: keyof T, i) => [
+        {fieldsToShow.map((field: keyof T, i) => [
             i > 0 && <Spacer key={`spacer-${i}`}/>,
             <ShortField<T>
                 key={i}
@@ -30,15 +32,16 @@ export function ShortField<T>(
     }
     const label = String(props.fieldName)
     return <span>
-        <FieldLabel label={label} />
+        <FieldLabel label={label}/>
         {" "}
         <strong>{value}</strong>
     </span>
 }
 
-export function FieldLabel(props: {label: string}) {
-    return <span style={{color: grey[600]}}>{props.label}:{" "}</span>;
+export function FieldLabel(props: { label: string }) {
+    return <span style={{color: grey[600]}}>{props.label}:{" "}</span>
 }
+
 export function Spacer() {
     return <span style={{display: "inline-block", color: "grey", margin: "0.75em"}}> | </span>
 }

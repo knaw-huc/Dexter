@@ -4,15 +4,15 @@ import {Alert} from "@mui/material"
 import {ERROR_MESSAGE_CLASS} from "./ErrorMsg"
 
 export function FormError(props: { error?: ErrorByField }) {
-    const backendError = props.error
+    const formError = props.error
     const ref = useRef(null)
     useEffect(() => {
-        if (backendError?.error) {
+        if (formError?.error) {
             ref.current?.scrollIntoView({behavior: "smooth"})
         }
-    }, [backendError, ref.current])
+    }, [formError, ref.current])
 
-    if (!backendError || backendError.field !== GENERIC) {
+    if (!formError || formError.field !== GENERIC) {
         return null
     }
 
@@ -20,7 +20,7 @@ export function FormError(props: { error?: ErrorByField }) {
         ref={ref}
         className={ERROR_MESSAGE_CLASS} severity="error"
     >
-        An error occurred: {backendError.error.message}
+        An error occurred: {formError.error.message}
     </Alert>
 }
 
