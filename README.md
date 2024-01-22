@@ -5,9 +5,11 @@ This project aims at building a much-needed solution for referencing and for cre
 ## Development
 - Checkout development branch.
 
+Checkout `development` branch.
+
 - Start database:
 ```shell
-docker-compose up -d postgresdev
+docker-compose up -d postgres
 ```
 
 - Start backend:
@@ -19,14 +21,6 @@ export DEX_DATABASE_URL=jdbc:postgresql://0.0.0.0:5432/dexter
 make run-server
 ```
 
-- Add user:
-```shell
-curl -X 'POST' 'http://localhost:8080/admin/users' \
-  -H 'Authorization: Basic cm9vdDpkMzNkMzM=' \
-  -H 'Content-Type: application/json' \
-  -d '["dexter"]'
-```
-
 - Start frontend:
 ```shell
 cd frontend
@@ -34,9 +28,51 @@ npm i
 npm start
 ```
 
+## Demo
+```shell
+# Add user:
+curl -X 'POST' 'http://localhost:8080/admin/users' \
+  -H 'Authorization: Basic cm9vdDpkMzNkMzM=' \
+  -H 'Content-Type: application/json' \
+  -d '["dexter"]'
+
+# Add corpus:
+curl 'http://localhost:8080/api/corpora' -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Basic ZGV4dGVyOmRleHRlcg==' \
+  --data-raw '{
+    "title": "test",
+    "description":"test",
+    "rights":"test",
+    "access":"Open",
+    "location":"test",
+    "earliest":"1990-01-30",
+    "latest":"1990-01-31",
+    "contributor":"test",
+    "notes":"test"
+  }'
+
+# Add source:
+curl 'http://localhost:8080/api/sources' -X POST  \
+  -H 'Content-Type: application/json'  \
+  -H 'Authorization: Basic ZGV4dGVyOmRleHRlcg=='  \
+  --data-raw '{
+    "externalRef":"test",
+    "title":"test",
+    "description":"test",
+    "rights":"test",
+    "access":"Open",
+    "location":"test",
+    "earliest":"1990-01-30",
+    "latest":"1990-01-31",
+    "notes":"test"
+  }'
+```
+
 - Open http://localhost:3001
 - Login with dexter:dexter
 - Swagger: http://localhost:3001/api/swagger
+
 
 ## Workflow diagram
 
@@ -48,50 +84,43 @@ graph TD
     START((start))
 
     AU[action of user]
-    AR[🤖 action of rolodex]
+    AR["🤖 action of rolodex"]
     EN[/entities/]
     
-    START
-    --> LOGIN[login@rolodex]
-    --> HOME[view dashboard]
+    START --> LOGIN["login@rolodex"]
+    LOGIN --> HOME[view dashboard]
     
-    START
-    --> SEARCH[search@AAMU website]
-    --> VIEWITEM[view specific source]
-    --> COPYHANDLER[copy source handle]
-    --> ADDHANDLER[add handle to corpus source]
-    --> IMPORTHANDLER["🤖 import meta data"]
-    --> ADDMETADATA["🤖 add meta data to corpus source"]
-    --> VCI[/corpus source/]
+    START --> SEARCH["search@AAMU website"]
+    SEARCH --> VIEWITEM[view specific source]
+    VIEWITEM --> COPYHANDLER[copy source handle]
+    COPYHANDLER --> ADDHANDLER[add handle to corpus source]
+    ADDHANDLER --> IMPORTHANDLER["🤖 import meta data"]
+    IMPORTHANDLER --> ADDMETADATA["🤖 add meta data to corpus source"]
+    ADDMETADATA --> VCI[/corpus source/]
     
     %% corpus sources:
-    HOME
-    --> CVC[create corpus]
-    --> VC[/corpus/]
+    HOME --> CVC[create corpus]
+    CVC --> VC[/corpus/]
     
-    VC
-    --> AVC[add corpus source]
-    --> VCI
+    VC --> AVC[add corpus source]
+    AVC --> VCI
     
-    %% tag:
-    HOME
-    --> CTAG[create tag]
-    --> TAG[/tag/]
-    --> ATAG[add tag]
-    --> VCI
+    %% keyword:
+    HOME --> CKEYWORD[create keyword]
+    CKEYWORD --> KEYWORD[/keyword/]
+    KEYWORD --> AKEYWORD[add keyword]
+    AKEYWORD --> VCI
     
-    TAG-->SORTVC
+    KEYWORD-->SORTVC
     
-    HOME
-    --> VIEWVC[view corpus]
-    --> SORTVC[sort/filter corpus]
-    --> VIEWVCI[view corpus source]
-    --> VCI
+    HOME --> VIEWVC[view corpus]
+    VIEWVC --> SORTVC[sort/filter corpus sources]
+    SORTVC --> VIEWVCI[view corpus source]
+    VIEWVCI --> VCI
     
-    VCI
-    -.-> |"(must have, possibly after demo)"|ANN[annotate]
-    --> ANNT[annotate text in recogito-js]
-    --> WANN[/web annotation/]
+    VCI -.-> |"(must have, possibly after demo)"|ANN[annotate]
+    ANN --> ANNT[annotate text in recogito-js]
+    ANNT --> WANN[/web annotation/]
 ```
 
 ## Workflow including search and multimedia annotating
@@ -127,16 +156,16 @@ graph TD
     
     VCI-->ADBM[add dublin core metadata]-->VCI
 
-%% tag:
-    HOME --> CTAG[create tag]
-    CTAG-->TAG[/tag/]
-    TAG-->ATAG[add tag]
-    ATAG-->VCI
+%% keyword:
+    HOME --> CKEYWORD[create keyword]
+    CKEYWORD-->KEYWORD[/keyword/]
+    KEYWORD-->AKEYWORD[add keyword]
+    AKEYWORD-->VCI
 
 %% index:
     HOME --> VVC[view virtual collection]
     VVC-->VCIX[/virtual collection item index/]
-    VCIX-->SBTAG[sort by tag]-->VCIX
+    VCIX-->SBKEYWORD[sort by keyword]-->VCIX
     
     VCIX --> VI[view item]
     VI-->VCI

@@ -4,6 +4,5 @@ package nl.knaw.huc.dexter.auth
 object RoleNames {
     const val GUEST = "guest"
     const val USER = "user"
-    const val ADMIN = "admin"
     const val ROOT = "root"
 }

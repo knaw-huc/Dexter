@@ -1,5 +1,8 @@
 package nl.knaw.huc.dexter
 
+import UnauthorizedExceptionMapper
+import UserResource
+import WereldCulturenDublinCoreImporter
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import `in`.vectorpro.dropwizard.swagger.SwaggerBundle
@@ -66,6 +69,7 @@ class DexterApplication : Application<DexterConfiguration>() {
         migrateDatabase(configuration.dataSourceFactory, configuration.flyway)
         customizeObjectMapper(environment)
         val jdbi = setupJdbi(environment, configuration.dataSourceFactory)
+        val wereldCulturenDublinCoreMapper = WereldCulturenDublinCoreImporter()
 
         // TODO: why is implementationVersion null in dev mode?
         val appVersion = javaClass.getPackage().implementationVersion ?: "no-implementation-version-found";
@@ -74,7 +78,7 @@ class DexterApplication : Application<DexterConfiguration>() {
             register(
                 AuthDynamicFeature(
                     BasicCredentialAuthFilter.Builder<DexterUser>()
-                        .setAuthenticator(DexterAuthenticator(configuration.root))
+                        .setAuthenticator(DexterAuthenticator(configuration.root, jdbi))
                         .setAuthorizer(DexterAuthorizer())
                         .setRealm("Dexter's Lab")
                         .buildAuthFilter()
@@ -89,6 +93,10 @@ class DexterApplication : Application<DexterConfiguration>() {
             register(KeywordsResource(jdbi))
             register(LanguagesResource(jdbi))
             register(SourcesResource(jdbi))
+            register(ImportResource(wereldCulturenDublinCoreMapper))
+            register(UserResource())
+
+            register(UnauthorizedExceptionMapper())
         }
     }
 

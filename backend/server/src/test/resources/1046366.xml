@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF
+        xmlns:crm="http://www.cidoc-crm.org/cidoc-crm/"
+        xmlns:dc="http://purl.org/dc/elements/1.1/"
+        xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+        xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+>
+    <crm:E22_Human-Made_Object rdf:about="https://hdl.handle.net/20.500.11840/1046366">
+        <crm:P2_has_type>
+            <crm:E55_Type rdf:nodeID="Nfca7e4ed2ca347eaacaa1505cf1c297b">
+                <rdfs:label>Schildering</rdfs:label>
+            </crm:E55_Type>
+        </crm:P2_has_type>
+        <crm:P2_has_type>
+            <crm:E55_Type rdf:nodeID="Nd7cb88d4a04f495ebaab3877f5a60aea">
+                <rdfs:label>Schilderingen</rdfs:label>
+            </crm:E55_Type>
+        </crm:P2_has_type>
+        <crm:P2_has_type>
+            <crm:E55_Type rdf:nodeID="N28abfae989c04085af9afd3eed80c25b">
+                <rdfs:label>Materiële cultuurcollectie</rdfs:label>
+            </crm:E55_Type>
+        </crm:P2_has_type>
+        <crm:P2_has_type>
+            <crm:E55_Type rdf:about="https://hdl.handle.net/20.500.11840/termmaster10067374"/>
+        </crm:P2_has_type>
+        <crm:P1_is_identified_by>
+            <crm:E42_Identifier rdf:nodeID="N38c6c7a1464a4f80bf77ea24a06b6acd">
+                <crm:P2_has_type rdf:resource="http://vocab.getty.edu/aat/300312355"/>
+                <crm:P190_has_symbolic_content>7106-28</crm:P190_has_symbolic_content>
+            </crm:E42_Identifier>
+        </crm:P1_is_identified_by>
+        <crm:P1_is_identified_by>
+            <crm:E33_E41_Linguistic_Appellation rdf:nodeID="N34ea393074f14814aec9c7d6c9ac3f80">
+                <crm:P2_has_type>
+                    <crm:E55_Type rdf:nodeID="Nf893783387cd460d9dc5107f100cec40">
+                        <rdfs:label xml:lang="nl">Presentatietitel</rdfs:label>
+                    </crm:E55_Type>
+                </crm:P2_has_type>
+                <crm:P72_has_language>
+                    <crm:E56_Language rdf:nodeID="N9e9954b101d740628f96423a5816f6e4">
+                        <rdfs:label xml:lang="nl">Nederlands</rdfs:label>
+                    </crm:E56_Language>
+                </crm:P72_has_language>
+                <crm:P190_has_symbolic_content>High Tide at Progress Bay</crm:P190_has_symbolic_content>
+            </crm:E33_E41_Linguistic_Appellation>
+        </crm:P1_is_identified_by>
+        <crm:P52_has_current_owner>
+            <crm:E39_Actor rdf:about="https://www.wikidata.org/entity/Q17153751"/>
+        </crm:P52_has_current_owner>
+        <crm:P45_consists_of>
+            <crm:E57_Material rdf:about="https://hdl.handle.net/20.500.11840/termmaster10065970"/>
+        </crm:P45_consists_of>
+        <crm:P45_consists_of>
+            <crm:E57_Material rdf:about="https://hdl.handle.net/20.500.11840/termmaster10065542"/>
+        </crm:P45_consists_of>
+        <crm:P45_consists_of>
+            <crm:E57_Material rdf:about="https://hdl.handle.net/20.500.11840/termmaster10065949"/>
+        </crm:P45_consists_of>
+        <crm:P67i_is_referred_to_by>
+            <crm:E33_Linguistic_Object rdf:nodeID="Nb3ec131871a14607b8598bf2b60c6a33">
+                <crm:P2_has_type rdf:resource="https://hdl.handle.net/20.500.11840/termmaster10076668"/>
+                <crm:P190_has_symbolic_content>Aboriginal Australiërs</crm:P190_has_symbolic_content>
+            </crm:E33_Linguistic_Object>
+        </crm:P67i_is_referred_to_by>
+        <crm:P67i_is_referred_to_by>
+            <crm:E33_Linguistic_Object rdf:nodeID="Ndcf19bb2f44c4d399ca6b61ed230276c">
+                <crm:P2_has_type rdf:resource="https://hdl.handle.net/20.500.11840/termmaster10076691"/>
+                <crm:P190_has_symbolic_content>Pintupi</crm:P190_has_symbolic_content>
+            </crm:E33_Linguistic_Object>
+        </crm:P67i_is_referred_to_by>
+        <crm:P67i_is_referred_to_by>
+            <crm:E33_Linguistic_Object rdf:nodeID="Nea2d03ecc7f34c89b742fbcac8940adb">
+                <crm:P2_has_type rdf:resource="https://hdl.handle.net/20.500.11840/termmaster10060133"/>
+                <crm:P190_has_symbolic_content>Australië</crm:P190_has_symbolic_content>
+            </crm:E33_Linguistic_Object>
+        </crm:P67i_is_referred_to_by>
+        <crm:P108i_was_produced_by>
+            <crm:E12_Production rdf:about="https://hdl.handle.net/20.500.11840/1046366#production1">
+                <crm:P14_carried_out_by rdf:resource="https://hdl.handle.net/10.200.30000/foobar"/>
+                <crm:P7_took_place_at rdf:resource="https://hdl.handle.net/20.500.11840/termmaster10060133"/>
+                <crm:P32_used_general_technique rdf:resource="https://hdl.handle.net/20.500.11840/termmaster10064843"/>
+                <crm:P4_has_time-span>
+                    <crm:E52_Time-Span rdf:nodeID="N9dda9e4c71ad4ed68f508e08b9710021">
+                        <crm:P82a_begin_of_the_begin rdf:datatype="http://www.w3.org/2001/XMLSchema#date">1998-01-01</crm:P82a_begin_of_the_begin>
+                        <crm:P82b_end_of_the_end rdf:datatype="http://www.w3.org/2001/XMLSchema#date">1998-01-02</crm:P82b_end_of_the_end>
+                        <crm:P1_is_identified_by>
+                            <crm:E33_E41_Linguistic_Appellation rdf:nodeID="Ndef4642a72e1437da90748d4d16cebe9">
+                                <crm:P190_has_symbolic_content>1998</crm:P190_has_symbolic_content>
+                            </crm:E33_E41_Linguistic_Appellation>
+                        </crm:P1_is_identified_by>
+                    </crm:E52_Time-Span>
+                </crm:P4_has_time-span>
+            </crm:E12_Production>
+        </crm:P108i_was_produced_by>
+        <crm:P43_has_dimension>
+            <crm:E54_Dimension rdf:nodeID="N601f5e9563b24abfbd1a9cfbcb51dd3b">
+                <crm:P2_has_type>
+                    <crm:E55_Type rdf:nodeID="Ncf2f071bc36d4a20a5b6b870546dcb64">
+                        <rdfs:label>afmetingenlabel</rdfs:label>
+                    </crm:E55_Type>
+                </crm:P2_has_type>
+                <crm:P190_has_symbolic_content>155 x 180 cm</crm:P190_has_symbolic_content>
+            </crm:E54_Dimension>
+        </crm:P43_has_dimension>
+        <crm:P138i_has_representation>
+            <crm:E36_Visual_Item rdf:about="http://collectie.wereldculturen.nl/lodimages/cc/imageproxy.ashx?filename=images/CopyRightImage.jpg&amp;cache=yes">
+                <crm:P2_has_type rdf:resource="http://vocab.getty.edu/aat/300215302"/>
+                <dc:format>image/jpeg</dc:format>
+            </crm:E36_Visual_Item>
+        </crm:P138i_has_representation>
+    </crm:E22_Human-Made_Object>
+    <crm:E55_Type rdf:about="https://hdl.handle.net/20.500.11840/termmaster10060133">
+        <rdf:type rdf:resource="http://www.cidoc-crm.org/cidoc-crm/E53_Place"/>
+    </crm:E55_Type>
+    <crm:E55_Type rdf:about="https://hdl.handle.net/20.500.11840/termmaster10076668"/>
+    <crm:E55_Type rdf:about="https://hdl.handle.net/20.500.11840/termmaster10064843"/>
+    <crm:E55_Type rdf:about="http://vocab.getty.edu/aat/300312355"/>
+    <crm:E55_Type rdf:about="http://vocab.getty.edu/aat/300215302">
+        <rdfs:label>digital images</rdfs:label>
+    </crm:E55_Type>
+    <crm:E55_Type rdf:about="https://hdl.handle.net/20.500.11840/termmaster10076691"/>
+</rdf:RDF>

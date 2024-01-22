@@ -3,6 +3,7 @@ package nl.knaw.huc.dexter.resources
 import io.dropwizard.auth.Auth
 import nl.knaw.huc.dexter.api.FormKeyword
 import nl.knaw.huc.dexter.api.ResourcePaths
+import nl.knaw.huc.dexter.api.ResourcePaths.AUTOCOMPLETE
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PARAM
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PATH
 import nl.knaw.huc.dexter.api.ResultKeyword
@@ -14,11 +15,11 @@ import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel.REPEATABLE_READ
 import org.slf4j.LoggerFactory
 import javax.ws.rs.*
-import javax.ws.rs.core.MediaType
+import javax.ws.rs.core.MediaType.APPLICATION_JSON
 import javax.ws.rs.core.Response
 
 @Path(ResourcePaths.KEYWORDS)
-@Produces(MediaType.APPLICATION_JSON)
+@Produces(APPLICATION_JSON)
 class KeywordsResource(private val jdbi: Jdbi) {
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -31,18 +32,26 @@ class KeywordsResource(private val jdbi: Jdbi) {
         keywords().find(keywordId) ?: keywordNotFound(keywordId)
 
     @POST
+    @Path(AUTOCOMPLETE)
+    fun getKeywordLike(key: String): List<ResultKeyword> =
+        key.takeIf { it.length > 0 }
+            ?.let { keywords().like("%$it%") }
+            ?: throw BadRequestException("key length MUST be > 0 (but was ${key.length}: '$key')")
+
+    @POST
+    @Consumes(APPLICATION_JSON)
     fun createKeyword(keyword: FormKeyword): ResultKeyword =
         keyword.run {
             log.info("createKeyword: [$this]")
-            keywords().insert(this)
+            diagnoseViolations { keywords().insert(this) }
         }
 
     @PUT
     @Path(ID_PATH)
-    fun updateKeyword(@PathParam(ID_PARAM) id: Int, value: FormKeyword): ResultKeyword =
+    fun updateKeyword(@PathParam(ID_PARAM) id: Int, formKeyword: FormKeyword): ResultKeyword =
         onExistingKeyword(id) { dao, kw ->
-            log.info("updateKeyword: id=$id, val=$value")
-            dao.update(kw.id, value)
+            log.info("updateKeyword: keywordId=${kw.id}, formKeyword=$formKeyword")
+            dao.update(kw.id, formKeyword)
         }
 
     @DELETE
