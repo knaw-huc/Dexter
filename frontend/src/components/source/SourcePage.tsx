@@ -80,10 +80,10 @@ export const SourcePage = () => {
                         {source.title}
                     </h1>
                     <p>{source.description}</p>
-                    <div>
+                    {!_.isEmpty(source.keywords) && <>
                         <FieldLabel label="Keywords"/>
                         <KeywordList keywords={source.keywords}/>
-                    </div>
+                    </>}
                     <ShortFieldsSummary<Source>
                         resource={source}
                         fieldNames={shortSourceFields}

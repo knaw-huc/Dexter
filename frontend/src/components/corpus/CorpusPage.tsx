@@ -5,7 +5,6 @@ import {CorpusForm} from "./CorpusForm"
 import {errorContext} from "../../state/error/errorContext"
 import {
     addSourcesToCorpus,
-    deleteKeywordFromSource,
     deleteLanguageFromCorpus,
     deleteSourceFromCorpus,
     getCorporaWithResources,
@@ -28,6 +27,7 @@ import {CorpusIcon} from "./CorpusIcon"
 import {HeaderBreadCrumb} from "../common/breadcrumb/HeaderBreadCrumb"
 import {CorporaBreadCrumbLink} from "./CorporaBreadCrumbLink"
 import {CorpusParentBreadCrumbLink} from "./CorpusParentBreadCrumbLink"
+import {NoResults} from "../common/NoResults"
 
 export const CorpusPage = () => {
     const [corpus, setCorpus] = useState<Corpus>(null)
@@ -182,25 +182,27 @@ export const CorpusPage = () => {
                             />
                         </Grid>
                     </Grid>
-                    {corpus.sources && <Grid
-                        container
-                        spacing={2}
-                        sx={{pl: 0.1, pr: 1, mt: 2, mb: 2}}
-                    >
-                        {filteredCorpusSources.map(source => (
-                            <Grid
-                                item
-                                xs={4}
-                                key={source.id}
-                            >
-                                <SourcePreview
-                                    source={source}
-                                    corpusId={corpus.id}
-                                    onUnlinkSource={() => handleUnlinkSource(corpus.id, source.id)}
-                                />
-                            </Grid>
-                        ))}
-                    </Grid>}
+                    {!_.isEmpty(corpus.sources)
+                        ? <Grid
+                            container
+                            spacing={2}
+                            sx={{pl: 0.1, pr: 1, mt: 2, mb: 2}}
+                        >
+                            {filteredCorpusSources.map(source => (
+                                <Grid
+                                    item
+                                    xs={4}
+                                    key={source.id}
+                                >
+                                    <SourcePreview
+                                        source={source}
+                                        corpusId={corpus.id}
+                                        onUnlinkSource={() => handleUnlinkSource(corpus.id, source.id)}
+                                    />
+                                </Grid>
+                            ))}
+                        </Grid>
+                        : <NoResults message="No sources" />}
 
                     {showLinkSourceForm && <LinkSourceForm
                         options={sourceOptions}
