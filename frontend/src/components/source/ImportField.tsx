@@ -21,7 +21,13 @@ export const ImportField = forwardRef<
     props,
     ref
 ) {
-    const {label, message, ...textFieldProps} = props
+    const {
+        label,
+        message,
+        onImport,
+        canImport,
+        ...textFieldProps
+    } = props
     const fieldRef = useRef(null);
     useEffect(() => {
         if(message) {
@@ -52,10 +58,10 @@ export const ImportField = forwardRef<
 
             <Grid item xs={2} alignItems="stretch" style={{display: "flex"}}>
                 <Button
-                    disabled={!props.canImport}
+                    disabled={!canImport}
                     fullWidth
                     variant="contained"
-                    onClick={props.onImport}
+                    onClick={onImport}
                 >
                     Import
                     <Tooltip title="Import and fill out found form fields with metadata from external reference">
