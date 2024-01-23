@@ -10,7 +10,8 @@ import {
     createSource,
     deleteKeywordFromSource,
     deleteLanguageFromSource,
-    getSourceWithResourcesById, ImportResult,
+    getSourceWithResourcesById,
+    ImportResult,
     postImport,
     updateSource,
 } from "../../utils/API"
@@ -21,12 +22,13 @@ import isUrl from "../../utils/isUrl"
 import {useDebounce} from "../../utils/useDebounce"
 import {Label} from "../common/Label"
 import {ValidatedSelectField} from "../common/ValidatedSelectField"
-import {ERROR_MESSAGE_CLASS, ErrorMsg} from "../common/ErrorMsg"
+import {ErrorMsg} from "../common/ErrorMsg"
 import {TextFieldWithError} from "./TextFieldWithError"
-import {ErrorByField, FormError, filterFormFieldErrors, toField} from "../common/FormError"
+import {ErrorByField, filterFormFieldErrors, FormError, scrollToError} from "../common/FormError"
 import {CloseInlineIcon} from "../common/CloseInlineIcon"
 import {SubmitButton} from "../common/SubmitButton"
 import {ImportField} from "./ImportField"
+import {updateRemoteIds} from "../../utils/updateRemoteIds"
 
 const formFields = [
     "externalRef",
@@ -116,38 +118,26 @@ export function SourceForm(props: SourceFormProps) {
     async function onSubmit(data: SourceFormSubmit) {
         try {
             const id: UUID = props.sourceToEdit
-                ? await updateExistingSource(props.sourceToEdit.id, data)
+                ? await updateExistingSource(data)
                 : await createNewSource(data)
+            await updateChildResources(id, data)
             props.onSave({id, ...data})
         } catch (error) {
             await filterFormFieldErrors(error, setFieldError)
         }
     }
 
+    async function updateChildResources(id: string, data: SourceFormSubmit) {
+        await updateRemoteIds(id, data.keywords, addKeywordsToSource, deleteKeywordFromSource)
+        await updateRemoteIds(id, data.languages, addLanguagesToSource, deleteLanguageFromSource)
+    }
+
     async function updateExistingSource(
-        id: string,
         data: SourceFormSubmit
     ): Promise<UUID> {
-        await updateSource(id, data)
-
-        const keywordIds = data.keywords.map(k => k.id)
-        const responseKeywords = await addKeywordsToSource(id, keywordIds)
-        const keysToDelete = responseKeywords
-            .map(s => s.id)
-            .filter(ls => !keywordIds.includes(ls))
-        for (const keyToDelete of keysToDelete) {
-            await deleteKeywordFromSource(id, keyToDelete)
-        }
-
-        const languageIds = data.languages.map(l => l.id)
-        const responseLanguages = await addLanguagesToSource(id, languageIds)
-        const languagesToDelete = responseLanguages
-            .map(l => l.id)
-            .filter(ls => !languageIds.includes(ls))
-        for (const languageToDelete of languagesToDelete) {
-            await deleteLanguageFromSource(id, languageToDelete)
-        }
-        return id
+        const sourceId = props.sourceToEdit.id;
+        await updateSource(sourceId, data)
+        return sourceId
     }
 
     async function createNewSource(
@@ -155,12 +145,6 @@ export function SourceForm(props: SourceFormProps) {
     ): Promise<UUID> {
         const newSource = await createSource(data)
         const sourceId = newSource.id
-        if (data.keywords?.length) {
-            await addKeywordsToSource(sourceId, data.keywords.map(k => k.id))
-        }
-        if (data.languages?.length) {
-            await addLanguagesToSource(sourceId, data.languages.map(l => l.id))
-        }
         if (props.corpusId?.length) {
             await addSourcesToCorpus(props.corpusId, [sourceId])
         }
@@ -168,14 +152,10 @@ export function SourceForm(props: SourceFormProps) {
     }
 
     useEffect(() => {
-        const hasErrors = Object.keys(errors).length || fieldError?.field
-        if (!hasErrors) {
-            return
+        if(fieldError) {
+            scrollToError()
         }
-        document
-            .querySelector(`.${ERROR_MESSAGE_CLASS}`)
-            ?.scrollIntoView({behavior: "smooth"})
-    }, [errors, fieldError])
+    }, [fieldError])
 
 
     React.useEffect(() => {
