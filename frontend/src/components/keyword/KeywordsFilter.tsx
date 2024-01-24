@@ -1,6 +1,6 @@
 import {ServerKeyword} from "../../model/DexterModel"
 import React, {useState} from "react"
-import {KeywordField} from "../keyword/KeywordField"
+import {AddKeywordField} from "./AddKeywordField"
 import {ButtonWithIcon} from "../common/ButtonWithIcon"
 import {FilterIconStyled} from "../common/FilterIconStyled"
 
@@ -17,7 +17,7 @@ export function KeywordsFilter(props: {
         />
     }
 
-    return <KeywordField
+    return <AddKeywordField
         selected={props.selected}
         onChangeSelected={props.onChangeSelected}
         suggestions={props.all}

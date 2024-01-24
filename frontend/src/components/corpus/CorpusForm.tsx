@@ -15,7 +15,7 @@ import {
     deleteSourceFromCorpus,
     updateCorpus,
 } from "../../utils/API"
-import {KeywordField} from "../keyword/KeywordField"
+import {AddKeywordField} from "../keyword/AddKeywordField"
 import {LanguagesField} from "../language/LanguagesField"
 import {ParentCorpusField} from "./ParentCorpusField"
 import ScrollableModal from "../common/ScrollableModal"
@@ -236,7 +236,7 @@ export function CorpusForm(props: CorpusFormProps) {
                         rows={6}
                     />
                     <Label>Keywords</Label>
-                    <KeywordField
+                    <AddKeywordField
                         selected={watch("keywords")}
                         onChangeSelected={selected => {
                             setValue("keywords", selected)

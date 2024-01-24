@@ -13,6 +13,7 @@ export function HeaderBreadCrumb(props: PropsWithChildren) {
         </BreadCrumbLink>
         {props.children}
 
-        <li/>
+        {/* Display separator after last breadcrumb: */}
+        <span/>
     </Breadcrumbs>
 }

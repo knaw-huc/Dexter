@@ -154,7 +154,7 @@ export const getKeywords = async () => {
     return fetchValidated(`/api/keywords`)
 };
 
-export const createKeywords = async (
+export const createKeyword = async (
     newKeyword: FormKeyword
 ): Promise<ServerKeyword> => {
     const response = await fetch("/api/keywords", {

@@ -16,7 +16,7 @@ import {
     updateSource,
 } from "../../utils/API"
 import ScrollableModal from "../common/ScrollableModal"
-import {KeywordField} from "../keyword/KeywordField"
+import {AddKeywordField} from "../keyword/AddKeywordField"
 import {LanguagesField} from "../language/LanguagesField"
 import isUrl from "../../utils/isUrl"
 import {useDebounce} from "../../utils/useDebounce"
@@ -190,6 +190,7 @@ export function SourceForm(props: SourceFormProps) {
             style={{float: "right", top: 0}}
             onClick={props.onClose}
         />
+
         <h1>{props.sourceToEdit ? "Edit source" : "Create new source"}</h1>
         <form onSubmit={handleSubmit(onSubmit)}>
             <FormError error={fieldError}/>
@@ -199,7 +200,8 @@ export function SourceForm(props: SourceFormProps) {
                 {...register("externalRef")}
                 message={getErrorMessage("externalRef")}
                 onImport={handleImportMetadata}
-                canImport={!isExternalRefLoading && isImportableUrl(watch("externalRef"))}
+                isImporting={isExternalRefLoading}
+                isRefImportable={isImportableUrl(watch("externalRef"))}
             />
 
             <TextFieldWithError
@@ -261,7 +263,7 @@ export function SourceForm(props: SourceFormProps) {
             />
 
             <Label>Keywords</Label>
-            <KeywordField
+            <AddKeywordField
                 selected={watch("keywords")}
                 onChangeSelected={selected => {
                     setValue("keywords", selected)

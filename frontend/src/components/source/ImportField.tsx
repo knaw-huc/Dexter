@@ -5,18 +5,19 @@ import {UseFormRegisterReturn} from "react-hook-form"
 import {CustomFieldProps} from "../common/CustomFieldProps"
 import {ErrorMsg} from "../common/ErrorMsg"
 import {TextFieldStyled} from "./TextFieldStyled"
-import {Button, Grid, Tooltip} from "@mui/material"
+import {Button, CircularProgress, Grid, Tooltip} from "@mui/material"
 import {HelpIconStyled} from "../common/HelpIconStyled"
 
-type TextFormFieldProps = StandardTextFieldProps & UseFormRegisterReturn<string> & CustomFieldProps & {
+type ImportFieldProps = StandardTextFieldProps & UseFormRegisterReturn<string> & CustomFieldProps & {
     variant?: "standard",
     onImport: () => void,
-    canImport: boolean
+    isRefImportable: boolean
+    isImporting: boolean
 };
 
 export const ImportField = forwardRef<
     typeof TextFieldStyled,
-    TextFormFieldProps
+    ImportFieldProps
 >(function TextWithLabelErrorField(
     props,
     ref
@@ -25,7 +26,8 @@ export const ImportField = forwardRef<
         label,
         message,
         onImport,
-        canImport,
+        isRefImportable,
+        isImporting,
         ...textFieldProps
     } = props
     const fieldRef = useRef(null);
@@ -49,8 +51,6 @@ export const ImportField = forwardRef<
                 <TextFieldStyled
                     {...textFieldProps}
                     error={!!message}
-                    onChange={textFieldProps.onChange}
-                    onBlur={textFieldProps.onBlur}
                     inputRef={ref}
                     fullWidth
                 />
@@ -58,18 +58,44 @@ export const ImportField = forwardRef<
 
             <Grid item xs={2} alignItems="stretch" style={{display: "flex"}}>
                 <Button
-                    disabled={!canImport}
+                    disabled={!isRefImportable || isImporting}
                     fullWidth
                     variant="contained"
                     onClick={onImport}
                 >
                     Import
-                    <Tooltip title="Import and fill out found form fields with metadata from external reference">
-                        <HelpIconStyled />
-                    </Tooltip>
+                    {isImporting
+                        ? <Spinner/>
+                        : <ImportToolTipHelp/>
+                    }
                 </Button>
             </Grid>
         </Grid>
         {message && <ErrorMsg msg={message}/>}
     </div>
 })
+
+/**
+ * Add div to prevent wobbling
+ */
+function Spinner() {
+    return <div>
+        <CircularProgress
+            style={{
+                width: "17px",
+                height: "17px",
+                marginLeft: "0.25em",
+                marginTop: "0.5em"
+            }}
+        />
+    </div>
+}
+
+function ImportToolTipHelp() {
+    return <Tooltip
+        title="Import and fill out found form fields with metadata from external reference"
+    >
+        <HelpIconStyled/>
+    </Tooltip>
+}
+

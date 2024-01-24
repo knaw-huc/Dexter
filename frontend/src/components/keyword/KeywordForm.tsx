@@ -1,7 +1,7 @@
 import TextField from "@mui/material/TextField"
 import React, {useContext, useState} from "react"
 import {ServerKeyword} from "../../model/DexterModel"
-import {createKeywords, getKeywords} from "../../utils/API"
+import {createKeyword, getKeywords} from "../../utils/API"
 import {errorContext} from "../../state/error/errorContext"
 import {Button, Grid} from "@mui/material"
 
@@ -13,9 +13,9 @@ export function KeywordForm(props: NewKeywordsProps) {
     const {dispatchError} = useContext(errorContext)
     const [keyword, setKeyword] = useState("")
 
-    async function createKeyword() {
+    async function handleCreateKeyword() {
         try {
-            await createKeywords({val: keyword})
+            await createKeyword({val: keyword})
             const all = await getKeywords()
             props.setKeywords(all)
             setKeyword("")
@@ -36,7 +36,7 @@ export function KeywordForm(props: NewKeywordsProps) {
                         onKeyDown={e => {
                             if (e.key === 'Enter') {
                                 e.preventDefault();
-                                createKeyword()
+                                handleCreateKeyword();
                             }
                         }}
                         onChange={e => setKeyword(e.currentTarget.value)}
@@ -45,7 +45,7 @@ export function KeywordForm(props: NewKeywordsProps) {
                 </Grid>
                 <Grid item alignItems="stretch" style={{display: "flex"}}>
                     <Button
-                        onClick={createKeyword}
+                        onClick={handleCreateKeyword}
                         sx={{ml: "0.5em"}}
                         variant="contained"
                     >
