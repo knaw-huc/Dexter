@@ -1,6 +1,12 @@
 # Dexter
 
-This project aims at building a much-needed solution for referencing and for creating analytical annotations around heterogeneous source material (speech data, survey data, audiovisual recordings, photographs, diaries etc.).
+Collect, organize and annotate sources from external digital collections and physical, non-digitized collections in user defined corpora.
+
+_Work in progress_: See the workflow diagram at the bottom for the current status.
+
+## Issues and feature requests
+
+You can create new issues at [Dexter/issues](https://github.com/knaw-huc/Dexter/issues), with a template for bugs and one for features. 
 
 ## Development
 - Checkout development branch.
@@ -28,51 +34,20 @@ npm i
 npm start
 ```
 
-## Demo
 ```shell
-# Add user:
+# Add non-admin user:
 curl -X 'POST' 'http://localhost:8080/admin/users' \
   -H 'Authorization: Basic cm9vdDpkMzNkMzM=' \
   -H 'Content-Type: application/json' \
   -d '["dexter"]'
-
-# Add corpus:
-curl 'http://localhost:8080/api/corpora' -X POST \
-  -H 'Content-Type: application/json' \
-  -H 'Authorization: Basic ZGV4dGVyOmRleHRlcg==' \
-  --data-raw '{
-    "title": "test",
-    "description":"test",
-    "rights":"test",
-    "access":"Open",
-    "location":"test",
-    "earliest":"1990-01-30",
-    "latest":"1990-01-31",
-    "contributor":"test",
-    "notes":"test"
-  }'
-
-# Add source:
-curl 'http://localhost:8080/api/sources' -X POST  \
-  -H 'Content-Type: application/json'  \
-  -H 'Authorization: Basic ZGV4dGVyOmRleHRlcg=='  \
-  --data-raw '{
-    "externalRef":"test",
-    "title":"test",
-    "description":"test",
-    "rights":"test",
-    "access":"Open",
-    "location":"test",
-    "earliest":"1990-01-30",
-    "latest":"1990-01-31",
-    "notes":"test"
-  }'
 ```
 
 - Open http://localhost:3001
 - Login with dexter:dexter
-- Swagger: http://localhost:3001/api/swagger
 
+- Further steps:
+  - Explore [backend API](http://localhost:8080/swagger#/default)
+  - Add languages as documented at [PUT /languages](http://localhost:8080/swagger#/default/seed)
 
 ## Workflow diagram
 
@@ -121,71 +96,4 @@ graph TD
     VCI -.-> |"(must have, possibly after demo)"|ANN[annotate]
     ANN --> ANNT[annotate text in recogito-js]
     ANNT --> WANN[/web annotation/]
-```
-
-## Workflow including search and multimedia annotating
-```mermaid
-graph TD
-    START((start))
-
-    process
-    decision{decision}
-    data[/data/]
-
-    START-->LOGIN[login]-->HOME[view dashboard]
-
-%% virtual collection items:
-    HOME --> CVC[create virtual collection]
-    CVC --> VC[/virtual collection/]
-    VC --> S{search}
-    
-    S --> SI[search image]    
-    S --> ST[search text]
-    S --> SP[search micro-archive]    
-
-%% Search
-    SI-->SIL[/IIIF link/]
-    SIL-->IMIL[paste link in form?]
-    IMIL-->VCI[/virtual collection item/]
-    
-    ST-->STIL[/text-IIIF link/]
-    STIL-->IMTIL[paste link in form?]
-    MAI-->AMAI[add micro-archive item]-->VCI
-
-    SP-->MAI[/micro-archive item/]
-    
-    VCI-->ADBM[add dublin core metadata]-->VCI
-
-%% keyword:
-    HOME --> CKEYWORD[create keyword]
-    CKEYWORD-->KEYWORD[/keyword/]
-    KEYWORD-->AKEYWORD[add keyword]
-    AKEYWORD-->VCI
-
-%% index:
-    HOME --> VVC[view virtual collection]
-    VVC-->VCIX[/virtual collection item index/]
-    VCIX-->SBKEYWORD[sort by keyword]-->VCIX
-    
-    VCIX --> VI[view item]
-    VI-->VCI
-
-%% annotation:
-    VCI --> ANN{annotate}
-    ANN --> TIIIF[/text-IIIF/]-->RJS[recogito-js] --> CWANN[create web annotation]
-    ANN --> IIIF[/IIIF/]-->ANT[annotorious]  --> CWANN
-    ANN --> MAI2[/micro-archive item/]-->WANNF[web annotation form] --> CWANN
-    CWANN --> WAN[/web annotation/]
-
-%% sharing:
-    WAN-->SHAREWAN[share] --> WANL[/web annotation url/]
-    VCI-->SHAREVCI[share] --> VCIL[/stable id url/]
-    
-%% micro-archive
-    HOME-->CMA["create micro-archive (shoe box)"]
-    CMA-->MA[/"micro-archive (shoe box)"/]
-    MA-->CMAI[create micro-archive item]
-    CMAI-->IMMAI[fill out form + TMS import magic?]
-    IMMAI-->MAI[/micro-archive item/]
-
 ```

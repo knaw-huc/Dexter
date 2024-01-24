@@ -1,5 +1,6 @@
 package nl.knaw.huc.dexter.resources
 
+import io.swagger.v3.oas.annotations.Operation
 import nl.knaw.huc.dexter.api.ResourcePaths.AUTOCOMPLETE
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PARAM
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PATH
@@ -15,6 +16,9 @@ import javax.ws.rs.core.MediaType.TEXT_PLAIN
 
 private const val ISO_639_URL = "https://iso639-3.sil.org/code_tables/download_tables"
 
+private const val LANGUAGE_SEED_DESCRIPTION = "You can seed the languages table with the ISO 639-3 Code Set (UTF-8), " +
+        "a tab separated file that you can download (zipped) at $ISO_639_URL."
+
 @Path(LANGUAGES)
 @Produces(APPLICATION_JSON)
 class LanguagesResource(private val jdbi: Jdbi) {
@@ -27,14 +31,11 @@ class LanguagesResource(private val jdbi: Jdbi) {
         "languages" to languages().list()
             .map { it.refName }
             .ifEmpty {
-                throw NotFoundException(
-                    "Please seed with ISO 639-3 Code Set (UTF-8) file. " +
-                            "Get it from $ISO_639_URL and upload using, e.g., " +
-                            "'curl --upload-file iso-639-3.tab <base_uri>/languages'"
-                )
+                throw NotFoundException(LANGUAGE_SEED_DESCRIPTION)
             })
 
     @PUT
+    @Operation(description = LANGUAGE_SEED_DESCRIPTION)
     @Consumes(TEXT_PLAIN)
     fun seed(@NotNull contents: String) =
         contents
