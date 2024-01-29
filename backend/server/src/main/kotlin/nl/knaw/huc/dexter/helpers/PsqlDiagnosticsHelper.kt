@@ -27,6 +27,11 @@ enum class PsqlDiagnosticsHelper(
         "corpora_title_key",
         "Titles MUST be unique",
         includeDetail = true
+    ),
+    METADATA_UNIQUE_KEY_CONSTRAINT(
+        "metadata_keys_key",
+        "Metadata keys MUST be unique",
+        includeDetail = true
     );
 
     companion object {

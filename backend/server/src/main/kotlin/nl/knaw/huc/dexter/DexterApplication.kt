@@ -92,6 +92,8 @@ class DexterApplication : Application<DexterConfiguration>() {
             register(CorporaResource(jdbi))
             register(KeywordsResource(jdbi))
             register(LanguagesResource(jdbi))
+            register(MetadataKeysResource(jdbi))
+            register(MetadataValuesResource(jdbi))
             register(SourcesResource(jdbi))
             register(ImportResource(wereldCulturenDublinCoreMapper))
             register(UserResource())

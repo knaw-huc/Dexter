@@ -51,7 +51,7 @@ curl -X 'POST' 'http://localhost:8080/admin/users' \
 
 ## Workflow diagram
 
-```mermaid
+```mermaid  
 ---
 title: "Workflow of rolodex, 'minimal viable product'"
 ---

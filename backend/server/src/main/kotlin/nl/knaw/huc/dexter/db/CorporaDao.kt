@@ -1,5 +1,6 @@
 package nl.knaw.huc.dexter.db
 
+import ResultMetadataKeyValue
 import nl.knaw.huc.dexter.api.*
 import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.kotlin.BindKotlin
@@ -76,4 +77,18 @@ interface CorporaDao {
 
     @SqlUpdate("delete from corpora_sources where corpus_id = :corpusId and source_id = :sourceId")
     fun deleteSource(corpusId: UUID, sourceId: UUID)
+
+    @SqlQuery("select mk.key as key, mv.value as value, mv.key_id as key_id, mv.id as value_id " +
+            "from metadata_values as mv " +
+            "join metadata_keys mk on mk.id = mv.key_id " +
+            "join corpora_metadata_values cmv on mv.id = cmv.metadata_value_id " +
+            "where cmv.corpus_id=:corpusId")
+    fun getMetadata(corpusId: UUID): List<ResultMetadataKeyValue>
+
+    @SqlUpdate("insert into corpora_metadata_values (corpus_id, metadata_value_id) values (:corpusId, :valueId) on conflict do nothing")
+    fun addMetadataValue(corpusId: UUID, valueId: UUID)
+
+    @SqlUpdate("delete from corpora_metadata_values where corpus_id = :corpusId and metadata_value_id = :valueId")
+    fun deleteMetadataValue(corpusId: UUID, valueId: UUID)
+
 }

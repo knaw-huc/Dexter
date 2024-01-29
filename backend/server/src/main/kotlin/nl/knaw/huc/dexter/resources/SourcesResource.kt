@@ -1,11 +1,14 @@
 package nl.knaw.huc.dexter.resources
 
+import ResultMetadataKeyValue
 import io.dropwizard.auth.Auth
 import nl.knaw.huc.dexter.api.*
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PARAM
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PATH
 import nl.knaw.huc.dexter.api.ResourcePaths.KEYWORDS
 import nl.knaw.huc.dexter.api.ResourcePaths.LANGUAGES
+import nl.knaw.huc.dexter.api.ResourcePaths.METADATA
+import nl.knaw.huc.dexter.api.ResourcePaths.VALUES
 import nl.knaw.huc.dexter.api.ResourcePaths.WITH_RESOURCES
 import nl.knaw.huc.dexter.auth.DexterUser
 import nl.knaw.huc.dexter.auth.RoleNames
@@ -42,7 +45,8 @@ class SourcesResource(private val jdbi: Jdbi) {
                     .map { s ->
                         s.toResultSourceWithResources(
                             dao.getKeywords(s.id),
-                            dao.getLanguages(s.id)
+                            dao.getLanguages(s.id),
+                            dao.getMetadata(s.id)
                         )
                     }
             }
@@ -71,10 +75,10 @@ class SourcesResource(private val jdbi: Jdbi) {
         val found: ResultSource = dao.find(id) ?: sourceNotFound(id)
         return found.toResultSourceWithResources(
             dao.getKeywords(found.id),
-            dao.getLanguages(found.id)
+            dao.getLanguages(found.id),
+            dao.getMetadata(found.id)
         )
     }
-
 
     @POST
     @Consumes(APPLICATION_JSON)
@@ -179,6 +183,37 @@ class SourcesResource(private val jdbi: Jdbi) {
         log.info("deleteLanguage: sourceId=${src.id}, languageId=$languageId")
         dao.deleteLanguage(src.id, languageId)
         dao.getLanguages(src.id)
+    }
+
+    @GET
+    @Path("$ID_PATH/$METADATA/$VALUES")
+    fun getMetadata(@PathParam(ID_PARAM) id: UUID) =
+        onExistingSource(id) { dao, sourceId ->
+            dao.getMetadata(sourceId.id)
+        }
+
+    @POST
+    @Consumes(APPLICATION_JSON)
+    @Path("$ID_PATH/$METADATA/$VALUES")
+    fun addMetadataValues(
+        @PathParam(ID_PARAM) corpusId: UUID,
+        metadataValueIds: List<UUID>
+    ): List<ResultMetadataKeyValue> =
+        onExistingSource(corpusId) { dao, source ->
+            log.info("addMetadataValues: sourceId=${source.id}, metadataValueIds=$metadataValueIds")
+            metadataValueIds.forEach { sourceId -> dao.addMetadataValue(source.id, sourceId) }
+            dao.getMetadata(source.id)
+        }
+
+    @DELETE
+    @Path("$ID_PATH/$METADATA/$VALUES/{metadataValueId}")
+    fun deleteMetadataValues(
+        @PathParam(ID_PARAM) id: UUID,
+        @PathParam("metadataValueId") metadataValueId: UUID
+    ) = onExistingSource(id) { dao, source ->
+        log.info("deleteMetadataValue: sourceId=${source.id}, metadataValueId=$metadataValueId")
+        dao.deleteMetadataValue(source.id, metadataValueId)
+        dao.getMetadata(source.id)
     }
 
     private fun <R> onExistingSource(id: UUID, block: DaoBlock<SourcesDao, ResultSource, R>): R =

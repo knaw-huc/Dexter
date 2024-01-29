@@ -1,12 +1,15 @@
 package nl.knaw.huc.dexter.resources
 
+import ResultMetadataKeyValue
 import io.dropwizard.auth.Auth
 import nl.knaw.huc.dexter.api.*
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PARAM
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PATH
 import nl.knaw.huc.dexter.api.ResourcePaths.KEYWORDS
 import nl.knaw.huc.dexter.api.ResourcePaths.LANGUAGES
+import nl.knaw.huc.dexter.api.ResourcePaths.METADATA
 import nl.knaw.huc.dexter.api.ResourcePaths.SOURCES
+import nl.knaw.huc.dexter.api.ResourcePaths.VALUES
 import nl.knaw.huc.dexter.api.ResourcePaths.WITH_RESOURCES
 import nl.knaw.huc.dexter.auth.DexterUser
 import nl.knaw.huc.dexter.auth.RoleNames
@@ -82,9 +85,11 @@ class CorporaResource(private val jdbi: Jdbi) {
             corporaDao.getSources(found.id).map { s ->
                 s.toResultSourceWithResources(
                     sourcesDao.getKeywords(s.id),
-                    sourcesDao.getLanguages(s.id)
+                    sourcesDao.getLanguages(s.id),
+                    sourcesDao.getMetadata(s.id)
                 )
-            }
+            },
+            corporaDao.getMetadata(found.id)
         )
     }
 
@@ -232,6 +237,37 @@ class CorporaResource(private val jdbi: Jdbi) {
         log.info("deleteSource: corpusId=${corpus.id}, sourceId=$sourceId")
         dao.deleteSource(corpus.id, sourceId)
         dao.getSources(corpus.id)
+    }
+
+    @GET
+    @Path("$ID_PATH/$METADATA/$VALUES")
+    fun getMetadata(@PathParam(ID_PARAM) id: UUID) =
+        onExistingCorpus(id) { dao, corpus ->
+            dao.getMetadata(corpus.id)
+        }
+
+    @POST
+    @Consumes(APPLICATION_JSON)
+    @Path("$ID_PATH/$METADATA/$VALUES")
+    fun addMetadataValues(
+        @PathParam(ID_PARAM) corpusId: UUID,
+        metadataValueIds: List<UUID>
+    ): List<ResultMetadataKeyValue> =
+        onExistingCorpus(corpusId) { dao, corpus ->
+            log.info("addMetadataValues: corpusId=${corpus.id}, metadataValueIds=$metadataValueIds")
+            metadataValueIds.forEach { sourceId -> dao.addMetadataValue(corpus.id, sourceId) }
+            dao.getMetadata(corpus.id)
+        }
+
+    @DELETE
+    @Path("$ID_PATH/$METADATA/$VALUES/{metadataValueId}")
+    fun deleteMetadataValues(
+        @PathParam(ID_PARAM) id: UUID,
+        @PathParam("metadataValueId") metadataValueId: UUID
+    ) = onExistingCorpus(id) { dao, corpus ->
+        log.info("deleteMetadataValue: corpusId=${corpus.id}, metadataValueId=$metadataValueId")
+        dao.deleteMetadataValue(corpus.id, metadataValueId)
+        dao.getMetadata(corpus.id)
     }
 
     private fun <R> onExistingCorpus(id: UUID, block: DaoBlock<CorporaDao, ResultCorpus, R>): R =
