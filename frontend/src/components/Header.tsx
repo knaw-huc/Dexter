@@ -15,7 +15,12 @@ import {userContext} from "../state/user/userContext"
 import {useNavigate} from "react-router-dom"
 import {LoginAvatar} from "./LoginAvatar"
 
-const pages = ["corpora", "sources", "keywords"]
+const pages = [
+    "corpora",
+    "sources",
+    "keywords",
+    "metadata"
+]
 const settings: string[] = []
 
 export default function Header() {

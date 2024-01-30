@@ -205,17 +205,6 @@ class SourcesResource(private val jdbi: Jdbi) {
             dao.getMetadata(source.id)
         }
 
-    @DELETE
-    @Path("$ID_PATH/$METADATA/$VALUES/{metadataValueId}")
-    fun deleteMetadataValues(
-        @PathParam(ID_PARAM) id: UUID,
-        @PathParam("metadataValueId") metadataValueId: UUID
-    ) = onExistingSource(id) { dao, source ->
-        log.info("deleteMetadataValue: sourceId=${source.id}, metadataValueId=$metadataValueId")
-        dao.deleteMetadataValue(source.id, metadataValueId)
-        dao.getMetadata(source.id)
-    }
-
     private fun <R> onExistingSource(id: UUID, block: DaoBlock<SourcesDao, ResultSource, R>): R =
         jdbi.inTransaction<R, Exception>(REPEATABLE_READ) { handle ->
             handle.attach(SourcesDao::class.java).let { dao ->

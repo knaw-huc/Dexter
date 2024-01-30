@@ -259,17 +259,6 @@ class CorporaResource(private val jdbi: Jdbi) {
             dao.getMetadata(corpus.id)
         }
 
-    @DELETE
-    @Path("$ID_PATH/$METADATA/$VALUES/{metadataValueId}")
-    fun deleteMetadataValues(
-        @PathParam(ID_PARAM) id: UUID,
-        @PathParam("metadataValueId") metadataValueId: UUID
-    ) = onExistingCorpus(id) { dao, corpus ->
-        log.info("deleteMetadataValue: corpusId=${corpus.id}, metadataValueId=$metadataValueId")
-        dao.deleteMetadataValue(corpus.id, metadataValueId)
-        dao.getMetadata(corpus.id)
-    }
-
     private fun <R> onExistingCorpus(id: UUID, block: DaoBlock<CorporaDao, ResultCorpus, R>): R =
         jdbi.inTransaction<R, Exception>(REPEATABLE_READ) { handle ->
             handle.attach(CorporaDao::class.java).let { dao ->

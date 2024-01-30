@@ -23,6 +23,9 @@ interface MetadataValuesDao {
     @SqlQuery("update metadata_values set value = :value where id = :id returning *")
     fun update(id: UUID, @BindKotlin metadataValue: FormMetadataValue): ResultMetadataValue
 
+    /**
+     * Cascaded delete also deletes link table entries
+     */
     @SqlUpdate("delete from metadata_values where id = :id")
     fun delete(id: UUID)
 

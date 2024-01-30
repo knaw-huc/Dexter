@@ -1,51 +1,51 @@
 import {grey} from "@mui/material/colors"
-import {Source} from "../../model/DexterModel"
-import {deleteSource} from "../../utils/API"
-import React from "react"
+import {ResultMetadataKey} from "../../model/DexterModel"
+import {deleteMetadataKey, toReadable} from "../../utils/API"
+import React, {ChangeEvent} from "react"
 import {Avatar, ListItemAvatar, ListItemText} from "@mui/material"
 import {useNavigate} from "react-router-dom"
 import {EditIconStyled} from "../common/EditButton"
 import {DeleteIconStyled} from "../common/DeleteIconStyled"
-import {SourceIcon} from "./SourceIcon"
+import {MetadataKeyIcon} from "./MetadataKeyIcon"
 import {ListItemButtonStyled} from "../common/ListItemButtonStyled"
+import {useAsyncError} from "../../utils/useAsyncError"
 
-type SourceItemProps = {
-    source: Source;
-    onDelete: () => void,
-    onEdit: () => void
+type MetadataKeyItemProps = {
+    metadataKey: ResultMetadataKey;
+    onDeleted: () => void,
+    onEditClick: () => void
 };
 
-export const SourceListItem = (props: SourceItemProps) => {
-    const navigate = useNavigate()
+export const MetadataKeyListItem = (props: MetadataKeyItemProps) => {
+    const throwError = useAsyncError()
 
-    function handleSelect() {
-        navigate(`/sources/${props.source.id}`)
-    }
-
-    function handleDelete(e: React.MouseEvent) {
-        e.stopPropagation();
+    async function handleDelete(e: React.MouseEvent) {
+        e.stopPropagation()
         const warning = window.confirm(
-            "Are you sure you wish to delete this source?"
+            "Are you sure you wish to delete this metadata field?"
         )
 
         if (warning === false) return
 
-        deleteSource(props.source.id).then(() => props.onDelete())
-        props.onDelete()
+        await deleteMetadataKey(props.metadataKey.id)
+            .then(props.onDeleted)
+            .catch(async e => {
+                throwError(await toReadable('Could not delete field', e))
+            })
     }
 
-    function handleEdit(e: MouseEvent) {
+    function handleEditClick(e: ChangeEvent<HTMLInputElement>) {
         e.stopPropagation()
-        props.onEdit()
+        props.onEditClick()
     }
 
     return <ListItemButtonStyled
-        onClick={handleSelect}
+        onClick={props.onEditClick}
         secondaryAction={
             <span style={{color: grey[500]}}>
                 <EditIconStyled
                     hoverColor="black"
-                    onClick={handleEdit}
+                    onClick={handleEditClick}
                 />
                 <DeleteIconStyled
                     onClick={handleDelete}
@@ -58,15 +58,14 @@ export const SourceListItem = (props: SourceItemProps) => {
             sx={{ml: "1em"}}
         >
             <Avatar>
-                <SourceIcon
+                <MetadataKeyIcon
                     iconColor="white"
                     isInline={false}
-                    filled={true}
                 />
             </Avatar>
         </ListItemAvatar>
         <ListItemText>
-            {props.source.title}
+            {props.metadataKey.key}
         </ListItemText>
     </ListItemButtonStyled>
 }

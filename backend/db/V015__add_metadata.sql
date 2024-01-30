@@ -15,7 +15,7 @@ create table metadata_values
 
 create table sources_metadata_values
 (
-    metadata_value_id uuid references metadata_values (id),
+    metadata_value_id uuid references metadata_values (id) on delete cascade,
     source_id uuid references sources (id),
     unique (metadata_value_id, source_id)
 );
@@ -23,7 +23,7 @@ create index on sources_metadata_values (source_id, metadata_value_id);
 
 create table corpora_metadata_values
 (
-    metadata_value_id uuid references metadata_values (id),
+    metadata_value_id uuid references metadata_values (id) on delete cascade,
     corpus_id uuid references corpora (id),
     unique (metadata_value_id, corpus_id)
 );

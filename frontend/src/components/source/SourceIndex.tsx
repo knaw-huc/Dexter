@@ -1,15 +1,12 @@
 import React, {useContext, useEffect, useState} from "react"
 import {Source} from "../../model/DexterModel"
 import {SourceListItem} from "./SourceListItem"
-import styled from "@emotion/styled"
 import {getSourcesWithResources} from "../../utils/API"
 import {SourceForm} from "./SourceForm"
-import {AddNewSourceButton} from "./AddNewSourceButton"
+import {AddNewResourceButton} from "./AddNewResourceButton"
 import {List} from "@mui/material"
 import {errorContext} from "../../state/error/errorContext"
 import {HeaderBreadCrumb} from "../common/breadcrumb/HeaderBreadCrumb"
-import Typography from "@mui/material/Typography"
-import {LastBreadCrumb} from "../common/breadcrumb/LastBreadCrumb"
 
 export function SourceIndex() {
     const [showForm, setShowForm] = React.useState(false)
@@ -61,7 +58,8 @@ export function SourceIndex() {
             <HeaderBreadCrumb />
 
             <div style={{float: "right"}}>
-                <AddNewSourceButton
+                <AddNewResourceButton
+                    title="New source"
                     onClick={() => setShowForm(true)}
                 />
             </div>

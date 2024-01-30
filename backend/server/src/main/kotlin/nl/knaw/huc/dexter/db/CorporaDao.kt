@@ -88,7 +88,4 @@ interface CorporaDao {
     @SqlUpdate("insert into corpora_metadata_values (corpus_id, metadata_value_id) values (:corpusId, :valueId) on conflict do nothing")
     fun addMetadataValue(corpusId: UUID, valueId: UUID)
 
-    @SqlUpdate("delete from corpora_metadata_values where corpus_id = :corpusId and metadata_value_id = :valueId")
-    fun deleteMetadataValue(corpusId: UUID, valueId: UUID)
-
 }

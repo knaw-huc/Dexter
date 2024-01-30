@@ -1,0 +1,4 @@
+/* Hide error overlay */
+iframe {
+    display: none;
+}

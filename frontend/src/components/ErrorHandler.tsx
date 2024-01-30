@@ -1,6 +1,10 @@
 import React, {Component, PropsWithChildren} from "react"
 import {Alert} from "@mui/material"
 
+export type ErrorWithMessage = {
+    message: string
+}
+
 type ErrorBoundaryProps = PropsWithChildren & {
     error: Error
 }

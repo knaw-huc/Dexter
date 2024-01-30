@@ -1,3 +1,5 @@
+import {ResultDublinCoreMetadata} from "../utils/API"
+
 export type UUID = string;
 export type LocalDate = string;
 export type LocalDateTime = string;
@@ -111,8 +113,29 @@ export enum Access {
 }
 export const AccessOptions = ["Open", "Restricted", "Closed"]
 
-export interface FormKeyword {
+export type FormKeyword = {
     val: string;
+}
+
+export type ResultMetadataKey = {
+    id: UUID,
+    key: string
+}
+
+export type FormMetadataKey = {
+    key: string
+}
+
+export interface ResultMetadataValue {
+    id: UUID,
+    keyId: UUID,
+    value: string,
+    createdBy: UUID
+}
+
+export type ImportResult = {
+    isValidExternalReference: boolean;
+    imported?: ResultDublinCoreMetadata
 }
 
 export interface ServerLanguage {

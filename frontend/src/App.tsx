@@ -8,7 +8,8 @@ import {KeywordsPage} from "./components/keyword/KeywordsPage"
 import {SourcePage} from "./components/source/SourcePage"
 import {Providers} from "./Providers"
 import {SourceIndex} from "./components/source/SourceIndex"
-
+import {MetadataKeyIndex} from "./components/metadata/MetadataKeyIndex"
+import './App.css'
 export function App() {
     return <>
         <CssBaseline/>
@@ -21,6 +22,7 @@ export function App() {
                     <Route path="/sources" element={<SourceIndex/>}/>
                     <Route path="/sources/:sourceId" element={<SourcePage/>}/>
                     <Route path="/keywords" element={<KeywordsPage/>}/>
+                    <Route path="/metadata" element={<MetadataKeyIndex />}/>
                     <Route path="*" element={<p>Page not found... <a href="/">Homepage &gt;</a></p>}/>
                 </Route>
             </Routes>

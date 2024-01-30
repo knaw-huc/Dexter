@@ -68,6 +68,4 @@ interface SourcesDao {
     @SqlUpdate("insert into sources_metadata_values (source_id, metadata_value_id) values (:sourceId, :valueId) on conflict do nothing")
     fun addMetadataValue(sourceId: UUID, valueId: UUID)
 
-    @SqlUpdate("delete from sources_metadata_values where source_id = :sourceId and metadata_value_id = :valueId")
-    fun deleteMetadataValue(sourceId: UUID, valueId: UUID)
 }

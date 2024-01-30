@@ -61,7 +61,7 @@ export type GenericFormError = Pick<Error, "message">
 export type FormField = string | "generic"
 export type ErrorByField = { field: FormField, error: GenericFormError }
 type DispatchError = Dispatch<SetStateAction<ErrorByField>>
-const GENERIC = "generic"
+export const GENERIC = "generic"
 
 export function scrollToError() {
     document

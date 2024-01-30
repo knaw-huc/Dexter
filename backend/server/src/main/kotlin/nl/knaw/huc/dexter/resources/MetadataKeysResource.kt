@@ -7,6 +7,8 @@ import nl.knaw.huc.dexter.api.ResourcePaths
 import nl.knaw.huc.dexter.api.ResourcePaths.AUTOCOMPLETE
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PARAM
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PATH
+import nl.knaw.huc.dexter.api.ResourcePaths.KEYS
+import nl.knaw.huc.dexter.api.ResourcePaths.METADATA
 import nl.knaw.huc.dexter.api.ResultSource
 import nl.knaw.huc.dexter.auth.DexterUser
 import nl.knaw.huc.dexter.db.DaoBlock
@@ -22,13 +24,15 @@ import javax.ws.rs.*
 import javax.ws.rs.core.MediaType.APPLICATION_JSON
 import javax.ws.rs.core.Response
 
-@Path("${ResourcePaths.METADATA}/${ResourcePaths.KEYS}")
+@Path("$METADATA/$KEYS")
 @Produces(APPLICATION_JSON)
 class MetadataKeysResource(private val jdbi: Jdbi) {
     private val log = LoggerFactory.getLogger(javaClass)
 
     @GET
-    fun list() = metadataKeys().list()
+    fun list(): List<ResultMetadataKey> {
+        return metadataKeys().list()
+    }
 
     @GET
     @Path(ID_PATH)

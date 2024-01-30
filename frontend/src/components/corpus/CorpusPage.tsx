@@ -15,7 +15,7 @@ import {Languages} from "../language/Languages"
 import {SourcePreview} from "../source/SourcePreview"
 import {SourceForm} from "../source/SourceForm"
 import {EditButton} from "../common/EditButton"
-import {AddNewSourceButton} from "../source/AddNewSourceButton"
+import {AddNewResourceButton} from "../source/AddNewResourceButton"
 import {LinkSourceButton} from "../source/LinkSourceButton"
 import {LinkSourceForm} from "./LinkSourceForm"
 import _ from "lodash"
@@ -171,7 +171,10 @@ export const CorpusPage = () => {
                     <h2>Sources</h2>
                     <Grid container spacing={2}>
                         <Grid item xs={6} md={4}>
-                            <AddNewSourceButton onClick={() => setShowSourceForm(true)}/>
+                            <AddNewResourceButton
+                                title="New source"
+                                onClick={() => setShowSourceForm(true)}
+                            />
                             <LinkSourceButton onClick={() => setShowLinkSourceForm(true)}/>
                         </Grid>
                         <Grid item xs={6} md={8}>

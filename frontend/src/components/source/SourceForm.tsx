@@ -2,7 +2,7 @@ import {yupResolver} from "@hookform/resolvers/yup"
 import React, {useEffect, useState} from "react"
 import {useForm} from "react-hook-form"
 import * as yup from "yup"
-import {AccessOptions, Source, SourceFormSubmit, UUID} from "../../model/DexterModel"
+import {AccessOptions, ImportResult, Source, SourceFormSubmit, UUID} from "../../model/DexterModel"
 import {
     addKeywordsToSource,
     addLanguagesToSource,
@@ -11,7 +11,6 @@ import {
     deleteKeywordFromSource,
     deleteLanguageFromSource,
     getSourceWithResourcesById,
-    ImportResult,
     postImport,
     updateSource,
 } from "../../utils/API"
