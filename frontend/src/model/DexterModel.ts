@@ -48,7 +48,7 @@ export type Corpus = Omit<ServerResultCorpus, "parentId"> & {
     keywords: ServerKeyword[];
     languages: ServerLanguage[];
     sources: Source[];
-    metadataValues: ResultMetadataValue[];
+    metadataValues: MetadataValue[];
 }
 
 /**
@@ -82,7 +82,7 @@ export type ServerResultSource = {
 export type Source = ServerResultSource & {
     keywords: ServerKeyword[];
     languages: ServerLanguage[];
-    metadataValues: ResultMetadataValue[];
+    metadataValues: MetadataValue[];
 }
 
 /**
@@ -140,8 +140,12 @@ export type ResultMetadataValue = {
     createdBy: UUID
 }
 
-export function toFormMetadataValue(value: ResultMetadataValue): FormMetadataValue {
-    return {value: value.value, keyId: value.keyId}
+export type MetadataValue = Omit<ResultMetadataValue, "keyId"> & {
+    key: ResultMetadataKey
+}
+
+export function toFormMetadataValue(value: MetadataValue): FormMetadataValue {
+    return {value: value.value, keyId: value.key.id}
 }
 
 export type ImportResult = {

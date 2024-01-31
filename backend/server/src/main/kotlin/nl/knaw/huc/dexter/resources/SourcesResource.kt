@@ -1,6 +1,7 @@
 package nl.knaw.huc.dexter.resources
 
 import ResultMetadataValue
+import ResultMetadataValueWithResources
 import io.dropwizard.auth.Auth
 import nl.knaw.huc.dexter.api.*
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PARAM
@@ -13,12 +14,15 @@ import nl.knaw.huc.dexter.api.ResourcePaths.WITH_RESOURCES
 import nl.knaw.huc.dexter.auth.DexterUser
 import nl.knaw.huc.dexter.auth.RoleNames
 import nl.knaw.huc.dexter.db.DaoBlock
+import nl.knaw.huc.dexter.db.MetadataKeysDao
 import nl.knaw.huc.dexter.db.SourcesDao
 import nl.knaw.huc.dexter.db.UsersDao
 import nl.knaw.huc.dexter.helpers.PsqlDiagnosticsHelper.Companion.diagnoseViolations
+import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel.REPEATABLE_READ
 import org.slf4j.LoggerFactory
+import toResultMetadataValueWithResources
 import java.util.*
 import javax.annotation.security.RolesAllowed
 import javax.ws.rs.*
@@ -40,15 +44,30 @@ class SourcesResource(private val jdbi: Jdbi) {
     fun getSourceWithResourcesList(): List<ResultSourceWithResources> {
         log.info("get all sources with resources")
         return jdbi.inTransaction<List<ResultSourceWithResources>, Exception>(REPEATABLE_READ) { handle ->
-            handle.attach(SourcesDao::class.java).let { dao ->
-                dao.list()
+            handle.attach(SourcesDao::class.java).let { sourceDao ->
+                sourceDao.list()
                     .map { s ->
                         s.toResultSourceWithResources(
-                            dao.getKeywords(s.id),
-                            dao.getLanguages(s.id),
-                            dao.getMetadataValues(s.id)
+                            sourceDao.getKeywords(s.id),
+                            sourceDao.getLanguages(s.id),
+                            getMetadataValueWithResources(s, handle)
                         )
                     }
+            }
+        }
+    }
+
+    private fun getMetadataValueWithResources(
+        source: ResultSource,
+        handle: Handle
+    ): List<ResultMetadataValueWithResources> {
+        return handle.attach(SourcesDao::class.java).let { sourceDao ->
+            sourceDao.getMetadataValues(source.id).map { v ->
+                handle.attach(MetadataKeysDao::class.java).let { keysDao ->
+                    v.toResultMetadataValueWithResources(
+                        keysDao.find(v.keyId) ?: throw NotFoundException("Unknown key: ${v.keyId}")
+                    )
+                }
             }
         }
     }
@@ -63,21 +82,23 @@ class SourcesResource(private val jdbi: Jdbi) {
         log.info("get source $id with resources")
         return jdbi.inTransaction<ResultSourceWithResources, Exception>(REPEATABLE_READ) { handle ->
             handle.attach(SourcesDao::class.java).let { dao ->
-                findSourceWithResources(dao, id)
+                findSourceWithResources(id, handle)
             }
         }
     }
 
     private fun findSourceWithResources(
-        dao: SourcesDao,
-        id: UUID
+        id: UUID,
+        handle: Handle
     ): ResultSourceWithResources {
-        val found: ResultSource = dao.find(id) ?: sourceNotFound(id)
-        return found.toResultSourceWithResources(
-            dao.getKeywords(found.id),
-            dao.getLanguages(found.id),
-            dao.getMetadataValues(found.id)
-        )
+        handle.attach(SourcesDao::class.java).let { sourceDao ->
+            val found: ResultSource = sourceDao.find(id) ?: sourceNotFound(id)
+            return found.toResultSourceWithResources(
+                sourceDao.getKeywords(found.id),
+                sourceDao.getLanguages(found.id),
+                getMetadataValueWithResources(found, handle)
+            )
+        }
     }
 
     @POST

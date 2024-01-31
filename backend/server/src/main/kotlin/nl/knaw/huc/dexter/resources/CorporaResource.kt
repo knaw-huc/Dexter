@@ -13,14 +13,13 @@ import nl.knaw.huc.dexter.api.ResourcePaths.VALUES
 import nl.knaw.huc.dexter.api.ResourcePaths.WITH_RESOURCES
 import nl.knaw.huc.dexter.auth.DexterUser
 import nl.knaw.huc.dexter.auth.RoleNames
-import nl.knaw.huc.dexter.db.CorporaDao
-import nl.knaw.huc.dexter.db.DaoBlock
-import nl.knaw.huc.dexter.db.SourcesDao
-import nl.knaw.huc.dexter.db.UsersDao
+import nl.knaw.huc.dexter.db.*
 import nl.knaw.huc.dexter.helpers.PsqlDiagnosticsHelper.Companion.diagnoseViolations
+import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel.REPEATABLE_READ
 import org.slf4j.LoggerFactory
+import toResultMetadataValueWithResources
 import java.util.*
 import javax.annotation.security.RolesAllowed
 import javax.ws.rs.*
@@ -47,7 +46,7 @@ class CorporaResource(private val jdbi: Jdbi) {
             handle.attach(CorporaDao::class.java).let { corporaDao ->
                 handle.attach(SourcesDao::class.java).let { sourcesDao ->
                     corporaDao.list().map { c ->
-;                        findCorpusWithResources(corporaDao, sourcesDao, c.id)
+                        ; getCorpusWithResources(c.id, handle)
                     }
                 }
             }
@@ -64,35 +63,58 @@ class CorporaResource(private val jdbi: Jdbi) {
     fun findCorpusWithResources(@PathParam(ID_PARAM) id: UUID): ResultCorpusWithResources {
         log.info("get corpus $id with resources")
         return jdbi.inTransaction<ResultCorpusWithResources, Exception>(REPEATABLE_READ) { handle ->
-            handle.attach(CorporaDao::class.java).let { corpusDao ->
-                handle.attach(SourcesDao::class.java).let { sourceDao ->
-                    findCorpusWithResources(corpusDao, sourceDao, id)
-                }
+            getCorpusWithResources(id, handle)
+        }
+    }
+
+    private fun getCorpusWithResources(
+        corpus: UUID,
+        handle: Handle
+    ): ResultCorpusWithResources {
+        handle.attach(CorporaDao::class.java).let { corporaDao ->
+            handle.attach(SourcesDao::class.java).let { sourcesDao ->
+                val found = corporaDao.find(corpus) ?: corpusNotFound(corpus)
+                return found.toResultCorpusWithResources(
+                    if (found.parentId != null) corporaDao.find(found.parentId) else null,
+                    corporaDao.getKeywords(found.id),
+                    corporaDao.getLanguages(found.id),
+                    corporaDao.getSources(found.id).map { s ->
+                        s.toResultSourceWithResources(
+                            sourcesDao.getKeywords(s.id),
+                            sourcesDao.getLanguages(s.id),
+                            getSourceMetadataValueWithResources(s, handle)
+                        )
+                    },
+                    getCorpusMetadataValueWithResources(found, handle)
+                )
             }
         }
     }
 
-    private fun findCorpusWithResources(
-        corporaDao: CorporaDao,
-        sourcesDao: SourcesDao,
-        id: UUID
-    ): ResultCorpusWithResources {
-        val found = corporaDao.find(id) ?: corpusNotFound(id)
-        return found.toResultCorpusWithResources(
-            if (found.parentId != null) corporaDao.find(found.parentId) else null,
-            corporaDao.getKeywords(found.id),
-            corporaDao.getLanguages(found.id),
-            corporaDao.getSources(found.id).map { s ->
-                s.toResultSourceWithResources(
-                    sourcesDao.getKeywords(s.id),
-                    sourcesDao.getLanguages(s.id),
-                    sourcesDao.getMetadataValues(s.id)
-                )
-            },
-            corporaDao.getMetadataValue(found.id)
-        )
+    private fun getCorpusMetadataValueWithResources(
+        corpus: ResultCorpus,
+        handle: Handle
+    ) = handle.attach(CorporaDao::class.java).let { corpusDao ->
+        corpusDao.getMetadataValues(corpus.id).map { v ->
+            getMetadataValueWithResources(handle, v)
+        }
     }
 
+    private fun getSourceMetadataValueWithResources(
+        source: ResultSource,
+        handle: Handle
+    ) = handle.attach(SourcesDao::class.java).let { sourceDao ->
+        sourceDao.getMetadataValues(source.id).map { v ->
+            getMetadataValueWithResources(handle, v)
+        }
+    }
+
+    private fun getMetadataValueWithResources(handle: Handle, v: ResultMetadataValue) =
+        handle.attach(MetadataKeysDao::class.java).let { keysDao ->
+            v.toResultMetadataValueWithResources(
+                keysDao.find(v.keyId) ?: throw NotFoundException("Unknown key: ${v.keyId}")
+            )
+        }
 
     @POST
     @Consumes(APPLICATION_JSON)
@@ -243,7 +265,7 @@ class CorporaResource(private val jdbi: Jdbi) {
     @Path("$ID_PATH/$METADATA/$VALUES")
     fun getMetadata(@PathParam(ID_PARAM) id: UUID) =
         onExistingCorpus(id) { dao, corpus ->
-            dao.getMetadataValue(corpus.id)
+            dao.getMetadataValues(corpus.id)
         }
 
     @POST
@@ -256,7 +278,7 @@ class CorporaResource(private val jdbi: Jdbi) {
         onExistingCorpus(corpusId) { dao, corpus ->
             log.info("addMetadataValues: corpusId=${corpus.id}, metadataValueIds=$metadataValueIds")
             metadataValueIds.forEach { sourceId -> dao.addMetadataValue(corpus.id, sourceId) }
-            dao.getMetadataValue(corpus.id)
+            dao.getMetadataValues(corpus.id)
         }
 
     private fun <R> onExistingCorpus(id: UUID, block: DaoBlock<CorporaDao, ResultCorpus, R>): R =

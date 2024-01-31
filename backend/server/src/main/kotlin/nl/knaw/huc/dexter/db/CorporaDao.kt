@@ -82,7 +82,7 @@ interface CorporaDao {
             "from metadata_values as mv " +
             "join corpora_metadata_values cmv on mv.id = cmv.metadata_value_id " +
             "where cmv.corpus_id=:corpusId")
-    fun getMetadataValue(corpusId: UUID): List<ResultMetadataValue>
+    fun getMetadataValues(corpusId: UUID): List<ResultMetadataValue>
 
     @SqlUpdate("insert into corpora_metadata_values (corpus_id, metadata_value_id) values (:corpusId, :valueId) on conflict do nothing")
     fun addMetadataValue(corpusId: UUID, valueId: UUID)

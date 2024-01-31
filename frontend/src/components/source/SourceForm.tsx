@@ -1,11 +1,11 @@
 import {yupResolver} from "@hookform/resolvers/yup"
-import React, {ChangeEvent, useEffect, useState} from "react"
+import React, {useEffect, useState} from "react"
 import {useForm} from "react-hook-form"
 import * as yup from "yup"
 import {
     AccessOptions,
     FormMetadataValue,
-    ImportResult,
+    ImportResult, MetadataValue,
     ResultMetadataKey,
     ResultMetadataValue,
     Source,
@@ -43,11 +43,8 @@ import {SubmitButton} from "../common/SubmitButton"
 import {ImportField} from "./ImportField"
 import {updateRemoteIds} from "../../utils/updateRemoteIds"
 import _ from "lodash"
-import MenuItem from "@mui/material/MenuItem"
-import {Button, FormControl, Select} from "@mui/material"
-import {InputButtonGrid} from "../common/InputButtonGrid"
-import TextField from "@mui/material/TextField"
-import {DeleteIconStyled} from "../common/DeleteIconStyled"
+import {MetadataValueFormFields} from "../common/MetadataValueFormFields"
+import {MetadataValuePageFields} from "../common/MetadataValuePageFields"
 
 const formFields = [
     "externalRef",
@@ -97,9 +94,31 @@ export function SourceForm(props: SourceFormProps) {
     const externalRef = watch("externalRef")
     const debouncedExternalRef = useDebounce<string>(externalRef, 500)
     const [fieldError, setFieldError] = useState<ErrorByField>()
-
     const [keys, setKeys] = useState<ResultMetadataKey[]>([])
     const [values, setValues] = useState<FormMetadataValue[]>([])
+
+    useEffect(() => {
+        init()
+
+        async function init() {
+            setKeys(await getMetadataKeys())
+
+            if (props.sourceToEdit) {
+                formFields.map((field: keyof Source) => {
+                    setValue(field, props.sourceToEdit[field])
+                })
+                const formValues = props.sourceToEdit.metadataValues.map(toFormMetadataValue)
+                setValues(formValues)
+            }
+        }
+    }, [props.sourceToEdit, setValue])
+
+    useEffect(() => {
+        if (fieldError) {
+            console.error('field error:', fieldError)
+            scrollToError()
+        }
+    }, [fieldError])
 
     async function handleImportMetadata() {
         const warning = window.confirm(
@@ -151,7 +170,7 @@ export function SourceForm(props: SourceFormProps) {
     }
 
     async function submitMetadataValues() {
-        const toCreate = !props.sourceToEdit
+        const toCreate = props.sourceToEdit
             ? values.filter(v => !findSourceValue(v))
             : values
         const toUpdate = props.sourceToEdit
@@ -160,6 +179,15 @@ export function SourceForm(props: SourceFormProps) {
         const updated = await updateMetadataValues(toUpdate)
         const created = await createMetadataValues(toCreate)
         return [...updated, ...created]
+            .map(toValueWithResources)
+    }
+
+    function toValueWithResources(value: ResultMetadataValue): MetadataValue {
+        const {keyId, ...result} = value;
+        return {
+            ...result,
+            key: keys.find(k => k.id === keyId)
+        }
     }
 
     async function updateMetadataValues(
@@ -181,7 +209,8 @@ export function SourceForm(props: SourceFormProps) {
     }
 
     function findSourceValue(v: FormMetadataValue) {
-        return props.sourceToEdit.metadataValues.find(sv => sv.keyId === v.keyId)
+        return props.sourceToEdit.metadataValues
+            .find(sv => sv.key.id === v.keyId)
     }
 
     async function updateChildResources(id: UUID, data: SourceFormSubmit) {
@@ -189,7 +218,6 @@ export function SourceForm(props: SourceFormProps) {
         await updateRemoteIds(id, data.languages, addLanguagesToSource, deleteLanguageFromSource)
         await updateRemoteIds(id, data.metadataValues, addMetadataValueToSource, deleteMetadataValueFromSource)
     }
-
 
     async function updateExistingSource(
         data: SourceFormSubmit
@@ -209,29 +237,6 @@ export function SourceForm(props: SourceFormProps) {
         }
         return sourceId
     }
-
-    useEffect(() => {
-        if (fieldError) {
-            console.error('field error:', fieldError)
-            scrollToError()
-        }
-    }, [fieldError])
-
-
-    useEffect(() => {
-        init()
-
-        async function init() {
-            setKeys(await getMetadataKeys())
-
-            if (props.sourceToEdit) {
-                formFields.map((field: keyof Source) => {
-                    setValue(field, props.sourceToEdit[field])
-                })
-                setValues(props.sourceToEdit.metadataValues.map(toFormMetadataValue))
-            }
-        }
-    }, [props.sourceToEdit, setValue])
 
     function getErrorMessage(field: keyof Source): string | undefined {
         if (errors[field]?.message) {
@@ -318,7 +323,7 @@ export function SourceForm(props: SourceFormProps) {
             />
             <ErrorMsg msg={getErrorMessage("languages")}/>
 
-            <SourceMetadataValueFields
+            <MetadataValueFormFields
                 keys={keys}
                 values={values}
                 onChange={setValues}
@@ -335,105 +340,3 @@ function isImportableUrl(externalRef?: string): boolean {
     return IMPORTABLE_URL.test(externalRef)
 }
 
-
-type SourceMetadataValueFieldsProps = {
-    keys: ResultMetadataKey[],
-    values: FormMetadataValue[]
-    onChange: (values: FormMetadataValue[]) => void
-}
-
-const NONE_SELECTED = "none-selected"
-
-export function SourceMetadataValueFields(props: SourceMetadataValueFieldsProps) {
-
-    const [selectedKeyId, setSelectedKeyId] = useState(NONE_SELECTED)
-    const [formValues, setFormValues] = useState(props.values)
-    const debouncedFormValues = useDebounce(formValues)
-
-    async function handleCreateField() {
-        console.log("Create metadata value field", selectedKeyId)
-        const created = await createMetadataValue({
-            keyId: selectedKeyId,
-            value: ""
-        })
-        const update = [...formValues, created]
-        setSelectedKeyId(NONE_SELECTED)
-        setFormValues(update)
-    }
-
-    async function handleDelete(toDelete: FormMetadataValue) {
-        const update = formValues.filter(v => v.keyId !== toDelete.keyId)
-        setSelectedKeyId(NONE_SELECTED)
-        setFormValues(update)
-    }
-
-    useEffect(() => {
-        handleDebouncedFormValueChange()
-
-        async function handleDebouncedFormValueChange() {
-            if (!debouncedFormValues) {
-                return
-            }
-            props.onChange(debouncedFormValues)
-        }
-    }, [debouncedFormValues])
-
-    function handleChangeFormValue(
-        changed: FormMetadataValue,
-        event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-    ) {
-        const update = formValues?.map(fv => fv.keyId === changed.keyId ? {
-            keyId: changed.keyId,
-            value: event.target.value
-        } : fv)
-        setFormValues(update)
-    }
-
-    return <>
-        <FormControl fullWidth>
-            <Label>Metadata</Label>
-            <InputButtonGrid
-                input={
-                    <Select
-                        labelId="metadata-field-select-label"
-                        fullWidth
-                        value={selectedKeyId}
-                        onChange={e => setSelectedKeyId(e.target.value)}
-                    >
-                        <MenuItem value={NONE_SELECTED}>Select a metadata field</MenuItem>
-                        {props.keys.map((k, i) =>
-                            <MenuItem key={i} value={k.id}>
-                                {k.key}
-                            </MenuItem>
-                        )}
-                    </Select>
-                }
-                button={
-                    <Button
-                        disabled={selectedKeyId === NONE_SELECTED}
-                        fullWidth
-                        variant="contained"
-                        onClick={handleCreateField}
-                    >
-                        Add
-                    </Button>
-                }
-            />
-            {formValues.map((value, i) => <div key={i}>
-                <Label>{props.keys.find(k => k.id === value.keyId).key}</Label>
-                <TextField
-                    fullWidth
-                    variant="outlined"
-                    value={value.value}
-                    onChange={e => handleChangeFormValue(value, e)}
-                    autoFocus
-                    InputProps={{
-                        endAdornment: <DeleteIconStyled
-                            onClick={() => handleDelete(value)}
-                        />,
-                    }}
-                />
-            </div>)}
-        </FormControl>
-    </>
-}

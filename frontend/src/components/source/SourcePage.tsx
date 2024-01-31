@@ -16,6 +16,7 @@ import {blue, grey} from "@mui/material/colors"
 import isUrl from "../../utils/isUrl"
 import OpenInNewOutlinedIcon from "@mui/icons-material/OpenInNewOutlined"
 import styled from "@emotion/styled"
+import {MetadataValuePageFields} from "../common/MetadataValuePageFields"
 
 const OpenInNewOutlinedIconStyled = styled(OpenInNewOutlinedIcon)`
   margin-left: 0.4em;
@@ -101,8 +102,12 @@ export const SourcePage = () => {
                         <h2>Notes</h2>
                         <p>{source.notes}</p>
                     </>}
+                    <MetadataValuePageFields
+                        values={source.metadataValues}
+                    />
+
                     {!_.isEmpty(source.languages) && <div>
-                        <h4>Languages:</h4>
+                        <h4>Languages</h4>
                         <Languages
                             languages={source.languages}
                             onDelete={handleDeleteLanguage}
