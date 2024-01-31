@@ -61,11 +61,11 @@ interface SourcesDao {
 
     @SqlQuery("select mv.id as id, mv.key_id as key_id, mv.value as value " +
             "from metadata_values as mv " +
-            "join sources_metadata_values smv on mv.id = smv.metadata_value_id " +
+            "join metadata_values_sources_corpora smv on mv.id = smv.metadata_value_id " +
             "where smv.source_id=:sourceId")
     fun getMetadataValues(sourceId: UUID): List<ResultMetadataValue>
 
-    @SqlUpdate("insert into sources_metadata_values (source_id, metadata_value_id) values (:sourceId, :valueId) on conflict do nothing")
+    @SqlUpdate("insert into metadata_values_sources_corpora (source_id, metadata_value_id) values (:sourceId, :valueId) on conflict do nothing")
     fun addMetadataValue(sourceId: UUID, valueId: UUID)
 
     companion object {

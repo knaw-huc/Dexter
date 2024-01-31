@@ -13,18 +13,12 @@ create table metadata_values
     created_by uuid not null references users (id)
 );
 
-create table sources_metadata_values
+create table metadata_values_sources_corpora
 (
-    metadata_value_id uuid references metadata_values (id) on delete cascade,
+    metadata_value_id
+        uuid references metadata_values (id)
+        on delete cascade
+        constraint one_source_or_corpus_per_value unique,
     source_id uuid references sources (id),
-    unique (metadata_value_id, source_id)
+    corpus_id uuid references corpora (id)
 );
-create index on sources_metadata_values (source_id, metadata_value_id);
-
-create table corpora_metadata_values
-(
-    metadata_value_id uuid references metadata_values (id) on delete cascade,
-    corpus_id uuid references corpora (id),
-    unique (metadata_value_id, corpus_id)
-);
-create index on corpora_metadata_values (corpus_id, metadata_value_id);
