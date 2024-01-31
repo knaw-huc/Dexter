@@ -64,12 +64,14 @@ export function MetadataValueFormFields(props: MetadataValueFormFieldsProps) {
                         value={selectedKeyId}
                         onChange={e => setSelectedKeyId(e.target.value)}
                     >
-                        <MenuItem value={NONE_SELECTED}>Select a metadata field</MenuItem>
-                        {props.keys.map((k, i) =>
-                            <MenuItem key={i} value={k.id}>
-                                {k.key}
-                            </MenuItem>
-                        )}
+                        <MenuItem value={NONE_SELECTED}>Select a custom metadata field</MenuItem>
+                        {props.keys
+                            .filter(k => !props.values.find(v => v.keyId === k.id))
+                            .map((k, i) =>
+                                <MenuItem key={i} value={k.id}>
+                                    {k.key}
+                                </MenuItem>
+                            )}
                     </Select>
                 }
                 button={
