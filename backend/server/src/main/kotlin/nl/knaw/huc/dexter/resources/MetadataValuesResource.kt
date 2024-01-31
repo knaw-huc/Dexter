@@ -7,6 +7,8 @@ import nl.knaw.huc.dexter.api.ResourcePaths
 import nl.knaw.huc.dexter.api.ResourcePaths.AUTOCOMPLETE
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PARAM
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PATH
+import nl.knaw.huc.dexter.api.ResourcePaths.METADATA
+import nl.knaw.huc.dexter.api.ResourcePaths.VALUES
 import nl.knaw.huc.dexter.api.ResourcePaths.WITH_RESOURCES
 import nl.knaw.huc.dexter.auth.DexterUser
 import nl.knaw.huc.dexter.db.DaoBlock
@@ -21,7 +23,7 @@ import javax.ws.rs.*
 import javax.ws.rs.core.MediaType.APPLICATION_JSON
 import javax.ws.rs.core.Response
 
-@Path("${ResourcePaths.METADATA}/${ResourcePaths.VALUES}")
+@Path("$METADATA/$VALUES")
 @Produces(APPLICATION_JSON)
 class MetadataValuesResource(private val jdbi: Jdbi) {
     private val log = LoggerFactory.getLogger(javaClass)
@@ -49,10 +51,13 @@ class MetadataValuesResource(private val jdbi: Jdbi) {
 
     @PUT
     @Path(ID_PATH)
-    fun updateMetadataValue(@PathParam(ID_PARAM) id: UUID, formMetadataValue: FormMetadataValue): ResultMetadataValue =
-        onExistingMetadataValue(id) { dao, kw ->
-            log.info("updateMetadataValue: metadataValueId=${kw.id}, formMetadataValue=$formMetadataValue")
-            dao.update(kw.id, formMetadataValue)
+    fun updateMetadataValue(
+        @PathParam(ID_PARAM) id: UUID,
+        formMetadataValue: FormMetadataValue
+    ): ResultMetadataValue =
+        onExistingMetadataValue(id) { dao, v ->
+            log.info("updateMetadataValue: metadataValueId=${v.id}, formMetadataValue=$formMetadataValue")
+            dao.update(v.id, formMetadataValue)
         }
 
     @DELETE

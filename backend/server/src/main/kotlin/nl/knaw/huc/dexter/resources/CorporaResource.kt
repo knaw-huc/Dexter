@@ -1,6 +1,6 @@
 package nl.knaw.huc.dexter.resources
 
-import ResultMetadataKeyValue
+import ResultMetadataValue
 import io.dropwizard.auth.Auth
 import nl.knaw.huc.dexter.api.*
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PARAM
@@ -86,10 +86,10 @@ class CorporaResource(private val jdbi: Jdbi) {
                 s.toResultSourceWithResources(
                     sourcesDao.getKeywords(s.id),
                     sourcesDao.getLanguages(s.id),
-                    sourcesDao.getMetadata(s.id)
+                    sourcesDao.getMetadataValues(s.id)
                 )
             },
-            corporaDao.getMetadata(found.id)
+            corporaDao.getMetadataValue(found.id)
         )
     }
 
@@ -243,7 +243,7 @@ class CorporaResource(private val jdbi: Jdbi) {
     @Path("$ID_PATH/$METADATA/$VALUES")
     fun getMetadata(@PathParam(ID_PARAM) id: UUID) =
         onExistingCorpus(id) { dao, corpus ->
-            dao.getMetadata(corpus.id)
+            dao.getMetadataValue(corpus.id)
         }
 
     @POST
@@ -252,11 +252,11 @@ class CorporaResource(private val jdbi: Jdbi) {
     fun addMetadataValues(
         @PathParam(ID_PARAM) corpusId: UUID,
         metadataValueIds: List<UUID>
-    ): List<ResultMetadataKeyValue> =
+    ): List<ResultMetadataValue> =
         onExistingCorpus(corpusId) { dao, corpus ->
             log.info("addMetadataValues: corpusId=${corpus.id}, metadataValueIds=$metadataValueIds")
             metadataValueIds.forEach { sourceId -> dao.addMetadataValue(corpus.id, sourceId) }
-            dao.getMetadata(corpus.id)
+            dao.getMetadataValue(corpus.id)
         }
 
     private fun <R> onExistingCorpus(id: UUID, block: DaoBlock<CorporaDao, ResultCorpus, R>): R =

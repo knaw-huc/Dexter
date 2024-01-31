@@ -48,6 +48,7 @@ export type Corpus = Omit<ServerResultCorpus, "parentId"> & {
     keywords: ServerKeyword[];
     languages: ServerLanguage[];
     sources: Source[];
+    metadataValues: ResultMetadataValue[];
 }
 
 /**
@@ -81,6 +82,7 @@ export type ServerResultSource = {
 export type Source = ServerResultSource & {
     keywords: ServerKeyword[];
     languages: ServerLanguage[];
+    metadataValues: ResultMetadataValue[];
 }
 
 /**
@@ -117,20 +119,29 @@ export type FormKeyword = {
     val: string;
 }
 
+export type FormMetadataKey = {
+    key: string
+}
+
 export type ResultMetadataKey = {
     id: UUID,
     key: string
 }
 
-export type FormMetadataKey = {
-    key: string
+export type FormMetadataValue = {
+    keyId: UUID,
+    value: string
 }
 
-export interface ResultMetadataValue {
+export type ResultMetadataValue = {
     id: UUID,
     keyId: UUID,
     value: string,
     createdBy: UUID
+}
+
+export function toFormMetadataValue(value: ResultMetadataValue): FormMetadataValue {
+    return {value: value.value, keyId: value.keyId}
 }
 
 export type ImportResult = {

@@ -1,9 +1,9 @@
 import {
     Corpus,
     FormKeyword,
-    FormMetadataKey,
+    FormMetadataKey, FormMetadataValue,
     ImportResult,
-    ResultMetadataKey,
+    ResultMetadataKey, ResultMetadataValue,
     ServerFormCorpus,
     ServerFormSource,
     ServerKeyword,
@@ -216,19 +216,6 @@ export const addLanguagesToCorpus = async (
     return response.json();
 };
 
-export const addLanguagesToSource = async (
-    corpusId: string,
-    languageId: string[]
-): Promise<ServerLanguage[]> => {
-    const response = await fetch(`/api/sources/${corpusId}/languages`, {
-        method: "POST",
-        headers: headers,
-        body: JSON.stringify(languageId),
-    });
-    validateResponse({response});
-    return response.json();
-};
-
 export const deleteLanguageFromCorpus = async (
     corpusId: string,
     languageId: string
@@ -243,18 +230,17 @@ export const deleteLanguageFromCorpus = async (
     validateResponse({response});
     return response.json()};
 
-export const deleteKeywordFromCorpus = async (
+export const addLanguagesToSource = async (
     corpusId: string,
-    keywordId: string
-): Promise<void> => {
-    const response = await fetch(
-        `/api/corpora/${corpusId}/keywords/${keywordId}`,
-        {
-            method: "DELETE",
-            headers: headers,
-        }
-    );
+    languageId: string[]
+): Promise<ServerLanguage[]> => {
+    const response = await fetch(`/api/sources/${corpusId}/languages`, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(languageId),
+    });
     validateResponse({response});
+    return response.json();
 };
 
 export const deleteLanguageFromSource = async (
@@ -263,6 +249,20 @@ export const deleteLanguageFromSource = async (
 ): Promise<void> => {
     const response = await fetch(
         `/api/sources/${sourceId}/languages/${languageId}`,
+        {
+            method: "DELETE",
+            headers: headers,
+        }
+    );
+    validateResponse({response});
+};
+
+export const deleteKeywordFromCorpus = async (
+    corpusId: string,
+    keywordId: string
+): Promise<void> => {
+    const response = await fetch(
+        `/api/corpora/${corpusId}/keywords/${keywordId}`,
         {
             method: "DELETE",
             headers: headers,
@@ -352,6 +352,7 @@ export const deleteMetadataKey = async function(id: string): Promise<void> {
     })
     validateResponse({response})
 };
+
 export const deleteMetadataValue = async function(id: string): Promise<void> {
     const path = `/api/metadata/values/${id}`
     const response = await fetch(path, {
@@ -360,6 +361,9 @@ export const deleteMetadataValue = async function(id: string): Promise<void> {
     })
     validateResponse({response})
 };
+export const deleteMetadataValueFromSource = async (_: string, metadataValueId: string): Promise<void> => deleteMetadataValue(metadataValueId);
+export const deleteMetadataValueFromCorpus = async (_: string, metadataValueId: string): Promise<void> => deleteMetadataValue(metadataValueId);
+
 
 export async function createMetadataKey(
     newKeyword: FormMetadataKey
@@ -385,3 +389,41 @@ export async function updateMetadataKey(
     validateResponse({response});
     return response.json();
 }
+
+export async function createMetadataValue(
+    form: FormMetadataValue
+): Promise<ResultMetadataValue> {
+    const response = await fetch(`/api/metadata/values`, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(form),
+    });
+    validateResponse({response});
+    return response.json();
+}
+export async function updateMetadataValue(
+    id: UUID,
+    form: FormMetadataValue
+): Promise<ResultMetadataValue> {
+    const response = await fetch(`/api/metadata/values/${id}`, {
+        method: "PUT",
+        headers: headers,
+        body: JSON.stringify(form),
+    });
+    validateResponse({response});
+    return response.json();
+}
+
+export const addMetadataValueToSource = async (
+    sourceId: string,
+    metadataValueIds: string[]
+): Promise<ServerLanguage[]> => {
+    const response = await fetch(`/api/sources/${sourceId}/metadata/values`, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(metadataValueIds),
+    });
+    validateResponse({response});
+    return response.json();
+};
+

@@ -1,6 +1,6 @@
 package nl.knaw.huc.dexter.api
 
-import ResultMetadataKeyValue
+import ResultMetadataValue
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
@@ -56,13 +56,13 @@ data class ResultSourceWithResources (
 
     val keywords: List<ResultKeyword>,
     val languages: List<ResultLanguage>,
-    val metadata: List<ResultMetadataKeyValue>
+    val metadataValues: List<ResultMetadataValue>
 )
 
 fun ResultSource.toResultSourceWithResources(
     keywords: List<ResultKeyword>,
     languages: List<ResultLanguage>,
-    metadata: List<ResultMetadataKeyValue>
+    metadataValues: List<ResultMetadataValue>
 ) = ResultSourceWithResources(
     id = id,
     externalRef = externalRef,
@@ -81,5 +81,5 @@ fun ResultSource.toResultSourceWithResources(
 
     keywords = keywords,
     languages = languages,
-    metadata = metadata
+    metadataValues = metadataValues
 )

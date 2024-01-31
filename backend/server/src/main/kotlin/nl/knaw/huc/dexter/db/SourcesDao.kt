@@ -1,6 +1,6 @@
 package nl.knaw.huc.dexter.db
 
-import ResultMetadataKeyValue
+import ResultMetadataValue
 import nl.knaw.huc.dexter.api.*
 import org.jdbi.v3.sqlobject.kotlin.BindKotlin
 import org.jdbi.v3.sqlobject.kotlin.RegisterKotlinMapper
@@ -58,12 +58,11 @@ interface SourcesDao {
     @SqlUpdate("delete from sources_languages where source_id = :sourceId and lang_id = :languageId")
     fun deleteLanguage(sourceId: UUID, languageId: String)
 
-    @SqlQuery("select mk.key as key, mv.value as value, mv.key_id as key_id, mv.id as value_id " +
+    @SqlQuery("select mv.id as id, mv.key_id as key_id, mv.value as value " +
             "from metadata_values as mv " +
-            "join metadata_keys mk on mk.id = mv.key_id " +
             "join sources_metadata_values smv on mv.id = smv.metadata_value_id " +
             "where smv.source_id=:sourceId")
-    fun getMetadata(sourceId: UUID): List<ResultMetadataKeyValue>
+    fun getMetadataValues(sourceId: UUID): List<ResultMetadataValue>
 
     @SqlUpdate("insert into sources_metadata_values (source_id, metadata_value_id) values (:sourceId, :valueId) on conflict do nothing")
     fun addMetadataValue(sourceId: UUID, valueId: UUID)

@@ -20,6 +20,10 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
         return {error}
     }
 
+    componentDidCatch(error: Error) {
+        console.error(error)
+    }
+
     render() {
         return <>
             {this.state.error && <AlertStyled severity="error">

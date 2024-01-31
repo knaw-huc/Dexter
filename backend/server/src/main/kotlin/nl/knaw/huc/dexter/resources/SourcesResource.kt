@@ -1,6 +1,6 @@
 package nl.knaw.huc.dexter.resources
 
-import ResultMetadataKeyValue
+import ResultMetadataValue
 import io.dropwizard.auth.Auth
 import nl.knaw.huc.dexter.api.*
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PARAM
@@ -46,7 +46,7 @@ class SourcesResource(private val jdbi: Jdbi) {
                         s.toResultSourceWithResources(
                             dao.getKeywords(s.id),
                             dao.getLanguages(s.id),
-                            dao.getMetadata(s.id)
+                            dao.getMetadataValues(s.id)
                         )
                     }
             }
@@ -76,7 +76,7 @@ class SourcesResource(private val jdbi: Jdbi) {
         return found.toResultSourceWithResources(
             dao.getKeywords(found.id),
             dao.getLanguages(found.id),
-            dao.getMetadata(found.id)
+            dao.getMetadataValues(found.id)
         )
     }
 
@@ -166,13 +166,15 @@ class SourcesResource(private val jdbi: Jdbi) {
     @POST
     @Consumes(APPLICATION_JSON)
     @Path("$ID_PATH/$LANGUAGES")
-    fun addLanguages(@PathParam(ID_PARAM) id: UUID, languageIds: List<String>) =
+    fun addLanguages(
+        @PathParam(ID_PARAM) id: UUID,
+        languageIds: List<String>
+    ) =
         onExistingSource(id) { dao, src ->
             log.info("addLanguages: sourceId=${src.id}, languageIds=$languageIds")
             languageIds.forEach { languageId -> dao.addLanguage(src.id, languageId) }
             dao.getLanguages(src.id)
         }
-
 
     @DELETE
     @Path("$ID_PATH/$LANGUAGES/{languageId}")
@@ -187,22 +189,22 @@ class SourcesResource(private val jdbi: Jdbi) {
 
     @GET
     @Path("$ID_PATH/$METADATA/$VALUES")
-    fun getMetadata(@PathParam(ID_PARAM) id: UUID) =
+    fun getMetadataValue(@PathParam(ID_PARAM) id: UUID): List<ResultMetadataValue> =
         onExistingSource(id) { dao, sourceId ->
-            dao.getMetadata(sourceId.id)
+            dao.getMetadataValues(sourceId.id)
         }
 
     @POST
     @Consumes(APPLICATION_JSON)
     @Path("$ID_PATH/$METADATA/$VALUES")
     fun addMetadataValues(
-        @PathParam(ID_PARAM) corpusId: UUID,
+        @PathParam(ID_PARAM) sourceId: UUID,
         metadataValueIds: List<UUID>
-    ): List<ResultMetadataKeyValue> =
-        onExistingSource(corpusId) { dao, source ->
+    ): List<ResultMetadataValue> =
+        onExistingSource(sourceId) { dao, source ->
             log.info("addMetadataValues: sourceId=${source.id}, metadataValueIds=$metadataValueIds")
             metadataValueIds.forEach { sourceId -> dao.addMetadataValue(source.id, sourceId) }
-            dao.getMetadata(source.id)
+            dao.getMetadataValues(source.id)
         }
 
     private fun <R> onExistingSource(id: UUID, block: DaoBlock<SourcesDao, ResultSource, R>): R =

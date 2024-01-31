@@ -8,6 +8,5 @@ data class FormMetadataValue(
 data class ResultMetadataValue(
     val id: UUID,
     val keyId: UUID,
-    val value: String,
-    val createdBy: UUID
+    val value: String
 )

@@ -7,6 +7,7 @@ import {ErrorMsg} from "../common/ErrorMsg"
 import {TextFieldStyled} from "./TextFieldStyled"
 import {Button, CircularProgress, Grid, Tooltip} from "@mui/material"
 import {HelpIconStyled} from "../common/HelpIconStyled"
+import {InputButtonGrid} from "../common/InputButtonGrid"
 
 type ImportFieldProps = StandardTextFieldProps & UseFormRegisterReturn<string> & CustomFieldProps & {
     variant?: "standard",
@@ -30,10 +31,10 @@ export const ImportField = forwardRef<
         isImporting,
         ...textFieldProps
     } = props
-    const fieldRef = useRef(null);
+    const fieldRef = useRef(null)
     useEffect(() => {
-        if(message) {
-            fieldRef.current?.scrollIntoView({behavior: 'smooth'});
+        if (message) {
+            fieldRef.current?.scrollIntoView({behavior: "smooth"})
         }
     }, [message, fieldRef.current])
 
@@ -46,31 +47,26 @@ export const ImportField = forwardRef<
             {label}
         </Label>
 
-        <Grid container spacing={2}>
-            <Grid item xs={10}>
-                <TextFieldStyled
-                    {...textFieldProps}
-                    error={!!message}
-                    inputRef={ref}
-                    fullWidth
-                />
-            </Grid>
-
-            <Grid item xs={2} alignItems="stretch" style={{display: "flex"}}>
-                <Button
-                    disabled={!isRefImportable || isImporting}
-                    fullWidth
-                    variant="contained"
-                    onClick={onImport}
-                >
-                    Import
-                    {isImporting
-                        ? <Spinner/>
-                        : <ImportToolTipHelp/>
-                    }
-                </Button>
-            </Grid>
-        </Grid>
+        <InputButtonGrid
+            input={<TextFieldStyled
+                {...textFieldProps}
+                error={!!message}
+                inputRef={ref}
+                fullWidth
+            />}
+            button={<Button
+                disabled={!isRefImportable || isImporting}
+                fullWidth
+                variant="contained"
+                onClick={onImport}
+            >
+                Import
+                {isImporting
+                    ? <Spinner/>
+                    : <ImportToolTipHelp/>
+                }
+            </Button>}
+        />
         {message && <ErrorMsg msg={message}/>}
     </div>
 })
