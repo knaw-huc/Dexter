@@ -33,6 +33,7 @@ export const SourcePreview = (props: SourceItemDropdownProps) => {
                 <Grid
                     item
                     sx={{height: "110px"}}
+                    xs={12}
                 >
                     <CloseInlineIcon
                         style={{float: "right", top: 0}}
