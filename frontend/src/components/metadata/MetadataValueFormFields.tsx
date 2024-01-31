@@ -102,7 +102,8 @@ export function MetadataValueFormFields(props: MetadataValueFormFieldsProps) {
                                 />,
                             }}
                         />
-                    </div>)}
+                    </div>
+                )}
         </FormControl>
     </>
 }

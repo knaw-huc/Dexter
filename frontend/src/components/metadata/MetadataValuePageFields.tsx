@@ -22,6 +22,7 @@ export function MetadataValuePageFields(props: MetadataValuePageFieldsProps) {
                 <div key={i}>
                     <Label>{value.key.key}</Label>
                     <MetadataValue>{value.value}</MetadataValue>
-                </div>)}
+                </div>
+            )}
     </>
 }

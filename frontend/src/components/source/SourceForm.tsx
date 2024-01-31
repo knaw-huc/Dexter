@@ -5,27 +5,24 @@ import * as yup from "yup"
 import {
     AccessOptions,
     FormMetadataValue,
-    ImportResult, MetadataValue,
+    ImportResult,
     ResultMetadataKey,
-    ResultMetadataValue,
     Source,
     SourceFormSubmit,
     toFormMetadataValue,
-    UUID, WithMetadata
+    UUID
 } from "../../model/DexterModel"
 import {
     addKeywordsToSource,
     addLanguagesToSource,
     addMetadataValueToSource,
     addSourcesToCorpus,
-    createMetadataValue,
     createSource,
     deleteKeywordFromSource,
     deleteLanguageFromSource,
     deleteMetadataValueFromSource,
     getMetadataKeys,
     postImport,
-    updateMetadataValue,
     updateSource,
 } from "../../utils/API"
 import ScrollableModal from "../common/ScrollableModal"
@@ -44,7 +41,7 @@ import {ImportField} from "./ImportField"
 import {updateRemoteIds} from "../../utils/updateRemoteIds"
 import _ from "lodash"
 import {MetadataValueFormFields} from "../metadata/MetadataValueFormFields"
-import {submitMetadataValues} from "../../utils/submitMetadata"
+import {submitMetadataValues} from "../../utils/submitMetadataValues"
 
 const formFields = [
     "externalRef",

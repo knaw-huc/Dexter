@@ -41,7 +41,7 @@ import {CloseInlineIcon} from "../common/CloseInlineIcon"
 import {SubmitButton} from "../common/SubmitButton"
 import {updateRemoteIds} from "../../utils/updateRemoteIds"
 import {MetadataValueFormFields} from "../metadata/MetadataValueFormFields"
-import {submitMetadataValues} from "../../utils/submitMetadata"
+import {submitMetadataValues} from "../../utils/submitMetadataValues"
 
 type CorpusFormProps = {
     corpusToEdit?: Corpus,
