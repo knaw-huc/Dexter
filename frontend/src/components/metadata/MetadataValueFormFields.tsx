@@ -22,11 +22,11 @@ export function MetadataValueFormFields(props: MetadataValueFormFieldsProps) {
     const [selectedKeyId, setSelectedKeyId] = useState(NONE_SELECTED)
 
     async function handleCreateField() {
-        const created = await createMetadataValue({
+        const newValue = {
             keyId: selectedKeyId,
             value: ""
-        })
-        const update = [...props.values, created]
+        }
+        const update = [...props.values, newValue]
         setSelectedKeyId(NONE_SELECTED)
         props.onChange(update)
     }
