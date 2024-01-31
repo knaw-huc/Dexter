@@ -16,8 +16,10 @@ import nl.knaw.huc.dexter.auth.RoleNames
 import nl.knaw.huc.dexter.db.DaoBlock
 import nl.knaw.huc.dexter.db.MetadataKeysDao
 import nl.knaw.huc.dexter.db.SourcesDao
+import nl.knaw.huc.dexter.db.SourcesDao.Companion.sourceNotFound
 import nl.knaw.huc.dexter.db.UsersDao
 import nl.knaw.huc.dexter.helpers.PsqlDiagnosticsHelper.Companion.diagnoseViolations
+import nl.knaw.huc.dexter.helpers.WithResourcesHelper.Companion.getSourceWithResources
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel.REPEATABLE_READ
@@ -82,22 +84,8 @@ class SourcesResource(private val jdbi: Jdbi) {
         log.info("get source $id with resources")
         return jdbi.inTransaction<ResultSourceWithResources, Exception>(REPEATABLE_READ) { handle ->
             handle.attach(SourcesDao::class.java).let { dao ->
-                findSourceWithResources(id, handle)
+                getSourceWithResources(id, handle)
             }
-        }
-    }
-
-    private fun findSourceWithResources(
-        id: UUID,
-        handle: Handle
-    ): ResultSourceWithResources {
-        handle.attach(SourcesDao::class.java).let { sourceDao ->
-            val found: ResultSource = sourceDao.find(id) ?: sourceNotFound(id)
-            return found.toResultSourceWithResources(
-                sourceDao.getKeywords(found.id),
-                sourceDao.getLanguages(found.id),
-                getMetadataValueWithResources(found, handle)
-            )
         }
     }
 
@@ -236,8 +224,6 @@ class SourcesResource(private val jdbi: Jdbi) {
                 } ?: sourceNotFound(id)
             }
         }
-
-    private fun sourceNotFound(sourceId: UUID): Nothing = throw NotFoundException("Source not found: $sourceId")
 
     private fun sources(): SourcesDao = jdbi.onDemand(SourcesDao::class.java)
 }

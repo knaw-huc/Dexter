@@ -8,6 +8,7 @@ import org.jdbi.v3.sqlobject.kotlin.RegisterKotlinMapper
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
 import java.util.*
+import javax.ws.rs.NotFoundException
 
 interface CorporaDao {
     @SqlQuery(
@@ -86,5 +87,9 @@ interface CorporaDao {
 
     @SqlUpdate("insert into corpora_metadata_values (corpus_id, metadata_value_id) values (:corpusId, :valueId) on conflict do nothing")
     fun addMetadataValue(corpusId: UUID, valueId: UUID)
+
+    companion object {
+        fun corpusNotFound(corpusId: UUID): Nothing = throw NotFoundException("Corpus not found: $corpusId")
+    }
 
 }

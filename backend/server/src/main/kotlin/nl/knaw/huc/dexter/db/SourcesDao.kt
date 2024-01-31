@@ -7,6 +7,7 @@ import org.jdbi.v3.sqlobject.kotlin.RegisterKotlinMapper
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
 import java.util.*
+import javax.ws.rs.NotFoundException
 
 interface SourcesDao {
     // Postgres sets uuid, created_at, updated_at
@@ -66,5 +67,9 @@ interface SourcesDao {
 
     @SqlUpdate("insert into sources_metadata_values (source_id, metadata_value_id) values (:sourceId, :valueId) on conflict do nothing")
     fun addMetadataValue(sourceId: UUID, valueId: UUID)
+
+    companion object {
+        fun sourceNotFound(sourceId: UUID): Nothing = throw NotFoundException("Source not found: $sourceId")
+    }
 
 }
