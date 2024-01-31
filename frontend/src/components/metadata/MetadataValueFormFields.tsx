@@ -7,6 +7,7 @@ import {InputButtonGrid} from "../common/InputButtonGrid"
 import MenuItem from "@mui/material/MenuItem"
 import TextField from "@mui/material/TextField"
 import {DeleteIconStyled} from "../common/DeleteIconStyled"
+import {compareFormMetadataValues} from "../../utils/compareMetadataValues"
 
 type MetadataValueFormFieldsProps = {
     keys: ResultMetadataKey[],
@@ -21,7 +22,6 @@ export function MetadataValueFormFields(props: MetadataValueFormFieldsProps) {
     const [selectedKeyId, setSelectedKeyId] = useState(NONE_SELECTED)
 
     async function handleCreateField() {
-        console.log("Create metadata value field", selectedKeyId)
         const created = await createMetadataValue({
             keyId: selectedKeyId,
             value: ""
@@ -85,21 +85,24 @@ export function MetadataValueFormFields(props: MetadataValueFormFieldsProps) {
                     </Button>
                 }
             />
-            {props.values.map((value, i) => <div key={i}>
-                <Label>{props.keys.find(k => k.id === value.keyId).key}</Label>
-                <TextField
-                    fullWidth
-                    variant="outlined"
-                    value={value.value}
-                    onChange={e => handleChangeFormValue(value, e)}
-                    autoFocus
-                    InputProps={{
-                        endAdornment: <DeleteIconStyled
-                            onClick={() => handleDelete(value)}
-                        />,
-                    }}
-                />
-            </div>)}
+            {props.values
+                .sort(compareFormMetadataValues)
+                .map((value, i) =>
+                    <div key={i}>
+                        <Label>{props.keys.find(k => k.id === value.keyId).key}</Label>
+                        <TextField
+                            fullWidth
+                            variant="outlined"
+                            value={value.value}
+                            onChange={e => handleChangeFormValue(value, e)}
+                            autoFocus
+                            InputProps={{
+                                endAdornment: <DeleteIconStyled
+                                    onClick={() => handleDelete(value)}
+                                />,
+                            }}
+                        />
+                    </div>)}
         </FormControl>
     </>
 }

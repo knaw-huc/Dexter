@@ -28,6 +28,7 @@ import {HeaderBreadCrumb} from "../common/breadcrumb/HeaderBreadCrumb"
 import {CorporaBreadCrumbLink} from "./CorporaBreadCrumbLink"
 import {CorpusParentBreadCrumbLink} from "./CorpusParentBreadCrumbLink"
 import {NoResults} from "../common/NoResults"
+import {MetadataValuePageFields} from "../metadata/MetadataValuePageFields"
 
 export const CorpusPage = () => {
     const [corpus, setCorpus] = useState<Corpus>(null)
@@ -168,6 +169,13 @@ export const CorpusPage = () => {
                         <h2>Notes</h2>
                         <p>{corpus.notes}</p>
                     </>}
+
+                    {!_.isEmpty(corpus.metadataValues) && (
+                        <MetadataValuePageFields
+                            values={corpus.metadataValues}
+                        />
+                    )}
+
                     <h2>Sources</h2>
                     <Grid container spacing={2}>
                         <Grid item xs={6} md={4}>

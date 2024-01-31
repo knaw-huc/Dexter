@@ -30,48 +30,48 @@ const A = styled.a`
   }
 `
 export const SourcePage = () => {
-    const params = useParams();
+    const params = useParams()
     const sourceId = params.sourceId
 
-    const [source, setSource] = React.useState<Source>(null);
-    const [showForm, setShowForm] = React.useState(false);
+    const [source, setSource] = React.useState<Source>(null)
+    const [showForm, setShowForm] = React.useState(false)
 
     const handleSaveForm = (update: Source) => {
         setSource(update)
-        setShowForm(false);
-    };
+        setShowForm(false)
+    }
 
     const initSource = async () => {
-        setSource(await getSourceWithResourcesById(sourceId));
-    };
+        setSource(await getSourceWithResourcesById(sourceId))
+    }
 
     React.useEffect(() => {
-        if(sourceId) {
-            initSource();
+        if (sourceId) {
+            initSource()
         }
-    }, [sourceId]);
+    }, [sourceId])
 
     const handleDeleteLanguage = async (language: ServerLanguage) => {
-        await deleteLanguageFromSourceWithWarning(language, params.sourceId);
+        await deleteLanguageFromSourceWithWarning(language, params.sourceId)
         setSource(source => ({
             ...source,
             languages: source.languages.filter(l => l.id !== language.id)
         }))
-    };
+    }
 
     const shortSourceFields: (keyof Source)[] = ["location", "earliest", "latest", "rights", "access", "creator"]
 
     return (
         <div>
             <HeaderBreadCrumb>
-                <SourcesBreadCrumbLink />
+                <SourcesBreadCrumbLink/>
 
             </HeaderBreadCrumb>
 
             {source && (
                 <>
                     <EditButton onEdit={() => {
-                        setShowForm(true);
+                        setShowForm(true)
                     }}/>
                     <h1>
                         <SourceIcon
@@ -102,9 +102,12 @@ export const SourcePage = () => {
                         <h2>Notes</h2>
                         <p>{source.notes}</p>
                     </>}
-                    <MetadataValuePageFields
-                        values={source.metadataValues}
-                    />
+
+                    {!_.isEmpty(source.metadataValues) && (
+                        <MetadataValuePageFields
+                            values={source.metadataValues}
+                        />
+                    )}
 
                     {!_.isEmpty(source.languages) && <div>
                         <h4>Languages</h4>
@@ -119,9 +122,9 @@ export const SourcePage = () => {
                 sourceToEdit={source}
                 onSave={handleSaveForm}
                 onClose={() => {
-                    setShowForm(false);
+                    setShowForm(false)
                 }}
             />}
         </div>
-    );
-};
+    )
+}

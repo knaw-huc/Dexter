@@ -4,15 +4,27 @@ import TextField from "@mui/material/TextField"
 import React, {useEffect, useState} from "react"
 import {useForm} from "react-hook-form"
 import * as yup from "yup"
-import {AccessOptions, Corpus, CorpusFormSubmit, ServerFormCorpus, Source,} from "../../model/DexterModel"
+import {
+    AccessOptions,
+    Corpus,
+    CorpusFormSubmit,
+    FormMetadataValue,
+    ResultMetadataKey,
+    ServerFormCorpus,
+    Source,
+    toFormMetadataValue,
+} from "../../model/DexterModel"
 import {
     addKeywordsToCorpus,
     addLanguagesToCorpus,
+    addMetadataValueToCorpus,
     addSourcesToCorpus,
     createCorpus,
     deleteKeywordFromCorpus,
     deleteLanguageFromCorpus,
+    deleteMetadataValueFromCorpus,
     deleteSourceFromCorpus,
+    getMetadataKeys,
     updateCorpus,
 } from "../../utils/API"
 import {AddKeywordField} from "../keyword/AddKeywordField"
@@ -28,6 +40,8 @@ import _ from "lodash"
 import {CloseInlineIcon} from "../common/CloseInlineIcon"
 import {SubmitButton} from "../common/SubmitButton"
 import {updateRemoteIds} from "../../utils/updateRemoteIds"
+import {MetadataValueFormFields} from "../metadata/MetadataValueFormFields"
+import {submitMetadataValues} from "../../utils/submitMetadata"
 
 type CorpusFormProps = {
     corpusToEdit?: Corpus,
@@ -43,6 +57,22 @@ const Label = styled.label`
   font-weight: bold;
 `
 
+const formFields: (keyof Corpus)[] = [
+    "parent",
+    "title",
+    "description",
+    "rights",
+    "access",
+    "location",
+    "earliest",
+    "latest",
+    "contributor",
+    "notes",
+    "keywords",
+    "languages",
+    "sources",
+]
+
 const validationSchema = yup.object({
     title: yup.string().required("Title is required"),
     description: yup.string().required("Description is required"),
@@ -51,7 +81,6 @@ const validationSchema = yup.object({
 })
 
 export function CorpusForm(props: CorpusFormProps) {
-    const [backendError, setFieldError] = useState<ErrorByField>()
     const {
         register,
         handleSubmit,
@@ -69,43 +98,34 @@ export function CorpusForm(props: CorpusFormProps) {
             access: null,
         },
     })
+    const [backendError, setFieldError] = useState<ErrorByField>()
     const [isInit, setInit] = useState(false)
     const [isLoaded, setLoaded] = useState(false)
+    const [keys, setKeys] = useState<ResultMetadataKey[]>([])
+    const [values, setValues] = useState<FormMetadataValue[]>([])
 
     const allSources = props.sourceOptions
     const selectedSources = watch("sources")
     const selectedParent = watch("parent")
 
     useEffect(() => {
-        const initFormFields = async () => {
-            const fields = [
-                "parent",
-                "title",
-                "description",
-                "rights",
-                "access",
-                "location",
-                "earliest",
-                "latest",
-                "contributor",
-                "notes",
-                "keywords",
-                "languages",
-                "sources",
-            ]
-            fields.map((field: keyof Corpus) => {
-                setValue(field, props.corpusToEdit[field])
-            })
-            register("access")
+        const init = async () => {
+            if (props.corpusToEdit) {
+                formFields.map((field: keyof Corpus) => {
+                    setValue(field, props.corpusToEdit[field])
+                })
+                const formValues = props.corpusToEdit.metadataValues
+                    .map(toFormMetadataValue)
+                setValues(formValues)
+            }
+            setKeys(await getMetadataKeys())
             setLoaded(true)
+
+            register("access")
         }
         if (!isInit) {
             setInit(true)
-            if (props.corpusToEdit) {
-                initFormFields()
-            } else {
-                setLoaded(true)
-            }
+            init()
         }
     }, [isInit, isLoaded])
 
@@ -143,17 +163,19 @@ export function CorpusForm(props: CorpusFormProps) {
             const id = props.corpusToEdit
                 ? await updateExistingCorpus(serverForm)
                 : await createNewCorpus(serverForm)
-            await updateChildResources(id, data)
+            data.metadataValues = await submitMetadataValues(props.corpusToEdit, keys, values)
+            await updateLinkedResources(id, data)
             props.onSave({id, ...data})
         } catch (e) {
             await filterFormFieldErrors(e, setFieldError)
         }
     }
 
-    async function updateChildResources(updateId: string, data: CorpusFormSubmit) {
-        await updateRemoteIds(updateId, data.keywords, addKeywordsToCorpus, deleteKeywordFromCorpus)
-        await updateRemoteIds(updateId, data.languages, addLanguagesToCorpus, deleteLanguageFromCorpus)
-        await updateRemoteIds(updateId, data.sources, addSourcesToCorpus, deleteSourceFromCorpus)
+    async function updateLinkedResources(id: string, data: CorpusFormSubmit) {
+        await updateRemoteIds(id, data.keywords, addKeywordsToCorpus, deleteKeywordFromCorpus)
+        await updateRemoteIds(id, data.languages, addLanguagesToCorpus, deleteLanguageFromCorpus)
+        await updateRemoteIds(id, data.sources, addSourcesToCorpus, deleteSourceFromCorpus)
+        await updateRemoteIds(id, data.metadataValues, addMetadataValueToCorpus, deleteMetadataValueFromCorpus)
     }
 
     function handleUnlinkSource(sourceId: string) {
@@ -265,6 +287,11 @@ export function CorpusForm(props: CorpusFormProps) {
                         options={props.parentOptions}
                         onSelectParentCorpus={handleSelectParentCorpus}
                         onDeleteParentCorpus={handleDeleteParentCorpus}
+                    />
+                    <MetadataValueFormFields
+                        keys={keys}
+                        values={values}
+                        onChange={setValues}
                     />
                     <SubmitButton />
                 </form>

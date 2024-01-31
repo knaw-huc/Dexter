@@ -11,7 +11,7 @@ import {
     Source,
     SourceFormSubmit,
     toFormMetadataValue,
-    UUID
+    UUID, WithMetadata
 } from "../../model/DexterModel"
 import {
     addKeywordsToSource,
@@ -44,6 +44,7 @@ import {ImportField} from "./ImportField"
 import {updateRemoteIds} from "../../utils/updateRemoteIds"
 import _ from "lodash"
 import {MetadataValueFormFields} from "../metadata/MetadataValueFormFields"
+import {submitMetadataValues} from "../../utils/submitMetadata"
 
 const formFields = [
     "externalRef",
@@ -160,59 +161,15 @@ export function SourceForm(props: SourceFormProps) {
             const id: UUID = props.sourceToEdit
                 ? await updateExistingSource(data)
                 : await createNewSource(data)
-            data.metadataValues = await submitMetadataValues()
-            await updateChildResources(id, data)
+            data.metadataValues = await submitMetadataValues(props.sourceToEdit, keys, values)
+            await updateLinkedResources(id, data)
             props.onSave({id, ...data})
         } catch (error) {
             await filterFormFieldErrors(error, setFieldError)
         }
     }
 
-    async function submitMetadataValues() {
-        const toCreate = props.sourceToEdit
-            ? values.filter(v => !findSourceValue(v))
-            : values
-        const toUpdate = props.sourceToEdit
-            ? values.filter(v => findSourceValue(v))
-            : []
-        const updated = await updateMetadataValues(toUpdate)
-        const created = await createMetadataValues(toCreate)
-        return [...updated, ...created]
-            .map(toValueWithResources)
-    }
-
-    function toValueWithResources(value: ResultMetadataValue): MetadataValue {
-        const {keyId, ...result} = value;
-        return {
-            ...result,
-            key: keys.find(k => k.id === keyId)
-        }
-    }
-
-    async function updateMetadataValues(
-        toUpdate: FormMetadataValue[]
-    ): Promise<ResultMetadataValue[]> {
-        return await Promise.all(
-            toUpdate.map(v =>
-                updateMetadataValue(findSourceValue(v).id, v)
-            )
-        )
-    }
-
-    async function createMetadataValues(
-        toCreate: FormMetadataValue[]
-    ): Promise<ResultMetadataValue[]> {
-        return await Promise.all(
-            toCreate.map(createMetadataValue)
-        )
-    }
-
-    function findSourceValue(v: FormMetadataValue) {
-        return props.sourceToEdit.metadataValues
-            .find(sv => sv.key.id === v.keyId)
-    }
-
-    async function updateChildResources(id: UUID, data: SourceFormSubmit) {
+    async function updateLinkedResources(id: UUID, data: SourceFormSubmit) {
         await updateRemoteIds(id, data.keywords, addKeywordsToSource, deleteKeywordFromSource)
         await updateRemoteIds(id, data.languages, addLanguagesToSource, deleteLanguageFromSource)
         await updateRemoteIds(id, data.metadataValues, addMetadataValueToSource, deleteMetadataValueFromSource)

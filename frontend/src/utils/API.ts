@@ -427,3 +427,16 @@ export const addMetadataValueToSource = async (
     return response.json();
 };
 
+export const addMetadataValueToCorpus = async (
+    corpusId: string,
+    metadataValueIds: string[]
+): Promise<ServerLanguage[]> => {
+    const response = await fetch(`/api/corpora/${corpusId}/metadata/values`, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(metadataValueIds),
+    });
+    validateResponse({response});
+    return response.json();
+};
+

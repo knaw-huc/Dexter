@@ -115,6 +115,11 @@ export enum Access {
 }
 export const AccessOptions = ["Open", "Restricted", "Closed"]
 
+// Metadata
+export type WithMetadata = {
+    metadataValues: MetadataValue[]
+}
+
 export type FormKeyword = {
     val: string;
 }
@@ -136,8 +141,7 @@ export type FormMetadataValue = {
 export type ResultMetadataValue = {
     id: UUID,
     keyId: UUID,
-    value: string,
-    createdBy: UUID
+    value: string
 }
 
 export type MetadataValue = Omit<ResultMetadataValue, "keyId"> & {
@@ -146,6 +150,17 @@ export type MetadataValue = Omit<ResultMetadataValue, "keyId"> & {
 
 export function toFormMetadataValue(value: MetadataValue): FormMetadataValue {
     return {value: value.value, keyId: value.key.id}
+}
+
+export function toMetadataValue(
+    value: ResultMetadataValue,
+    keys: ResultMetadataKey[]
+): MetadataValue {
+    const {keyId, ...result} = value;
+    return {
+        ...result,
+        key: keys.find(k => k.id === keyId)
+    }
 }
 
 export type ImportResult = {
