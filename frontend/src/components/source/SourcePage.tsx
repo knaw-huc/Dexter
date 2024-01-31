@@ -16,7 +16,7 @@ import {blue, grey} from "@mui/material/colors"
 import isUrl from "../../utils/isUrl"
 import OpenInNewOutlinedIcon from "@mui/icons-material/OpenInNewOutlined"
 import styled from "@emotion/styled"
-import {MetadataValuePageFields} from "../common/MetadataValuePageFields"
+import {MetadataValuePageFields} from "../metadata/MetadataValuePageFields"
 
 const OpenInNewOutlinedIconStyled = styled(OpenInNewOutlinedIcon)`
   margin-left: 0.4em;

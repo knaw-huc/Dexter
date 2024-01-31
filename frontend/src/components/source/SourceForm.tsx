@@ -43,8 +43,7 @@ import {SubmitButton} from "../common/SubmitButton"
 import {ImportField} from "./ImportField"
 import {updateRemoteIds} from "../../utils/updateRemoteIds"
 import _ from "lodash"
-import {MetadataValueFormFields} from "../common/MetadataValueFormFields"
-import {MetadataValuePageFields} from "../common/MetadataValuePageFields"
+import {MetadataValueFormFields} from "../metadata/MetadataValueFormFields"
 
 const formFields = [
     "externalRef",

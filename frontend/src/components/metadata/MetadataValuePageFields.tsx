@@ -1,6 +1,6 @@
 import React from "react"
 import {MetadataValue} from "../../model/DexterModel"
-import {Label} from "./Label"
+import {Label} from "../common/Label"
 import styled from "@emotion/styled"
 
 type MetadataValuePageFieldsProps = {

@@ -26,8 +26,12 @@ export function MetadataKeyIndex() {
     }
 
     function handleSavedKey(key: ResultMetadataKey) {
-        setKeys(keys.map(k => k.id === key.id ? key : k))
-        setToEdit(null)
+        if(toEdit) {
+            setKeys(keys.map(k => k.id === key.id ? key : k))
+            setToEdit(null)
+        } else {
+            setKeys([...keys, key])
+        }
         setFormOpen(false)
     }
 

@@ -2,11 +2,11 @@ import React, {ChangeEvent, useState} from "react"
 import {createMetadataValue} from "../../utils/API"
 import {FormMetadataValue, ResultMetadataKey} from "../../model/DexterModel"
 import {Button, FormControl, Select} from "@mui/material"
-import {Label} from "./Label"
-import {InputButtonGrid} from "./InputButtonGrid"
+import {Label} from "../common/Label"
+import {InputButtonGrid} from "../common/InputButtonGrid"
 import MenuItem from "@mui/material/MenuItem"
 import TextField from "@mui/material/TextField"
-import {DeleteIconStyled} from "./DeleteIconStyled"
+import {DeleteIconStyled} from "../common/DeleteIconStyled"
 
 type MetadataValueFormFieldsProps = {
     keys: ResultMetadataKey[],
