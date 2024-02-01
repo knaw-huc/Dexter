@@ -1,20 +1,22 @@
 package nl.knaw.huc.dexter.resources
 
+import ResultMetadataValue
 import io.dropwizard.auth.Auth
 import nl.knaw.huc.dexter.api.*
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PARAM
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PATH
 import nl.knaw.huc.dexter.api.ResourcePaths.KEYWORDS
 import nl.knaw.huc.dexter.api.ResourcePaths.LANGUAGES
+import nl.knaw.huc.dexter.api.ResourcePaths.METADATA
 import nl.knaw.huc.dexter.api.ResourcePaths.SOURCES
+import nl.knaw.huc.dexter.api.ResourcePaths.VALUES
 import nl.knaw.huc.dexter.api.ResourcePaths.WITH_RESOURCES
 import nl.knaw.huc.dexter.auth.DexterUser
 import nl.knaw.huc.dexter.auth.RoleNames
-import nl.knaw.huc.dexter.db.CorporaDao
-import nl.knaw.huc.dexter.db.DaoBlock
-import nl.knaw.huc.dexter.db.SourcesDao
-import nl.knaw.huc.dexter.db.UsersDao
+import nl.knaw.huc.dexter.db.*
+import nl.knaw.huc.dexter.db.CorporaDao.Companion.corpusNotFound
 import nl.knaw.huc.dexter.helpers.PsqlDiagnosticsHelper.Companion.diagnoseViolations
+import nl.knaw.huc.dexter.helpers.WithResourcesHelper.Companion.getCorpusWithResources
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel.REPEATABLE_READ
 import org.slf4j.LoggerFactory
@@ -44,7 +46,7 @@ class CorporaResource(private val jdbi: Jdbi) {
             handle.attach(CorporaDao::class.java).let { corporaDao ->
                 handle.attach(SourcesDao::class.java).let { sourcesDao ->
                     corporaDao.list().map { c ->
-;                        findCorpusWithResources(corporaDao, sourcesDao, c.id)
+                        getCorpusWithResources(c.id, handle)
                     }
                 }
             }
@@ -61,33 +63,9 @@ class CorporaResource(private val jdbi: Jdbi) {
     fun findCorpusWithResources(@PathParam(ID_PARAM) id: UUID): ResultCorpusWithResources {
         log.info("get corpus $id with resources")
         return jdbi.inTransaction<ResultCorpusWithResources, Exception>(REPEATABLE_READ) { handle ->
-            handle.attach(CorporaDao::class.java).let { corpusDao ->
-                handle.attach(SourcesDao::class.java).let { sourceDao ->
-                    findCorpusWithResources(corpusDao, sourceDao, id)
-                }
-            }
+            getCorpusWithResources(id, handle)
         }
     }
-
-    private fun findCorpusWithResources(
-        corporaDao: CorporaDao,
-        sourcesDao: SourcesDao,
-        id: UUID
-    ): ResultCorpusWithResources {
-        val found = corporaDao.find(id) ?: corpusNotFound(id)
-        return found.toResultCorpusWithResources(
-            if (found.parentId != null) corporaDao.find(found.parentId) else null,
-            corporaDao.getKeywords(found.id),
-            corporaDao.getLanguages(found.id),
-            corporaDao.getSources(found.id).map { s ->
-                s.toResultSourceWithResources(
-                    sourcesDao.getKeywords(s.id),
-                    sourcesDao.getLanguages(s.id)
-                )
-            }
-        )
-    }
-
 
     @POST
     @Consumes(APPLICATION_JSON)
@@ -234,6 +212,26 @@ class CorporaResource(private val jdbi: Jdbi) {
         dao.getSources(corpus.id)
     }
 
+    @GET
+    @Path("$ID_PATH/$METADATA/$VALUES")
+    fun getMetadata(@PathParam(ID_PARAM) id: UUID) =
+        onExistingCorpus(id) { dao, corpus ->
+            dao.getMetadataValues(corpus.id)
+        }
+
+    @POST
+    @Consumes(APPLICATION_JSON)
+    @Path("$ID_PATH/$METADATA/$VALUES")
+    fun addMetadataValues(
+        @PathParam(ID_PARAM) corpusId: UUID,
+        metadataValueIds: List<UUID>
+    ): List<ResultMetadataValue> =
+        onExistingCorpus(corpusId) { dao, corpus ->
+            log.info("addMetadataValues: corpusId=${corpus.id}, metadataValueIds=$metadataValueIds")
+            metadataValueIds.forEach { sourceId -> dao.addMetadataValue(corpus.id, sourceId) }
+            dao.getMetadataValues(corpus.id)
+        }
+
     private fun <R> onExistingCorpus(id: UUID, block: DaoBlock<CorporaDao, ResultCorpus, R>): R =
         jdbi.inTransaction<R, Exception>(REPEATABLE_READ) { handle ->
             handle.attach(CorporaDao::class.java).let { dao ->
@@ -242,8 +240,6 @@ class CorporaResource(private val jdbi: Jdbi) {
                 } ?: corpusNotFound(id)
             }
         }
-
-    private fun corpusNotFound(corpusId: UUID): Nothing = throw NotFoundException("Corpus not found: $corpusId")
 
     private fun corpora(): CorporaDao = jdbi.onDemand(CorporaDao::class.java)
 }

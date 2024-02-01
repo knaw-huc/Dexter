@@ -1,21 +1,30 @@
 package nl.knaw.huc.dexter.resources
 
+import ResultMetadataValue
+import ResultMetadataValueWithResources
 import io.dropwizard.auth.Auth
 import nl.knaw.huc.dexter.api.*
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PARAM
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PATH
 import nl.knaw.huc.dexter.api.ResourcePaths.KEYWORDS
 import nl.knaw.huc.dexter.api.ResourcePaths.LANGUAGES
+import nl.knaw.huc.dexter.api.ResourcePaths.METADATA
+import nl.knaw.huc.dexter.api.ResourcePaths.VALUES
 import nl.knaw.huc.dexter.api.ResourcePaths.WITH_RESOURCES
 import nl.knaw.huc.dexter.auth.DexterUser
 import nl.knaw.huc.dexter.auth.RoleNames
 import nl.knaw.huc.dexter.db.DaoBlock
+import nl.knaw.huc.dexter.db.MetadataKeysDao
 import nl.knaw.huc.dexter.db.SourcesDao
+import nl.knaw.huc.dexter.db.SourcesDao.Companion.sourceNotFound
 import nl.knaw.huc.dexter.db.UsersDao
 import nl.knaw.huc.dexter.helpers.PsqlDiagnosticsHelper.Companion.diagnoseViolations
+import nl.knaw.huc.dexter.helpers.WithResourcesHelper.Companion.getSourceWithResources
+import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel.REPEATABLE_READ
 import org.slf4j.LoggerFactory
+import toResultMetadataValueWithResources
 import java.util.*
 import javax.annotation.security.RolesAllowed
 import javax.ws.rs.*
@@ -37,14 +46,30 @@ class SourcesResource(private val jdbi: Jdbi) {
     fun getSourceWithResourcesList(): List<ResultSourceWithResources> {
         log.info("get all sources with resources")
         return jdbi.inTransaction<List<ResultSourceWithResources>, Exception>(REPEATABLE_READ) { handle ->
-            handle.attach(SourcesDao::class.java).let { dao ->
-                dao.list()
+            handle.attach(SourcesDao::class.java).let { sourceDao ->
+                sourceDao.list()
                     .map { s ->
                         s.toResultSourceWithResources(
-                            dao.getKeywords(s.id),
-                            dao.getLanguages(s.id)
+                            sourceDao.getKeywords(s.id),
+                            sourceDao.getLanguages(s.id),
+                            getMetadataValueWithResources(s, handle)
                         )
                     }
+            }
+        }
+    }
+
+    private fun getMetadataValueWithResources(
+        source: ResultSource,
+        handle: Handle
+    ): List<ResultMetadataValueWithResources> {
+        return handle.attach(SourcesDao::class.java).let { sourceDao ->
+            sourceDao.getMetadataValues(source.id).map { v ->
+                handle.attach(MetadataKeysDao::class.java).let { keysDao ->
+                    v.toResultMetadataValueWithResources(
+                        keysDao.find(v.keyId) ?: throw NotFoundException("Unknown key: ${v.keyId}")
+                    )
+                }
             }
         }
     }
@@ -59,22 +84,10 @@ class SourcesResource(private val jdbi: Jdbi) {
         log.info("get source $id with resources")
         return jdbi.inTransaction<ResultSourceWithResources, Exception>(REPEATABLE_READ) { handle ->
             handle.attach(SourcesDao::class.java).let { dao ->
-                findSourceWithResources(dao, id)
+                getSourceWithResources(id, handle)
             }
         }
     }
-
-    private fun findSourceWithResources(
-        dao: SourcesDao,
-        id: UUID
-    ): ResultSourceWithResources {
-        val found: ResultSource = dao.find(id) ?: sourceNotFound(id)
-        return found.toResultSourceWithResources(
-            dao.getKeywords(found.id),
-            dao.getLanguages(found.id)
-        )
-    }
-
 
     @POST
     @Consumes(APPLICATION_JSON)
@@ -162,13 +175,15 @@ class SourcesResource(private val jdbi: Jdbi) {
     @POST
     @Consumes(APPLICATION_JSON)
     @Path("$ID_PATH/$LANGUAGES")
-    fun addLanguages(@PathParam(ID_PARAM) id: UUID, languageIds: List<String>) =
+    fun addLanguages(
+        @PathParam(ID_PARAM) id: UUID,
+        languageIds: List<String>
+    ) =
         onExistingSource(id) { dao, src ->
             log.info("addLanguages: sourceId=${src.id}, languageIds=$languageIds")
             languageIds.forEach { languageId -> dao.addLanguage(src.id, languageId) }
             dao.getLanguages(src.id)
         }
-
 
     @DELETE
     @Path("$ID_PATH/$LANGUAGES/{languageId}")
@@ -181,6 +196,26 @@ class SourcesResource(private val jdbi: Jdbi) {
         dao.getLanguages(src.id)
     }
 
+    @GET
+    @Path("$ID_PATH/$METADATA/$VALUES")
+    fun getMetadataValue(@PathParam(ID_PARAM) id: UUID): List<ResultMetadataValue> =
+        onExistingSource(id) { dao, sourceId ->
+            dao.getMetadataValues(sourceId.id)
+        }
+
+    @POST
+    @Consumes(APPLICATION_JSON)
+    @Path("$ID_PATH/$METADATA/$VALUES")
+    fun addMetadataValues(
+        @PathParam(ID_PARAM) sourceId: UUID,
+        metadataValueIds: List<UUID>
+    ): List<ResultMetadataValue> =
+        onExistingSource(sourceId) { dao, source ->
+            log.info("addMetadataValues: sourceId=${source.id}, metadataValueIds=$metadataValueIds")
+            metadataValueIds.forEach { sourceId -> dao.addMetadataValue(source.id, sourceId) }
+            dao.getMetadataValues(source.id)
+        }
+
     private fun <R> onExistingSource(id: UUID, block: DaoBlock<SourcesDao, ResultSource, R>): R =
         jdbi.inTransaction<R, Exception>(REPEATABLE_READ) { handle ->
             handle.attach(SourcesDao::class.java).let { dao ->
@@ -189,8 +224,6 @@ class SourcesResource(private val jdbi: Jdbi) {
                 } ?: sourceNotFound(id)
             }
         }
-
-    private fun sourceNotFound(sourceId: UUID): Nothing = throw NotFoundException("Source not found: $sourceId")
 
     private fun sources(): SourcesDao = jdbi.onDemand(SourcesDao::class.java)
 }

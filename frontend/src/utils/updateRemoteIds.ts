@@ -1,19 +1,24 @@
+import { UUID } from '../model/DexterModel';
+
 type WithId = {
-    id: string
+  id: string;
 };
 
 export async function updateRemoteIds<T extends WithId>(
+  parentId: UUID,
+  linkedIds: WithId[],
+  addIdToParent: (parentId: string, updateIds: string[]) => Promise<T[]>,
+  deleteIdFromParent: (
     parentId: string,
-    toUpdate: WithId[],
-    addIdToParent: (parentId: string, updateIds: string[]) => Promise<T[]>,
-    deleteIdFromParent: (parentId: string, updateId: string) => Promise<void | T[]>
+    updateId: string,
+  ) => Promise<void | T[]>,
 ) {
-    const idsToUpdate = toUpdate.map(r => r.id)
-    const responseKeywords = await addIdToParent(parentId, idsToUpdate)
-    const keysToDelete: string[] = responseKeywords
-        .map(r => r.id)
-        .filter(r => !idsToUpdate.includes(r))
-    for (const keyToDelete of keysToDelete) {
-        await deleteIdFromParent(parentId, keyToDelete)
-    }
+  const idsToUpdate = linkedIds.map(r => r.id);
+  const responseKeywords = await addIdToParent(parentId, idsToUpdate);
+  const keysToDelete: string[] = responseKeywords
+    .map(r => r.id)
+    .filter(r => !idsToUpdate.includes(r));
+  for (const keyToDelete of keysToDelete) {
+    await deleteIdFromParent(parentId, keyToDelete);
+  }
 }

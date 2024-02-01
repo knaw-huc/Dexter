@@ -8,14 +8,17 @@ object ResourcePaths {
     const val CORPORA = "corpora"
     const val KEYWORDS = "keywords"
     const val LANGUAGES = "languages"
+    const val METADATA = "metadata"
     const val SOURCES = "sources"
     const val USER = "user"
     const val WERELDCULTUREN = "wereldculturen"
-
     // sub paths
     const val USERS = "users"
+
     const val AUTOCOMPLETE = "autocomplete"
     const val LOGIN = "login"
+    const val KEYS = "keys"
+    const val VALUES = "values"
 
     const val WITH_RESOURCES = "with-resources"
 

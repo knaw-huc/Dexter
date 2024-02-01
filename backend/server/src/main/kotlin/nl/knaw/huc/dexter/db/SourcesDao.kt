@@ -1,11 +1,13 @@
 package nl.knaw.huc.dexter.db
 
+import ResultMetadataValue
 import nl.knaw.huc.dexter.api.*
 import org.jdbi.v3.sqlobject.kotlin.BindKotlin
 import org.jdbi.v3.sqlobject.kotlin.RegisterKotlinMapper
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
 import java.util.*
+import javax.ws.rs.NotFoundException
 
 interface SourcesDao {
     // Postgres sets uuid, created_at, updated_at
@@ -56,4 +58,18 @@ interface SourcesDao {
 
     @SqlUpdate("delete from sources_languages where source_id = :sourceId and lang_id = :languageId")
     fun deleteLanguage(sourceId: UUID, languageId: String)
+
+    @SqlQuery("select mv.id as id, mv.key_id as key_id, mv.value as value " +
+            "from metadata_values as mv " +
+            "join metadata_values_sources_corpora smv on mv.id = smv.metadata_value_id " +
+            "where smv.source_id=:sourceId")
+    fun getMetadataValues(sourceId: UUID): List<ResultMetadataValue>
+
+    @SqlUpdate("insert into metadata_values_sources_corpora (source_id, metadata_value_id) values (:sourceId, :valueId) on conflict do nothing")
+    fun addMetadataValue(sourceId: UUID, valueId: UUID)
+
+    companion object {
+        fun sourceNotFound(sourceId: UUID): Nothing = throw NotFoundException("Source not found: $sourceId")
+    }
+
 }
