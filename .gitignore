@@ -1,3 +1,5 @@
+.env
+
 # Backend
 .idea
 .make
@@ -11,10 +13,10 @@ frontend/dist
 frontend/build
 frontend/.env*
 .vscode
+.eslintcache
 
 # download/upload leftovers
 /**/backend/iso-639-3.tab
 
 # Macos
 .DS_Store
-.env
