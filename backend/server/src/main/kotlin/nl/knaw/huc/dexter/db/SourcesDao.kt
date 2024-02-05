@@ -62,7 +62,7 @@ interface SourcesDao {
     @SqlUpdate("delete from sources_languages where source_id = :sourceId and lang_id = :languageId")
     fun deleteLanguage(sourceId: UUID, languageId: String)
 
-    @SqlQuery("select mv.id as id, mv.key_id as key_id, mv.value as value " +
+    @SqlQuery("select mv.id as id, mv.key_id, mv.value, mv.created_by " +
             "from metadata_values as mv " +
             "join metadata_values_sources_corpora smv on mv.id = smv.metadata_value_id " +
             "where smv.source_id=:sourceId")

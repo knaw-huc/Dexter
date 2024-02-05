@@ -82,7 +82,7 @@ interface CorporaDao {
     @SqlUpdate("delete from corpora_sources where corpus_id = :corpusId and source_id = :sourceId")
     fun deleteSource(corpusId: UUID, sourceId: UUID)
 
-    @SqlQuery("select mv.id as id, mv.key_id as key_id, mv.value as value " +
+    @SqlQuery("select mv.id as id, mv.key_id, mv.value, mv.created_by " +
             "from metadata_values as mv " +
             "join metadata_values_sources_corpora cmv on mv.id = cmv.metadata_value_id " +
             "where cmv.corpus_id=:corpusId")
