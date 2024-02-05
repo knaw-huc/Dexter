@@ -209,7 +209,9 @@ class SourcesResource(private val jdbi: Jdbi) {
     }
 
     private fun <R> onAccessibleSourceWithHandle(
-        sourceId: UUID, userId: UUID, block: HandleBlock<ResultSource, R>
+        sourceId: UUID,
+        userId: UUID,
+        block: HandleBlock<ResultSource, R>
     ): R = jdbi.inTransaction<R, Exception>(REPEATABLE_READ) { handle ->
         handle.attach(SourcesDao::class.java).let { dao ->
             dao.findByUser(sourceId, userId)?.let { source ->
