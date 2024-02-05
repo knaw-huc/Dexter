@@ -32,7 +32,7 @@ import javax.ws.rs.core.Response
 
 @Path(ResourcePaths.SOURCES)
 @Produces(APPLICATION_JSON)
-@RolesAllowed(RoleNames.ROOT, RoleNames.USER)
+@RolesAllowed(RoleNames.USER)
 class SourcesResource(private val jdbi: Jdbi) {
     private val log = LoggerFactory.getLogger(javaClass)
 

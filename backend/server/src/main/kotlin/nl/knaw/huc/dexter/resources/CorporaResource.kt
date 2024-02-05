@@ -30,7 +30,7 @@ import javax.ws.rs.core.Response
 
 @Path(ResourcePaths.CORPORA)
 @Produces(APPLICATION_JSON)
-@RolesAllowed(RoleNames.ROOT, RoleNames.USER)
+@RolesAllowed(RoleNames.USER)
 class CorporaResource(private val jdbi: Jdbi) {
     private val log = LoggerFactory.getLogger(javaClass)
 
