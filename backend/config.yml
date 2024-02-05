@@ -30,7 +30,7 @@ logging:
 root:
   user: ${DEX_ROOT_USER:-root}
   pass: ${DEX_ROOT_PASS:-d33d33}
-
+  id: ${DEX_ROOT_ID:-00000000-0000-0000-0000-000000000000 }
 server:
   applicationConnectors:
     - type: http

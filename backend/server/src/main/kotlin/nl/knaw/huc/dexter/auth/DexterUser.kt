@@ -22,10 +22,10 @@ data class BasicUser(
 }
 
 data class RootUser(
-    override val name: String = ":root:",
-    // Root user has a random UUID and cannot create any resources
+    override val name: String,
+    // Root user ID is configured in {@link RootConfig}
     // TODO: Insert root user as regular user in database
-    override val id: UUID = UUID.randomUUID()
+    override val id: UUID
 ) : DexterUser() {
     override val role: DexterRole
         get() = DexterRole.ROOT_ROLE

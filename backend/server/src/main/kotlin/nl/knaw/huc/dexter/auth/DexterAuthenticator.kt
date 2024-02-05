@@ -26,7 +26,7 @@ class DexterAuthenticator(
         val user = credentials?.let {
             if(isRoot(credentials)) {
                 log.debug(" -> authenticated as: root")
-                return Optional.of(RootUser())
+                return Optional.of(RootUser(root.user, root.id))
             }
 
             val found = list()

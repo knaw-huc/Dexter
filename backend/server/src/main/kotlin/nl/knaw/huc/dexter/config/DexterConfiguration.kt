@@ -6,6 +6,7 @@ import io.dropwizard.Configuration
 import io.dropwizard.db.DataSourceFactory
 import nl.knaw.huc.dexter.api.Constants
 import nl.knaw.huc.dexter.resources.AboutResource
+import java.util.*
 import javax.validation.Valid
 import javax.validation.constraints.NotNull
 
@@ -46,4 +47,8 @@ class DexterConfiguration : Configuration() {
     }
 }
 
-data class RootConfig(val user: String = "", val pass: String = "")
+data class RootConfig(
+    val user: String = "",
+    val pass: String = "",
+    val id: UUID = UUID.fromString("00000000-0000-0000-0000-000000000000")
+)
