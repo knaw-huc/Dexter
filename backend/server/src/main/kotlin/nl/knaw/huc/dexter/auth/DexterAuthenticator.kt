@@ -23,10 +23,6 @@ class DexterAuthenticator(
         credentials: BasicCredentials?
     ): Optional<DexterUser> {
         log.debug("authenticating: $credentials")
-        if(isGuest(credentials)) {
-            log.debug(" -> guest")
-            return Optional.of(GuestUser())
-        }
         val user = credentials?.let {
             val user = when {
                 isRoot(it) -> RootUser()
@@ -50,10 +46,6 @@ class DexterAuthenticator(
             .findByName(who.username)
             ?.name
             .equals(who.username)
-    }
-
-    private fun isGuest(who: BasicCredentials?): Boolean {
-        return isBlank(who?.username) && isBlank(who?.password)
     }
 
     private fun users(): UsersDao = jdbi.onDemand(UsersDao::class.java)

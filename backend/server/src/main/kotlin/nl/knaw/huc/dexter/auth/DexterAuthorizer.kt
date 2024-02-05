@@ -9,9 +9,6 @@ class DexterAuthorizer : Authorizer<DexterUser> {
     override fun authorize(principal: DexterUser?, role: String?): Boolean {
         log.debug("Authorizing principal=[$principal] for role=[$role]")
         var authorized = false
-        if(principal == null) {
-            authorized = role == null || role == RoleNames.GUEST
-        }
         if(principal is RootUser) {
             authorized = true
         }

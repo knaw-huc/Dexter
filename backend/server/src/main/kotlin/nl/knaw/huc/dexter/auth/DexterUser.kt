@@ -1,6 +1,5 @@
 package nl.knaw.huc.dexter.auth
 
-import nl.knaw.huc.dexter.auth.RoleNames.GUEST
 import java.security.Principal
 
 abstract class DexterUser : Principal {
@@ -22,11 +21,4 @@ data class RootUser(
 ) : DexterUser() {
     override val role: DexterRole
         get() = DexterRole.ROOT_ROLE
-}
-
-data class GuestUser(
-    override val name: String = GUEST
-) : DexterUser() {
-    override val role: DexterRole
-        get() = DexterRole.GUEST_ROLE
 }
