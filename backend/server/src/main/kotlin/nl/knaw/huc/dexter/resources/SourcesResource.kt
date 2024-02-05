@@ -76,7 +76,10 @@ class SourcesResource(private val jdbi: Jdbi) {
 
     @GET
     @Path(ID_PATH)
-    fun getSource(@PathParam(ID_PARAM) id: UUID) = sources().find(id) ?: sourceNotFound(id)
+    fun getSource(
+        @PathParam(ID_PARAM) id: UUID,
+        @Auth user: DexterUser
+    ) = sources().find(id) ?: sourceNotFound(id)
 
     @GET
     @Path("$ID_PATH/$WITH_RESOURCES")

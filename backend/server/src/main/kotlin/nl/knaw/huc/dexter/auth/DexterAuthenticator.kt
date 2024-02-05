@@ -3,9 +3,9 @@ package nl.knaw.huc.dexter.auth
 import UnauthorizedException
 import io.dropwizard.auth.Authenticator
 import io.dropwizard.auth.basic.BasicCredentials
+import nl.knaw.huc.dexter.api.User
 import nl.knaw.huc.dexter.config.RootConfig
 import nl.knaw.huc.dexter.db.UsersDao
-import org.apache.commons.lang3.StringUtils.isBlank
 import org.jdbi.v3.core.Jdbi
 import org.slf4j.LoggerFactory
 import java.util.*
@@ -24,11 +24,15 @@ class DexterAuthenticator(
     ): Optional<DexterUser> {
         log.debug("authenticating: $credentials")
         val user = credentials?.let {
-            val user = when {
-                isRoot(it) -> RootUser()
-                isUser(it) -> BasicUser(it.username)
-                else -> throw UnauthorizedException()
+            if(isRoot(credentials)) {
+                log.debug(" -> authenticated as: root")
+                return Optional.of(RootUser())
             }
+
+            val found = list()
+                .find{u -> u.name == credentials.username}
+                ?: throw UnauthorizedException()
+            val user = BasicUser(it.username, found.id)
 
             // peek to log, then re-yield user
             log.debug(" -> authenticated as: $user")
@@ -41,13 +45,8 @@ class DexterAuthenticator(
 
     private fun isRoot(who: BasicCredentials) = who.username == root.user
 
-    private fun isUser(who: BasicCredentials): Boolean {
-        return users()
-            .findByName(who.username)
-            ?.name
-            .equals(who.username)
-    }
-
     private fun users(): UsersDao = jdbi.onDemand(UsersDao::class.java)
+
+    private fun list() = users().list()
 
 }
