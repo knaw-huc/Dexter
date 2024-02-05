@@ -2,14 +2,12 @@ package nl.knaw.huc.dexter.resources
 
 import FormMetadataValue
 import ResultMetadataValue
+import UnauthorizedException
 import io.dropwizard.auth.Auth
-import nl.knaw.huc.dexter.api.ResourcePaths
-import nl.knaw.huc.dexter.api.ResourcePaths.AUTOCOMPLETE
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PARAM
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PATH
 import nl.knaw.huc.dexter.api.ResourcePaths.METADATA
 import nl.knaw.huc.dexter.api.ResourcePaths.VALUES
-import nl.knaw.huc.dexter.api.ResourcePaths.WITH_RESOURCES
 import nl.knaw.huc.dexter.auth.DexterUser
 import nl.knaw.huc.dexter.auth.RoleNames
 import nl.knaw.huc.dexter.db.DaoBlock
@@ -32,12 +30,16 @@ class MetadataValuesResource(private val jdbi: Jdbi) {
     private val log = LoggerFactory.getLogger(javaClass)
 
     @GET
-    fun list() = metadataValues().list()
+    fun list(@Auth user: DexterUser) = metadataValues()
+        .listByUser(user.id)
 
     @GET
     @Path(ID_PATH)
-    fun getMetadataValue(@PathParam(ID_PARAM) metadataValueId: UUID) =
-        metadataValues().find(metadataValueId) ?: metadataValueNotFound(metadataValueId)
+    fun getMetadataValue(
+        @PathParam(ID_PARAM) metadataValueId: UUID,
+        @Auth user: DexterUser
+    ) =
+        onExistingMetadataValue(metadataValueId, user.id) { _, v -> v }
 
     @POST
     @Consumes(APPLICATION_JSON)
@@ -48,7 +50,7 @@ class MetadataValuesResource(private val jdbi: Jdbi) {
         return jdbi.inTransaction<ResultMetadataValue, Exception>(REPEATABLE_READ) { tx ->
             val userDao = tx.attach(UsersDao::class.java)
             val createdBy = userDao.findByName(user.name) ?: throw NotFoundException("Unknown user: $user")
-            diagnoseViolations { metadataValues().insert(metadataValue, createdBy.id)}
+            diagnoseViolations { metadataValues().insert(metadataValue, createdBy.id) }
         }
     }
 
@@ -56,9 +58,10 @@ class MetadataValuesResource(private val jdbi: Jdbi) {
     @Path(ID_PATH)
     fun updateMetadataValue(
         @PathParam(ID_PARAM) id: UUID,
-        formMetadataValue: FormMetadataValue
+        formMetadataValue: FormMetadataValue,
+        @Auth user: DexterUser
     ): ResultMetadataValue =
-        onExistingMetadataValue(id) { dao, v ->
+        onExistingMetadataValue(id, user.id) { dao, v ->
             log.info("updateMetadataValue: metadataValueId=${v.id}, formMetadataValue=$formMetadataValue")
             dao.update(v.id, formMetadataValue)
         }
@@ -66,16 +69,23 @@ class MetadataValuesResource(private val jdbi: Jdbi) {
     @DELETE
     @Path(ID_PATH)
     fun deleteMetadataValue(@PathParam(ID_PARAM) id: UUID, @Auth user: DexterUser): Response =
-        onExistingMetadataValue(id) { dao, kw ->
+        onExistingMetadataValue(id, user.id) { dao, kw ->
             log.warn("deleteMetadataValue[${user.name}] metadataValue=$kw")
             dao.delete(kw.id)
             Response.noContent().build()
         }
 
-    private fun <R> onExistingMetadataValue(metadataValueId: UUID, block: DaoBlock<MetadataValuesDao, ResultMetadataValue, R>): R =
+    private fun <R> onExistingMetadataValue(
+        metadataValueId: UUID,
+        userId: UUID,
+        block: DaoBlock<MetadataValuesDao, ResultMetadataValue, R>
+    ): R =
         jdbi.inTransaction<R, Exception>(REPEATABLE_READ) { handle ->
             handle.attach(MetadataValuesDao::class.java).let { dao ->
                 dao.find(metadataValueId)?.let { metadataValue ->
+                    if (metadataValue.createdBy != userId) {
+                        throw UnauthorizedException()
+                    }
                     diagnoseViolations { block.execute(dao, metadataValue) }
                 } ?: metadataValueNotFound(metadataValueId)
             }
@@ -83,5 +93,6 @@ class MetadataValuesResource(private val jdbi: Jdbi) {
 
     private fun metadataValues() = jdbi.onDemand(MetadataValuesDao::class.java)
 
-    private fun metadataValueNotFound(metadataValueId: UUID): Nothing = throw NotFoundException("MetadataValue not found: $metadataValueId")
+    private fun metadataValueNotFound(metadataValueId: UUID): Nothing =
+        throw NotFoundException("MetadataValue not found: $metadataValueId")
 }

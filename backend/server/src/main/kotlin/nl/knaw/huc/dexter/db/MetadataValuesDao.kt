@@ -8,8 +8,8 @@ import org.jdbi.v3.sqlobject.statement.SqlUpdate
 import java.util.UUID
 
 interface MetadataValuesDao {
-    @SqlQuery("select * from metadata_values")
-    fun list(): List<ResultMetadataValue>
+    @SqlQuery("select * from metadata_values where created_by = :userId")
+    fun listByUser(userId: UUID): List<ResultMetadataValue>
 
     @SqlQuery("select * from metadata_values where id = :id")
     fun find(id: UUID): ResultMetadataValue?

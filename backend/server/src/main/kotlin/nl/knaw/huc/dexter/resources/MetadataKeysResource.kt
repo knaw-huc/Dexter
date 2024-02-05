@@ -36,9 +36,7 @@ class MetadataKeysResource(private val jdbi: Jdbi) {
     @GET
     @Path(ID_PATH)
     fun getMetadataKey(@PathParam(ID_PARAM) metadataKeyId: UUID, @Auth user: DexterUser) =
-        onAccessibleMetadataKey(metadataKeyId, user.id) { dao, kw ->
-            metadataKeys().find(metadataKeyId) ?: metadataKeyNotFound(metadataKeyId)
-        }
+        onAccessibleMetadataKey(metadataKeyId, user.id) { _, k -> k }
 
     @POST
     @Consumes(APPLICATION_JSON)
