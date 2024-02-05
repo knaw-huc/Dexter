@@ -6,9 +6,11 @@ import nl.knaw.huc.dexter.api.ResourcePaths.ID_PARAM
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PATH
 import nl.knaw.huc.dexter.api.ResourcePaths.LANGUAGES
 import nl.knaw.huc.dexter.api.ResultLanguage
+import nl.knaw.huc.dexter.auth.RoleNames
 import nl.knaw.huc.dexter.db.LanguagesDao
 import org.jdbi.v3.core.Jdbi
 import org.slf4j.LoggerFactory
+import javax.annotation.security.RolesAllowed
 import javax.validation.constraints.NotNull
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType.APPLICATION_JSON
@@ -20,6 +22,7 @@ private const val LANGUAGE_SEED_DESCRIPTION = "You can seed the languages table 
         "a tab separated file that you can download (zipped) at $ISO_639_URL."
 
 @Path(LANGUAGES)
+@RolesAllowed(RoleNames.USER)
 @Produces(APPLICATION_JSON)
 class LanguagesResource(private val jdbi: Jdbi) {
     private val log = LoggerFactory.getLogger(javaClass)

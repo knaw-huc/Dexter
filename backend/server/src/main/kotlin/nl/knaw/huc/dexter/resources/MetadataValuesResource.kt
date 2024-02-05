@@ -11,6 +11,7 @@ import nl.knaw.huc.dexter.api.ResourcePaths.METADATA
 import nl.knaw.huc.dexter.api.ResourcePaths.VALUES
 import nl.knaw.huc.dexter.api.ResourcePaths.WITH_RESOURCES
 import nl.knaw.huc.dexter.auth.DexterUser
+import nl.knaw.huc.dexter.auth.RoleNames
 import nl.knaw.huc.dexter.db.DaoBlock
 import nl.knaw.huc.dexter.db.MetadataValuesDao
 import nl.knaw.huc.dexter.db.UsersDao
@@ -19,11 +20,13 @@ import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel.REPEATABLE_READ
 import org.slf4j.LoggerFactory
 import java.util.UUID
+import javax.annotation.security.RolesAllowed
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType.APPLICATION_JSON
 import javax.ws.rs.core.Response
 
 @Path("$METADATA/$VALUES")
+@RolesAllowed(RoleNames.USER)
 @Produces(APPLICATION_JSON)
 class MetadataValuesResource(private val jdbi: Jdbi) {
     private val log = LoggerFactory.getLogger(javaClass)

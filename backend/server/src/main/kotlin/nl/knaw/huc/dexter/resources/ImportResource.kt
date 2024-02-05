@@ -6,8 +6,10 @@ import WereldCulturenDublinCoreImporter
 import io.dropwizard.auth.Auth
 import nl.knaw.huc.dexter.api.ResourcePaths
 import nl.knaw.huc.dexter.auth.DexterUser
+import nl.knaw.huc.dexter.auth.RoleNames
 import org.slf4j.LoggerFactory
 import java.text.MessageFormat
+import javax.annotation.security.RolesAllowed
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType.APPLICATION_JSON
 
@@ -15,6 +17,7 @@ import javax.ws.rs.core.MediaType.APPLICATION_JSON
  * Convert tms linked art export of wereldculturen AAMU collection into a subset of dublin core fields
  */
 @Path(ResourcePaths.IMPORT)
+@RolesAllowed(RoleNames.USER)
 @Produces(APPLICATION_JSON)
 class ImportResource(
     private val mapper: WereldCulturenDublinCoreImporter

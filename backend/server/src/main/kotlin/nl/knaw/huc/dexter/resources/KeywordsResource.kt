@@ -8,17 +8,20 @@ import nl.knaw.huc.dexter.api.ResourcePaths.ID_PARAM
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PATH
 import nl.knaw.huc.dexter.api.ResultKeyword
 import nl.knaw.huc.dexter.auth.DexterUser
+import nl.knaw.huc.dexter.auth.RoleNames
 import nl.knaw.huc.dexter.db.DaoBlock
 import nl.knaw.huc.dexter.db.KeywordsDao
 import nl.knaw.huc.dexter.helpers.PsqlDiagnosticsHelper.Companion.diagnoseViolations
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel.REPEATABLE_READ
 import org.slf4j.LoggerFactory
+import javax.annotation.security.RolesAllowed
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType.APPLICATION_JSON
 import javax.ws.rs.core.Response
 
 @Path(ResourcePaths.KEYWORDS)
+@RolesAllowed(RoleNames.USER)
 @Produces(APPLICATION_JSON)
 class KeywordsResource(private val jdbi: Jdbi) {
     private val log = LoggerFactory.getLogger(javaClass)

@@ -31,8 +31,8 @@ import javax.ws.rs.core.MediaType.TEXT_PLAIN
 import javax.ws.rs.core.Response
 
 @Path(ResourcePaths.SOURCES)
-@Produces(APPLICATION_JSON)
 @RolesAllowed(RoleNames.USER)
+@Produces(APPLICATION_JSON)
 class SourcesResource(private val jdbi: Jdbi) {
     private val log = LoggerFactory.getLogger(javaClass)
 
