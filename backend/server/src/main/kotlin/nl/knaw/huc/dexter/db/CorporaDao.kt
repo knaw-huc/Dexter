@@ -23,6 +23,9 @@ interface CorporaDao {
     @SqlQuery("select * from corpora where id = :id")
     fun find(id: UUID): ResultCorpus?
 
+    @SqlQuery("select * from corpora where id = :id and created_by = :createdBy")
+    fun findByUser(id: UUID, createdBy: UUID): ResultCorpus?
+
     @SqlQuery(
         "update corpora " +
                 "set (parent_id,title,description,rights,access,location,earliest,latest,contributor,notes) " +
@@ -32,8 +35,8 @@ interface CorporaDao {
     )
     fun update(id: UUID, @BindKotlin formCorpus: FormCorpus): ResultCorpus
 
-    @SqlQuery("select * from corpora")
-    fun list(): List<ResultCorpus>
+    @SqlQuery("select * from corpora where created_by = :createdBy")
+    fun list(createdBy: UUID): List<ResultCorpus>
 
     @SqlUpdate("delete from corpora where id = :id")
     fun delete(id: UUID)
