@@ -1,7 +1,7 @@
 package nl.knaw.huc.dexter.resources
 
 import ResultMetadataValue
-import ResultMetadataValueWithResources
+import UnauthorizedException
 import io.dropwizard.auth.Auth
 import nl.knaw.huc.dexter.api.*
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PARAM
@@ -14,17 +14,15 @@ import nl.knaw.huc.dexter.api.ResourcePaths.WITH_RESOURCES
 import nl.knaw.huc.dexter.auth.DexterUser
 import nl.knaw.huc.dexter.auth.RoleNames
 import nl.knaw.huc.dexter.db.DaoBlock
-import nl.knaw.huc.dexter.db.MetadataKeysDao
+import nl.knaw.huc.dexter.db.HandleBlock
 import nl.knaw.huc.dexter.db.SourcesDao
 import nl.knaw.huc.dexter.db.SourcesDao.Companion.sourceNotFound
 import nl.knaw.huc.dexter.db.UsersDao
 import nl.knaw.huc.dexter.helpers.PsqlDiagnosticsHelper.Companion.diagnoseViolations
-import nl.knaw.huc.dexter.helpers.WithResourcesHelper.Companion.getSourceWithResources
-import org.jdbi.v3.core.Handle
+import nl.knaw.huc.dexter.helpers.WithResourcesHelper.Companion.addSourceResources
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel.REPEATABLE_READ
 import org.slf4j.LoggerFactory
-import toResultMetadataValueWithResources
 import java.util.*
 import javax.annotation.security.RolesAllowed
 import javax.ws.rs.*
@@ -39,37 +37,22 @@ class SourcesResource(private val jdbi: Jdbi) {
     private val log = LoggerFactory.getLogger(javaClass)
 
     @GET
-    fun getSourceList() = sources().list()
+    fun getSourceList(
+        @Auth user: DexterUser
+    ) = sources().listByUser(user.id)
 
     @GET
     @Path(WITH_RESOURCES)
-    fun getSourceWithResourcesList(): List<ResultSourceWithResources> {
+    fun getSourceWithResourcesList(
+        @Auth user: DexterUser
+    ): List<ResultSourceWithResources> {
         log.info("get all sources with resources")
+
         return jdbi.inTransaction<List<ResultSourceWithResources>, Exception>(REPEATABLE_READ) { handle ->
             handle.attach(SourcesDao::class.java).let { sourceDao ->
-                sourceDao.list()
-                    .map { s ->
-                        s.toResultSourceWithResources(
-                            sourceDao.getKeywords(s.id),
-                            sourceDao.getLanguages(s.id),
-                            getMetadataValueWithResources(s, handle)
-                        )
+                sourceDao.listByUser(user.id).map { source ->
+                        addSourceResources(source, handle)
                     }
-            }
-        }
-    }
-
-    private fun getMetadataValueWithResources(
-        source: ResultSource,
-        handle: Handle
-    ): List<ResultMetadataValueWithResources> {
-        return handle.attach(SourcesDao::class.java).let { sourceDao ->
-            sourceDao.getMetadataValues(source.id).map { v ->
-                handle.attach(MetadataKeysDao::class.java).let { keysDao ->
-                    v.toResultMetadataValueWithResources(
-                        keysDao.find(v.keyId) ?: throw NotFoundException("Unknown key: ${v.keyId}")
-                    )
-                }
             }
         }
     }
@@ -77,24 +60,27 @@ class SourcesResource(private val jdbi: Jdbi) {
     @GET
     @Path(ID_PATH)
     fun getSource(
-        @PathParam(ID_PARAM) id: UUID,
-        @Auth user: DexterUser
-    ) = sources().find(id) ?: sourceNotFound(id)
+        @PathParam(ID_PARAM) id: UUID, @Auth user: DexterUser
+    ): ResultSource {
+        return sources().findByUser(id, user.id) ?: sourceNotFound(id)
+    }
 
     @GET
     @Path("$ID_PATH/$WITH_RESOURCES")
-    fun getSourceWithResources(@PathParam(ID_PARAM) id: UUID): ResultSourceWithResources {
+    fun getSourceWithResources(
+        @PathParam(ID_PARAM) id: UUID, @Auth user: DexterUser
+    ): ResultSourceWithResources {
         log.info("get source $id with resources")
-        return jdbi.inTransaction<ResultSourceWithResources, Exception>(REPEATABLE_READ) { handle ->
-            handle.attach(SourcesDao::class.java).let { dao ->
-                getSourceWithResources(id, handle)
-            }
+        return onAccessibleSourceWithHandle(id, user.id) { handle, source ->
+            addSourceResources(source, handle)
         }
     }
 
     @POST
     @Consumes(APPLICATION_JSON)
-    fun createSource(formSource: FormSource, @Auth user: DexterUser): ResultSource {
+    fun createSource(
+        formSource: FormSource, @Auth user: DexterUser
+    ): ResultSource {
         log.info("createSource[${user.name}]: formSource=[$formSource]")
         return jdbi.inTransaction<ResultSource, Exception>(REPEATABLE_READ) { tx ->
             val userDao = tx.attach(UsersDao::class.java)
@@ -109,51 +95,56 @@ class SourcesResource(private val jdbi: Jdbi) {
     @Path(ID_PATH)
     fun updateSource(
         @PathParam(ID_PARAM) id: UUID, formSource: FormSource, @Auth user: DexterUser
-    ): ResultSource = onExistingSource(id) { dao, src ->
+    ): ResultSource = onAccessibleSource(id, user.id) { dao, src ->
         log.info("updateSource[${user.name}: sourceId=$src.id, formSource=$formSource")
         dao.update(id, formSource)
     }
 
     @DELETE
     @Path(ID_PATH)
-    fun deleteSource(@PathParam(ID_PARAM) id: UUID, @Auth user: DexterUser): Response =
-        onExistingSource(id) { dao, src ->
-            log.info("deleteSource[${user.name}] deleting: $src")
-            dao.delete(id)
-            Response.noContent().build()
-        }
+    fun deleteSource(
+        @PathParam(ID_PARAM) id: UUID, @Auth user: DexterUser
+    ): Response = onAccessibleSource(id, user.id) { dao, src ->
+        log.info("deleteSource[${user.name}] deleting: $src")
+        dao.delete(id)
+        Response.noContent().build()
+    }
 
     @GET
     @Path("$ID_PATH/$KEYWORDS")
-    fun getKeywords(@PathParam(ID_PARAM) id: UUID) = onExistingSource(id) { dao, src ->
+    fun getKeywords(
+        @PathParam(ID_PARAM) id: UUID, @Auth user: DexterUser
+    ) = onAccessibleSource(id, user.id) { dao, src ->
         dao.getKeywords(src.id)
     }
 
     @POST
     @Consumes(TEXT_PLAIN)
     @Path("$ID_PATH/$KEYWORDS")
-    fun addKeyword(@PathParam(ID_PARAM) id: UUID, keywordId: String): List<ResultKeyword> =
-        onExistingSource(id) { dao, src ->
-            log.info("addKeyword: sourceId=${src.id}, keywordId=$keywordId")
-            dao.addKeyword(src.id, keywordId.toInt())
-            dao.getKeywords(src.id)
-        }
+    fun addKeyword(
+        @PathParam(ID_PARAM) id: UUID, keywordId: String, @Auth user: DexterUser
+    ): List<ResultKeyword> = onAccessibleSource(id, user.id) { dao, src ->
+        log.info("addKeyword: sourceId=${src.id}, keywordId=$keywordId")
+        dao.addKeyword(src.id, keywordId.toInt())
+        dao.getKeywords(src.id)
+    }
 
     @POST
     @Consumes(APPLICATION_JSON)
     @Path("$ID_PATH/$KEYWORDS")
-    fun addKeywords(@PathParam(ID_PARAM) id: UUID, keywordIds: List<Int>): List<ResultKeyword> =
-        onExistingSource(id) { dao, src ->
-            log.info("addKeywords: sourceId=${src.id}, keywords=$keywordIds")
-            keywordIds.forEach { keywordId -> dao.addKeyword(src.id, keywordId) }
-            dao.getKeywords(src.id)
-        }
+    fun addKeywords(
+        @PathParam(ID_PARAM) id: UUID, keywordIds: List<Int>, @Auth user: DexterUser
+    ): List<ResultKeyword> = onAccessibleSource(id, user.id) { dao, src ->
+        log.info("addKeywords: sourceId=${src.id}, keywords=$keywordIds")
+        keywordIds.forEach { keywordId -> dao.addKeyword(src.id, keywordId) }
+        dao.getKeywords(src.id)
+    }
 
     @DELETE
     @Path("$ID_PATH/$KEYWORDS/{keywordId}")
     fun deleteKeyword(
-        @PathParam(ID_PARAM) id: UUID, @PathParam("keywordId") keywordId: Int
-    ): List<ResultKeyword> = onExistingSource(id) { dao, src ->
+        @PathParam(ID_PARAM) id: UUID, @PathParam("keywordId") keywordId: Int, @Auth user: DexterUser
+    ): List<ResultKeyword> = onAccessibleSource(id, user.id) { dao, src ->
         log.info("deleteKeyword: sourceId=${src.id}, keywordId=$keywordId")
         dao.deleteKeyword(src.id, keywordId)
         dao.getKeywords(src.id)
@@ -161,39 +152,38 @@ class SourcesResource(private val jdbi: Jdbi) {
 
     @GET
     @Path("$ID_PATH/$LANGUAGES")
-    fun getLanguages(@PathParam(ID_PARAM) id: UUID) =
-        onExistingSource(id) { dao, src ->
-            dao.getLanguages(src.id)
-        }
+    fun getLanguages(
+        @PathParam(ID_PARAM) id: UUID, @Auth user: DexterUser
+    ) = onAccessibleSource(id, user.id) { dao, src ->
+        dao.getLanguages(src.id)
+    }
 
     @POST
     @Path("$ID_PATH/$LANGUAGES")
-    fun addLanguage(@PathParam(ID_PARAM) id: UUID, languageId: String) =
-        onExistingSource(id) { dao, src ->
-            log.info("addLanguage: sourceId=${src.id}, languageId=$languageId")
-            dao.addLanguage(src.id, languageId)
-            dao.getLanguages(src.id)
-        }
+    fun addLanguage(
+        @PathParam(ID_PARAM) id: UUID, languageId: String, @Auth user: DexterUser
+    ) = onAccessibleSource(id, user.id) { dao, src ->
+        log.info("addLanguage: sourceId=${src.id}, languageId=$languageId")
+        dao.addLanguage(src.id, languageId)
+        dao.getLanguages(src.id)
+    }
 
     @POST
     @Consumes(APPLICATION_JSON)
     @Path("$ID_PATH/$LANGUAGES")
     fun addLanguages(
-        @PathParam(ID_PARAM) id: UUID,
-        languageIds: List<String>
-    ) =
-        onExistingSource(id) { dao, src ->
-            log.info("addLanguages: sourceId=${src.id}, languageIds=$languageIds")
-            languageIds.forEach { languageId -> dao.addLanguage(src.id, languageId) }
-            dao.getLanguages(src.id)
-        }
+        @PathParam(ID_PARAM) id: UUID, languageIds: List<String>, @Auth user: DexterUser
+    ) = onAccessibleSource(id, user.id) { dao, src ->
+        log.info("addLanguages: sourceId=${src.id}, languageIds=$languageIds")
+        languageIds.forEach { languageId -> dao.addLanguage(src.id, languageId) }
+        dao.getLanguages(src.id)
+    }
 
     @DELETE
     @Path("$ID_PATH/$LANGUAGES/{languageId}")
     fun deleteLanguage(
-        @PathParam(ID_PARAM) id: UUID,
-        @PathParam("languageId") languageId: String
-    ) = onExistingSource(id) { dao, src ->
+        @PathParam(ID_PARAM) id: UUID, @PathParam("languageId") languageId: String, @Auth user: DexterUser
+    ) = onAccessibleSource(id, user.id) { dao, src ->
         log.info("deleteLanguage: sourceId=${src.id}, languageId=$languageId")
         dao.deleteLanguage(src.id, languageId)
         dao.getLanguages(src.id)
@@ -201,32 +191,45 @@ class SourcesResource(private val jdbi: Jdbi) {
 
     @GET
     @Path("$ID_PATH/$METADATA/$VALUES")
-    fun getMetadataValue(@PathParam(ID_PARAM) id: UUID): List<ResultMetadataValue> =
-        onExistingSource(id) { dao, sourceId ->
-            dao.getMetadataValues(sourceId.id)
-        }
+    fun getMetadataValue(
+        @PathParam(ID_PARAM) id: UUID, @Auth user: DexterUser
+    ): List<ResultMetadataValue> = onAccessibleSource(id, user.id) { dao, sourceId ->
+        dao.getMetadataValues(sourceId.id)
+    }
 
     @POST
     @Consumes(APPLICATION_JSON)
     @Path("$ID_PATH/$METADATA/$VALUES")
     fun addMetadataValues(
-        @PathParam(ID_PARAM) sourceId: UUID,
-        metadataValueIds: List<UUID>
-    ): List<ResultMetadataValue> =
-        onExistingSource(sourceId) { dao, source ->
-            log.info("addMetadataValues: sourceId=${source.id}, metadataValueIds=$metadataValueIds")
-            metadataValueIds.forEach { sourceId -> dao.addMetadataValue(source.id, sourceId) }
-            dao.getMetadataValues(source.id)
-        }
+        @PathParam(ID_PARAM) sourceId: UUID, metadataValueIds: List<UUID>, @Auth user: DexterUser
+    ): List<ResultMetadataValue> = onAccessibleSource(sourceId, user.id) { dao, source ->
+        log.info("addMetadataValues: sourceId=${source.id}, metadataValueIds=$metadataValueIds")
+        metadataValueIds.forEach { sourceId -> dao.addMetadataValue(source.id, sourceId) }
+        dao.getMetadataValues(source.id)
+    }
 
-    private fun <R> onExistingSource(id: UUID, block: DaoBlock<SourcesDao, ResultSource, R>): R =
-        jdbi.inTransaction<R, Exception>(REPEATABLE_READ) { handle ->
-            handle.attach(SourcesDao::class.java).let { dao ->
-                dao.find(id)?.let { source ->
-                    diagnoseViolations { block.execute(dao, source) }
-                } ?: sourceNotFound(id)
-            }
+    private fun <R> onAccessibleSourceWithHandle(
+        sourceId: UUID, userId: UUID, block: HandleBlock<ResultSource, R>
+    ): R = jdbi.inTransaction<R, Exception>(REPEATABLE_READ) { handle ->
+        handle.attach(SourcesDao::class.java).let { dao ->
+            dao.findByUser(sourceId, userId)?.let { source ->
+                if (source.createdBy != userId) {
+                    throw UnauthorizedException()
+                }
+                diagnoseViolations {
+                    block.execute(handle, source)
+                }
+            } ?: sourceNotFound(sourceId)
         }
+    }
+
+    private fun <R> onAccessibleSource(
+        sourceId: UUID, userId: UUID, block: DaoBlock<SourcesDao, ResultSource, R>
+    ): R = onAccessibleSourceWithHandle(sourceId, userId) { handle, src ->
+        handle.attach(SourcesDao::class.java).let { dao ->
+            block.execute(dao, src)
+        }
+    }
 
     private fun sources(): SourcesDao = jdbi.onDemand(SourcesDao::class.java)
 }

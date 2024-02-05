@@ -36,7 +36,7 @@ interface CorporaDao {
     fun update(id: UUID, @BindKotlin formCorpus: FormCorpus): ResultCorpus
 
     @SqlQuery("select * from corpora where created_by = :createdBy")
-    fun list(createdBy: UUID): List<ResultCorpus>
+    fun listByUser(createdBy: UUID): List<ResultCorpus>
 
     @SqlUpdate("delete from corpora where id = :id")
     fun delete(id: UUID)

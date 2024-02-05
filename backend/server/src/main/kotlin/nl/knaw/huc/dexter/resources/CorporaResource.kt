@@ -17,7 +17,7 @@ import nl.knaw.huc.dexter.auth.RoleNames
 import nl.knaw.huc.dexter.db.*
 import nl.knaw.huc.dexter.db.CorporaDao.Companion.corpusNotFound
 import nl.knaw.huc.dexter.helpers.PsqlDiagnosticsHelper.Companion.diagnoseViolations
-import nl.knaw.huc.dexter.helpers.WithResourcesHelper.Companion.getCorpusWithResources
+import nl.knaw.huc.dexter.helpers.WithResourcesHelper.Companion.addCorpusResources
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel.REPEATABLE_READ
 import org.slf4j.LoggerFactory
@@ -36,7 +36,7 @@ class CorporaResource(private val jdbi: Jdbi) {
 
     @GET
     fun getCorporaList(@Auth user: DexterUser): List<ResultCorpus> {
-        return corpora().list(user.id)
+        return corpora().listByUser(user.id)
     }
 
     @GET
@@ -46,8 +46,8 @@ class CorporaResource(private val jdbi: Jdbi) {
         return jdbi.inTransaction<List<ResultCorpusWithResources>, Exception>(REPEATABLE_READ) { handle ->
             handle.attach(CorporaDao::class.java).let { corporaDao ->
                 handle.attach(SourcesDao::class.java).let { sourcesDao ->
-                    corporaDao.list(user.id).map { c ->
-                        getCorpusWithResources(c.id, handle)
+                    corporaDao.listByUser(user.id).map { c ->
+                        addCorpusResources(c, handle)
                     }
                 }
             }
@@ -64,10 +64,13 @@ class CorporaResource(private val jdbi: Jdbi) {
 
     @GET
     @Path("$ID_PATH/$WITH_RESOURCES")
-    fun findCorpusWithResources(@PathParam(ID_PARAM) id: UUID): ResultCorpusWithResources {
+    fun findCorpusWithResources(
+        @PathParam(ID_PARAM) id: UUID,
+        @Auth user: DexterUser
+    ): ResultCorpusWithResources {
         log.info("get corpus $id with resources")
-        return jdbi.inTransaction<ResultCorpusWithResources, Exception>(REPEATABLE_READ) { handle ->
-            getCorpusWithResources(id, handle)
+        return onAccessibleCorpusWithHandle(id, user.id) { handle, corpus ->
+            addCorpusResources(corpus, handle)
         }
     }
 
@@ -91,7 +94,7 @@ class CorporaResource(private val jdbi: Jdbi) {
         formCorpus: FormCorpus,
         @Auth user: DexterUser
     ): ResultCorpus =
-        onAllowedCorpus(id, user.id) { dao, corpus ->
+        onAccessibleCorpus(id, user.id) { dao, corpus ->
             log.info("updateCorpus[${user.name}]: corpusId=$corpus.id, formCorpus=$formCorpus")
             dao.update(id, formCorpus)
         }
@@ -99,8 +102,9 @@ class CorporaResource(private val jdbi: Jdbi) {
     @DELETE
     @Path(ID_PATH)
     fun deleteCorpus(
-        @PathParam(ID_PARAM) id: UUID, @Auth user: DexterUser): Response =
-        onAllowedCorpus(id, user.id) { dao, corpus ->
+        @PathParam(ID_PARAM) id: UUID, @Auth user: DexterUser
+    ): Response =
+        onAccessibleCorpus(id, user.id) { dao, corpus ->
             log.warn("deleteCorpus[${user.name}] deleting: $corpus")
             dao.delete(id)
             Response.noContent().build()
@@ -109,7 +113,7 @@ class CorporaResource(private val jdbi: Jdbi) {
     @GET
     @Path("$ID_PATH/$KEYWORDS")
     fun getKeywords(@PathParam(ID_PARAM) id: UUID, @Auth user: DexterUser) =
-        onAllowedCorpus(id, user.id) { dao, corpus ->
+        onAccessibleCorpus(id, user.id) { dao, corpus ->
             dao.getKeywords(corpus.id)
         }
 
@@ -117,7 +121,7 @@ class CorporaResource(private val jdbi: Jdbi) {
     @Consumes(TEXT_PLAIN)
     @Path("$ID_PATH/$KEYWORDS")
     fun addKeyword(@PathParam(ID_PARAM) id: UUID, keywordId: String, @Auth user: DexterUser) =
-        onAllowedCorpus(id, user.id) { dao, corpus ->
+        onAccessibleCorpus(id, user.id) { dao, corpus ->
             log.info("addKeyword: corpusId=${corpus.id}, keywordId=$keywordId")
             dao.addKeyword(corpus.id, keywordId.toInt())
             dao.getKeywords(corpus.id)
@@ -127,7 +131,7 @@ class CorporaResource(private val jdbi: Jdbi) {
     @Consumes(APPLICATION_JSON)
     @Path("$ID_PATH/$KEYWORDS")
     fun addKeywords(@PathParam(ID_PARAM) id: UUID, keywordIs: List<Int>, @Auth user: DexterUser) =
-        onAllowedCorpus(id, user.id) { dao, corpus ->
+        onAccessibleCorpus(id, user.id) { dao, corpus ->
             log.info("addKeywords: corpusId=${corpus.id}, keywordIds=$keywordIs")
             keywordIs.forEach { keywordId -> dao.addKeyword(corpus.id, keywordId) }
             dao.getKeywords(corpus.id)
@@ -139,7 +143,7 @@ class CorporaResource(private val jdbi: Jdbi) {
         @PathParam(ID_PARAM) id: UUID,
         @PathParam("keywordId") keywordId: Int,
         @Auth user: DexterUser
-    ) = onAllowedCorpus(id, user.id) { dao, corpus ->
+    ) = onAccessibleCorpus(id, user.id) { dao, corpus ->
         log.info("deleteKeyword: corpusId=${corpus.id}, keywordId=$keywordId")
         dao.deleteKeyword(corpus.id, keywordId)
         dao.getKeywords(corpus.id)
@@ -148,7 +152,7 @@ class CorporaResource(private val jdbi: Jdbi) {
     @GET
     @Path("$ID_PATH/$LANGUAGES")
     fun getLanguages(@PathParam(ID_PARAM) id: UUID, @Auth user: DexterUser) =
-        onAllowedCorpus(id, user.id) { dao, corpus ->
+        onAccessibleCorpus(id, user.id) { dao, corpus ->
             dao.getLanguages(corpus.id)
         }
 
@@ -156,7 +160,7 @@ class CorporaResource(private val jdbi: Jdbi) {
     @Consumes(TEXT_PLAIN)
     @Path("$ID_PATH/$LANGUAGES")
     fun addLanguage(@PathParam(ID_PARAM) id: UUID, languageId: String, @Auth user: DexterUser) =
-        onAllowedCorpus(id, user.id) { dao, corpus ->
+        onAccessibleCorpus(id, user.id) { dao, corpus ->
             log.info("addLanguage: corpusId=${corpus.id}, languageId=$languageId")
             dao.addLanguage(corpus.id, languageId)
             dao.getLanguages(id)
@@ -166,7 +170,7 @@ class CorporaResource(private val jdbi: Jdbi) {
     @Consumes(APPLICATION_JSON)
     @Path("$ID_PATH/$LANGUAGES")
     fun addLanguages(@PathParam(ID_PARAM) id: UUID, languageIds: List<String>, @Auth user: DexterUser) =
-        onAllowedCorpus(id, user.id) { dao, corpus ->
+        onAccessibleCorpus(id, user.id) { dao, corpus ->
             log.info("addLanguages: corpusId=${corpus.id}, languageIds=$languageIds")
             languageIds.forEach { languageId -> dao.addLanguage(corpus.id, languageId) }
             dao.getLanguages(corpus.id)
@@ -178,7 +182,7 @@ class CorporaResource(private val jdbi: Jdbi) {
         @PathParam(ID_PARAM) id: UUID,
         @PathParam("languageId") languageId: String,
         @Auth user: DexterUser
-    ) = onAllowedCorpus(id, user.id) { dao, corpus ->
+    ) = onAccessibleCorpus(id, user.id) { dao, corpus ->
         log.info("deleteLanguage: corpusId=${corpus.id}, languageId=$languageId")
         dao.deleteLanguage(corpus.id, languageId)
         dao.getLanguages(corpus.id)
@@ -191,7 +195,7 @@ class CorporaResource(private val jdbi: Jdbi) {
         @QueryParam("tags") tags: List<Int> = emptyList(),
         @Auth user: DexterUser
     ) =
-        onAllowedCorpus(corpusId, user.id) { dao, corpus ->
+        onAccessibleCorpus(corpusId, user.id) { dao, corpus ->
             if (tags.isEmpty()) {
                 dao.getSources(corpus.id)
             } else {
@@ -203,7 +207,7 @@ class CorporaResource(private val jdbi: Jdbi) {
     @Consumes(APPLICATION_JSON)
     @Path("$ID_PATH/$SOURCES")
     fun addSources(@PathParam(ID_PARAM) corpusId: UUID, sourceIds: List<UUID>, @Auth user: DexterUser) =
-        onAllowedCorpus(corpusId, user.id) { dao, corpus ->
+        onAccessibleCorpus(corpusId, user.id) { dao, corpus ->
             log.info("addSources: corpusId=${corpus.id}, sourceIds=$sourceIds")
             sourceIds.forEach { sourceId -> dao.addSource(corpus.id, sourceId) }
             dao.getSources(corpus.id)
@@ -215,7 +219,7 @@ class CorporaResource(private val jdbi: Jdbi) {
         @PathParam(ID_PARAM) id: UUID,
         @PathParam("sourceId") sourceId: UUID,
         @Auth user: DexterUser
-    ) = onAllowedCorpus(id, user.id) { dao, corpus ->
+    ) = onAccessibleCorpus(id, user.id) { dao, corpus ->
         log.info("deleteSource: corpusId=${corpus.id}, sourceId=$sourceId")
         dao.deleteSource(corpus.id, sourceId)
         dao.getSources(corpus.id)
@@ -224,7 +228,7 @@ class CorporaResource(private val jdbi: Jdbi) {
     @GET
     @Path("$ID_PATH/$METADATA/$VALUES")
     fun getMetadata(@PathParam(ID_PARAM) id: UUID, @Auth user: DexterUser) =
-        onAllowedCorpus(id, user.id) { dao, corpus ->
+        onAccessibleCorpus(id, user.id) { dao, corpus ->
             dao.getMetadataValues(corpus.id)
         }
 
@@ -236,34 +240,40 @@ class CorporaResource(private val jdbi: Jdbi) {
         metadataValueIds: List<UUID>,
         @Auth user: DexterUser
     ): List<ResultMetadataValue> =
-        onAllowedCorpus(corpusId, user.id) { dao, corpus ->
+        onAccessibleCorpus(corpusId, user.id) { dao, corpus ->
             log.info("addMetadataValues: corpusId=${corpus.id}, metadataValueIds=$metadataValueIds")
             metadataValueIds.forEach { sourceId -> dao.addMetadataValue(corpus.id, sourceId) }
             dao.getMetadataValues(corpus.id)
         }
 
-    /**
-     * Check if:
-     * - resource exists
-     * - user has access to resource
-     */
-    private fun <R> onAllowedCorpus(
+    private fun <R> onAccessibleCorpusWithHandle(
         corpusId: UUID,
         userId: UUID,
-        block: DaoBlock<CorporaDao, ResultCorpus, R>
+        block: HandleBlock<ResultCorpus, R>
     ): R =
         jdbi.inTransaction<R, Exception>(REPEATABLE_READ) { handle ->
             handle.attach(CorporaDao::class.java).let { dao ->
-                dao.find(corpusId)?.let { corpus ->
+                dao.findByUser(corpusId, userId)?.let { corpus ->
                     if (corpus.createdBy != userId) {
                         throw UnauthorizedException()
                     }
                     diagnoseViolations {
-                        block.execute(dao, corpus)
+                        block.execute(handle, corpus)
                     }
-                } ?: corpusNotFound(corpusId)
+                } ?: SourcesDao.sourceNotFound(corpusId)
             }
         }
+
+    private fun <R> onAccessibleCorpus(
+        sourceId: UUID,
+        userId: UUID,
+        block: DaoBlock<CorporaDao, ResultCorpus, R>
+    ): R = onAccessibleCorpusWithHandle(sourceId, userId) { handle, corpus ->
+        handle.attach(CorporaDao::class.java).let { dao ->
+            block.execute(dao, corpus)
+        }
+    }
+
 
     private fun corpora(): CorporaDao = jdbi.onDemand(CorporaDao::class.java)
 }

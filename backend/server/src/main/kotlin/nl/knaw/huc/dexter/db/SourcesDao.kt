@@ -25,6 +25,9 @@ interface SourcesDao {
     @SqlQuery("select * from sources where id = :id")
     fun find(id: UUID): ResultSource?
 
+    @SqlQuery("select * from sources where id = :id and created_by = :createdBy")
+    fun findByUser(id: UUID, createdBy: UUID): ResultSource??
+
     @SqlQuery(
         "update sources " +
                 "set (external_ref,title,description,rights,access,creator,location,earliest,latest,notes) " +
@@ -34,8 +37,8 @@ interface SourcesDao {
     )
     fun update(id: UUID, @BindKotlin formSource: FormSource): ResultSource
 
-    @SqlQuery("select * from sources")
-    fun list(): List<ResultSource>
+    @SqlQuery("select * from sources where created_by = :userId")
+    fun listByUser(userId: UUID): List<ResultSource>
 
     @SqlUpdate("delete from sources where id = :id")
     fun delete(id: UUID)

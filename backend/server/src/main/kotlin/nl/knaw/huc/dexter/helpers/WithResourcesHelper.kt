@@ -3,7 +3,6 @@ package nl.knaw.huc.dexter.helpers
 import ResultMetadataValue
 import nl.knaw.huc.dexter.api.*
 import nl.knaw.huc.dexter.db.CorporaDao
-import nl.knaw.huc.dexter.db.CorporaDao.Companion.corpusNotFound
 import nl.knaw.huc.dexter.db.MetadataKeysDao
 import nl.knaw.huc.dexter.db.SourcesDao
 import org.jdbi.v3.core.Handle
@@ -14,34 +13,32 @@ import javax.ws.rs.NotFoundException
 class WithResourcesHelper {
     companion object {
 
-        fun getCorpusWithResources(
-            corpusId: UUID,
+        fun addCorpusResources(
+            corpus: ResultCorpus,
             handle: Handle
         ): ResultCorpusWithResources {
             handle.attach(CorporaDao::class.java).let { corporaDao ->
-                val found = corporaDao.find(corpusId) ?: corpusNotFound(corpusId)
-                return found.toResultCorpusWithResources(
-                    if (found.parentId != null) corporaDao.find(found.parentId) else null,
-                    corporaDao.getKeywords(found.id),
-                    corporaDao.getLanguages(found.id),
-                    corporaDao.getSources(found.id).map { s ->
-                        getSourceWithResources(s.id, handle)
+                return corpus.toResultCorpusWithResources(
+                    if (corpus.parentId != null) corporaDao.find(corpus.parentId) else null,
+                    corporaDao.getKeywords(corpus.id),
+                    corporaDao.getLanguages(corpus.id),
+                    corporaDao.getSources(corpus.id).map { source ->
+                        addSourceResources(source, handle)
                     },
-                    getCorpusMetadataValueWithResources(found.id, handle)
+                    getCorpusMetadataValueWithResources(corpus.id, handle)
                 )
             }
         }
 
-        fun getSourceWithResources(
-            sourceId: UUID,
+        fun addSourceResources(
+            source: ResultSource,
             handle: Handle
         ): ResultSourceWithResources {
             handle.attach(SourcesDao::class.java).let { sourceDao ->
-                val found: ResultSource = sourceDao.find(sourceId) ?: SourcesDao.sourceNotFound(sourceId)
-                return found.toResultSourceWithResources(
-                    sourceDao.getKeywords(found.id),
-                    sourceDao.getLanguages(found.id),
-                    getSourceMetadataValueWithResources(found.id, handle)
+                return source.toResultSourceWithResources(
+                    sourceDao.getKeywords(source.id),
+                    sourceDao.getLanguages(source.id),
+                    getSourceMetadataValueWithResources(source.id, handle)
                 )
             }
         }
