@@ -2,16 +2,15 @@
 
 Collect, organize and annotate sources from external digital collections and physical, non-digitized collections in user defined corpora.
 
-_Work in progress_: See the workflow diagram at the bottom for the current status.
+_Work in progress_: See the [changelog](./CHANGELOG.md) for the latest changes.
 
 ## Issues and feature requests
 
 You can create new issues at [Dexter/issues](https://github.com/knaw-huc/Dexter/issues), with a template for bugs and one for features. 
 
 ## Development
-- Checkout development branch.
 
-Checkout `development` branch.
+- Checkout development branch.
 
 - Start database:
 ```shell
@@ -49,12 +48,13 @@ curl -X 'POST' 'http://localhost:8080/admin/users' \
   - Explore [backend API](http://localhost:8080/swagger#/default)
   - Add languages as documented at [PUT /languages](http://localhost:8080/swagger#/default/seed)
 
-## Workflow diagram
+## Model
+
+See [database-model.md](./backend/db/database-model.md)
+
+## Workflow
 
 ```mermaid  
----
-title: "Workflow of rolodex, 'minimal viable product'"
----
 graph TD
     START((start))
 
