@@ -2,7 +2,13 @@
 
 Collect, organize and annotate sources from external digital collections and physical, non-digitized collections in user defined corpora.
 
-_Work in progress_: See the [changelog](./CHANGELOG.md) for the latest changes.
+_Note_: Dexter is work in progress. Please see the [changelog](./CHANGELOG.md) for an overview of the latest features.
+
+**Table of contents**
+- [Issues and feature requests](#issues-and-feature-requests)
+- [Development](#development)
+- [Model](#model)
+- [Workflow](#workflow)
 
 ## Issues and feature requests
 
