@@ -13,6 +13,7 @@ import {
   ServerFormCorpus,
   Source,
   toFormMetadataValue,
+  toResultMetadataValue,
 } from '../../model/DexterModel';
 import {
   addKeywordsToCorpus,
@@ -44,9 +45,9 @@ import { ErrorMsg } from '../common/ErrorMsg';
 import _ from 'lodash';
 import { CloseInlineIcon } from '../common/CloseInlineIcon';
 import { SubmitButton } from '../common/SubmitButton';
-import { updateRemoteIds } from '../../utils/updateRemoteIds';
 import { MetadataValueFormFields } from '../metadata/MetadataValueFormFields';
 import { submitMetadataValues } from '../../utils/submitMetadataValues';
+import { updateLinkedResourcesWith } from '../../utils/updateRemoteIds';
 
 type CorpusFormProps = {
   corpusToEdit?: Corpus;
@@ -84,23 +85,13 @@ const validationSchema = yup.object({
 
 export function CorpusForm(props: CorpusFormProps) {
   const {
-    register,
-    handleSubmit,
     setValue,
     formState: { errors },
     watch,
   } = useForm<Corpus>({
     resolver: yupResolver(validationSchema),
-    mode: 'onBlur',
-    defaultValues: {
-      keywords: [],
-      languages: [],
-      sources: [],
-      parent: null,
-      access: null,
-    },
   });
-  const [backendError, setFieldError] = useState<ErrorByField>();
+  const [fieldError, setFieldError] = useState<ErrorByField>();
   const [isInit, setInit] = useState(false);
   const [isLoaded, setLoaded] = useState(false);
   const [keys, setKeys] = useState<ResultMetadataKey[]>([]);
@@ -109,6 +100,22 @@ export function CorpusForm(props: CorpusFormProps) {
   const allSources = props.sourceOptions;
   const selectedSources = watch('sources');
   const selectedParent = watch('parent');
+  const updateMetadataValues = updateLinkedResourcesWith(
+    addMetadataValueToCorpus,
+    deleteMetadataValueFromCorpus,
+  );
+  const updateSources = updateLinkedResourcesWith(
+    addSourcesToCorpus,
+    deleteSourceFromCorpus,
+  );
+  const updateLanguages = updateLinkedResourcesWith(
+    addLanguagesToCorpus,
+    deleteLanguageFromCorpus,
+  );
+  const updateKeywords = updateLinkedResourcesWith(
+    addKeywordsToCorpus,
+    deleteKeywordFromCorpus,
+  );
 
   useEffect(() => {
     const init = async () => {
@@ -122,8 +129,6 @@ export function CorpusForm(props: CorpusFormProps) {
       }
       setKeys(await getMetadataKeys());
       setLoaded(true);
-
-      register('access');
     };
     if (!isInit) {
       setInit(true);
@@ -132,10 +137,10 @@ export function CorpusForm(props: CorpusFormProps) {
   }, [isInit, isLoaded]);
 
   useEffect(() => {
-    if (backendError) {
+    if (fieldError) {
       scrollToError();
     }
-  }, [backendError]);
+  }, [fieldError]);
 
   function toServerForm(data: CorpusFormSubmit): ServerFormCorpus {
     return {
@@ -155,7 +160,7 @@ export function CorpusForm(props: CorpusFormProps) {
     return corpusId;
   }
 
-  async function onSubmit(data: CorpusFormSubmit) {
+  async function handleSubmit(data: CorpusFormSubmit) {
     try {
       const serverForm = toServerForm(data);
       const id = props.corpusToEdit
@@ -166,38 +171,21 @@ export function CorpusForm(props: CorpusFormProps) {
         keys,
         values,
       );
-      await updateLinkedResources(id, data);
+      await submitLinkedResources(id, data);
       props.onSave({ id, ...data });
     } catch (e) {
       await filterFormFieldErrors(e, setFieldError);
     }
   }
 
-  async function updateLinkedResources(id: string, data: CorpusFormSubmit) {
-    await updateRemoteIds(
+  async function submitLinkedResources(id: string, data: CorpusFormSubmit) {
+    await updateMetadataValues(
       id,
-      data.keywords,
-      addKeywordsToCorpus,
-      deleteKeywordFromCorpus,
+      data.metadataValues.map(toResultMetadataValue),
     );
-    await updateRemoteIds(
-      id,
-      data.languages,
-      addLanguagesToCorpus,
-      deleteLanguageFromCorpus,
-    );
-    await updateRemoteIds(
-      id,
-      data.sources,
-      addSourcesToCorpus,
-      deleteSourceFromCorpus,
-    );
-    await updateRemoteIds(
-      id,
-      data.metadataValues,
-      addMetadataValueToCorpus,
-      deleteMetadataValueFromCorpus,
-    );
+    await updateKeywords(id, data.keywords);
+    await updateLanguages(id, data.languages);
+    await updateSources(id, data.sources);
   }
 
   function handleUnlinkSource(sourceId: string) {
@@ -227,8 +215,8 @@ export function CorpusForm(props: CorpusFormProps) {
     if (errors[field]?.message) {
       return errors[field].message;
     }
-    if (backendError?.field === field) {
-      return backendError.error.message;
+    if (fieldError?.field === field) {
+      return fieldError.error.message;
     }
   }
 
@@ -236,8 +224,9 @@ export function CorpusForm(props: CorpusFormProps) {
     return (
       <TextFieldWithError
         label={_.capitalize(fieldName)}
-        {...register(fieldName, { required: true })}
         message={getErrorMessage(fieldName)}
+        value={watch(fieldName)}
+        onChange={event => setValue(fieldName, event.target.value)}
       />
     );
   }
@@ -253,13 +242,14 @@ export function CorpusForm(props: CorpusFormProps) {
           onClick={props.onClose}
         />
         <h1>{props.corpusToEdit ? 'Edit corpus' : 'Create new corpus'}</h1>
-        <FormError error={backendError} />
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <FormError error={fieldError} />
+        <form>
           {renderFormField('title')}
           <TextFieldWithError
             label="Description"
-            {...register('description', { required: true })}
             message={getErrorMessage('description')}
+            value={watch('description')}
+            onChange={event => setValue('description', event.target.value)}
             multiline
             rows={6}
           />
@@ -277,8 +267,9 @@ export function CorpusForm(props: CorpusFormProps) {
           {renderFormField('contributor')}
           <TextFieldWithError
             label="notes"
-            {...register('notes', { required: true })}
             message={getErrorMessage('notes')}
+            value={watch('notes')}
+            onChange={event => setValue('notes', event.target.value)}
             multiline
             rows={6}
           />
@@ -318,7 +309,7 @@ export function CorpusForm(props: CorpusFormProps) {
             values={values}
             onChange={setValues}
           />
-          <SubmitButton />
+          <SubmitButton onClick={() => handleSubmit(watch())} />
         </form>
         <ErrorMsg msg={getErrorMessage('parent')} />
       </ScrollableModal>

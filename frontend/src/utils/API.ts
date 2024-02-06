@@ -428,7 +428,7 @@ export async function updateMetadataValue(
 export const addMetadataValueToSource = async (
   sourceId: string,
   metadataValueIds: string[],
-): Promise<ServerLanguage[]> => {
+): Promise<ResultMetadataValue[]> => {
   const response = await fetch(`/api/sources/${sourceId}/metadata/values`, {
     method: 'POST',
     headers: headers,
@@ -441,7 +441,7 @@ export const addMetadataValueToSource = async (
 export const addMetadataValueToCorpus = async (
   corpusId: string,
   metadataValueIds: string[],
-): Promise<ServerLanguage[]> => {
+): Promise<ResultMetadataValue[]> => {
   const response = await fetch(`/api/corpora/${corpusId}/metadata/values`, {
     method: 'POST',
     headers: headers,

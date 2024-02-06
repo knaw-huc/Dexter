@@ -152,6 +152,12 @@ export function toFormMetadataValue(value: MetadataValue): FormMetadataValue {
   return { value: value.value, keyId: value.key.id };
 }
 
+export function toResultMetadataValue(
+  value: MetadataValue,
+): ResultMetadataValue {
+  return { id: value.id, value: value.value, keyId: value.key.id };
+}
+
 export function toMetadataValue(
   value: ResultMetadataValue,
   keys: ResultMetadataKey[],

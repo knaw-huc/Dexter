@@ -10,6 +10,7 @@ import {
   Source,
   SourceFormSubmit,
   toFormMetadataValue,
+  toResultMetadataValue,
   UUID,
 } from '../../model/DexterModel';
 import {
@@ -18,9 +19,9 @@ import {
   addMetadataValueToSource,
   addSourcesToCorpus,
   createSource,
-  deleteKeywordFromSource,
-  deleteLanguageFromSource,
-  deleteMetadataValueFromSource,
+  deleteKeywordFromCorpus,
+  deleteLanguageFromCorpus,
+  deleteMetadataValueFromCorpus,
   getMetadataKeys,
   postImport,
   updateSource,
@@ -43,10 +44,10 @@ import {
 import { CloseInlineIcon } from '../common/CloseInlineIcon';
 import { SubmitButton } from '../common/SubmitButton';
 import { ImportField } from './ImportField';
-import { updateRemoteIds } from '../../utils/updateRemoteIds';
 import _ from 'lodash';
 import { MetadataValueFormFields } from '../metadata/MetadataValueFormFields';
 import { submitMetadataValues } from '../../utils/submitMetadataValues';
+import { updateLinkedResourcesWith } from '../../utils/updateRemoteIds';
 
 const formFields: (keyof Source)[] = [
   'externalRef',
@@ -93,6 +94,19 @@ export function SourceForm(props: SourceFormProps) {
   const [fieldError, setFieldError] = useState<ErrorByField>();
   const [keys, setKeys] = useState<ResultMetadataKey[]>([]);
   const [values, setValues] = useState<FormMetadataValue[]>([]);
+
+  const updateMetadataValues = updateLinkedResourcesWith(
+    addMetadataValueToSource,
+    deleteMetadataValueFromCorpus,
+  );
+  const updateLanguages = updateLinkedResourcesWith(
+    addLanguagesToSource,
+    deleteLanguageFromCorpus,
+  );
+  const updateKeywords = updateLinkedResourcesWith(
+    addKeywordsToSource,
+    deleteKeywordFromCorpus,
+  );
 
   useEffect(() => {
     init();
@@ -164,32 +178,20 @@ export function SourceForm(props: SourceFormProps) {
         keys,
         values,
       );
-      await updateLinkedResources(id, data);
+      await submitLinkedResources(id, data);
       props.onSave({ id, ...data });
     } catch (error) {
       await filterFormFieldErrors(error, setFieldError);
     }
   }
 
-  async function updateLinkedResources(id: UUID, data: SourceFormSubmit) {
-    await updateRemoteIds(
+  async function submitLinkedResources(id: UUID, data: SourceFormSubmit) {
+    await updateMetadataValues(
       id,
-      data.keywords,
-      addKeywordsToSource,
-      deleteKeywordFromSource,
+      data.metadataValues.map(toResultMetadataValue),
     );
-    await updateRemoteIds(
-      id,
-      data.languages,
-      addLanguagesToSource,
-      deleteLanguageFromSource,
-    );
-    await updateRemoteIds(
-      id,
-      data.metadataValues,
-      addMetadataValueToSource,
-      deleteMetadataValueFromSource,
-    );
+    await updateKeywords(id, data.keywords);
+    await updateLanguages(id, data.languages);
   }
 
   async function updateExistingSource(data: SourceFormSubmit): Promise<UUID> {
