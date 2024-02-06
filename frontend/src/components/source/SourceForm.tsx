@@ -48,7 +48,7 @@ import _ from 'lodash';
 import { MetadataValueFormFields } from '../metadata/MetadataValueFormFields';
 import { submitMetadataValues } from '../../utils/submitMetadataValues';
 
-const formFields = [
+const formFields: (keyof Source)[] = [
   'externalRef',
   'title',
   'description',
@@ -72,10 +72,6 @@ type SourceFormProps = {
 
 const schema = yup.object({
   title: yup.string().required('Title is required'),
-  description: yup.string().required('Description is required'),
-  creator: yup.string().required('Creator is required'),
-  rights: yup.string().required('Rights is required'),
-  access: yup.string().oneOf(AccessOptions).required('Access is required'),
 });
 
 export function SourceForm(props: SourceFormProps) {

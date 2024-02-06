@@ -1,6 +1,5 @@
 package nl.knaw.huc.dexter.api
 
-import ResultMetadataValue
 import ResultMetadataValueWithResources
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -8,9 +7,9 @@ import java.util.*
 
 data class FormCorpus(
     val title: String,
-    val description: String,
-    val rights: String,
-    val access: AccessType,
+    val description: String? = null,
+    val rights: String? = null,
+    val access: AccessType? = null,
     val parentId: UUID? = null,
     val location: String? = null,
     val earliest: LocalDate? = null,
@@ -23,9 +22,9 @@ data class ResultCorpus(
     val id: UUID,
     val parentId: UUID?,
     val title: String,
-    val description: String,
-    val rights: String,
-    val access: AccessType,
+    val description: String? = null,
+    val rights: String? = null,
+    val access: AccessType? = null,
     val location: String? = null,
     val earliest: LocalDate? = null,
     val latest: LocalDate? = null,
@@ -43,9 +42,9 @@ data class ResultCorpusWithResources (
     val id: UUID,
     // val parentId: UUID?,
     val title: String,
-    val description: String,
-    val rights: String,
-    val access: AccessType,
+    val description: String? = null,
+    val rights: String? = null,
+    val access: AccessType? = null,
     val location: String? = null,
     val earliest: LocalDate? = null,
     val latest: LocalDate? = null,

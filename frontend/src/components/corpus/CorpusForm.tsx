@@ -80,9 +80,6 @@ const formFields: (keyof Corpus)[] = [
 
 const validationSchema = yup.object({
   title: yup.string().required('Title is required'),
-  description: yup.string().required('Description is required'),
-  rights: yup.string().required('Rights is required'),
-  access: yup.string().required('Access is required'),
 });
 
 export function CorpusForm(props: CorpusFormProps) {
