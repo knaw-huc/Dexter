@@ -1,21 +1,19 @@
 import React, { forwardRef, useEffect, useRef } from 'react';
 import { Label } from '../common/Label';
 import { StandardTextFieldProps } from '@mui/material/TextField';
-import { UseFormRegisterReturn } from 'react-hook-form';
 import { ErrorMsg } from '../common/ErrorMsg';
 import { TextFieldStyled } from './TextFieldStyled';
 import { Button, CircularProgress, Tooltip } from '@mui/material';
 import { HelpIconStyled } from '../common/HelpIconStyled';
 import { InputButtonGrid } from '../common/InputButtonGrid';
 
-type ImportFieldProps = StandardTextFieldProps &
-  UseFormRegisterReturn<string> & {
-    message?: string;
-    variant?: 'standard';
-    onImport: () => void;
-    isRefImportable: boolean;
-    isImporting: boolean;
-  };
+type ImportFieldProps = StandardTextFieldProps & {
+  message?: string;
+  variant?: 'standard';
+  onImport: () => void;
+  isRefImportable: boolean;
+  isImporting: boolean;
+};
 
 export const ImportField = forwardRef<typeof TextFieldStyled, ImportFieldProps>(
   function TextWithLabelErrorField(props, ref) {
