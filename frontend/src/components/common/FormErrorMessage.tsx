@@ -58,10 +58,10 @@ export async function setFormFieldErrors<T extends WithTitle>(
         error: { message: 'Title already exists' },
       };
     }
-  } else {
+  }
+  if (!newError) {
     newError = toErrorByField(GENERIC, error.message);
   }
-
   dispatch(prev => putErrorByField(prev, newError));
 }
 

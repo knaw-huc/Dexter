@@ -15,7 +15,7 @@ import {
   toResultMetadataValue,
 } from '../../model/DexterModel';
 import { createCorpus, getMetadataKeys, updateCorpus } from '../../utils/API';
-import { AddKeywordField } from '../keyword/AddKeywordField';
+import { SelectKeywordsField } from '../keyword/SelectKeywordsField';
 import { LanguagesField } from '../language/LanguagesField';
 import { ParentCorpusField } from './ParentCorpusField';
 import ScrollableModal from '../common/ScrollableModal';
@@ -40,9 +40,9 @@ import { SubmitButton } from '../common/SubmitButton';
 import { MetadataValueFormFields } from '../metadata/MetadataValueFormFields';
 import { submitMetadataValues } from '../../utils/submitMetadataValues';
 import {
-  updateKeywords,
-  updateLanguages,
-  updateMetadataValues,
+  updateCorpusKeywords,
+  updateCorpusLanguages,
+  updateCorpusMetadataValues,
   updateSources,
 } from '../../utils/updateRemoteIds';
 
@@ -90,8 +90,6 @@ export function CorpusForm(props: CorpusFormProps) {
   const [values, setValues] = useState<FormMetadataValue[]>([]);
 
   const allSources = props.sourceOptions;
-  const selectedSources = watch('sources');
-  const selectedParent = watch('parent');
 
   useEffect(() => {
     const init = async () => {
@@ -119,10 +117,8 @@ export function CorpusForm(props: CorpusFormProps) {
   }, [fieldErrors]);
 
   function toServerForm(data: CorpusFormSubmit): ServerFormCorpus {
-    return {
-      ...data,
-      parentId: data.parent?.id,
-    };
+    const parentId = data.parent?.id;
+    return { ...data, parentId };
   }
 
   async function handleSubmit(data: CorpusFormSubmit) {
@@ -157,29 +153,25 @@ export function CorpusForm(props: CorpusFormProps) {
 
   async function submitLinkedResources(id: string, data: CorpusFormSubmit) {
     const metadataValues = data.metadataValues.map(toResultMetadataValue);
-    await updateMetadataValues(id, metadataValues);
-    await updateKeywords(id, data.keywords);
-    await updateLanguages(id, data.languages);
+    await updateCorpusMetadataValues(id, metadataValues);
+    await updateCorpusKeywords(id, data.keywords);
+    await updateCorpusLanguages(id, data.languages);
     await updateSources(id, data.sources);
   }
 
   function handleUnlinkSource(sourceId: string) {
-    return setValue(
-      'sources',
-      selectedSources.filter(s => s.id !== sourceId),
-    );
+    const update = watch('sources').filter(s => s.id !== sourceId);
+    return setValue('sources', update);
   }
 
   async function handleLinkSource(sourceId: string) {
     const toAdd = allSources.find(s => s.id === sourceId);
-    return setValue('sources', [...selectedSources, toAdd]);
+    return setValue('sources', [...watch('sources'), toAdd]);
   }
 
   async function handleSelectParentCorpus(corpusId: string) {
-    return setValue(
-      'parent',
-      props.parentOptions.find(o => o.id === corpusId),
-    );
+    const update = props.parentOptions.find(o => o.id === corpusId);
+    setValue('parent', update);
   }
 
   async function handleDeleteParentCorpus() {
@@ -230,11 +222,13 @@ export function CorpusForm(props: CorpusFormProps) {
           {renderTextField('contributor')}
           {renderTextField('notes', { rows: 6, multiline: true })}
           <Label>Keywords</Label>
-          <AddKeywordField
-            selected={watch('keywords')}
+          <SelectKeywordsField
+            selected={watch('keywords') ?? []}
             onChangeSelected={selected => {
               setValue('keywords', selected);
             }}
+            useAutocomplete
+            allowCreatingNew
           />
           <ErrorMsg msg={getErrorMessage<Corpus>('keywords', fieldErrors)} />
           <Label>Languages</Label>
@@ -248,14 +242,14 @@ export function CorpusForm(props: CorpusFormProps) {
           <Label>Add sources to corpus</Label>
           <LinkSourceField
             options={allSources}
-            selected={selectedSources}
+            selected={watch('sources')}
             onLinkSource={handleLinkSource}
             onUnlinkSource={handleUnlinkSource}
           />
           <ErrorMsg msg={getErrorMessage<Corpus>('sources', fieldErrors)} />
           <Label>Add to main corpus</Label>
           <ParentCorpusField
-            selected={selectedParent}
+            selected={watch('parent')}
             options={props.parentOptions}
             onSelectParentCorpus={handleSelectParentCorpus}
             onDeleteParentCorpus={handleDeleteParentCorpus}

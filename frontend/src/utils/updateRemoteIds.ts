@@ -1,12 +1,18 @@
 import { UUID } from '../model/DexterModel';
 import {
   addKeywordsToCorpus,
+  addKeywordsToSource,
   addLanguagesToCorpus,
+  addLanguagesToSource,
   addMetadataValueToCorpus,
+  addMetadataValueToSource,
   addSourcesToCorpus,
   deleteKeywordFromCorpus,
+  deleteKeywordFromSource,
   deleteLanguageFromCorpus,
+  deleteLanguageFromSource,
   deleteMetadataValueFromCorpus,
+  deleteMetadataValueFromSource,
   deleteSourceFromCorpus,
 } from './API';
 
@@ -38,7 +44,7 @@ export function updateLinkedResourcesWith<T extends WithId>(
   };
 }
 
-export const updateMetadataValues = updateLinkedResourcesWith(
+export const updateCorpusMetadataValues = updateLinkedResourcesWith(
   addMetadataValueToCorpus,
   deleteMetadataValueFromCorpus,
 );
@@ -48,12 +54,27 @@ export const updateSources = updateLinkedResourcesWith(
   deleteSourceFromCorpus,
 );
 
-export const updateLanguages = updateLinkedResourcesWith(
+export const updateCorpusLanguages = updateLinkedResourcesWith(
   addLanguagesToCorpus,
   deleteLanguageFromCorpus,
 );
 
-export const updateKeywords = updateLinkedResourcesWith(
+export const updateCorpusKeywords = updateLinkedResourcesWith(
   addKeywordsToCorpus,
   deleteKeywordFromCorpus,
+);
+
+export const updateSourceMetadataValues = updateLinkedResourcesWith(
+  addMetadataValueToSource,
+  deleteMetadataValueFromSource,
+);
+
+export const updateSourceLanguages = updateLinkedResourcesWith(
+  addLanguagesToSource,
+  deleteLanguageFromSource,
+);
+
+export const updateSourceKeywords = updateLinkedResourcesWith(
+  addKeywordsToSource,
+  deleteKeywordFromSource,
 );

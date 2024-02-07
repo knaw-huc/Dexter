@@ -21,7 +21,7 @@ import {
   updateSource,
 } from '../../utils/API';
 import ScrollableModal from '../common/ScrollableModal';
-import { AddKeywordField } from '../keyword/AddKeywordField';
+import { SelectKeywordsField } from '../keyword/SelectKeywordsField';
 import { LanguagesField } from '../language/LanguagesField';
 import isUrl from '../../utils/isUrl';
 import { useDebounce } from '../../utils/useDebounce';
@@ -45,9 +45,12 @@ import _ from 'lodash';
 import { MetadataValueFormFields } from '../metadata/MetadataValueFormFields';
 import { submitMetadataValues } from '../../utils/submitMetadataValues';
 import {
-  updateKeywords,
-  updateLanguages,
-  updateMetadataValues,
+  updateCorpusKeywords,
+  updateCorpusLanguages,
+  updateCorpusMetadataValues,
+  updateSourceKeywords,
+  updateSourceLanguages,
+  updateSourceMetadataValues,
 } from '../../utils/updateRemoteIds';
 
 const formFields: (keyof Source)[] = [
@@ -77,13 +80,7 @@ const schema = yup.object({
 });
 
 export function SourceForm(props: SourceFormProps) {
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { errors },
-    watch,
-  } = useForm<Source>({
+  const { register, handleSubmit, setValue, watch } = useForm<Source>({
     resolver: yupResolver(schema),
     mode: 'onBlur',
     defaultValues: { keywords: [], languages: [], access: null },
@@ -92,7 +89,7 @@ export function SourceForm(props: SourceFormProps) {
   const [isExternalRefLoading, setExternalRefLoading] = useState(false);
   const externalRef = watch('externalRef');
   const debouncedExternalRef = useDebounce<string>(externalRef, 500);
-  const [fieldErrors, setFieldErrors] = useState<ErrorByField<Source>[]>();
+  const [fieldErrors, setFieldErrors] = useState<ErrorByField<Source>[]>([]);
   const [keys, setKeys] = useState<ResultMetadataKey[]>([]);
   const [values, setValues] = useState<FormMetadataValue[]>([]);
 
@@ -177,9 +174,9 @@ export function SourceForm(props: SourceFormProps) {
 
   async function submitLinkedResources(id: UUID, data: SourceFormSubmit) {
     const metadataValues = data.metadataValues.map(toResultMetadataValue);
-    await updateMetadataValues(id, metadataValues);
-    await updateKeywords(id, data.keywords);
-    await updateLanguages(id, data.languages);
+    await updateSourceMetadataValues(id, metadataValues);
+    await updateSourceKeywords(id, data.keywords);
+    await updateSourceLanguages(id, data.languages);
   }
 
   async function updateExistingSource(data: SourceFormSubmit): Promise<UUID> {
@@ -256,11 +253,13 @@ export function SourceForm(props: SourceFormProps) {
         {renderFormField('notes')}
 
         <Label>Keywords</Label>
-        <AddKeywordField
+        <SelectKeywordsField
           selected={watch('keywords')}
           onChangeSelected={selected => {
             setValue('keywords', selected);
           }}
+          useAutocomplete
+          allowCreatingNew
         />
         <ErrorMsg msg={getErrorMessage<Source>('keywords', fieldErrors)} />
 

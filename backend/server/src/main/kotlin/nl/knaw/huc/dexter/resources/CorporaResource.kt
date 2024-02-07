@@ -260,7 +260,7 @@ class CorporaResource(private val jdbi: Jdbi) {
                     diagnoseViolations {
                         block.execute(handle, corpus)
                     }
-                } ?: SourcesDao.sourceNotFound(corpusId)
+                } ?: corpusNotFound(corpusId)
             }
         }
 
