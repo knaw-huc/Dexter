@@ -5,7 +5,7 @@ import * as yup from 'yup';
 import {
   AccessOptions,
   FormMetadataValue,
-  ImportResult,
+  ResultImport,
   ResultMetadataKey,
   Source,
   SourceFormSubmit,
@@ -132,7 +132,7 @@ export function SourceForm(props: SourceFormProps) {
     }
 
     setExternalRefLoading(true);
-    let tmsImport: ImportResult;
+    let tmsImport: ResultImport;
     try {
       tmsImport = await postImport(new URL(debouncedExternalRef));
     } catch (e) {

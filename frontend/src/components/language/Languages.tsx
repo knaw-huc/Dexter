@@ -1,10 +1,10 @@
-import React from "react"
-import {ServerLanguage} from "../../model/DexterModel"
-import {DeleteIconStyled} from "../common/DeleteIconStyled"
+import React from 'react';
+import { ResultLanguage } from '../../model/DexterModel';
+import { DeleteIconStyled } from '../common/DeleteIconStyled';
 
 type LanguagesContentProps = {
-  languages: ServerLanguage[];
-  onDelete?: (language: ServerLanguage) => Promise<void>;
+  languages: ResultLanguage[];
+  onDelete?: (language: ResultLanguage) => Promise<void>;
 };
 
 export const Languages = (props: LanguagesContentProps) => {
@@ -14,7 +14,7 @@ export const Languages = (props: LanguagesContentProps) => {
         props.languages.map((language, index) => {
           return (
             <p key={index}>
-              {language.refName}{" "}
+              {language.refName}{' '}
               {<DeleteIconStyled onClick={() => props.onDelete(language)} />}
             </p>
           );

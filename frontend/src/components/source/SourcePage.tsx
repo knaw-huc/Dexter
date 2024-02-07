@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { ServerLanguage, Source } from '../../model/DexterModel';
+import { ResultLanguage, Source } from '../../model/DexterModel';
 import { deleteLanguageFromSourceWithWarning } from '../../utils/deleteLanguageFromSourceWithWarning';
 import { getSourceWithResourcesById } from '../../utils/API';
 import { Languages } from '../language/Languages';
@@ -51,7 +51,7 @@ export const SourcePage = () => {
     }
   }, [sourceId]);
 
-  const handleDeleteLanguage = async (language: ServerLanguage) => {
+  const handleDeleteLanguage = async (language: ResultLanguage) => {
     await deleteLanguageFromSourceWithWarning(language, params.sourceId);
     setSource(source => ({
       ...source,

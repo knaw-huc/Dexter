@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
 import TextField from '@mui/material/TextField';
 import React, { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import {
   AccessOptions,
@@ -9,7 +8,7 @@ import {
   CorpusFormSubmit,
   FormMetadataValue,
   ResultMetadataKey,
-  ServerFormCorpus,
+  FormCorpus,
   Source,
   toFormMetadataValue,
   toResultMetadataValue,
@@ -60,45 +59,47 @@ const Label = styled.label`
   font-weight: bold;
 `;
 
-const formFields: (keyof Corpus)[] = [
-  'parent',
-  'title',
-  'description',
-  'rights',
-  'access',
-  'location',
-  'earliest',
-  'latest',
-  'contributor',
-  'notes',
-  'keywords',
-  'languages',
-  'sources',
-];
+const defaults: Corpus = {
+  parent: undefined,
+  title: '',
+  description: undefined,
+  rights: undefined,
+  access: undefined,
+  location: undefined,
+  earliest: undefined,
+  latest: undefined,
+  contributor: undefined,
+  notes: undefined,
+  keywords: [],
+  languages: [],
+  sources: [],
+  metadataValues: [],
+
+  // Not created or modified by form:
+  id: undefined,
+  createdBy: undefined,
+  createdAt: undefined,
+  updatedAt: undefined,
+};
 
 const validationSchema = yup.object({
   title: yup.string().required('Title is required'),
 });
 
 export function CorpusForm(props: CorpusFormProps) {
-  const { setValue, watch } = useForm<Corpus>();
-
+  const [form, setForm] = useState<Corpus>();
   const [fieldErrors, setFieldErrors] = useState<ErrorByField<Corpus>[]>([]);
   const [isInit, setInit] = useState(false);
   const [isLoaded, setLoaded] = useState(false);
   const [keys, setKeys] = useState<ResultMetadataKey[]>([]);
   const [values, setValues] = useState<FormMetadataValue[]>([]);
 
-  const allSources = props.sourceOptions;
-
   useEffect(() => {
     const init = async () => {
       if (props.corpusToEdit) {
-        formFields.map((field: keyof Corpus) => {
-          setValue(field, props.corpusToEdit[field]);
-        });
         const formValues =
           props.corpusToEdit.metadataValues.map(toFormMetadataValue);
+        setForm({ ...(props.corpusToEdit ?? defaults) });
         setValues(formValues);
       }
       setKeys(await getMetadataKeys());
@@ -116,12 +117,12 @@ export function CorpusForm(props: CorpusFormProps) {
     }
   }, [fieldErrors]);
 
-  function toServerForm(data: CorpusFormSubmit): ServerFormCorpus {
+  function toServerForm(data: CorpusFormSubmit): FormCorpus {
     const parentId = data.parent?.id;
     return { ...data, parentId };
   }
 
-  async function handleSubmit(data: CorpusFormSubmit) {
+  async function handleSubmit(data: Corpus) {
     try {
       await validationSchema.validate(data);
       const serverForm = toServerForm(data);
@@ -140,12 +141,12 @@ export function CorpusForm(props: CorpusFormProps) {
     }
   }
 
-  async function createNewCorpus(data: ServerFormCorpus) {
+  async function createNewCorpus(data: FormCorpus) {
     const newCorpus = await createCorpus(data);
     return newCorpus.id;
   }
 
-  async function updateExistingCorpus(data: ServerFormCorpus) {
+  async function updateExistingCorpus(data: FormCorpus) {
     const corpusId = props.corpusToEdit.id;
     await updateCorpus(corpusId, data);
     return corpusId;
@@ -160,22 +161,22 @@ export function CorpusForm(props: CorpusFormProps) {
   }
 
   function handleUnlinkSource(sourceId: string) {
-    const update = watch('sources').filter(s => s.id !== sourceId);
-    return setValue('sources', update);
+    const sources = form.sources.filter(s => s.id !== sourceId);
+    setForm(f => ({ ...f, sources }));
   }
 
   async function handleLinkSource(sourceId: string) {
-    const toAdd = allSources.find(s => s.id === sourceId);
-    return setValue('sources', [...watch('sources'), toAdd]);
+    const toAdd = props.sourceOptions.find(s => s.id === sourceId);
+    setForm(f => ({ ...f, sources: [...f.sources, toAdd] }));
   }
 
   async function handleSelectParentCorpus(corpusId: string) {
-    const update = props.parentOptions.find(o => o.id === corpusId);
-    setValue('parent', update);
+    const parent = props.parentOptions.find(o => o.id === corpusId);
+    setForm(f => ({ ...f, parent }));
   }
 
   async function handleDeleteParentCorpus() {
-    return setValue('parent', undefined);
+    setForm(f => ({ ...f, parent: undefined }));
   }
 
   function renderTextField(
@@ -186,8 +187,15 @@ export function CorpusForm(props: CorpusFormProps) {
       <TextFieldWithError
         label={_.capitalize(fieldName)}
         message={getErrorMessage<Corpus>(fieldName, fieldErrors)}
-        value={watch(fieldName) as string}
-        onChange={value => setValue(fieldName, value)}
+        value={form[fieldName] as string}
+        onChange={value =>
+          setForm(f => {
+            const update = { ...f };
+            // TODO: remove cast:
+            (update as any)[fieldName] = value;
+            return update;
+          })
+        }
         {...props}
       />
     );
@@ -212,8 +220,8 @@ export function CorpusForm(props: CorpusFormProps) {
           <ValidatedSelectField
             label="Access"
             message={getErrorMessage<Corpus>('access', fieldErrors)}
-            selectedOption={watch('access')}
-            onSelectOption={v => setValue('access', v)}
+            selectedOption={form.access}
+            onSelectOption={access => setForm(f => ({ ...f, access }))}
             options={AccessOptions}
           />
           {renderTextField('location')}
@@ -223,9 +231,9 @@ export function CorpusForm(props: CorpusFormProps) {
           {renderTextField('notes', { rows: 6, multiline: true })}
           <Label>Keywords</Label>
           <SelectKeywordsField
-            selected={watch('keywords') ?? []}
-            onChangeSelected={selected => {
-              setValue('keywords', selected);
+            selected={form.keywords}
+            onChangeSelected={keywords => {
+              setForm(f => ({ ...f, keywords }));
             }}
             useAutocomplete
             allowCreatingNew
@@ -233,23 +241,23 @@ export function CorpusForm(props: CorpusFormProps) {
           <ErrorMsg msg={getErrorMessage<Corpus>('keywords', fieldErrors)} />
           <Label>Languages</Label>
           <LanguagesField
-            selected={watch('languages')}
-            onChangeSelected={selected => {
-              setValue('languages', selected);
+            selected={form.languages}
+            onChangeSelected={languages => {
+              setForm(f => ({ ...f, languages }));
             }}
           />
           <ErrorMsg msg={getErrorMessage<Corpus>('languages', fieldErrors)} />
           <Label>Add sources to corpus</Label>
           <LinkSourceField
-            options={allSources}
-            selected={watch('sources')}
+            options={props.sourceOptions}
+            selected={form.sources}
             onLinkSource={handleLinkSource}
             onUnlinkSource={handleUnlinkSource}
           />
           <ErrorMsg msg={getErrorMessage<Corpus>('sources', fieldErrors)} />
           <Label>Add to main corpus</Label>
           <ParentCorpusField
-            selected={watch('parent')}
+            selected={form.parent}
             options={props.parentOptions}
             onSelectParentCorpus={handleSelectParentCorpus}
             onDeleteParentCorpus={handleDeleteParentCorpus}
@@ -259,7 +267,7 @@ export function CorpusForm(props: CorpusFormProps) {
             values={values}
             onChange={setValues}
           />
-          <SubmitButton onClick={() => handleSubmit(watch())} />
+          <SubmitButton onClick={() => handleSubmit(form)} />
         </form>
         <ErrorMsg msg={getErrorMessage<Corpus>('parent', fieldErrors)} />
       </ScrollableModal>

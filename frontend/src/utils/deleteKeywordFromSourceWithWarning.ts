@@ -1,15 +1,15 @@
-import { deleteKeywordFromSource } from "./API";
-import { ServerKeyword } from "../model/DexterModel";
+import { deleteKeywordFromSource } from './API';
+import { ResultKeyword } from '../model/DexterModel';
 
 export const deleteKeywordFromSourceWithWarning = async (
-    keyword: ServerKeyword,
-    sourceId: string
+  keyword: ResultKeyword,
+  sourceId: string,
 ) => {
-    const warning = window.confirm(
-        "Are you sure you wish to delete this keyword?"
-    );
+  const warning = window.confirm(
+    'Are you sure you wish to delete this keyword?',
+  );
 
-    if (warning === false) return;
+  if (warning === false) return;
 
-    await deleteKeywordFromSource(sourceId, keyword.id);
+  await deleteKeywordFromSource(sourceId, keyword.id);
 };

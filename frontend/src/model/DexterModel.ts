@@ -7,7 +7,7 @@ export type LocalDateTime = string;
 /**
  * Corpus form as required by server
  */
-export type ServerFormCorpus = {
+export type FormCorpus = {
   title: string;
   description?: string;
   rights?: string;
@@ -23,18 +23,8 @@ export type ServerFormCorpus = {
 /**
  * Corpus result as sent by server
  */
-export type ServerResultCorpus = {
+export type ResultCorpus = FormCorpus & {
   id: UUID;
-  parentId?: UUID;
-  title: string;
-  description?: string;
-  rights?: string;
-  access?: Access;
-  location?: string;
-  earliest?: LocalDateTime;
-  latest?: LocalDateTime;
-  contributor?: string;
-  notes?: string;
   createdBy: UUID;
   createdAt: LocalDateTime;
   updatedAt: LocalDateTime;
@@ -43,10 +33,10 @@ export type ServerResultCorpus = {
 /**
  * Corpus including child resources
  */
-export type Corpus = Omit<ServerResultCorpus, 'parentId'> & {
-  parent?: ServerResultCorpus;
-  keywords: ServerKeyword[];
-  languages: ServerLanguage[];
+export type Corpus = Omit<ResultCorpus, 'parentId'> & {
+  parent?: ResultCorpus;
+  keywords: ResultKeyword[];
+  languages: ResultLanguage[];
   sources: Source[];
   metadataValues: MetadataValue[];
 };
@@ -56,7 +46,7 @@ export type Corpus = Omit<ServerResultCorpus, 'parentId'> & {
  */
 export type CorpusFormSubmit = Omit<Corpus, 'id'>;
 
-export type ServerFormSource = {
+export type FormSource = {
   title: string;
   description?: string;
   rights?: string;
@@ -72,18 +62,8 @@ export type ServerFormSource = {
 /**
  * Source result as send by server
  */
-export type ServerResultSource = {
+export type ResultSource = FormSource & {
   id: UUID;
-  externalRef?: string;
-  title: string;
-  description?: string;
-  rights?: string;
-  access?: Access;
-  creator?: string;
-  location?: string;
-  earliest?: LocalDate;
-  latest?: LocalDate;
-  notes?: string;
   createdBy: UUID;
   createdAt: LocalDateTime;
   updatedAt: LocalDateTime;
@@ -92,9 +72,9 @@ export type ServerResultSource = {
 /**
  * Source including all child resources
  */
-export type Source = ServerResultSource & {
-  keywords: ServerKeyword[];
-  languages: ServerLanguage[];
+export type Source = ResultSource & {
+  keywords: ResultKeyword[];
+  languages: ResultLanguage[];
   metadataValues: MetadataValue[];
 };
 
@@ -103,7 +83,7 @@ export type Source = ServerResultSource & {
  */
 export type SourceFormSubmit = Omit<Source, 'id'>;
 
-export interface ServerKeyword {
+export interface ResultKeyword {
   id: string;
   val: string;
 }
@@ -169,12 +149,12 @@ export function toMetadataValue(
   };
 }
 
-export type ImportResult = {
+export type ResultImport = {
   isValidExternalReference: boolean;
   imported?: ResultDublinCoreMetadata;
 };
 
-export interface ServerLanguage {
+export interface ResultLanguage {
   id: string;
   part2b: string;
   part2t: string;

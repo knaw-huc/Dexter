@@ -1,10 +1,10 @@
-import React from "react"
-import {ServerKeyword} from "../../model/DexterModel"
-import {DeleteIconStyled} from "../common/DeleteIconStyled"
+import React from 'react';
+import { ResultKeyword } from '../../model/DexterModel';
+import { DeleteIconStyled } from '../common/DeleteIconStyled';
 
 type KeywordContentProps = {
-  keywords: ServerKeyword[];
-  onDelete?: (keyword: ServerKeyword) => Promise<void>;
+  keywords: ResultKeyword[];
+  onDelete?: (keyword: ResultKeyword) => Promise<void>;
 };
 
 export const Keyword = (props: KeywordContentProps) => {
@@ -14,7 +14,7 @@ export const Keyword = (props: KeywordContentProps) => {
         props.keywords.map((keyword, index) => {
           return (
             <p key={index}>
-              {keyword.val}{" "}
+              {keyword.val}{' '}
               {<DeleteIconStyled onClick={() => props.onDelete(keyword)} />}
             </p>
           );

@@ -1,13 +1,13 @@
-import { ServerKeyword } from '../../model/DexterModel';
+import { ResultKeyword } from '../../model/DexterModel';
 import React, { useState } from 'react';
 import { SelectKeywordsField } from './SelectKeywordsField';
 import { ButtonWithIcon } from '../common/ButtonWithIcon';
 import { FilterIconStyled } from '../common/FilterIconStyled';
 
 export function KeywordsFilter(props: {
-  all: ServerKeyword[];
-  selected: ServerKeyword[];
-  onChangeSelected: (keys: ServerKeyword[]) => void;
+  all: ResultKeyword[];
+  selected: ResultKeyword[];
+  onChangeSelected: (keys: ResultKeyword[]) => void;
 }) {
   const [isOpen, setOpen] = useState(!!props.selected.length);
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ServerKeyword, Source } from '../../model/DexterModel';
+import { ResultKeyword, Source } from '../../model/DexterModel';
 import { HeaderLinkClamped } from '../common/HeaderLinkClamped';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, Grid } from '@mui/material';

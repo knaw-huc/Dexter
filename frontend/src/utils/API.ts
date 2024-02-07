@@ -3,14 +3,14 @@ import {
   FormKeyword,
   FormMetadataKey,
   FormMetadataValue,
-  ImportResult,
+  ResultImport,
   ResultMetadataKey,
   ResultMetadataValue,
-  ServerFormCorpus,
-  ServerFormSource,
-  ServerKeyword,
-  ServerLanguage,
-  ServerResultSource,
+  FormCorpus,
+  FormSource,
+  ResultKeyword,
+  ResultLanguage,
+  ResultSource,
   Source,
   UUID,
 } from '../model/DexterModel';
@@ -51,9 +51,7 @@ export const getCorpusWithResourcesById = async (
   return fetchValidated(`/api/corpora/${id}/with-resources`);
 };
 
-export const createCorpus = async (
-  newCorpus: ServerFormCorpus,
-): Promise<Corpus> => {
+export const createCorpus = async (newCorpus: FormCorpus): Promise<Corpus> => {
   const path = '/api/corpora';
   const response = await fetch(path, {
     headers,
@@ -66,7 +64,7 @@ export const createCorpus = async (
 
 export const updateCorpus = async (
   id: string,
-  updatedCorpus: ServerFormCorpus,
+  updatedCorpus: FormCorpus,
 ): Promise<Corpus> => {
   const path = `/api/corpora/${id}`;
   const response = await fetch(path, {
@@ -91,7 +89,7 @@ export const getSourcesWithResources = async (): Promise<Source[]> => {
   return fetchValidated('/api/sources/with-resources');
 };
 
-export async function getSourceById(id: string): Promise<ServerResultSource> {
+export async function getSourceById(id: string): Promise<ResultSource> {
   return fetchValidated(`/api/sources/${id}`);
 }
 
@@ -100,8 +98,8 @@ export async function getSourceWithResourcesById(id: string): Promise<Source> {
 }
 
 export const createSource = async (
-  newSource: ServerFormSource,
-): Promise<ServerResultSource> => {
+  newSource: FormSource,
+): Promise<ResultSource> => {
   const path = '/api/sources';
   const response = await fetch(path, {
     headers,
@@ -114,7 +112,7 @@ export const createSource = async (
 
 export const updateSource = async (
   id: string,
-  updatedSource: ServerFormSource,
+  updatedSource: FormSource,
 ): Promise<Source> => {
   const path = `/api/sources/${id}`;
   const response = await fetch(path, {
@@ -141,7 +139,7 @@ export const getKeywords = async () => {
 
 export const createKeyword = async (
   newKeyword: FormKeyword,
-): Promise<ServerKeyword> => {
+): Promise<ResultKeyword> => {
   const response = await fetch('/api/keywords', {
     method: 'POST',
     headers: headers,
@@ -154,7 +152,7 @@ export const createKeyword = async (
 export const addKeywordsToCorpus = async (
   corpusId: string,
   keywordId: string[],
-): Promise<ServerKeyword[]> => {
+): Promise<ResultKeyword[]> => {
   const response = await fetch(`/api/corpora/${corpusId}/keywords`, {
     method: 'POST',
     headers: headers,
@@ -167,7 +165,7 @@ export const addKeywordsToCorpus = async (
 export const addKeywordsToSource = async (
   sourceId: string,
   keywordId: string[],
-): Promise<ServerKeyword[]> => {
+): Promise<ResultKeyword[]> => {
   const response = await fetch(`/api/sources/${sourceId}/keywords`, {
     method: 'POST',
     headers: headers,
@@ -187,7 +185,7 @@ export const deleteKeyword = async (id: string): Promise<void> => {
 
 export const getKeywordsAutocomplete = async (
   input: string,
-): Promise<ServerKeyword[]> => {
+): Promise<ResultKeyword[]> => {
   const response = await fetch('/api/keywords/autocomplete', {
     method: 'POST',
     headers: headers,
@@ -199,7 +197,7 @@ export const getKeywordsAutocomplete = async (
 
 export const getLanguagesAutocomplete = async (
   input: string,
-): Promise<ServerLanguage[]> => {
+): Promise<ResultLanguage[]> => {
   const response = await fetch('/api/languages/autocomplete', {
     method: 'POST',
     headers: headers,
@@ -212,7 +210,7 @@ export const getLanguagesAutocomplete = async (
 export const addLanguagesToCorpus = async (
   corpusId: string,
   languageId: string[],
-): Promise<ServerLanguage[]> => {
+): Promise<ResultLanguage[]> => {
   const response = await fetch(`/api/corpora/${corpusId}/languages`, {
     method: 'POST',
     headers: headers,
@@ -225,7 +223,7 @@ export const addLanguagesToCorpus = async (
 export const deleteLanguageFromCorpus = async (
   corpusId: string,
   languageId: string,
-): Promise<ServerLanguage[]> => {
+): Promise<ResultLanguage[]> => {
   const response = await fetch(
     `/api/corpora/${corpusId}/languages/${languageId}`,
     {
@@ -240,7 +238,7 @@ export const deleteLanguageFromCorpus = async (
 export const addLanguagesToSource = async (
   corpusId: string,
   languageId: string[],
-): Promise<ServerLanguage[]> => {
+): Promise<ResultLanguage[]> => {
   const response = await fetch(`/api/sources/${corpusId}/languages`, {
     method: 'POST',
     headers: headers,
@@ -318,7 +316,7 @@ export const deleteSourceFromCorpus = async (
 
 export type ResultDublinCoreMetadata = Record<string, string>;
 
-export async function postImport(url: URL): Promise<ImportResult> {
+export async function postImport(url: URL): Promise<ResultImport> {
   const path = '/api/import/wereldculturen';
   const response = await fetch(path, {
     headers,

@@ -2,19 +2,19 @@ import { Autocomplete, Chip, TextField, TextFieldProps } from '@mui/material';
 import match from 'autosuggest-highlight/match';
 import parse from 'autosuggest-highlight/parse';
 import React, { useEffect, useState } from 'react';
-import { ServerKeyword } from '../../model/DexterModel';
+import { ResultKeyword } from '../../model/DexterModel';
 import { useDebounce } from '../../utils/useDebounce';
 import { createKeyword, getKeywordsAutocomplete } from '../../utils/API';
 import _ from 'lodash';
 
 interface KeywordsFieldProps {
-  selected: ServerKeyword[];
-  onChangeSelected: (selected: ServerKeyword[]) => void;
+  selected: ResultKeyword[];
+  onChangeSelected: (selected: ResultKeyword[]) => void;
 
   /**
    * Options to select from
    */
-  options?: ServerKeyword[];
+  options?: ResultKeyword[];
 
   /**
    * Should additional options be fetched from autocomplete endpoint?
@@ -58,7 +58,7 @@ export const SelectKeywordsField = (props: KeywordsFieldProps) => {
     return _.uniqBy(options, 'val');
   }
 
-  const handleDeleteKeyword = (keyword: ServerKeyword) => {
+  const handleDeleteKeyword = (keyword: ResultKeyword) => {
     const newSelected = props.selected.filter(k => k.id !== keyword.id);
     props.onChangeSelected(newSelected);
   };
@@ -88,7 +88,7 @@ export const SelectKeywordsField = (props: KeywordsFieldProps) => {
     );
   }
 
-  async function handleChangeSelected(data: ServerKeyword[]) {
+  async function handleChangeSelected(data: ResultKeyword[]) {
     const selectedIsNewKeyword = data.findIndex(
       k => k.id === CREATE_NEW_KEYWORD,
     );
@@ -109,7 +109,7 @@ export const SelectKeywordsField = (props: KeywordsFieldProps) => {
       loading={loading}
       id="keywords-autocomplete"
       options={getOptions()}
-      getOptionLabel={(keyword: ServerKeyword) => keyword.val}
+      getOptionLabel={(keyword: ResultKeyword) => keyword.val}
       isOptionEqualToValue={(option, value) => option.val === value.val}
       value={props.selected}
       renderInput={renderInputField}
@@ -127,7 +127,7 @@ export const SelectKeywordsField = (props: KeywordsFieldProps) => {
           />
         ))
       }
-      onChange={(_, data) => handleChangeSelected(data as ServerKeyword[])}
+      onChange={(_, data) => handleChangeSelected(data as ResultKeyword[])}
       renderOption={(props, option, { inputValue }) => {
         const matches = match(option.val, inputValue, {
           insideWords: true,
@@ -155,6 +155,6 @@ export const SelectKeywordsField = (props: KeywordsFieldProps) => {
   );
 };
 
-function sortAlphanumeric(s1: ServerKeyword, s2: ServerKeyword) {
+function sortAlphanumeric(s1: ResultKeyword, s2: ResultKeyword) {
   return s1.val > s2.val ? 1 : -1;
 }

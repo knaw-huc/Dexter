@@ -2,8 +2,8 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   Corpus,
-  ServerKeyword,
-  ServerLanguage,
+  ResultKeyword,
+  ResultLanguage,
   Source,
 } from '../../model/DexterModel';
 import { CorpusForm } from './CorpusForm';
@@ -47,7 +47,7 @@ export const CorpusPage = () => {
   const [showCorpusForm, setShowCorpusForm] = useState(false);
   const [showSourceForm, setShowSourceForm] = useState(false);
   const [showLinkSourceForm, setShowLinkSourceForm] = useState(false);
-  const [filterKeywords, setFilterKeywords] = useState<ServerKeyword[]>([]);
+  const [filterKeywords, setFilterKeywords] = useState<ResultKeyword[]>([]);
 
   const initResources = async (id: string) => {
     const corpusWithResources = await getCorpusWithResourcesById(id).catch(
@@ -83,7 +83,7 @@ export const CorpusPage = () => {
     setShowSourceForm(false);
   };
 
-  const handleDeleteLanguage = async (language: ServerLanguage) => {
+  const handleDeleteLanguage = async (language: ResultLanguage) => {
     const warning = window.confirm(
       'Are you sure you wish to delete this language?',
     );
