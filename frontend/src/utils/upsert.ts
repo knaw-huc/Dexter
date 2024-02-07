@@ -1,9 +1,9 @@
 /**
- * Upsert: 'Update or insert'
+ * Upsert: 'Update or insert'...
  *
  * Create new array in which:
- * - the update replaces the first element that matches the predicate
- * - the update is pushed when nothing matches
+ * - update replaces first element that matches predicate, or:
+ * - update is pushed when nothing matches
  */
 export function upsert<T>(
   arr: T[],
