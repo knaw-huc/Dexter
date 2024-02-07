@@ -36,11 +36,16 @@ import { ValidatedSelectField } from '../common/ValidatedSelectField';
 import { LinkSourceField } from './LinkSourceField';
 import {
   ErrorByField,
-  filterFormFieldErrors,
-  FormError,
+  setFormFieldErrors,
+  FormErrorMessage,
   scrollToError,
-} from '../common/FormError';
-import { TextFieldWithError } from '../source/TextFieldWithError';
+  getErrorMessage,
+  GENERIC,
+} from '../common/FormErrorMessage';
+import {
+  TextareaFieldProps,
+  TextFieldWithError,
+} from '../source/TextFieldWithError';
 import { ErrorMsg } from '../common/ErrorMsg';
 import _ from 'lodash';
 import { CloseInlineIcon } from '../common/CloseInlineIcon';
@@ -84,14 +89,9 @@ const validationSchema = yup.object({
 });
 
 export function CorpusForm(props: CorpusFormProps) {
-  const {
-    setValue,
-    formState: { errors },
-    watch,
-  } = useForm<Corpus>({
-    resolver: yupResolver(validationSchema),
-  });
-  const [fieldError, setFieldError] = useState<ErrorByField>();
+  const { setValue, watch } = useForm<Corpus>();
+
+  const [fieldErrors, setFieldErrors] = useState<ErrorByField<Corpus>[]>([]);
   const [isInit, setInit] = useState(false);
   const [isLoaded, setLoaded] = useState(false);
   const [keys, setKeys] = useState<ResultMetadataKey[]>([]);
@@ -137,16 +137,35 @@ export function CorpusForm(props: CorpusFormProps) {
   }, [isInit, isLoaded]);
 
   useEffect(() => {
-    if (fieldError) {
+    if (fieldErrors) {
       scrollToError();
     }
-  }, [fieldError]);
+  }, [fieldErrors]);
 
   function toServerForm(data: CorpusFormSubmit): ServerFormCorpus {
     return {
       ...data,
       parentId: data.parent?.id,
     };
+  }
+
+  async function handleSubmit(data: CorpusFormSubmit) {
+    try {
+      await validationSchema.validate(data);
+      const serverForm = toServerForm(data);
+      const id = props.corpusToEdit
+        ? await updateExistingCorpus(serverForm)
+        : await createNewCorpus(serverForm);
+      data.metadataValues = await submitMetadataValues(
+        props.corpusToEdit,
+        keys,
+        values,
+      );
+      await submitLinkedResources(id, data);
+      props.onSave({ id, ...data });
+    } catch (e) {
+      await setFormFieldErrors(e, setFieldErrors);
+    }
   }
 
   async function createNewCorpus(data: ServerFormCorpus) {
@@ -160,29 +179,9 @@ export function CorpusForm(props: CorpusFormProps) {
     return corpusId;
   }
 
-  async function handleSubmit(data: CorpusFormSubmit) {
-    try {
-      const serverForm = toServerForm(data);
-      const id = props.corpusToEdit
-        ? await updateExistingCorpus(serverForm)
-        : await createNewCorpus(serverForm);
-      data.metadataValues = await submitMetadataValues(
-        props.corpusToEdit,
-        keys,
-        values,
-      );
-      await submitLinkedResources(id, data);
-      props.onSave({ id, ...data });
-    } catch (e) {
-      await filterFormFieldErrors(e, setFieldError);
-    }
-  }
-
   async function submitLinkedResources(id: string, data: CorpusFormSubmit) {
-    await updateMetadataValues(
-      id,
-      data.metadataValues.map(toResultMetadataValue),
-    );
+    const metadataValues = data.metadataValues.map(toResultMetadataValue);
+    await updateMetadataValues(id, metadataValues);
     await updateKeywords(id, data.keywords);
     await updateLanguages(id, data.languages);
     await updateSources(id, data.sources);
@@ -211,22 +210,17 @@ export function CorpusForm(props: CorpusFormProps) {
     return setValue('parent', undefined);
   }
 
-  function getErrorMessage(field: keyof Corpus): string | undefined {
-    if (errors[field]?.message) {
-      return errors[field].message;
-    }
-    if (fieldError?.field === field) {
-      return fieldError.error.message;
-    }
-  }
-
-  function renderFormField(fieldName: keyof Corpus) {
+  function renderTextField(
+    fieldName: keyof Corpus,
+    props?: TextareaFieldProps,
+  ) {
     return (
       <TextFieldWithError
         label={_.capitalize(fieldName)}
-        message={getErrorMessage(fieldName)}
-        value={watch(fieldName)}
-        onChange={event => setValue(fieldName, event.target.value)}
+        message={getErrorMessage<Corpus>(fieldName, fieldErrors)}
+        value={watch(fieldName) as string}
+        onChange={value => setValue(fieldName, value)}
+        {...props}
       />
     );
   }
@@ -242,37 +236,23 @@ export function CorpusForm(props: CorpusFormProps) {
           onClick={props.onClose}
         />
         <h1>{props.corpusToEdit ? 'Edit corpus' : 'Create new corpus'}</h1>
-        <FormError error={fieldError} />
+        <FormErrorMessage error={fieldErrors.find(e => e.field === GENERIC)} />
         <form>
-          {renderFormField('title')}
-          <TextFieldWithError
-            label="Description"
-            message={getErrorMessage('description')}
-            value={watch('description')}
-            onChange={event => setValue('description', event.target.value)}
-            multiline
-            rows={6}
-          />
-          {renderFormField('rights')}
+          {renderTextField('title')}
+          {renderTextField('description', { rows: 6, multiline: true })}
+          {renderTextField('rights')}
           <ValidatedSelectField
             label="Access"
-            message={errors.access?.message}
+            message={getErrorMessage<Corpus>('access', fieldErrors)}
             selectedOption={watch('access')}
             onSelectOption={v => setValue('access', v)}
             options={AccessOptions}
           />
-          {renderFormField('location')}
-          {renderFormField('earliest')}
-          {renderFormField('latest')}
-          {renderFormField('contributor')}
-          <TextFieldWithError
-            label="notes"
-            message={getErrorMessage('notes')}
-            value={watch('notes')}
-            onChange={event => setValue('notes', event.target.value)}
-            multiline
-            rows={6}
-          />
+          {renderTextField('location')}
+          {renderTextField('earliest')}
+          {renderTextField('latest')}
+          {renderTextField('contributor')}
+          {renderTextField('notes', { rows: 6, multiline: true })}
           <Label>Keywords</Label>
           <AddKeywordField
             selected={watch('keywords')}
@@ -280,7 +260,7 @@ export function CorpusForm(props: CorpusFormProps) {
               setValue('keywords', selected);
             }}
           />
-          <ErrorMsg msg={getErrorMessage('keywords')} />
+          <ErrorMsg msg={getErrorMessage<Corpus>('keywords', fieldErrors)} />
           <Label>Languages</Label>
           <LanguagesField
             selected={watch('languages')}
@@ -288,7 +268,7 @@ export function CorpusForm(props: CorpusFormProps) {
               setValue('languages', selected);
             }}
           />
-          <ErrorMsg msg={getErrorMessage('languages')} />
+          <ErrorMsg msg={getErrorMessage<Corpus>('languages', fieldErrors)} />
           <Label>Add sources to corpus</Label>
           <LinkSourceField
             options={allSources}
@@ -296,7 +276,7 @@ export function CorpusForm(props: CorpusFormProps) {
             onLinkSource={handleLinkSource}
             onUnlinkSource={handleUnlinkSource}
           />
-          <ErrorMsg msg={getErrorMessage('sources')} />
+          <ErrorMsg msg={getErrorMessage<Corpus>('sources', fieldErrors)} />
           <Label>Add to main corpus</Label>
           <ParentCorpusField
             selected={selectedParent}
@@ -311,7 +291,7 @@ export function CorpusForm(props: CorpusFormProps) {
           />
           <SubmitButton onClick={() => handleSubmit(watch())} />
         </form>
-        <ErrorMsg msg={getErrorMessage('parent')} />
+        <ErrorMsg msg={getErrorMessage<Corpus>('parent', fieldErrors)} />
       </ScrollableModal>
     </>
   );

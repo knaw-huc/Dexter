@@ -37,10 +37,13 @@ import { ErrorMsg } from '../common/ErrorMsg';
 import { TextFieldWithError } from './TextFieldWithError';
 import {
   ErrorByField,
-  filterFormFieldErrors,
-  FormError,
+  setFormFieldErrors,
+  FormErrorMessage,
   scrollToError,
-} from '../common/FormError';
+  putErrorByField,
+  getErrorMessage,
+  GENERIC,
+} from '../common/FormErrorMessage';
 import { CloseInlineIcon } from '../common/CloseInlineIcon';
 import { SubmitButton } from '../common/SubmitButton';
 import { ImportField } from './ImportField';
@@ -91,7 +94,7 @@ export function SourceForm(props: SourceFormProps) {
   const [isExternalRefLoading, setExternalRefLoading] = useState(false);
   const externalRef = watch('externalRef');
   const debouncedExternalRef = useDebounce<string>(externalRef, 500);
-  const [fieldError, setFieldError] = useState<ErrorByField>();
+  const [fieldErrors, setFieldErrors] = useState<ErrorByField<Source>[]>();
   const [keys, setKeys] = useState<ResultMetadataKey[]>([]);
   const [values, setValues] = useState<FormMetadataValue[]>([]);
 
@@ -126,11 +129,11 @@ export function SourceForm(props: SourceFormProps) {
   }, [props.sourceToEdit, setValue]);
 
   useEffect(() => {
-    if (fieldError) {
-      console.error('field error:', fieldError);
+    if (fieldErrors) {
+      console.error('field error:', fieldErrors);
       scrollToError();
     }
-  }, [fieldError]);
+  }, [fieldErrors]);
 
   async function handleImportMetadata() {
     const warning = window.confirm(
@@ -151,13 +154,15 @@ export function SourceForm(props: SourceFormProps) {
     try {
       tmsImport = await postImport(new URL(debouncedExternalRef));
     } catch (e) {
-      await filterFormFieldErrors(e, setFieldError);
+      await setFormFieldErrors(e, setFieldErrors);
     }
     if (!tmsImport || !tmsImport.isValidExternalReference) {
-      setFieldError({
-        field: 'externalRef',
-        error: { message: 'Is not a valid external reference' },
-      });
+      setFieldErrors(prev =>
+        putErrorByField(prev, {
+          field: 'externalRef',
+          error: { message: 'Is not a valid external reference' },
+        }),
+      );
     } else {
       Object.keys(tmsImport.imported).forEach(key => {
         if (tmsImport.imported[key]) {
@@ -181,7 +186,7 @@ export function SourceForm(props: SourceFormProps) {
       await submitLinkedResources(id, data);
       props.onSave({ id, ...data });
     } catch (error) {
-      await filterFormFieldErrors(error, setFieldError);
+      await setFormFieldErrors(error, setFieldErrors);
     }
   }
 
@@ -209,21 +214,13 @@ export function SourceForm(props: SourceFormProps) {
     return sourceId;
   }
 
-  function getErrorMessage(field: keyof Source): string | undefined {
-    if (errors[field]?.message) {
-      return errors[field].message;
-    }
-    if (fieldError?.field === field) {
-      return fieldError.error.message;
-    }
-  }
-
   function renderFormField(fieldName: keyof Source) {
     return (
       <TextFieldWithError
         label={_.capitalize(fieldName)}
-        {...register(fieldName, { required: true })}
-        message={getErrorMessage(fieldName)}
+        value={watch(fieldName) as string}
+        onChange={v => setValue(fieldName, v)}
+        message={getErrorMessage<Source>(fieldName, fieldErrors)}
       />
     );
   }
@@ -237,12 +234,12 @@ export function SourceForm(props: SourceFormProps) {
 
       <h1>{props.sourceToEdit ? 'Edit source' : 'Create new source'}</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <FormError error={fieldError} />
+        <FormErrorMessage error={fieldErrors.find(e => e.field === GENERIC)} />
 
         <ImportField
           label="External Reference"
           {...register('externalRef')}
-          message={getErrorMessage('externalRef')}
+          message={getErrorMessage<Source>('externalRef', fieldErrors)}
           onImport={handleImportMetadata}
           isImporting={isExternalRefLoading}
           isRefImportable={isImportableUrl(watch('externalRef'))}
@@ -252,8 +249,9 @@ export function SourceForm(props: SourceFormProps) {
 
         <TextFieldWithError
           label="Description"
-          {...register('description', { required: true })}
-          message={getErrorMessage('description')}
+          value={watch('description') as string}
+          onChange={v => setValue('description', v)}
+          message={getErrorMessage<Source>('description', fieldErrors)}
           multiline
           rows={6}
         />
@@ -263,7 +261,7 @@ export function SourceForm(props: SourceFormProps) {
 
         <ValidatedSelectField
           label="Access"
-          message={getErrorMessage('access')}
+          message={getErrorMessage<Source>('access', fieldErrors)}
           selectedOption={watch('access')}
           onSelectOption={e => setValue('access', e)}
           options={AccessOptions}
@@ -281,7 +279,7 @@ export function SourceForm(props: SourceFormProps) {
             setValue('keywords', selected);
           }}
         />
-        <ErrorMsg msg={getErrorMessage('keywords')} />
+        <ErrorMsg msg={getErrorMessage<Source>('keywords', fieldErrors)} />
 
         <Label>Languages</Label>
         <LanguagesField
@@ -290,7 +288,7 @@ export function SourceForm(props: SourceFormProps) {
             setValue('languages', selected);
           }}
         />
-        <ErrorMsg msg={getErrorMessage('languages')} />
+        <ErrorMsg msg={getErrorMessage<Source>('languages', fieldErrors)} />
 
         <MetadataValueFormFields
           keys={keys}

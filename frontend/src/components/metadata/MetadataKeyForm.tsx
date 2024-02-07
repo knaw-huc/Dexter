@@ -6,10 +6,12 @@ import { createMetadataKey, updateMetadataKey } from '../../utils/API';
 import ScrollableModal from '../common/ScrollableModal';
 import {
   ErrorByField,
-  FormError,
+  FormErrorMessage,
   GENERIC,
+  getErrorMessage,
+  putErrorByField,
   scrollToError,
-} from '../common/FormError';
+} from '../common/FormErrorMessage';
 import { CloseInlineIcon } from '../common/CloseInlineIcon';
 import { SubmitButton } from '../common/SubmitButton';
 import { ErrorMsg } from '../common/ErrorMsg';
@@ -24,14 +26,17 @@ styled(TextField)`
   display: block;
 `;
 
-function validateData(form: FormMetadataKey): ErrorByField | undefined {
+function validateData(
+  form: FormMetadataKey,
+): ErrorByField<FormMetadataKey> | undefined {
   if (!form.key) {
     return { field: 'key', error: { message: 'Cannot be empty' } };
   }
 }
 
 export function MetadataKeyForm(props: MetadataKeyFormProps) {
-  const [fieldError, setFieldError] = useState<ErrorByField>();
+  const [fieldErrors, setFieldErrors] =
+    useState<ErrorByField<FormMetadataKey>[]>();
   const [keyField, setKeyField] = useState('');
 
   const [isInit, setInit] = useState(false);
@@ -47,10 +52,10 @@ export function MetadataKeyForm(props: MetadataKeyFormProps) {
   }, [isInit]);
 
   useEffect(() => {
-    if (fieldError) {
+    if (fieldErrors) {
       scrollToError();
     }
-  }, [fieldError]);
+  }, [fieldErrors]);
 
   async function createNewMetadataKey(data: FormMetadataKey) {
     const newMetadataKey = await createMetadataKey(data);
@@ -67,7 +72,7 @@ export function MetadataKeyForm(props: MetadataKeyFormProps) {
     const data: FormMetadataKey = { key: keyField };
     const foundError = validateData(data);
     if (foundError) {
-      setFieldError(foundError);
+      setFieldErrors(prev => putErrorByField(prev, foundError));
       return;
     }
     try {
@@ -76,7 +81,7 @@ export function MetadataKeyForm(props: MetadataKeyFormProps) {
         : await createNewMetadataKey(data);
       props.onSaved({ id, ...data });
     } catch (error) {
-      setFieldError({ field: GENERIC, error });
+      setFieldErrors(prev => putErrorByField(prev, { field: GENERIC, error }));
     }
   }
 
@@ -92,12 +97,14 @@ export function MetadataKeyForm(props: MetadataKeyFormProps) {
           {props.inEdit ? 'Edit metadata field' : 'Create new metadata field'}
         </h1>
         <form>
-          <FormError error={fieldError} />
+          <FormErrorMessage
+            error={fieldErrors.find(e => e.field === GENERIC)}
+          />
 
           <Label>Metadata field</Label>
-          {fieldError?.field === 'key' && (
-            <ErrorMsg msg={fieldError.error.message} />
-          )}
+          <ErrorMsg
+            msg={getErrorMessage<ResultMetadataKey>('key', fieldErrors)}
+          />
           <TextField
             fullWidth
             value={keyField}

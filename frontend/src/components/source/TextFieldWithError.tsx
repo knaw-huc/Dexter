@@ -1,35 +1,38 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { Label } from '../common/Label';
-import { StandardTextFieldProps } from '@mui/material/TextField';
-import { CustomFieldProps } from '../common/CustomFieldProps';
 import { ErrorMsg } from '../common/ErrorMsg';
 import { TextFieldStyled } from './TextFieldStyled';
+import { TextFieldProps } from '@mui/material';
 
-type TextFormFieldProps = StandardTextFieldProps &
-  CustomFieldProps & {
-    variant?: 'standard';
-  };
+export type TextareaFieldProps = Pick<TextFieldProps, 'rows' | 'multiline'>;
+
+type TextFormFieldProps = TextareaFieldProps & {
+  label: string;
+  message?: string;
+  variant?: 'standard';
+  value?: string;
+  onChange: (change?: string) => void;
+};
 
 /**
  * Text field with label and error handling
- * use forwardRef to register field with react-hook-form
  */
 export function TextFieldWithError(props: TextFormFieldProps) {
-  const { label, message } = props;
-  const fieldRef = useRef(null);
+  const { label, message, onChange, value, ...textFieldProps } = props;
   return (
-    <span ref={fieldRef}>
+    <>
       <Label style={{ textTransform: 'capitalize' }}>{label}</Label>
       {message && <ErrorMsg msg={message} />}
       <TextFieldStyled
+        {...textFieldProps}
         fullWidth={true}
         margin="dense"
         error={!!message}
-        value={props.value}
+        value={value ?? ''}
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-          props.onChange(event);
+          onChange(event.target.value || undefined);
         }}
       />
-    </span>
+    </>
   );
 }
