@@ -14,14 +14,8 @@ import {
   UUID,
 } from '../../model/DexterModel';
 import {
-  addKeywordsToSource,
-  addLanguagesToSource,
-  addMetadataValueToSource,
   addSourcesToCorpus,
   createSource,
-  deleteKeywordFromCorpus,
-  deleteLanguageFromCorpus,
-  deleteMetadataValueFromCorpus,
   getMetadataKeys,
   postImport,
   updateSource,
@@ -37,12 +31,12 @@ import { ErrorMsg } from '../common/ErrorMsg';
 import { TextFieldWithError } from './TextFieldWithError';
 import {
   ErrorByField,
-  setFormFieldErrors,
   FormErrorMessage,
-  scrollToError,
-  putErrorByField,
-  getErrorMessage,
   GENERIC,
+  getErrorMessage,
+  putErrorByField,
+  scrollToError,
+  setFormFieldErrors,
 } from '../common/FormErrorMessage';
 import { CloseInlineIcon } from '../common/CloseInlineIcon';
 import { SubmitButton } from '../common/SubmitButton';
@@ -50,7 +44,11 @@ import { ImportField } from './ImportField';
 import _ from 'lodash';
 import { MetadataValueFormFields } from '../metadata/MetadataValueFormFields';
 import { submitMetadataValues } from '../../utils/submitMetadataValues';
-import { updateLinkedResourcesWith } from '../../utils/updateRemoteIds';
+import {
+  updateKeywords,
+  updateLanguages,
+  updateMetadataValues,
+} from '../../utils/updateRemoteIds';
 
 const formFields: (keyof Source)[] = [
   'externalRef',
@@ -97,19 +95,6 @@ export function SourceForm(props: SourceFormProps) {
   const [fieldErrors, setFieldErrors] = useState<ErrorByField<Source>[]>();
   const [keys, setKeys] = useState<ResultMetadataKey[]>([]);
   const [values, setValues] = useState<FormMetadataValue[]>([]);
-
-  const updateMetadataValues = updateLinkedResourcesWith(
-    addMetadataValueToSource,
-    deleteMetadataValueFromCorpus,
-  );
-  const updateLanguages = updateLinkedResourcesWith(
-    addLanguagesToSource,
-    deleteLanguageFromCorpus,
-  );
-  const updateKeywords = updateLinkedResourcesWith(
-    addKeywordsToSource,
-    deleteKeywordFromCorpus,
-  );
 
   useEffect(() => {
     init();
@@ -191,10 +176,8 @@ export function SourceForm(props: SourceFormProps) {
   }
 
   async function submitLinkedResources(id: UUID, data: SourceFormSubmit) {
-    await updateMetadataValues(
-      id,
-      data.metadataValues.map(toResultMetadataValue),
-    );
+    const metadataValues = data.metadataValues.map(toResultMetadataValue);
+    await updateMetadataValues(id, metadataValues);
     await updateKeywords(id, data.keywords);
     await updateLanguages(id, data.languages);
   }

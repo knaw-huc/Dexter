@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import { yupResolver } from '@hookform/resolvers/yup';
 import TextField from '@mui/material/TextField';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -15,19 +14,7 @@ import {
   toFormMetadataValue,
   toResultMetadataValue,
 } from '../../model/DexterModel';
-import {
-  addKeywordsToCorpus,
-  addLanguagesToCorpus,
-  addMetadataValueToCorpus,
-  addSourcesToCorpus,
-  createCorpus,
-  deleteKeywordFromCorpus,
-  deleteLanguageFromCorpus,
-  deleteMetadataValueFromCorpus,
-  deleteSourceFromCorpus,
-  getMetadataKeys,
-  updateCorpus,
-} from '../../utils/API';
+import { createCorpus, getMetadataKeys, updateCorpus } from '../../utils/API';
 import { AddKeywordField } from '../keyword/AddKeywordField';
 import { LanguagesField } from '../language/LanguagesField';
 import { ParentCorpusField } from './ParentCorpusField';
@@ -36,11 +23,11 @@ import { ValidatedSelectField } from '../common/ValidatedSelectField';
 import { LinkSourceField } from './LinkSourceField';
 import {
   ErrorByField,
-  setFormFieldErrors,
   FormErrorMessage,
-  scrollToError,
-  getErrorMessage,
   GENERIC,
+  getErrorMessage,
+  scrollToError,
+  setFormFieldErrors,
 } from '../common/FormErrorMessage';
 import {
   TextareaFieldProps,
@@ -52,7 +39,12 @@ import { CloseInlineIcon } from '../common/CloseInlineIcon';
 import { SubmitButton } from '../common/SubmitButton';
 import { MetadataValueFormFields } from '../metadata/MetadataValueFormFields';
 import { submitMetadataValues } from '../../utils/submitMetadataValues';
-import { updateLinkedResourcesWith } from '../../utils/updateRemoteIds';
+import {
+  updateKeywords,
+  updateLanguages,
+  updateMetadataValues,
+  updateSources,
+} from '../../utils/updateRemoteIds';
 
 type CorpusFormProps = {
   corpusToEdit?: Corpus;
@@ -100,22 +92,6 @@ export function CorpusForm(props: CorpusFormProps) {
   const allSources = props.sourceOptions;
   const selectedSources = watch('sources');
   const selectedParent = watch('parent');
-  const updateMetadataValues = updateLinkedResourcesWith(
-    addMetadataValueToCorpus,
-    deleteMetadataValueFromCorpus,
-  );
-  const updateSources = updateLinkedResourcesWith(
-    addSourcesToCorpus,
-    deleteSourceFromCorpus,
-  );
-  const updateLanguages = updateLinkedResourcesWith(
-    addLanguagesToCorpus,
-    deleteLanguageFromCorpus,
-  );
-  const updateKeywords = updateLinkedResourcesWith(
-    addKeywordsToCorpus,
-    deleteKeywordFromCorpus,
-  );
 
   useEffect(() => {
     const init = async () => {
