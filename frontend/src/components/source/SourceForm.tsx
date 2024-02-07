@@ -34,9 +34,9 @@ import {
   FormErrorMessage,
   GENERIC,
   getErrorMessage,
-  putErrorByField,
   scrollToError,
   setFormFieldErrors,
+  upsertFieldError,
 } from '../common/FormErrorMessage';
 import { CloseInlineIcon } from '../common/CloseInlineIcon';
 import { SubmitButton } from '../common/SubmitButton';
@@ -45,9 +45,6 @@ import _ from 'lodash';
 import { MetadataValueFormFields } from '../metadata/MetadataValueFormFields';
 import { submitMetadataValues } from '../../utils/submitMetadataValues';
 import {
-  updateCorpusKeywords,
-  updateCorpusLanguages,
-  updateCorpusMetadataValues,
   updateSourceKeywords,
   updateSourceLanguages,
   updateSourceMetadataValues,
@@ -140,7 +137,7 @@ export function SourceForm(props: SourceFormProps) {
     }
     if (!tmsImport || !tmsImport.isValidExternalReference) {
       setFieldErrors(prev =>
-        putErrorByField(prev, {
+        upsertFieldError(prev, {
           field: 'externalRef',
           error: { message: 'Is not a valid external reference' },
         }),

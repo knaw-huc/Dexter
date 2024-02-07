@@ -2,6 +2,8 @@ import { ResponseError } from '../../utils/API';
 import React, { Dispatch, SetStateAction, useEffect, useRef } from 'react';
 import { Alert } from '@mui/material';
 import { ERROR_MESSAGE_CLASS } from './ErrorMsg';
+import { ValidationError } from 'yup';
+import { upsert } from '../../utils/upsert';
 
 export function FormErrorMessage<T>(props: { error?: ErrorByField<T> }) {
   const formError = props.error;
@@ -27,14 +29,8 @@ function isResponseError(error: Error): error is ResponseError {
   return !!(error as ResponseError).response;
 }
 
-export function toErrorByField<T>(
-  field: FormField<T>,
-  message: string,
-): ErrorByField<T> {
-  return {
-    field: field,
-    error: { message },
-  };
+function isValidationError(error: Error): error is ValidationError {
+  return !!(error as ValidationError).path;
 }
 
 type WithTitle = { title: string };
@@ -44,7 +40,6 @@ type WithTitle = { title: string };
  * or return generic {@link GENERIC} error
  */
 
-// TODO: Edit corpus form, submit without title -> "An error occurred: Title is required"
 export async function setFormFieldErrors<T extends WithTitle>(
   error: Error,
   dispatch: DispatchError<T>,
@@ -59,27 +54,33 @@ export async function setFormFieldErrors<T extends WithTitle>(
       };
     }
   }
-  if (!newError) {
-    newError = toErrorByField(GENERIC, error.message);
+  if (isValidationError(error)) {
+    newError = new ErrorByField<T>(error.path as keyof T, error.message);
   }
-  dispatch(prev => putErrorByField(prev, newError));
+  if (!newError) {
+    newError = new ErrorByField<T>(GENERIC, error.message);
+  }
+  dispatch(prev => upsertFieldError(prev, newError));
 }
 
-export function putErrorByField<T>(
+export function upsertFieldError<T>(
   prev: ErrorByField<T>[],
-  newError: ErrorByField<T>,
+  update: ErrorByField<T>,
 ) {
-  const found = prev.findIndex(e => e.field === newError.field);
-  if (found === -1) {
-    return [...prev, newError];
-  } else {
-    prev[found] = newError;
-  }
+  return upsert(prev, update, e => e.field === update.field);
 }
 
 export type GenericFormError = Pick<Error, 'message'>;
 export type FormField<T> = keyof T | 'generic';
-export type ErrorByField<T> = { field: FormField<T>; error: GenericFormError };
+
+export class ErrorByField<T> {
+  public error: GenericFormError;
+
+  constructor(public field: FormField<T>, message: string) {
+    this.error = { message };
+  }
+}
+
 type DispatchError<T> = Dispatch<SetStateAction<ErrorByField<T>[]>>;
 export const GENERIC = 'generic';
 

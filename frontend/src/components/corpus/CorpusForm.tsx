@@ -52,9 +52,11 @@ type CorpusFormProps = {
   onSave: (edited: Corpus) => void;
   onClose: () => void;
 };
+
 styled(TextField)`
   display: block;
 `;
+
 const Label = styled.label`
   font-weight: bold;
 `;
@@ -96,10 +98,10 @@ export function CorpusForm(props: CorpusFormProps) {
 
   useEffect(() => {
     const init = async () => {
-      if (props.corpusToEdit) {
-        const formValues =
-          props.corpusToEdit.metadataValues.map(toFormMetadataValue);
-        setForm({ ...(props.corpusToEdit ?? defaults) });
+      const toEdit = props.corpusToEdit;
+      if (toEdit) {
+        const formValues = toEdit.metadataValues.map(toFormMetadataValue);
+        setForm({ ...(toEdit ?? defaults) });
         setValues(formValues);
       }
       setKeys(await getMetadataKeys());
@@ -112,9 +114,7 @@ export function CorpusForm(props: CorpusFormProps) {
   }, [isInit, isLoaded]);
 
   useEffect(() => {
-    if (fieldErrors) {
-      scrollToError();
-    }
+    scrollToError();
   }, [fieldErrors]);
 
   function toServerForm(data: CorpusFormSubmit): FormCorpus {

@@ -2,16 +2,15 @@ import React, { forwardRef, useEffect, useRef } from 'react';
 import { Label } from '../common/Label';
 import { StandardTextFieldProps } from '@mui/material/TextField';
 import { UseFormRegisterReturn } from 'react-hook-form';
-import { CustomFieldProps } from '../common/CustomFieldProps';
 import { ErrorMsg } from '../common/ErrorMsg';
 import { TextFieldStyled } from './TextFieldStyled';
-import { Button, CircularProgress, Grid, Tooltip } from '@mui/material';
+import { Button, CircularProgress, Tooltip } from '@mui/material';
 import { HelpIconStyled } from '../common/HelpIconStyled';
 import { InputButtonGrid } from '../common/InputButtonGrid';
 
 type ImportFieldProps = StandardTextFieldProps &
-  UseFormRegisterReturn<string> &
-  CustomFieldProps & {
+  UseFormRegisterReturn<string> & {
+    message?: string;
     variant?: 'standard';
     onImport: () => void;
     isRefImportable: boolean;

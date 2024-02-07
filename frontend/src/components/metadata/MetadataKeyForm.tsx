@@ -9,8 +9,8 @@ import {
   FormErrorMessage,
   GENERIC,
   getErrorMessage,
-  putErrorByField,
   scrollToError,
+  upsertFieldError,
 } from '../common/FormErrorMessage';
 import { CloseInlineIcon } from '../common/CloseInlineIcon';
 import { SubmitButton } from '../common/SubmitButton';
@@ -72,7 +72,7 @@ export function MetadataKeyForm(props: MetadataKeyFormProps) {
     const data: FormMetadataKey = { key: keyField };
     const foundError = validateData(data);
     if (foundError) {
-      setFieldErrors(prev => putErrorByField(prev, foundError));
+      setFieldErrors(prev => upsertFieldError(prev, foundError));
       return;
     }
     try {
@@ -81,7 +81,7 @@ export function MetadataKeyForm(props: MetadataKeyFormProps) {
         : await createNewMetadataKey(data);
       props.onSaved({ id, ...data });
     } catch (error) {
-      setFieldErrors(prev => putErrorByField(prev, { field: GENERIC, error }));
+      setFieldErrors(prev => upsertFieldError(prev, { field: GENERIC, error }));
     }
   }
 
