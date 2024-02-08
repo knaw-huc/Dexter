@@ -2,16 +2,14 @@ import React from 'react';
 import { Label } from '../common/Label';
 import { ErrorMsg } from '../common/ErrorMsg';
 import { TextFieldStyled } from './TextFieldStyled';
-import { TextFieldProps } from '@mui/material';
+import { TextareaFieldProps } from '../common/TextareaFieldProps';
 
-export type TextareaFieldProps = Pick<TextFieldProps, 'rows' | 'multiline'>;
-
-type TextFormFieldProps = TextareaFieldProps & {
+export type TextFormFieldProps = TextareaFieldProps & {
   label: string;
   message?: string;
-  variant?: 'standard';
   value?: string;
   onChange: (change?: string) => void;
+  variant?: 'standard';
 };
 
 /**

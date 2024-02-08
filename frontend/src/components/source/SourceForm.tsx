@@ -1,6 +1,4 @@
-import { yupResolver } from '@hookform/resolvers/yup';
 import React, { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import {
   AccessOptions,
@@ -24,7 +22,6 @@ import ScrollableModal from '../common/ScrollableModal';
 import { SelectKeywordsField } from '../keyword/SelectKeywordsField';
 import { LanguagesField } from '../language/LanguagesField';
 import isUrl from '../../utils/isUrl';
-import { useDebounce } from '../../utils/useDebounce';
 import { Label } from '../common/Label';
 import { ValidatedSelectField } from '../common/ValidatedSelectField';
 import { ErrorMsg } from '../common/ErrorMsg';
@@ -50,21 +47,6 @@ import {
   updateSourceMetadataValues,
 } from '../../utils/updateRemoteIds';
 
-const formFields: (keyof Source)[] = [
-  'externalRef',
-  'title',
-  'description',
-  'creator',
-  'rights',
-  'access',
-  'location',
-  'earliest',
-  'latest',
-  'notes',
-  'keywords',
-  'languages',
-];
-
 type SourceFormProps = {
   sourceToEdit?: Source;
   corpusId?: string;
@@ -72,21 +54,35 @@ type SourceFormProps = {
   onClose: () => void;
 };
 
-const schema = yup.object({
+const defaults: Source = {
+  title: '',
+  description: undefined,
+  rights: undefined,
+  access: undefined,
+  location: undefined,
+  earliest: undefined,
+  latest: undefined,
+  notes: undefined,
+  keywords: [],
+  languages: [],
+  metadataValues: [],
+
+  // Not created or modified by form:
+  id: undefined,
+  createdBy: undefined,
+  createdAt: undefined,
+  updatedAt: undefined,
+};
+
+const validationSchema = yup.object({
   title: yup.string().required('Title is required'),
 });
 
 export function SourceForm(props: SourceFormProps) {
-  const { register, handleSubmit, setValue, watch } = useForm<Source>({
-    resolver: yupResolver(schema),
-    mode: 'onBlur',
-    defaultValues: { keywords: [], languages: [], access: null },
-  });
-
-  const [isExternalRefLoading, setExternalRefLoading] = useState(false);
-  const externalRef = watch('externalRef');
-  const debouncedExternalRef = useDebounce<string>(externalRef, 500);
-  const [fieldErrors, setFieldErrors] = useState<ErrorByField<Source>[]>([]);
+  const [form, setForm] = useState<Source>();
+  const [isInit, setInit] = useState(false);
+  const [errors, setErrors] = useState<ErrorByField<Source>[]>([]);
+  const [isImportLoading, setImportLoading] = useState(false);
   const [keys, setKeys] = useState<ResultMetadataKey[]>([]);
   const [values, setValues] = useState<FormMetadataValue[]>([]);
 
@@ -96,23 +92,20 @@ export function SourceForm(props: SourceFormProps) {
     async function init() {
       setKeys(await getMetadataKeys());
 
-      if (props.sourceToEdit) {
-        formFields.map((field: keyof Source) => {
-          setValue(field, props.sourceToEdit[field]);
-        });
-        const formValues =
-          props.sourceToEdit.metadataValues.map(toFormMetadataValue);
+      const toEdit = props.sourceToEdit;
+      if (toEdit) {
+        setForm({ ...(toEdit ?? defaults) });
+        const formValues = toEdit.metadataValues.map(toFormMetadataValue);
         setValues(formValues);
       }
+      setKeys(await getMetadataKeys());
+      setInit(true);
     }
-  }, [props.sourceToEdit, setValue]);
+  }, []);
 
   useEffect(() => {
-    if (fieldErrors) {
-      console.error('field error:', fieldErrors);
-      scrollToError();
-    }
-  }, [fieldErrors]);
+    scrollToError();
+  }, [errors]);
 
   async function handleImportMetadata() {
     const warning = window.confirm(
@@ -121,39 +114,45 @@ export function SourceForm(props: SourceFormProps) {
 
     if (warning === false) return;
 
-    if (isExternalRefLoading) {
+    if (isImportLoading) {
       return;
     }
-    if (!isUrl(debouncedExternalRef)) {
+    if (!isUrl(form.externalRef)) {
       return;
     }
 
-    setExternalRefLoading(true);
+    setImportLoading(true);
     let tmsImport: ResultImport;
     try {
-      tmsImport = await postImport(new URL(debouncedExternalRef));
+      tmsImport = await postImport(new URL(form.externalRef));
     } catch (e) {
-      await setFormFieldErrors(e, setFieldErrors);
+      await setFormFieldErrors(e, setErrors);
     }
     if (!tmsImport || !tmsImport.isValidExternalReference) {
-      setFieldErrors(prev =>
-        upsertFieldError(prev, {
-          field: 'externalRef',
-          error: { message: 'Is not a valid external reference' },
-        }),
+      setErrors(prev =>
+        upsertFieldError(
+          prev,
+          new ErrorByField('externalRef', 'Is not a valid external reference'),
+        ),
       );
-    } else {
-      Object.keys(tmsImport.imported).forEach(key => {
-        if (tmsImport.imported[key]) {
-          setValue(key as keyof Source, tmsImport.imported[key]);
-        }
-      });
     }
-    setExternalRefLoading(false);
+    const update: Source = { ...form };
+
+    Object.keys(update).forEach((key: keyof Source) => {
+      if (tmsImport.imported[key]) {
+        if (typeof update[key] === 'string') {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (update as any)[key] = tmsImport.imported[key];
+        }
+      }
+    });
+    setForm(update);
+    setImportLoading(false);
   }
 
-  async function onSubmit(data: SourceFormSubmit) {
+  async function handleSubmit(data: SourceFormSubmit) {
     try {
+      await validationSchema.validate(data);
       const id: UUID = props.sourceToEdit
         ? await updateExistingSource(data)
         : await createNewSource(data);
@@ -165,7 +164,7 @@ export function SourceForm(props: SourceFormProps) {
       await submitLinkedResources(id, data);
       props.onSave({ id, ...data });
     } catch (error) {
-      await setFormFieldErrors(error, setFieldErrors);
+      await setFormFieldErrors(error, setErrors);
     }
   }
 
@@ -195,13 +194,23 @@ export function SourceForm(props: SourceFormProps) {
     return (
       <TextFieldWithError
         label={_.capitalize(fieldName)}
-        value={watch(fieldName) as string}
-        onChange={v => setValue(fieldName, v)}
-        message={getErrorMessage<Source>(fieldName, fieldErrors)}
+        value={form[fieldName] as string}
+        onChange={v =>
+          setForm(f => {
+            const update = { ...f };
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (update as any)[fieldName] = v;
+            return update;
+          })
+        }
+        message={getErrorMessage<Source>(fieldName, errors)}
       />
     );
   }
 
+  if (!isInit) {
+    return null;
+  }
   return (
     <ScrollableModal show={true} handleClose={props.onClose}>
       <CloseInlineIcon
@@ -210,25 +219,25 @@ export function SourceForm(props: SourceFormProps) {
       />
 
       <h1>{props.sourceToEdit ? 'Edit source' : 'Create new source'}</h1>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <FormErrorMessage error={fieldErrors.find(e => e.field === GENERIC)} />
-
+      <FormErrorMessage error={errors.find(e => e.field === GENERIC)} />
+      <form>
         <ImportField
           label="External Reference"
-          {...register('externalRef')}
-          message={getErrorMessage<Source>('externalRef', fieldErrors)}
+          value={form.externalRef}
+          onChange={externalRef => setForm(f => ({ ...f, externalRef }))}
+          message={getErrorMessage<Source>('externalRef', errors)}
           onImport={handleImportMetadata}
-          isImporting={isExternalRefLoading}
-          isRefImportable={isImportableUrl(watch('externalRef'))}
+          isImporting={isImportLoading}
+          isRefImportable={isImportableUrl(form.externalRef)}
         />
 
         {renderFormField('title')}
 
         <TextFieldWithError
           label="Description"
-          value={watch('description') as string}
-          onChange={v => setValue('description', v)}
-          message={getErrorMessage<Source>('description', fieldErrors)}
+          value={form.description}
+          onChange={description => setForm(f => ({ ...f, description }))}
+          message={getErrorMessage<Source>('description', errors)}
           multiline
           rows={6}
         />
@@ -238,9 +247,9 @@ export function SourceForm(props: SourceFormProps) {
 
         <ValidatedSelectField
           label="Access"
-          message={getErrorMessage<Source>('access', fieldErrors)}
-          selectedOption={watch('access')}
-          onSelectOption={e => setValue('access', e)}
+          message={getErrorMessage<Source>('access', errors)}
+          selectedOption={form.access}
+          onSelectOption={access => setForm(f => ({ ...f, access }))}
           options={AccessOptions}
         />
 
@@ -251,23 +260,19 @@ export function SourceForm(props: SourceFormProps) {
 
         <Label>Keywords</Label>
         <SelectKeywordsField
-          selected={watch('keywords')}
-          onChangeSelected={selected => {
-            setValue('keywords', selected);
-          }}
+          selected={form.keywords}
+          onChangeSelected={keywords => setForm(f => ({ ...f, keywords }))}
           useAutocomplete
           allowCreatingNew
         />
-        <ErrorMsg msg={getErrorMessage<Source>('keywords', fieldErrors)} />
+        <ErrorMsg msg={getErrorMessage<Source>('keywords', errors)} />
 
         <Label>Languages</Label>
         <LanguagesField
-          selected={watch('languages')}
-          onChangeSelected={selected => {
-            setValue('languages', selected);
-          }}
+          selected={form.languages}
+          onChangeSelected={languages => setForm(f => ({ ...f, languages }))}
         />
-        <ErrorMsg msg={getErrorMessage<Source>('languages', fieldErrors)} />
+        <ErrorMsg msg={getErrorMessage<Source>('languages', errors)} />
 
         <MetadataValueFormFields
           keys={keys}
@@ -275,7 +280,7 @@ export function SourceForm(props: SourceFormProps) {
           onChange={setValues}
         />
 
-        <SubmitButton />
+        <SubmitButton onClick={() => handleSubmit(form)} />
       </form>
     </ScrollableModal>
   );

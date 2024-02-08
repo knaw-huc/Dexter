@@ -7,4 +7,4 @@ data class ResultTmsImport(
     val imported: ResultDublinCoreMetadata? = null
 )
 
-typealias ResultDublinCoreMetadata = Map<String, String>;
+typealias ResultDublinCoreMetadata = Map<String, String>

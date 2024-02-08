@@ -1,14 +1,12 @@
-import styled from '@emotion/styled';
-import TextField from '@mui/material/TextField';
 import React, { useEffect, useState } from 'react';
 import * as yup from 'yup';
 import {
   AccessOptions,
   Corpus,
   CorpusFormSubmit,
+  FormCorpus,
   FormMetadataValue,
   ResultMetadataKey,
-  FormCorpus,
   Source,
   toFormMetadataValue,
   toResultMetadataValue,
@@ -28,10 +26,7 @@ import {
   scrollToError,
   setFormFieldErrors,
 } from '../common/FormErrorMessage';
-import {
-  TextareaFieldProps,
-  TextFieldWithError,
-} from '../source/TextFieldWithError';
+import { TextFieldWithError } from '../source/TextFieldWithError';
 import { ErrorMsg } from '../common/ErrorMsg';
 import _ from 'lodash';
 import { CloseInlineIcon } from '../common/CloseInlineIcon';
@@ -44,6 +39,8 @@ import {
   updateCorpusMetadataValues,
   updateSources,
 } from '../../utils/updateRemoteIds';
+import { Label } from '../common/Label';
+import { TextareaFieldProps } from '../common/TextareaFieldProps';
 
 type CorpusFormProps = {
   corpusToEdit?: Corpus;
@@ -52,14 +49,6 @@ type CorpusFormProps = {
   onSave: (edited: Corpus) => void;
   onClose: () => void;
 };
-
-styled(TextField)`
-  display: block;
-`;
-
-const Label = styled.label`
-  font-weight: bold;
-`;
 
 const defaults: Corpus = {
   parent: undefined,
@@ -90,32 +79,28 @@ const validationSchema = yup.object({
 
 export function CorpusForm(props: CorpusFormProps) {
   const [form, setForm] = useState<Corpus>();
-  const [fieldErrors, setFieldErrors] = useState<ErrorByField<Corpus>[]>([]);
   const [isInit, setInit] = useState(false);
-  const [isLoaded, setLoaded] = useState(false);
+  const [errors, setErrors] = useState<ErrorByField<Corpus>[]>([]);
   const [keys, setKeys] = useState<ResultMetadataKey[]>([]);
   const [values, setValues] = useState<FormMetadataValue[]>([]);
 
   useEffect(() => {
-    const init = async () => {
+    init();
+    async function init() {
       const toEdit = props.corpusToEdit;
       if (toEdit) {
-        const formValues = toEdit.metadataValues.map(toFormMetadataValue);
         setForm({ ...(toEdit ?? defaults) });
+        const formValues = toEdit.metadataValues.map(toFormMetadataValue);
         setValues(formValues);
       }
       setKeys(await getMetadataKeys());
-      setLoaded(true);
-    };
-    if (!isInit) {
       setInit(true);
-      init();
     }
-  }, [isInit, isLoaded]);
+  }, []);
 
   useEffect(() => {
     scrollToError();
-  }, [fieldErrors]);
+  }, [errors]);
 
   function toServerForm(data: CorpusFormSubmit): FormCorpus {
     const parentId = data.parent?.id;
@@ -137,7 +122,7 @@ export function CorpusForm(props: CorpusFormProps) {
       await submitLinkedResources(id, data);
       props.onSave({ id, ...data });
     } catch (e) {
-      await setFormFieldErrors(e, setFieldErrors);
+      await setFormFieldErrors(e, setErrors);
     }
   }
 
@@ -186,12 +171,12 @@ export function CorpusForm(props: CorpusFormProps) {
     return (
       <TextFieldWithError
         label={_.capitalize(fieldName)}
-        message={getErrorMessage<Corpus>(fieldName, fieldErrors)}
+        message={getErrorMessage<Corpus>(fieldName, errors)}
         value={form[fieldName] as string}
         onChange={value =>
           setForm(f => {
             const update = { ...f };
-            // TODO: remove cast:
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (update as any)[fieldName] = value;
             return update;
           })
@@ -201,7 +186,7 @@ export function CorpusForm(props: CorpusFormProps) {
     );
   }
 
-  if (!isLoaded) {
+  if (!isInit) {
     return null;
   }
   return (
@@ -212,14 +197,14 @@ export function CorpusForm(props: CorpusFormProps) {
           onClick={props.onClose}
         />
         <h1>{props.corpusToEdit ? 'Edit corpus' : 'Create new corpus'}</h1>
-        <FormErrorMessage error={fieldErrors.find(e => e.field === GENERIC)} />
+        <FormErrorMessage error={errors.find(e => e.field === GENERIC)} />
         <form>
           {renderTextField('title')}
           {renderTextField('description', { rows: 6, multiline: true })}
           {renderTextField('rights')}
           <ValidatedSelectField
             label="Access"
-            message={getErrorMessage<Corpus>('access', fieldErrors)}
+            message={getErrorMessage<Corpus>('access', errors)}
             selectedOption={form.access}
             onSelectOption={access => setForm(f => ({ ...f, access }))}
             options={AccessOptions}
@@ -238,7 +223,7 @@ export function CorpusForm(props: CorpusFormProps) {
             useAutocomplete
             allowCreatingNew
           />
-          <ErrorMsg msg={getErrorMessage<Corpus>('keywords', fieldErrors)} />
+          <ErrorMsg msg={getErrorMessage<Corpus>('keywords', errors)} />
           <Label>Languages</Label>
           <LanguagesField
             selected={form.languages}
@@ -246,7 +231,7 @@ export function CorpusForm(props: CorpusFormProps) {
               setForm(f => ({ ...f, languages }));
             }}
           />
-          <ErrorMsg msg={getErrorMessage<Corpus>('languages', fieldErrors)} />
+          <ErrorMsg msg={getErrorMessage<Corpus>('languages', errors)} />
           <Label>Add sources to corpus</Label>
           <LinkSourceField
             options={props.sourceOptions}
@@ -254,7 +239,7 @@ export function CorpusForm(props: CorpusFormProps) {
             onLinkSource={handleLinkSource}
             onUnlinkSource={handleUnlinkSource}
           />
-          <ErrorMsg msg={getErrorMessage<Corpus>('sources', fieldErrors)} />
+          <ErrorMsg msg={getErrorMessage<Corpus>('sources', errors)} />
           <Label>Add to main corpus</Label>
           <ParentCorpusField
             selected={form.parent}
@@ -269,7 +254,7 @@ export function CorpusForm(props: CorpusFormProps) {
           />
           <SubmitButton onClick={() => handleSubmit(form)} />
         </form>
-        <ErrorMsg msg={getErrorMessage<Corpus>('parent', fieldErrors)} />
+        <ErrorMsg msg={getErrorMessage<Corpus>('parent', errors)} />
       </ScrollableModal>
     </>
   );
