@@ -85,7 +85,7 @@ export function CorpusForm(props: CorpusFormProps) {
   const [values, setValues] = useState<FormMetadataValue[]>([]);
 
   useEffect(() => {
-    init();
+    if (!isInit) init();
     async function init() {
       const toEdit = props.corpusToEdit;
       if (toEdit) {

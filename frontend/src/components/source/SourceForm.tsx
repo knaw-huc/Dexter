@@ -87,7 +87,7 @@ export function SourceForm(props: SourceFormProps) {
   const [values, setValues] = useState<FormMetadataValue[]>([]);
 
   useEffect(() => {
-    init();
+    if (!isInit) init();
 
     async function init() {
       setKeys(await getMetadataKeys());
