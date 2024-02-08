@@ -36,9 +36,12 @@ type SourceFormProps = {
 };
 
 export function SourceForm(props: SourceFormProps) {
+  const sourceToEdit = props.sourceToEdit;
+
   const [form, setForm] = useState<Source>();
   const [errors, setErrors] = useState<ErrorByField<Source>[]>([]);
   const { submitSourceForm } = useSubmitSourceForm({
+    sourceToEdit,
     setErrors,
     onSubmitted: props.onSave,
   });
@@ -47,7 +50,7 @@ export function SourceForm(props: SourceFormProps) {
   const [values, setValues] = useState<FormMetadataValue[]>([]);
 
   const { init, isInit } = useInitSourceForm({
-    sourceToEdit: props.sourceToEdit,
+    sourceToEdit,
     setValues,
     setForm,
     setKeys,
@@ -93,7 +96,7 @@ export function SourceForm(props: SourceFormProps) {
         onClick={props.onClose}
       />
 
-      <h1>{props.sourceToEdit ? 'Edit source' : 'Create new source'}</h1>
+      <h1>{sourceToEdit ? 'Edit source' : 'Create new source'}</h1>
       <FormErrorMessage error={errors.find(e => e.field === GENERIC)} />
       <form>
         <ImportField
