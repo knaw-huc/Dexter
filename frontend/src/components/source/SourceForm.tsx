@@ -40,12 +40,6 @@ export function SourceForm(props: SourceFormProps) {
 
   const [form, setForm] = useState<Source>();
   const [errors, setErrors] = useState<ErrorByField<Source>[]>([]);
-  const { submitSourceForm } = useSubmitSourceForm({
-    sourceToEdit,
-    setErrors,
-    onSubmitted: props.onSave,
-  });
-  const { isImportLoading, loadImport } = useImportMetadata({ setErrors });
   const [keys, setKeys] = useState<ResultMetadataKey[]>([]);
   const [values, setValues] = useState<FormMetadataValue[]>([]);
 
@@ -55,6 +49,12 @@ export function SourceForm(props: SourceFormProps) {
     setForm,
     setKeys,
   });
+  const { submitSourceForm } = useSubmitSourceForm({
+    sourceToEdit,
+    setErrors,
+    onSubmitted: props.onSave,
+  });
+  const { isImportLoading, loadImport } = useImportMetadata({ setErrors });
 
   useEffect(init, []);
   useEffect(scrollToError, [errors]);
