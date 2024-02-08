@@ -92,15 +92,5 @@ export function useSubmitSourceForm(
     return sourceId;
   }
 
-  return {
-    submitSourceForm,
-  } as UseSubmitSourceFormResult;
+  return { submitSourceForm };
 }
-
-export function isImportableUrl(externalRef?: string): boolean {
-  return IMPORTABLE_URL.test(externalRef);
-}
-
-const IMPORTABLE_URL = new RegExp(
-  'https://hdl\\.handle\\.net/[0-9.]*/([0-9]*)',
-);

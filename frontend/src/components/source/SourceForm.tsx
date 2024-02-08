@@ -4,9 +4,7 @@ import {
   FormMetadataValue,
   ResultMetadataKey,
   Source,
-  toFormMetadataValue,
 } from '../../model/DexterModel';
-import { getMetadataKeys } from '../../utils/API';
 import ScrollableModal from '../common/ScrollableModal';
 import { SelectKeywordsField } from '../keyword/SelectKeywordsField';
 import { LanguagesField } from '../language/LanguagesField';
@@ -28,6 +26,7 @@ import _ from 'lodash';
 import { MetadataValueFormFields } from '../metadata/MetadataValueFormFields';
 import { isImportableUrl, useImportMetadata } from './useImportMetadata';
 import { useSubmitSourceForm } from './useSubmitSourceForm';
+import { useInitSourceForm } from './useInitSourceForm';
 
 type SourceFormProps = {
   sourceToEdit?: Source;
@@ -36,29 +35,8 @@ type SourceFormProps = {
   onClose: () => void;
 };
 
-const defaults: Source = {
-  title: '',
-  description: undefined,
-  rights: undefined,
-  access: undefined,
-  location: undefined,
-  earliest: undefined,
-  latest: undefined,
-  notes: undefined,
-  keywords: [],
-  languages: [],
-  metadataValues: [],
-
-  // Not created or modified by form:
-  id: undefined,
-  createdBy: undefined,
-  createdAt: undefined,
-  updatedAt: undefined,
-};
-
 export function SourceForm(props: SourceFormProps) {
   const [form, setForm] = useState<Source>();
-  const [isInit, setInit] = useState(false);
   const [errors, setErrors] = useState<ErrorByField<Source>[]>([]);
   const { submitSourceForm } = useSubmitSourceForm({
     setErrors,
@@ -68,24 +46,14 @@ export function SourceForm(props: SourceFormProps) {
   const [keys, setKeys] = useState<ResultMetadataKey[]>([]);
   const [values, setValues] = useState<FormMetadataValue[]>([]);
 
-  useEffect(() => {
-    if (!isInit) {
-      init();
-    }
+  const { init, isInit } = useInitSourceForm({
+    sourceToEdit: props.sourceToEdit,
+    setValues,
+    setForm,
+    setKeys,
+  });
 
-    async function init() {
-      setKeys(await getMetadataKeys());
-
-      const toEdit = props.sourceToEdit;
-      if (toEdit) {
-        setForm({ ...(toEdit ?? defaults) });
-        const formValues = toEdit.metadataValues.map(toFormMetadataValue);
-        setValues(formValues);
-      }
-      setInit(true);
-    }
-  }, []);
-
+  useEffect(init, []);
   useEffect(scrollToError, [errors]);
 
   async function handleImportMetadata() {
