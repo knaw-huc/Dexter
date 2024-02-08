@@ -75,6 +75,8 @@ const defaults: Corpus = {
 
 const validationSchema = yup.object({
   title: yup.string().required('Title is required'),
+  earliest: yup.date().nullable(),
+  latest: yup.date().nullable(),
 });
 
 export function CorpusForm(props: CorpusFormProps) {
@@ -86,6 +88,7 @@ export function CorpusForm(props: CorpusFormProps) {
 
   useEffect(() => {
     if (!isInit) init();
+
     async function init() {
       const toEdit = props.corpusToEdit;
       if (toEdit) {

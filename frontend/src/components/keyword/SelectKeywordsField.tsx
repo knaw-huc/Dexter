@@ -1,7 +1,7 @@
 import { Autocomplete, Chip, TextField, TextFieldProps } from '@mui/material';
 import match from 'autosuggest-highlight/match';
 import parse from 'autosuggest-highlight/parse';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { ResultKeyword } from '../../model/DexterModel';
 import { useDebounce } from '../../utils/useDebounce';
 import { createKeyword, getKeywordsAutocomplete } from '../../utils/API';
@@ -55,7 +55,8 @@ export const SelectKeywordsField = (props: KeywordsFieldProps) => {
       };
       options.push(createCurrentValue);
     }
-    return _.uniqBy(options, 'val');
+    const uniqueOptions = _.uniqBy(options, 'val');
+    return uniqueOptions.sort(sortAlphanumeric);
   }
 
   const handleDeleteKeyword = (keyword: ResultKeyword) => {

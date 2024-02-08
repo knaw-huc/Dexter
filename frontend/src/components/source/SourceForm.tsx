@@ -76,6 +76,8 @@ const defaults: Source = {
 
 const validationSchema = yup.object({
   title: yup.string().required('Title is required'),
+  earliest: yup.date().nullable(),
+  latest: yup.date().nullable(),
 });
 
 export function SourceForm(props: SourceFormProps) {
