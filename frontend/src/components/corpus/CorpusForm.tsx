@@ -44,8 +44,8 @@ export function CorpusForm(props: CorpusFormProps) {
   const [form, setForm] = useState<Corpus>();
   const [errors, setErrors] = useState<ErrorByField<Corpus>[]>([]);
   const [keys, setKeys] = useState<ResultMetadataKey[]>([]);
-
   const [values, setValues] = useState<FormMetadataValue[]>([]);
+
   const { init, isInit } = useInitCorpusForm({
     corpusToEdit,
     setValues,
