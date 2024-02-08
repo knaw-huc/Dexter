@@ -101,9 +101,7 @@ export function CorpusForm(props: CorpusFormProps) {
     }
   }, []);
 
-  useEffect(() => {
-    scrollToError();
-  }, [errors]);
+  useEffect(scrollToError, [errors]);
 
   function toServerForm(data: CorpusFormSubmit): FormCorpus {
     const parentId = data.parent?.id;

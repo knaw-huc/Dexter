@@ -13,9 +13,13 @@ type UseImportMetadataResult = {
   loadImport: (form: Source) => Promise<Source>;
 };
 
-export function useImportMetadata(params: {
+type UseImportMetadataParams = {
   setErrors: Dispatch<SetStateAction<ErrorByField<Source>[]>>;
-}): UseImportMetadataResult {
+};
+
+export function useImportMetadata(
+  params: UseImportMetadataParams,
+): UseImportMetadataResult {
   const [isImportLoading, setImportLoading] = useState(false);
 
   function checkCanImporting(externalRef: string) {
