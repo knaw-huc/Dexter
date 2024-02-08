@@ -63,7 +63,7 @@ export function SourceForm(props: SourceFormProps) {
     setForm(await loadImport(form));
   }
 
-  async function handleSubmit(form: Source) {
+  async function handleSubmit() {
     await submitSourceForm(form, keys, values);
   }
 
@@ -88,7 +88,6 @@ export function SourceForm(props: SourceFormProps) {
   if (!isInit) {
     return null;
   }
-
   return (
     <ScrollableModal show={true} handleClose={props.onClose}>
       <CloseInlineIcon
@@ -158,7 +157,7 @@ export function SourceForm(props: SourceFormProps) {
           onChange={setValues}
         />
 
-        <SubmitButton onClick={() => handleSubmit(form)} />
+        <SubmitButton onClick={handleSubmit} />
       </form>
     </ScrollableModal>
   );

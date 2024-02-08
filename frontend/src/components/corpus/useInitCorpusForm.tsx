@@ -1,25 +1,26 @@
 import { Dispatch, SetStateAction, useState } from 'react';
 import {
+  Corpus,
   FormMetadataValue,
   ResultMetadataKey,
-  Source,
   toFormMetadataValue,
 } from '../../model/DexterModel';
 import { getMetadataKeys } from '../../utils/API';
 
-type UseInitSourceFormResult = {
+type UseInitCorpusFormResult = {
   init: () => void;
   isInit: boolean;
 };
 
-type UseInitSourceFormParams = {
-  sourceToEdit?: Source;
+type UseInitCorpusFormParams = {
+  corpusToEdit?: Corpus;
   setValues: Dispatch<SetStateAction<FormMetadataValue[]>>;
-  setForm: Dispatch<SetStateAction<Source>>;
+  setForm: Dispatch<SetStateAction<Corpus>>;
   setKeys: Dispatch<ResultMetadataKey[]>;
 };
 
-const defaults: Source = {
+const defaults: Corpus = {
+  parent: undefined,
   title: '',
   description: undefined,
   rights: undefined,
@@ -27,9 +28,11 @@ const defaults: Source = {
   location: undefined,
   earliest: undefined,
   latest: undefined,
+  contributor: undefined,
   notes: undefined,
   keywords: [],
   languages: [],
+  sources: [],
   metadataValues: [],
 
   // Not created or modified by form:
@@ -39,10 +42,10 @@ const defaults: Source = {
   updatedAt: undefined,
 };
 
-export function useInitSourceForm(
-  params: UseInitSourceFormParams,
-): UseInitSourceFormResult {
-  const { sourceToEdit, setValues, setForm, setKeys } = params;
+export function useInitCorpusForm(
+  params: UseInitCorpusFormParams,
+): UseInitCorpusFormResult {
+  const { corpusToEdit, setValues, setForm, setKeys } = params;
   const [isInit, setInit] = useState(false);
 
   function init() {
@@ -53,11 +56,10 @@ export function useInitSourceForm(
         return;
       }
 
+      const toEdit = corpusToEdit;
       setKeys(await getMetadataKeys());
-
-      const toEdit = sourceToEdit;
       setForm({ ...(toEdit ?? defaults) });
-      if (toEdit) {
+      if (toEdit?.metadataValues.length) {
         setValues(toEdit.metadataValues.map(toFormMetadataValue));
       }
       setInit(true);

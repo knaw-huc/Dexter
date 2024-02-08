@@ -1,17 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import * as yup from 'yup';
 import {
   AccessOptions,
   Corpus,
-  CorpusFormSubmit,
-  FormCorpus,
   FormMetadataValue,
   ResultMetadataKey,
   Source,
-  toFormMetadataValue,
-  toResultMetadataValue,
 } from '../../model/DexterModel';
-import { createCorpus, getMetadataKeys, updateCorpus } from '../../utils/API';
 import { SelectKeywordsField } from '../keyword/SelectKeywordsField';
 import { LanguagesField } from '../language/LanguagesField';
 import { ParentCorpusField } from './ParentCorpusField';
@@ -24,7 +18,6 @@ import {
   GENERIC,
   getErrorMessage,
   scrollToError,
-  setFormFieldErrors,
 } from '../common/FormErrorMessage';
 import { TextFieldWithError } from '../source/TextFieldWithError';
 import { ErrorMsg } from '../common/ErrorMsg';
@@ -32,15 +25,10 @@ import _ from 'lodash';
 import { CloseInlineIcon } from '../common/CloseInlineIcon';
 import { SubmitButton } from '../common/SubmitButton';
 import { MetadataValueFormFields } from '../metadata/MetadataValueFormFields';
-import { submitMetadataValues } from '../../utils/submitMetadataValues';
-import {
-  updateCorpusKeywords,
-  updateCorpusLanguages,
-  updateCorpusMetadataValues,
-  updateSources,
-} from '../../utils/updateRemoteIds';
 import { Label } from '../common/Label';
 import { TextareaFieldProps } from '../common/TextareaFieldProps';
+import { useInitCorpusForm } from './useInitCorpusForm';
+import { useSubmitCorpusForm } from './useSubmitCorpusForm';
 
 type CorpusFormProps = {
   corpusToEdit?: Corpus;
@@ -50,100 +38,31 @@ type CorpusFormProps = {
   onClose: () => void;
 };
 
-const defaults: Corpus = {
-  parent: undefined,
-  title: '',
-  description: undefined,
-  rights: undefined,
-  access: undefined,
-  location: undefined,
-  earliest: undefined,
-  latest: undefined,
-  contributor: undefined,
-  notes: undefined,
-  keywords: [],
-  languages: [],
-  sources: [],
-  metadataValues: [],
-
-  // Not created or modified by form:
-  id: undefined,
-  createdBy: undefined,
-  createdAt: undefined,
-  updatedAt: undefined,
-};
-
-const validationSchema = yup.object({
-  title: yup.string().required('Title is required'),
-  earliest: yup.date().nullable(),
-  latest: yup.date().nullable(),
-});
-
 export function CorpusForm(props: CorpusFormProps) {
+  const corpusToEdit = props.corpusToEdit;
+
   const [form, setForm] = useState<Corpus>();
-  const [isInit, setInit] = useState(false);
   const [errors, setErrors] = useState<ErrorByField<Corpus>[]>([]);
   const [keys, setKeys] = useState<ResultMetadataKey[]>([]);
+
   const [values, setValues] = useState<FormMetadataValue[]>([]);
+  const { init, isInit } = useInitCorpusForm({
+    corpusToEdit,
+    setValues,
+    setForm,
+    setKeys,
+  });
+  const { submitCorpusForm } = useSubmitCorpusForm({
+    corpusToEdit,
+    setErrors,
+    onSubmitted: props.onSave,
+  });
 
-  useEffect(() => {
-    if (!isInit) init();
-
-    async function init() {
-      const toEdit = props.corpusToEdit;
-      if (toEdit) {
-        setForm({ ...(toEdit ?? defaults) });
-        const formValues = toEdit.metadataValues.map(toFormMetadataValue);
-        setValues(formValues);
-      }
-      setKeys(await getMetadataKeys());
-      setInit(true);
-    }
-  }, []);
-
+  useEffect(init, []);
   useEffect(scrollToError, [errors]);
 
-  function toServerForm(data: CorpusFormSubmit): FormCorpus {
-    const parentId = data.parent?.id;
-    return { ...data, parentId };
-  }
-
-  async function handleSubmit(data: Corpus) {
-    try {
-      await validationSchema.validate(data);
-      const serverForm = toServerForm(data);
-      const id = props.corpusToEdit
-        ? await updateExistingCorpus(serverForm)
-        : await createNewCorpus(serverForm);
-      data.metadataValues = await submitMetadataValues(
-        props.corpusToEdit,
-        keys,
-        values,
-      );
-      await submitLinkedResources(id, data);
-      props.onSave({ id, ...data });
-    } catch (e) {
-      await setFormFieldErrors(e, setErrors);
-    }
-  }
-
-  async function createNewCorpus(data: FormCorpus) {
-    const newCorpus = await createCorpus(data);
-    return newCorpus.id;
-  }
-
-  async function updateExistingCorpus(data: FormCorpus) {
-    const corpusId = props.corpusToEdit.id;
-    await updateCorpus(corpusId, data);
-    return corpusId;
-  }
-
-  async function submitLinkedResources(id: string, data: CorpusFormSubmit) {
-    const metadataValues = data.metadataValues.map(toResultMetadataValue);
-    await updateCorpusMetadataValues(id, metadataValues);
-    await updateCorpusKeywords(id, data.keywords);
-    await updateCorpusLanguages(id, data.languages);
-    await updateSources(id, data.sources);
+  async function handleSubmit() {
+    await submitCorpusForm(form, keys, values);
   }
 
   function handleUnlinkSource(sourceId: string) {
@@ -197,7 +116,7 @@ export function CorpusForm(props: CorpusFormProps) {
           style={{ float: 'right', top: 0 }}
           onClick={props.onClose}
         />
-        <h1>{props.corpusToEdit ? 'Edit corpus' : 'Create new corpus'}</h1>
+        <h1>{corpusToEdit ? 'Edit corpus' : 'Create new corpus'}</h1>
         <FormErrorMessage error={errors.find(e => e.field === GENERIC)} />
         <form>
           {renderTextField('title')}
@@ -253,7 +172,7 @@ export function CorpusForm(props: CorpusFormProps) {
             values={values}
             onChange={setValues}
           />
-          <SubmitButton onClick={() => handleSubmit(form)} />
+          <SubmitButton onClick={handleSubmit} />
         </form>
         <ErrorMsg msg={getErrorMessage<Corpus>('parent', errors)} />
       </ScrollableModal>

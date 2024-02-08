@@ -52,7 +52,7 @@ export function SourceIndex() {
   }
 
   function byUpdatedAtDesc(s1: Source, s2: Source) {
-    return s1.createdAt < s2.createdAt ? 1 : -1;
+    return s1.updatedAt < s2.updatedAt ? 1 : -1;
   }
 
   return (
@@ -78,16 +78,14 @@ export function SourceIndex() {
       )}
       {sources && (
         <List sx={{ mt: '1em' }}>
-          {sources
-            .sort(byUpdatedAtDesc)
-            .map((source: Source, index: number) => (
-              <SourceListItem
-                key={index}
-                source={source}
-                onDelete={() => handleDelete(source)}
-                onEdit={() => handleEdit(source)}
-              />
-            ))}
+          {sources.sort(byUpdatedAtDesc).map(source => (
+            <SourceListItem
+              key={source.id}
+              source={source}
+              onDelete={() => handleDelete(source)}
+              onEdit={() => handleEdit(source)}
+            />
+          ))}
         </List>
       )}
     </>
