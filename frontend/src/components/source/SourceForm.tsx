@@ -3,7 +3,6 @@ import * as yup from 'yup';
 import {
   AccessOptions,
   FormMetadataValue,
-  ResultImport,
   ResultMetadataKey,
   Source,
   SourceFormSubmit,
@@ -15,13 +14,11 @@ import {
   addSourcesToCorpus,
   createSource,
   getMetadataKeys,
-  postImport,
   updateSource,
 } from '../../utils/API';
 import ScrollableModal from '../common/ScrollableModal';
 import { SelectKeywordsField } from '../keyword/SelectKeywordsField';
 import { LanguagesField } from '../language/LanguagesField';
-import isUrl from '../../utils/isUrl';
 import { Label } from '../common/Label';
 import { ValidatedSelectField } from '../common/ValidatedSelectField';
 import { ErrorMsg } from '../common/ErrorMsg';
@@ -33,7 +30,6 @@ import {
   getErrorMessage,
   scrollToError,
   setFormFieldErrors,
-  upsertFieldError,
 } from '../common/FormErrorMessage';
 import { CloseInlineIcon } from '../common/CloseInlineIcon';
 import { SubmitButton } from '../common/SubmitButton';
@@ -46,6 +42,7 @@ import {
   updateSourceLanguages,
   updateSourceMetadataValues,
 } from '../../utils/updateRemoteIds';
+import { isImportableUrl, useImportMetadata } from './useImportMetadata';
 
 type SourceFormProps = {
   sourceToEdit?: Source;
@@ -84,7 +81,7 @@ export function SourceForm(props: SourceFormProps) {
   const [form, setForm] = useState<Source>();
   const [isInit, setInit] = useState(false);
   const [errors, setErrors] = useState<ErrorByField<Source>[]>([]);
-  const [isImportLoading, setImportLoading] = useState(false);
+  const { isImportLoading, loadImport } = useImportMetadata({ setErrors });
   const [keys, setKeys] = useState<ResultMetadataKey[]>([]);
   const [values, setValues] = useState<FormMetadataValue[]>([]);
 
@@ -110,46 +107,7 @@ export function SourceForm(props: SourceFormProps) {
   }, [errors]);
 
   async function handleImportMetadata() {
-    const warning = window.confirm(
-      'Importing overwrites existing values. Are you sure you want to import?',
-    );
-
-    if (warning === false) return;
-
-    if (isImportLoading) {
-      return;
-    }
-    if (!isUrl(form.externalRef)) {
-      return;
-    }
-
-    setImportLoading(true);
-    let tmsImport: ResultImport;
-    try {
-      tmsImport = await postImport(new URL(form.externalRef));
-    } catch (e) {
-      await setFormFieldErrors(e, setErrors);
-    }
-    if (!tmsImport || !tmsImport.isValidExternalReference) {
-      setErrors(prev =>
-        upsertFieldError(
-          prev,
-          new ErrorByField('externalRef', 'Is not a valid external reference'),
-        ),
-      );
-    }
-    const update: Source = { ...form };
-
-    Object.keys(update).forEach((key: keyof Source) => {
-      if (tmsImport.imported[key]) {
-        if (typeof update[key] === 'string') {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (update as any)[key] = tmsImport.imported[key];
-        }
-      }
-    });
-    setForm(update);
-    setImportLoading(false);
+    setForm(await loadImport(form));
   }
 
   async function handleSubmit(data: SourceFormSubmit) {
@@ -286,12 +244,4 @@ export function SourceForm(props: SourceFormProps) {
       </form>
     </ScrollableModal>
   );
-}
-
-const IMPORTABLE_URL = new RegExp(
-  'https://hdl\\.handle\\.net/[0-9.]*/([0-9]*)',
-);
-
-function isImportableUrl(externalRef?: string): boolean {
-  return IMPORTABLE_URL.test(externalRef);
 }
