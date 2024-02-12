@@ -16,7 +16,7 @@ import {
   FormErrorMessage,
   FormErrors,
   scrollToError,
-} from '../common/FormErrorMessage';
+} from '../common/FormError';
 import { TextFieldWithError } from '../source/TextFieldWithError';
 import { ErrorMessage } from '../common/ErrorMessage';
 import _ from 'lodash';

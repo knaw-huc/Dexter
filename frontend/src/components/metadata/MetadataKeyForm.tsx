@@ -9,7 +9,7 @@ import {
   FormErrors,
   scrollToError,
   setFormErrors,
-} from '../common/FormErrorMessage';
+} from '../common/FormError';
 import { CloseInlineIcon } from '../common/CloseInlineIcon';
 import { SubmitButton } from '../common/SubmitButton';
 import { ErrorMessage } from '../common/ErrorMessage';

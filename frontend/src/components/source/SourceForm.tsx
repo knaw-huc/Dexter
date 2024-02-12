@@ -16,7 +16,7 @@ import {
   FormErrorMessage,
   FormErrors,
   scrollToError,
-} from '../common/FormErrorMessage';
+} from '../common/FormError';
 import { CloseInlineIcon } from '../common/CloseInlineIcon';
 import { SubmitButton } from '../common/SubmitButton';
 import { ImportField } from './ImportField';

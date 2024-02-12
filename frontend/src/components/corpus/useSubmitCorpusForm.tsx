@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from 'react';
-import { FormErrors, setFormErrors } from '../common/FormErrorMessage';
+import { FormErrors, setFormErrors } from '../common/FormError';
 import {
   Corpus,
   CorpusFormSubmit,

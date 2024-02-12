@@ -36,18 +36,17 @@ function isValidationError(error: Error): error is ValidationError {
 export async function setFormErrors<T>(
   error: Error,
   dispatch: DispatchFormError<T>,
-) {
+): Promise<void> {
   if (isResponseError(error)) {
     const errorResponseBody = await error.response.json();
     if (errorResponseBody.message.includes('UNIQUE_TITLE_CONSTRAINT')) {
       const title = { message: 'Title already exists' };
-      dispatch(prev => ({ ...prev, title }));
+      return dispatch(prev => ({ ...prev, title }));
     }
   } else if (isValidationError(error)) {
-    dispatch(prev => _.set({ ...prev }, error.path as keyof T, error));
-  } else {
-    dispatch(prev => ({ ...prev, generic: error }));
+    return dispatch(prev => _.set({ ...prev }, error.path as keyof T, error));
   }
+  dispatch(prev => ({ ...prev, generic: error }));
 }
 
 export type FormField<T> = keyof T | 'generic';

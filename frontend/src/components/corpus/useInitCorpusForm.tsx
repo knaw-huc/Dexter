@@ -6,7 +6,7 @@ import {
   toFormMetadataValue,
 } from '../../model/DexterModel';
 import { getMetadataKeys } from '../../utils/API';
-import { FormErrors } from '../common/FormErrorMessage';
+import { FormErrors } from '../common/FormError';
 
 type UseInitCorpusFormResult = {
   init: () => void;

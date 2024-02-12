@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useState } from 'react';
 import isUrl from '../../utils/isUrl';
-import { FormErrors, setFormErrors } from '../common/FormErrorMessage';
+import { FormErrors, setFormErrors } from '../common/FormError';
 import { ResultImport, Source } from '../../model/DexterModel';
 import { postImport } from '../../utils/API';
 
