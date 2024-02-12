@@ -60,7 +60,7 @@ export const SelectTagField = (props: TagsFieldProps) => {
   }
 
   const handleDeleteTag = (tag: ResultTag) => {
-    const newSelected = props.selected.filter(k => k.id !== tag.id);
+    const newSelected = props.selected.filter(t => t.id !== tag.id);
     props.onChangeSelected(newSelected);
   };
 
@@ -72,8 +72,8 @@ export const SelectTagField = (props: TagsFieldProps) => {
       return;
     }
     setLoading(true);
-    getTagsAutocomplete(debouncedInput).then(k => {
-      setAutocomplete(k);
+    getTagsAutocomplete(debouncedInput).then(t => {
+      setAutocomplete(t);
       setLoading(false);
     });
   }, [debouncedInput]);
@@ -90,7 +90,7 @@ export const SelectTagField = (props: TagsFieldProps) => {
   }
 
   async function handleChangeSelected(data: ResultTag[]) {
-    const selectedIsNewTag = data.findIndex(k => k.id === CREATE_NEW_TAG);
+    const selectedIsNewTag = data.findIndex(t => t.id === CREATE_NEW_TAG);
     if (selectedIsNewTag !== -1) {
       data[selectedIsNewTag] = await createTag({ val: inputValue });
     }

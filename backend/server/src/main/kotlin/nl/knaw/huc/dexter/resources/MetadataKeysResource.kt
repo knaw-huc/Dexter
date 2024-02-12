@@ -57,17 +57,17 @@ class MetadataKeysResource(private val jdbi: Jdbi) {
         formMetadataKey: FormMetadataKey,
         @Auth user: DexterUser
     ): ResultMetadataKey =
-        onAccessibleMetadataKey(id, user.id) { dao, kw ->
-            log.info("updateMetadataKey: metadataKeyId=${kw.id}, formMetadataKey=$formMetadataKey")
-            dao.update(kw.id, formMetadataKey)
+        onAccessibleMetadataKey(id, user.id) { dao, k ->
+            log.info("updateMetadataKey: metadataKeyId=${k.id}, formMetadataKey=$formMetadataKey")
+            dao.update(k.id, formMetadataKey)
         }
 
     @DELETE
     @Path(ID_PATH)
     fun deleteMetadataKey(@PathParam(ID_PARAM) id: UUID, @Auth user: DexterUser): Response =
-        onAccessibleMetadataKey(id, user.id) { dao, kw ->
-            log.warn("deleteMetadataKey[${user.name}] metadataKey=$kw")
-            dao.delete(kw.id)
+        onAccessibleMetadataKey(id, user.id) { dao, k ->
+            log.warn("deleteMetadataKey[${user.name}] metadataKey=$k")
+            dao.delete(k.id)
             Response.noContent().build()
         }
 

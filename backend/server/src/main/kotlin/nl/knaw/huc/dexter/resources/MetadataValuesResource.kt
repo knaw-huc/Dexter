@@ -69,9 +69,9 @@ class MetadataValuesResource(private val jdbi: Jdbi) {
     @DELETE
     @Path(ID_PATH)
     fun deleteMetadataValue(@PathParam(ID_PARAM) id: UUID, @Auth user: DexterUser): Response =
-        onExistingMetadataValue(id, user.id) { dao, kw ->
-            log.warn("deleteMetadataValue[${user.name}] metadataValue=$kw")
-            dao.delete(kw.id)
+        onExistingMetadataValue(id, user.id) { dao, v ->
+            log.warn("deleteMetadataValue[${user.name}] metadataValue=$v")
+            dao.delete(v.id)
             Response.noContent().build()
         }
 

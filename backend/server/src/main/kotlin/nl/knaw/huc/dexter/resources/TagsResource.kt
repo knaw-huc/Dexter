@@ -52,17 +52,17 @@ class TagsResource(private val jdbi: Jdbi) {
     @PUT
     @Path(ID_PATH)
     fun updateTag(@PathParam(ID_PARAM) id: Int, formTag: FormTag): ResultTag =
-        onExistingTag(id) { dao, kw ->
-            log.info("updateTag: tagId=${kw.id}, formTag=$formTag")
-            dao.update(kw.id, formTag)
+        onExistingTag(id) { dao, t ->
+            log.info("updateTag: tagId=${t.id}, formTag=$formTag")
+            dao.update(t.id, formTag)
         }
 
     @DELETE
     @Path(ID_PATH)
     fun deleteTag(@PathParam(ID_PARAM) id: Int, @Auth user: DexterUser): Response =
-        onExistingTag(id) { dao, kw ->
-            log.warn("deleteTag[${user.name}] tag=$kw")
-            dao.delete(kw.id)
+        onExistingTag(id) { dao, t ->
+            log.warn("deleteTag[${user.name}] tag=$t")
+            dao.delete(t.id)
             Response.noContent().build()
         }
 

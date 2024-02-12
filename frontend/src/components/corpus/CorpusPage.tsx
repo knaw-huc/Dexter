@@ -138,7 +138,7 @@ export const CorpusPage = () => {
       return corpus.sources;
     }
     return corpus.sources.filter(cs =>
-      filterTags.every(fk => cs.tags.find(csk => csk.id === fk.id)),
+      filterTags.every(ft => cs.tags.find(cst => cst.id === ft.id)),
     );
   }
 

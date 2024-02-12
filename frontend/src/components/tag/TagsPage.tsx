@@ -9,21 +9,21 @@ export const TagsPage = () => {
   const [tags, setTags] = useState<ResultTag[]>([]);
 
   React.useEffect(() => {
-    doGetTags();
+    init();
+
+    async function init() {
+      setTags(await getTags());
+    }
   }, []);
 
-  const doGetTags = async () => {
-    const kw = await getTags();
-    setTags(kw);
-  };
-
-  const handleDelete = (tag: ResultTag) => {
+  async function handleDelete(toDelete: ResultTag) {
     const warning = window.confirm('Are you sure you wish to delete this tag?');
 
     if (warning === false) return;
 
-    deleteTag(tag.id).then(() => doGetTags());
-  };
+    await deleteTag(toDelete.id);
+    setTags(prev => prev.filter(t => t.id !== toDelete.id));
+  }
 
   return (
     <>
