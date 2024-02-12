@@ -64,6 +64,7 @@ export const SourcePage = () => {
     'earliest',
     'latest',
     'rights',
+    'ethics',
     'access',
     'creator',
   ];

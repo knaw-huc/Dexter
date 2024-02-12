@@ -121,6 +121,7 @@ export function SourceForm(props: SourceFormProps) {
 
         {renderFormField('creator')}
         {renderFormField('rights')}
+        {renderFormField('ethics')}
 
         <ValidatedSelectField
           label="Access"

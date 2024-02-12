@@ -122,6 +122,7 @@ export function CorpusForm(props: CorpusFormProps) {
           {renderTextField('title')}
           {renderTextField('description', { rows: 6, multiline: true })}
           {renderTextField('rights')}
+          {renderTextField('ethics')}
           <ValidatedSelectField
             label="Access"
             message={getErrorMessage<Corpus>('access', errors)}

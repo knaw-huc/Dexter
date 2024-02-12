@@ -13,9 +13,9 @@ import javax.ws.rs.NotFoundException
 interface CorporaDao {
     @SqlQuery(
         "insert into corpora " +
-                "(parent_id,title,description,rights,access,location,earliest,latest,contributor,notes,created_by) " +
+                "(parent_id,title,description,rights,access,location,earliest,latest,contributor,notes,created_by,ethics) " +
                 "values " +
-                "(:parentId,:title,:description,:rights,:access,:location,:earliest,:latest,:contributor,:notes,:createdBy) " +
+                "(:parentId,:title,:description,:rights,:access,:location,:earliest,:latest,:contributor,:notes,:createdBy,:ethics) " +
                 "returning *"
     )
     fun insert(@BindKotlin formCorpus: FormCorpus, createdBy: UUID): ResultCorpus
@@ -28,8 +28,8 @@ interface CorporaDao {
 
     @SqlQuery(
         "update corpora " +
-                "set (parent_id,title,description,rights,access,location,earliest,latest,contributor,notes) " +
-                "= (:parentId,:title,:description,:rights,:access,:location,:earliest,:latest,:contributor,:notes) " +
+                "set (parent_id,title,description,rights,access,location,earliest,latest,contributor,notes,ethics) " +
+                "= (:parentId,:title,:description,:rights,:access,:location,:earliest,:latest,:contributor,:notes,:ethics) " +
                 "where id = :id " +
                 "returning *"
     )

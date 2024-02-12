@@ -15,7 +15,8 @@ data class FormCorpus(
     val earliest: LocalDate? = null,
     val latest: LocalDate? = null,
     val contributor: String? = null,
-    val notes: String? = null
+    val notes: String? = null,
+    val ethics: String? = null
 )
 
 data class ResultCorpus(
@@ -30,6 +31,7 @@ data class ResultCorpus(
     val latest: LocalDate? = null,
     val contributor: String? = null,
     val notes: String? = null,
+    val ethics: String? = null,
     val createdBy: UUID,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime
@@ -50,6 +52,7 @@ data class ResultCorpusWithResources (
     val latest: LocalDate? = null,
     val contributor: String? = null,
     val notes: String? = null,
+    val ethics: String? = null,
     val createdBy: UUID,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime,
@@ -78,6 +81,7 @@ fun ResultCorpus.toResultCorpusWithResources(
     latest = latest,
     contributor = contributor,
     notes = notes,
+    ethics = ethics,
     createdBy = createdBy,
     createdAt = createdAt,
     updatedAt = updatedAt,

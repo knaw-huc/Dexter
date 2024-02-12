@@ -125,6 +125,7 @@ export const CorpusPage = () => {
     'earliest',
     'latest',
     'rights',
+    'ethics',
     'access',
     'contributor',
   ];

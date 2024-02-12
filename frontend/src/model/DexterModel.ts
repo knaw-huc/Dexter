@@ -18,6 +18,7 @@ export type FormCorpus = {
   latest?: LocalDate;
   contributor?: string;
   notes?: string;
+  ethics?: string;
 };
 
 /**
@@ -57,6 +58,7 @@ export type FormSource = {
   earliest?: LocalDate;
   latest?: LocalDate;
   notes?: string;
+  ethics?: string;
 };
 
 /**

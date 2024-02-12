@@ -17,6 +17,7 @@ data class FormSource(
     val earliest: LocalDate? = null,
     val latest: LocalDate? = null,
     val notes: String? = null,
+    val ethics: String? = null,
 )
 
 data class ResultSource(
@@ -31,6 +32,7 @@ data class ResultSource(
     val earliest: LocalDate? = null,
     val latest: LocalDate? = null,
     val notes: String? = null,
+    val ethics: String? = null,
     val createdBy: UUID,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime
@@ -51,6 +53,7 @@ data class ResultSourceWithResources (
     val earliest: LocalDate? = null,
     val latest: LocalDate? = null,
     val notes: String? = null,
+    val ethics: String? = null,
     val createdBy: UUID,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime,
@@ -76,6 +79,7 @@ fun ResultSource.toResultSourceWithResources(
     earliest = earliest,
     latest = latest,
     notes = notes,
+    ethics = ethics,
     createdBy = createdBy,
     createdAt = createdAt,
     updatedAt = updatedAt,
