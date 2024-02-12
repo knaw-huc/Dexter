@@ -5,17 +5,16 @@ import { FormMetadataKey, ResultMetadataKey } from '../../model/DexterModel';
 import { createMetadataKey, updateMetadataKey } from '../../utils/API';
 import ScrollableModal from '../common/ScrollableModal';
 import {
-  ErrorByField,
   FormErrorMessage,
-  GENERIC,
-  getErrorMessage,
+  FormErrors,
   scrollToError,
-  upsertFieldError,
+  setFormErrors,
 } from '../common/FormErrorMessage';
 import { CloseInlineIcon } from '../common/CloseInlineIcon';
 import { SubmitButton } from '../common/SubmitButton';
-import { ErrorMsg } from '../common/ErrorMsg';
+import { ErrorMessage } from '../common/ErrorMessage';
 import { Label } from '../common/Label';
+import * as yup from 'yup';
 
 type MetadataKeyFormProps = {
   inEdit?: ResultMetadataKey;
@@ -26,36 +25,27 @@ styled(TextField)`
   display: block;
 `;
 
-function validateData(
-  form: FormMetadataKey,
-): ErrorByField<FormMetadataKey> | undefined {
-  if (!form.key) {
-    return { field: 'key', error: { message: 'Cannot be empty' } };
-  }
-}
+const metadataKeySchema = yup.object({
+  key: yup.string().required('Key is required'),
+});
 
 export function MetadataKeyForm(props: MetadataKeyFormProps) {
-  const [fieldErrors, setFieldErrors] =
-    useState<ErrorByField<FormMetadataKey>[]>();
+  const [fieldErrors, setErrors] = useState<FormErrors<FormMetadataKey>>();
   const [keyField, setKeyField] = useState('');
-
   const [isInit, setInit] = useState(false);
 
   useEffect(() => {
-    const initFormFields = async () => {
+    const init = async () => {
       setKeyField(props.inEdit?.key || '');
+      setErrors({} as FormErrors<FormMetadataKey>);
     };
     if (!isInit) {
       setInit(true);
-      initFormFields();
+      init();
     }
   }, [isInit]);
 
-  useEffect(() => {
-    if (fieldErrors) {
-      scrollToError();
-    }
-  }, [fieldErrors]);
+  useEffect(scrollToError, [fieldErrors]);
 
   async function createNewMetadataKey(data: FormMetadataKey) {
     const newMetadataKey = await createMetadataKey(data);
@@ -70,18 +60,14 @@ export function MetadataKeyForm(props: MetadataKeyFormProps) {
 
   async function handleSubmit() {
     const data: FormMetadataKey = { key: keyField };
-    const foundError = validateData(data);
-    if (foundError) {
-      setFieldErrors(prev => upsertFieldError(prev, foundError));
-      return;
-    }
     try {
+      await metadataKeySchema.validate(data);
       const id = props.inEdit
         ? await updateExistingMetadataKey(data)
         : await createNewMetadataKey(data);
       props.onSaved({ id, ...data });
     } catch (error) {
-      setFieldErrors(prev => upsertFieldError(prev, { field: GENERIC, error }));
+      await setFormErrors(error, setErrors);
     }
   }
 
@@ -97,14 +83,10 @@ export function MetadataKeyForm(props: MetadataKeyFormProps) {
           {props.inEdit ? 'Edit metadata field' : 'Create new metadata field'}
         </h1>
         <form>
-          <FormErrorMessage
-            error={fieldErrors.find(e => e.field === GENERIC)}
-          />
+          <FormErrorMessage error={fieldErrors.generic} />
 
           <Label>Metadata field</Label>
-          <ErrorMsg
-            msg={getErrorMessage<ResultMetadataKey>('key', fieldErrors)}
-          />
+          <ErrorMessage error={fieldErrors.key} />
           <TextField
             fullWidth
             value={keyField}

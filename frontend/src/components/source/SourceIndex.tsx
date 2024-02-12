@@ -51,6 +51,11 @@ export function SourceIndex() {
     setShowForm(false);
   }
 
+  function handleCloseSource() {
+    setSourceToEdit(null);
+    setShowForm(false);
+  }
+
   function byUpdatedAtDesc(s1: Source, s2: Source) {
     return s1.updatedAt < s2.updatedAt ? 1 : -1;
   }
@@ -71,7 +76,7 @@ export function SourceIndex() {
       </div>
       {showForm && (
         <SourceForm
-          onClose={() => setShowForm(false)}
+          onClose={handleCloseSource}
           onSave={handleSaveSource}
           sourceToEdit={sourceToEdit}
         />

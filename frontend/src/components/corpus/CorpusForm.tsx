@@ -13,14 +13,12 @@ import ScrollableModal from '../common/ScrollableModal';
 import { ValidatedSelectField } from '../common/ValidatedSelectField';
 import { LinkSourceField } from './LinkSourceField';
 import {
-  ErrorByField,
   FormErrorMessage,
-  GENERIC,
-  getErrorMessage,
+  FormErrors,
   scrollToError,
 } from '../common/FormErrorMessage';
 import { TextFieldWithError } from '../source/TextFieldWithError';
-import { ErrorMsg } from '../common/ErrorMsg';
+import { ErrorMessage } from '../common/ErrorMessage';
 import _ from 'lodash';
 import { CloseInlineIcon } from '../common/CloseInlineIcon';
 import { SubmitButton } from '../common/SubmitButton';
@@ -42,15 +40,16 @@ export function CorpusForm(props: CorpusFormProps) {
   const corpusToEdit = props.corpusToEdit;
 
   const [form, setForm] = useState<Corpus>();
-  const [errors, setErrors] = useState<ErrorByField<Corpus>[]>([]);
+  const [errors, setErrors] = useState<FormErrors<Corpus>>();
   const [keys, setKeys] = useState<ResultMetadataKey[]>([]);
   const [values, setValues] = useState<FormMetadataValue[]>([]);
 
   const { init, isInit } = useInitCorpusForm({
     corpusToEdit,
-    setValues,
     setForm,
+    setErrors,
     setKeys,
+    setValues,
   });
   const { submitCorpusForm } = useSubmitCorpusForm({
     corpusToEdit,
@@ -91,7 +90,7 @@ export function CorpusForm(props: CorpusFormProps) {
     return (
       <TextFieldWithError
         label={_.capitalize(fieldName)}
-        message={getErrorMessage<Corpus>(fieldName, errors)}
+        error={errors[fieldName]}
         value={form[fieldName] as string}
         onChange={value =>
           setForm(f => {
@@ -117,7 +116,7 @@ export function CorpusForm(props: CorpusFormProps) {
           onClick={props.onClose}
         />
         <h1>{corpusToEdit ? 'Edit corpus' : 'Create new corpus'}</h1>
-        <FormErrorMessage error={errors.find(e => e.field === GENERIC)} />
+        <FormErrorMessage error={errors.generic} />
         <form>
           {renderTextField('title')}
           {renderTextField('description', { rows: 6, multiline: true })}
@@ -125,8 +124,8 @@ export function CorpusForm(props: CorpusFormProps) {
           {renderTextField('ethics')}
           <ValidatedSelectField
             label="Access"
-            message={getErrorMessage<Corpus>('access', errors)}
             selectedOption={form.access}
+            error={errors.access}
             onSelectOption={access => setForm(f => ({ ...f, access }))}
             options={AccessOptions}
           />
@@ -144,7 +143,7 @@ export function CorpusForm(props: CorpusFormProps) {
             useAutocomplete
             allowCreatingNew
           />
-          <ErrorMsg msg={getErrorMessage<Corpus>('tags', errors)} />
+          <ErrorMessage error={errors.tags} />
           <Label>Languages</Label>
           <LanguagesField
             selected={form.languages}
@@ -152,7 +151,7 @@ export function CorpusForm(props: CorpusFormProps) {
               setForm(f => ({ ...f, languages }));
             }}
           />
-          <ErrorMsg msg={getErrorMessage<Corpus>('languages', errors)} />
+          <ErrorMessage error={errors.languages} />
           <Label>Add sources to corpus</Label>
           <LinkSourceField
             options={props.sourceOptions}
@@ -160,7 +159,7 @@ export function CorpusForm(props: CorpusFormProps) {
             onLinkSource={handleLinkSource}
             onUnlinkSource={handleUnlinkSource}
           />
-          <ErrorMsg msg={getErrorMessage<Corpus>('sources', errors)} />
+          <ErrorMessage error={errors.sources} />
           <Label>Add to main corpus</Label>
           <ParentCorpusField
             selected={form.parent}
@@ -175,7 +174,7 @@ export function CorpusForm(props: CorpusFormProps) {
           />
           <SubmitButton onClick={handleSubmit} />
         </form>
-        <ErrorMsg msg={getErrorMessage<Corpus>('parent', errors)} />
+        <ErrorMessage error={errors.parent} />
       </ScrollableModal>
     </>
   );

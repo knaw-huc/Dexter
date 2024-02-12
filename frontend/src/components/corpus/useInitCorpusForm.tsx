@@ -6,6 +6,7 @@ import {
   toFormMetadataValue,
 } from '../../model/DexterModel';
 import { getMetadataKeys } from '../../utils/API';
+import { FormErrors } from '../common/FormErrorMessage';
 
 type UseInitCorpusFormResult = {
   init: () => void;
@@ -14,9 +15,10 @@ type UseInitCorpusFormResult = {
 
 type UseInitCorpusFormParams = {
   corpusToEdit?: Corpus;
-  setValues: Dispatch<SetStateAction<FormMetadataValue[]>>;
   setForm: Dispatch<SetStateAction<Corpus>>;
+  setErrors: Dispatch<SetStateAction<FormErrors<Corpus>>>;
   setKeys: Dispatch<ResultMetadataKey[]>;
+  setValues: Dispatch<SetStateAction<FormMetadataValue[]>>;
 };
 
 const defaults: Corpus = {
@@ -45,7 +47,7 @@ const defaults: Corpus = {
 export function useInitCorpusForm(
   params: UseInitCorpusFormParams,
 ): UseInitCorpusFormResult {
-  const { corpusToEdit, setValues, setForm, setKeys } = params;
+  const { corpusToEdit, setForm, setErrors, setKeys, setValues } = params;
   const [isInit, setInit] = useState(false);
 
   function init() {
@@ -57,8 +59,9 @@ export function useInitCorpusForm(
       }
 
       const toEdit = corpusToEdit;
-      setKeys(await getMetadataKeys());
       setForm({ ...(toEdit ?? defaults) });
+      setErrors({} as FormErrors<Corpus>);
+      setKeys(await getMetadataKeys());
       if (toEdit?.metadataValues.length) {
         setValues(toEdit.metadataValues.map(toFormMetadataValue));
       }

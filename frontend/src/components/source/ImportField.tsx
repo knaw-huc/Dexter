@@ -1,6 +1,6 @@
 import React from 'react';
 import { Label } from '../common/Label';
-import { ErrorMsg } from '../common/ErrorMsg';
+import { ErrorMessage } from '../common/ErrorMessage';
 import { TextFieldStyled } from './TextFieldStyled';
 import { Button, CircularProgress, Tooltip } from '@mui/material';
 import { HelpIconStyled } from '../common/HelpIconStyled';
@@ -16,7 +16,7 @@ type ImportFieldProps = TextFormFieldProps & {
 export function ImportField(props: ImportFieldProps) {
   const {
     label,
-    message,
+    error,
     onImport,
     isRefImportable,
     isImporting,
@@ -33,7 +33,7 @@ export function ImportField(props: ImportFieldProps) {
         input={
           <TextFieldStyled
             {...textFieldProps}
-            error={!!message}
+            error={!!error}
             fullWidth
             value={value}
             onChange={e => onChange(e.target.value)}
@@ -51,7 +51,7 @@ export function ImportField(props: ImportFieldProps) {
           </Button>
         }
       />
-      {message && <ErrorMsg msg={message} />}
+      {error && <ErrorMessage error={error} />}
     </div>
   );
 }

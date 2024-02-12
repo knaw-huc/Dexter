@@ -10,13 +10,11 @@ import { SelectTagField } from '../tag/SelectTagField';
 import { LanguagesField } from '../language/LanguagesField';
 import { Label } from '../common/Label';
 import { ValidatedSelectField } from '../common/ValidatedSelectField';
-import { ErrorMsg } from '../common/ErrorMsg';
+import { ErrorMessage } from '../common/ErrorMessage';
 import { TextFieldWithError } from './TextFieldWithError';
 import {
-  ErrorByField,
   FormErrorMessage,
-  GENERIC,
-  getErrorMessage,
+  FormErrors,
   scrollToError,
 } from '../common/FormErrorMessage';
 import { CloseInlineIcon } from '../common/CloseInlineIcon';
@@ -40,15 +38,16 @@ export function SourceForm(props: SourceFormProps) {
   const sourceToEdit = props.sourceToEdit;
 
   const [form, setForm] = useState<Source>();
-  const [errors, setErrors] = useState<ErrorByField<Source>[]>([]);
+  const [errors, setErrors] = useState<FormErrors<Source>>();
   const [keys, setKeys] = useState<ResultMetadataKey[]>([]);
   const [values, setValues] = useState<FormMetadataValue[]>([]);
 
   const { init, isInit } = useInitSourceForm({
     sourceToEdit,
-    setValues,
     setForm,
+    setErrors,
     setKeys,
+    setValues,
   });
   const { submitSourceForm } = useSubmitSourceForm({
     sourceToEdit,
@@ -84,7 +83,7 @@ export function SourceForm(props: SourceFormProps) {
             return update;
           })
         }
-        message={getErrorMessage<Source>(fieldName, errors)}
+        error={errors[fieldName]}
         {...props}
       />
     );
@@ -101,13 +100,13 @@ export function SourceForm(props: SourceFormProps) {
       />
 
       <h1>{sourceToEdit ? 'Edit source' : 'Create new source'}</h1>
-      <FormErrorMessage error={errors.find(e => e.field === GENERIC)} />
+      <FormErrorMessage error={errors.generic} />
       <form>
         <ImportField
           label="External Reference"
           value={form.externalRef}
           onChange={externalRef => setForm(f => ({ ...f, externalRef }))}
-          message={getErrorMessage<Source>('externalRef', errors)}
+          error={errors.externalRef}
           onImport={handleImportMetadata}
           isImporting={isImportLoading}
           isRefImportable={isImportableUrl(form.externalRef)}
@@ -121,7 +120,7 @@ export function SourceForm(props: SourceFormProps) {
 
         <ValidatedSelectField
           label="Access"
-          message={getErrorMessage<Source>('access', errors)}
+          error={errors.access}
           selectedOption={form.access}
           onSelectOption={access => setForm(f => ({ ...f, access }))}
           options={AccessOptions}
@@ -139,21 +138,21 @@ export function SourceForm(props: SourceFormProps) {
           useAutocomplete
           allowCreatingNew
         />
-        <ErrorMsg msg={getErrorMessage<Source>('tags', errors)} />
+        <ErrorMessage error={errors.tags} />
 
         <Label>Languages</Label>
         <LanguagesField
           selected={form.languages}
           onChangeSelected={languages => setForm(f => ({ ...f, languages }))}
         />
-        <ErrorMsg msg={getErrorMessage<Source>('languages', errors)} />
+        <ErrorMessage error={errors.languages} />
 
         <MetadataValueFormFields
           keys={keys}
           values={values}
           onChange={setValues}
         />
-        <ErrorMsg msg={getErrorMessage<Source>('metadataValues', errors)} />
+        <ErrorMessage error={errors.metadataValues} />
 
         <SubmitButton onClick={handleSubmit} />
       </form>

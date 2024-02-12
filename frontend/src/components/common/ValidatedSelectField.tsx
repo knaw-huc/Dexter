@@ -1,18 +1,19 @@
 import React from 'react';
 import { FormControl, MenuItem, Select, SelectProps } from '@mui/material';
 import { Label } from './Label';
-import { ErrorMsg } from './ErrorMsg';
+import { ErrorMessage } from './ErrorMessage';
 import { Access } from '../../model/DexterModel';
+import { ErrorWithMessage } from '../ErrorHandler';
 
-export type SelectFieldProps = SelectProps & {
-  message?: string;
+export type SelectFieldProps = Omit<SelectProps, 'error'> & {
+  error?: ErrorWithMessage;
   onSelectOption: (selected: Access) => void;
   selectedOption: string;
   options: string[];
 };
 
 export function ValidatedSelectField(props: SelectFieldProps) {
-  const { options, label, message, selectedOption, onSelectOption } = props;
+  const { options, label, error, selectedOption, onSelectOption } = props;
 
   return (
     <>
@@ -34,7 +35,7 @@ export function ValidatedSelectField(props: SelectFieldProps) {
           ))}
         </Select>
       </FormControl>
-      <ErrorMsg msg={message} />
+      <ErrorMessage error={error} />
     </>
   );
 }

@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from 'react';
-import { ErrorByField, setFormFieldErrors } from '../common/FormErrorMessage';
+import { FormErrors, setFormErrors } from '../common/FormErrorMessage';
 import {
   FormMetadataValue,
   ResultMetadataKey,
@@ -16,9 +16,9 @@ import {
 } from '../../utils/API';
 import { submitMetadataValues } from '../../utils/submitMetadataValues';
 import {
-  updateSourceTags,
   updateSourceLanguages,
   updateSourceMetadataValues,
+  updateSourceTags,
 } from '../../utils/updateRemoteIds';
 import * as yup from 'yup';
 
@@ -32,7 +32,7 @@ type UseSubmitSourceFormResult = {
 
 type UseSubmitSourceFormParams = {
   sourceToEdit?: Source;
-  setErrors: Dispatch<SetStateAction<ErrorByField<Source>[]>>;
+  setErrors: Dispatch<SetStateAction<FormErrors<Source>>>;
   onSubmitted: (submitted: Source) => void;
   corpusId?: UUID;
 };
@@ -66,7 +66,7 @@ export function useSubmitSourceForm(
       await submitLinkedResources(id, data);
       onSubmitted({ id, ...data });
     } catch (error) {
-      await setFormFieldErrors(error, setErrors);
+      await setFormErrors(error, setErrors);
     }
   }
 

@@ -1,12 +1,13 @@
 import React from 'react';
 import { Label } from '../common/Label';
-import { ErrorMsg } from '../common/ErrorMsg';
+import { ErrorMessage } from '../common/ErrorMessage';
 import { TextFieldStyled } from './TextFieldStyled';
 import { TextareaFieldProps } from '../common/TextareaFieldProps';
+import { ErrorWithMessage } from '../ErrorHandler';
 
 export type TextFormFieldProps = TextareaFieldProps & {
   label: string;
-  message?: string;
+  error?: ErrorWithMessage;
   value?: string;
   onChange: (change?: string) => void;
   variant?: 'standard';
@@ -16,15 +17,15 @@ export type TextFormFieldProps = TextareaFieldProps & {
  * Text field with label and error handling
  */
 export function TextFieldWithError(props: TextFormFieldProps) {
-  const { label, message, onChange, value, ...textFieldProps } = props;
+  const { label, error, onChange, value, ...textFieldProps } = props;
   return (
     <>
       <Label style={{ textTransform: 'capitalize' }}>{label}</Label>
-      {message && <ErrorMsg msg={message} />}
+      {error && <ErrorMessage error={error} />}
       <TextFieldStyled
         {...textFieldProps}
         fullWidth={true}
-        error={!!message}
+        error={!!error}
         value={value ?? ''}
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
           onChange(event.target.value || undefined);

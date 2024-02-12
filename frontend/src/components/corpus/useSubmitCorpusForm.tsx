@@ -1,21 +1,21 @@
 import { Dispatch, SetStateAction } from 'react';
-import { ErrorByField, setFormFieldErrors } from '../common/FormErrorMessage';
+import { FormErrors, setFormErrors } from '../common/FormErrorMessage';
 import {
+  Corpus,
+  CorpusFormSubmit,
+  FormCorpus,
   FormMetadataValue,
   ResultMetadataKey,
   ResultMetadataValue,
-  Corpus,
-  CorpusFormSubmit,
   toResultMetadataValue,
   UUID,
-  FormCorpus,
 } from '../../model/DexterModel';
 import { createCorpus, updateCorpus } from '../../utils/API';
 import { submitMetadataValues } from '../../utils/submitMetadataValues';
 import {
-  updateCorpusTags,
   updateCorpusLanguages,
   updateCorpusMetadataValues,
+  updateCorpusTags,
   updateSources,
 } from '../../utils/updateRemoteIds';
 import * as yup from 'yup';
@@ -30,7 +30,7 @@ type UseSubmitCorpusFormResult = {
 
 type UseSubmitCorpusFormParams = {
   corpusToEdit?: Corpus;
-  setErrors: Dispatch<SetStateAction<ErrorByField<Corpus>[]>>;
+  setErrors: Dispatch<SetStateAction<FormErrors<Corpus>>>;
   onSubmitted: (submitted: Corpus) => void;
   corpusId?: UUID;
 };
@@ -44,7 +44,7 @@ const corpusSchema = yup.object({
 export function useSubmitCorpusForm(
   params: UseSubmitCorpusFormParams,
 ): UseSubmitCorpusFormResult {
-  const { setErrors, corpusToEdit, onSubmitted } = params;
+  const { corpusToEdit, onSubmitted, setErrors } = params;
 
   async function submitCorpusForm(
     data: CorpusFormSubmit,
@@ -65,7 +65,7 @@ export function useSubmitCorpusForm(
       await submitLinkedResources(id, data);
       onSubmitted({ id, ...data });
     } catch (e) {
-      await setFormFieldErrors(e, setErrors);
+      await setFormErrors(e, setErrors);
     }
   }
 
