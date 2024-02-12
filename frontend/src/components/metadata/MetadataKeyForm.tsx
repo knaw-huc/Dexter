@@ -15,6 +15,7 @@ import { SubmitButton } from '../common/SubmitButton';
 import { ErrorMessage } from '../common/ErrorMessage';
 import { Label } from '../common/Label';
 import * as yup from 'yup';
+import { onSubmit } from '../../utils/onSubmit';
 
 type MetadataKeyFormProps = {
   inEdit?: ResultMetadataKey;
@@ -30,7 +31,7 @@ const metadataKeySchema = yup.object({
 });
 
 export function MetadataKeyForm(props: MetadataKeyFormProps) {
-  const [fieldErrors, setErrors] = useState<FormErrors<FormMetadataKey>>();
+  const [errors, setErrors] = useState<FormErrors<FormMetadataKey>>();
   const [keyField, setKeyField] = useState('');
   const [isInit, setInit] = useState(false);
 
@@ -38,14 +39,14 @@ export function MetadataKeyForm(props: MetadataKeyFormProps) {
     const init = async () => {
       setKeyField(props.inEdit?.key || '');
       setErrors({} as FormErrors<FormMetadataKey>);
+      setInit(true);
     };
     if (!isInit) {
-      setInit(true);
       init();
     }
   }, [isInit]);
 
-  useEffect(scrollToError, [fieldErrors]);
+  useEffect(scrollToError, [errors]);
 
   async function createNewMetadataKey(data: FormMetadataKey) {
     const newMetadataKey = await createMetadataKey(data);
@@ -71,6 +72,9 @@ export function MetadataKeyForm(props: MetadataKeyFormProps) {
     }
   }
 
+  if (!isInit) {
+    return;
+  }
   return (
     <>
       <ScrollableModal show={true} handleClose={props.onClose}>
@@ -82,11 +86,12 @@ export function MetadataKeyForm(props: MetadataKeyFormProps) {
         <h1>
           {props.inEdit ? 'Edit metadata field' : 'Create new metadata field'}
         </h1>
-        <form>
-          <FormErrorMessage error={fieldErrors.generic} />
+        <form onSubmit={onSubmit(handleSubmit)}>
+          <input type="submit" />
+          <FormErrorMessage error={errors.generic} />
 
           <Label>Metadata field</Label>
-          <ErrorMessage error={fieldErrors.key} />
+          <ErrorMessage error={errors.key} />
           <TextField
             fullWidth
             value={keyField}
@@ -95,7 +100,7 @@ export function MetadataKeyForm(props: MetadataKeyFormProps) {
             }}
           />
 
-          <SubmitButton onClick={() => handleSubmit()} />
+          <SubmitButton onClick={handleSubmit} />
         </form>
       </ScrollableModal>
     </>

@@ -1,5 +1,4 @@
 import React, { ChangeEvent, useState } from 'react';
-import { createMetadataValue } from '../../utils/API';
 import { FormMetadataValue, ResultMetadataKey } from '../../model/DexterModel';
 import { Button, FormControl, Select } from '@mui/material';
 import { Label } from '../common/Label';
@@ -99,7 +98,6 @@ export function MetadataValueFormFields(props: MetadataValueFormFieldsProps) {
               variant="outlined"
               value={value.value}
               onChange={e => handleChangeFormValue(value, e)}
-              autoFocus
               InputProps={{
                 endAdornment: (
                   <DeleteIconStyled onClick={() => handleDelete(value)} />

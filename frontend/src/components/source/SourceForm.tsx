@@ -26,6 +26,7 @@ import { isImportableUrl, useImportMetadata } from './useImportMetadata';
 import { useSubmitSourceForm } from './useSubmitSourceForm';
 import { useInitSourceForm } from './useInitSourceForm';
 import { TextareaFieldProps } from '../common/TextareaFieldProps';
+import { onSubmit } from '../../utils/onSubmit';
 
 type SourceFormProps = {
   sourceToEdit?: Source;
@@ -101,7 +102,7 @@ export function SourceForm(props: SourceFormProps) {
 
       <h1>{sourceToEdit ? 'Edit source' : 'Create new source'}</h1>
       <FormErrorMessage error={errors.generic} />
-      <form>
+      <form onSubmit={onSubmit(handleSubmit)}>
         <ImportField
           label="External Reference"
           value={form.externalRef}
