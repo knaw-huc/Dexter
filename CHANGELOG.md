@@ -10,9 +10,10 @@
 - Only the title field is required when creating and editing a new source or corpus
 - Indicate import is running by showing a spinner
 - Create new keywords within the 'add keyword' field, when creating and editing sources and corpora
+- Rename keyword to tag
 
 ### 🔧 Technical
-- Use `prettier` to allign code style when committing new code
+- Use `prettier` to align code style when committing new code
 
 ### 🐛 Bug Fixes
 
