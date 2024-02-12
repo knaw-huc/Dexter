@@ -16,7 +16,7 @@ You can create new issues at [Dexter/issues](https://github.com/knaw-huc/Dexter/
 
 ## Development
 
-- Checkout development branch.
+- Checkout the [development](https://github.com/knaw-huc/Dexter/tree/development) branch.
 
 - Start database:
 ```shell
