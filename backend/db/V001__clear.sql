@@ -10,6 +10,7 @@ drop table if exists sources_languages cascade;
 drop table if exists corpora cascade;
 drop table if exists sources cascade;
 drop table if exists keywords cascade;
+drop table if exists tags cascade;
 drop table if exists languages cascade;
 drop table if exists users cascade;
 drop table if exists corpora_metadata_values cascade;

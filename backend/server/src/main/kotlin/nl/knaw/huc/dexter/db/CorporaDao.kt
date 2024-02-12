@@ -41,14 +41,14 @@ interface CorporaDao {
     @SqlUpdate("delete from corpora where id = :id")
     fun delete(id: UUID)
 
-    @SqlQuery("select k.* from corpora_tags ck join tags k on ck.key_id = k.id where corpus_id = :corpusId")
+    @SqlQuery("select k.* from corpora_tags ck join tags k on ck.tag_id = k.id where corpus_id = :corpusId")
     @RegisterKotlinMapper(ResultTag::class)
     fun getTags(corpusId: UUID): List<ResultTag>
 
-    @SqlUpdate("insert into corpora_tags (corpus_id,key_id) values (:corpusId,:tagId) on conflict do nothing")
+    @SqlUpdate("insert into corpora_tags (corpus_id,tag_id) values (:corpusId,:tagId) on conflict do nothing")
     fun addTag(corpusId: UUID, tagId: Int)
 
-    @SqlUpdate("delete from corpora_tags where corpus_id = :corpusId and key_id = :tagId")
+    @SqlUpdate("delete from corpora_tags where corpus_id = :corpusId and tag_id = :tagId")
     fun deleteTag(corpusId: UUID, tagId: Int)
 
     @SqlQuery("select l.* from corpora_languages cl join iso_639_3 l on cl.lang_id = l.id where corpus_id = :corpusId")
@@ -69,7 +69,7 @@ interface CorporaDao {
                 "  join sources s on cs.source_id = s.id " +
                 "  join sources_tags sk on s.id = sk.source_id " +
                 "where corpus_id = :corpusId " +
-                "and sk.key_id in (<tags>)"
+                "and sk.tag_id in (<tags>)"
     )
     fun getSourcesByTags(
         corpusId: UUID,

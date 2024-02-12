@@ -43,14 +43,14 @@ interface SourcesDao {
     @SqlUpdate("delete from sources where id = :id")
     fun delete(id: UUID)
 
-    @SqlQuery("select k.* from sources_tags sk join tags k on sk.key_id = k.id where source_id = :sourceId")
+    @SqlQuery("select k.* from sources_tags sk join tags k on sk.tag_id = k.id where source_id = :sourceId")
     @RegisterKotlinMapper(ResultTag::class)
     fun getTags(sourceId: UUID): List<ResultTag>
 
-    @SqlUpdate("insert into sources_tags (source_id,key_id) values (:sourceId,:tagId) on conflict do nothing")
+    @SqlUpdate("insert into sources_tags (source_id,tag_id) values (:sourceId,:tagId) on conflict do nothing")
     fun addTag(sourceId: UUID, tagId: Int)
 
-    @SqlUpdate("delete from sources_tags where source_id = :sourceId and key_id = :tagId")
+    @SqlUpdate("delete from sources_tags where source_id = :sourceId and tag_id = :tagId")
     fun deleteTag(sourceId: UUID, tagId: Int)
 
     @SqlQuery("select l.* from sources_languages sl join iso_639_3 l on sl.lang_id = l.id where source_id = :sourceId")

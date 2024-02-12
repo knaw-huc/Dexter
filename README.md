@@ -86,13 +86,13 @@ graph TD
     VC --> AVC[add corpus source]
     AVC --> VCI
     
-    %% keyword:
-    HOME --> CKEYWORD[create keyword]
-    CKEYWORD --> KEYWORD[/keyword/]
-    KEYWORD --> AKEYWORD[add keyword]
-    AKEYWORD --> VCI
+    %% tag:
+    HOME --> CTAG[create tag]
+    CTAG --> TAG[/tag/]
+    TAG --> ATAG[add tag]
+    ATAG --> VCI
     
-    KEYWORD-->SORTVC
+    TAG-->SORTVC
     
     HOME --> VIEWVC[view corpus]
     VIEWVC --> SORTVC[sort/filter corpus sources]
