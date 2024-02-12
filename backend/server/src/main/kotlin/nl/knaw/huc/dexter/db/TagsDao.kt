@@ -6,7 +6,7 @@ import org.jdbi.v3.sqlobject.kotlin.BindKotlin
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
 
-interface KeywordsDao {
+interface TagsDao {
     @SqlQuery("select * from keywords")
     fun list(): List<ResultKeyword>
 

@@ -10,7 +10,7 @@ import nl.knaw.huc.dexter.api.ResultKeyword
 import nl.knaw.huc.dexter.auth.DexterUser
 import nl.knaw.huc.dexter.auth.RoleNames
 import nl.knaw.huc.dexter.db.DaoBlock
-import nl.knaw.huc.dexter.db.KeywordsDao
+import nl.knaw.huc.dexter.db.TagsDao
 import nl.knaw.huc.dexter.helpers.PsqlDiagnosticsHelper.Companion.diagnoseViolations
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel.REPEATABLE_READ
@@ -23,7 +23,7 @@ import javax.ws.rs.core.Response
 @Path(ResourcePaths.KEYWORDS)
 @RolesAllowed(RoleNames.USER)
 @Produces(APPLICATION_JSON)
-class KeywordsResource(private val jdbi: Jdbi) {
+class TagsResource(private val jdbi: Jdbi) {
     private val log = LoggerFactory.getLogger(javaClass)
 
     @GET
@@ -66,16 +66,16 @@ class KeywordsResource(private val jdbi: Jdbi) {
             Response.noContent().build()
         }
 
-    private fun <R> onExistingKeyword(keywordId: Int, block: DaoBlock<KeywordsDao, ResultKeyword, R>): R =
+    private fun <R> onExistingKeyword(keywordId: Int, block: DaoBlock<TagsDao, ResultKeyword, R>): R =
         jdbi.inTransaction<R, Exception>(REPEATABLE_READ) { handle ->
-            handle.attach(KeywordsDao::class.java).let { dao ->
+            handle.attach(TagsDao::class.java).let { dao ->
                 dao.find(keywordId)?.let { keyword ->
                     diagnoseViolations { block.execute(dao, keyword) }
                 } ?: keywordNotFound(keywordId)
             }
         }
 
-    private fun keywords() = jdbi.onDemand(KeywordsDao::class.java)
+    private fun keywords() = jdbi.onDemand(TagsDao::class.java)
 
     private fun keywordNotFound(keywordId: Int): Nothing = throw NotFoundException("Keyword not found: $keywordId")
 }

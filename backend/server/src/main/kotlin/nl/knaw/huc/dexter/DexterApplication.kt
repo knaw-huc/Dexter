@@ -90,7 +90,7 @@ class DexterApplication : Application<DexterConfiguration>() {
             register(AboutResource(configuration, name, appVersion))
             register(AdminResource(jdbi))
             register(CorporaResource(jdbi))
-            register(KeywordsResource(jdbi))
+            register(TagsResource(jdbi))
             register(LanguagesResource(jdbi))
             register(MetadataKeysResource(jdbi))
             register(MetadataValuesResource(jdbi))
