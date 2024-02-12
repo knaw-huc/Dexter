@@ -8,20 +8,13 @@ assignees: ''
 ---
 
 **Describe the bug**
-A clear and short description of what the bug is.
+Please describe your problem as clear and short as posible.
 
-**To Reproduce**
-Steps to reproduce the behavior:
+**How to reproduce the bug?**
 1. Go to '...'
 2. Click on '....'
 3. Scroll down to '....'
-4. See error
+4. See error '...'
 
 **Expected behavior**
-What you expected to happen?
-
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
-
-**Notes**
-Add any other context about the problem here.
+What did you expect to happen?
