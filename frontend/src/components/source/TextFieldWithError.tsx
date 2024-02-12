@@ -24,7 +24,6 @@ export function TextFieldWithError(props: TextFormFieldProps) {
       <TextFieldStyled
         {...textFieldProps}
         fullWidth={true}
-        margin="dense"
         error={!!message}
         value={value ?? ''}
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {

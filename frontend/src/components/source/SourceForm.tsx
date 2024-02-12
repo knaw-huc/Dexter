@@ -27,6 +27,7 @@ import { MetadataValueFormFields } from '../metadata/MetadataValueFormFields';
 import { isImportableUrl, useImportMetadata } from './useImportMetadata';
 import { useSubmitSourceForm } from './useSubmitSourceForm';
 import { useInitSourceForm } from './useInitSourceForm';
+import { TextareaFieldProps } from '../common/TextareaFieldProps';
 
 type SourceFormProps = {
   sourceToEdit?: Source;
@@ -67,7 +68,10 @@ export function SourceForm(props: SourceFormProps) {
     await submitSourceForm(form, keys, values);
   }
 
-  function renderFormField(fieldName: keyof Source) {
+  function renderFormField(
+    fieldName: keyof Source,
+    props?: TextareaFieldProps,
+  ) {
     return (
       <TextFieldWithError
         label={_.capitalize(fieldName)}
@@ -81,6 +85,7 @@ export function SourceForm(props: SourceFormProps) {
           })
         }
         message={getErrorMessage<Source>(fieldName, errors)}
+        {...props}
       />
     );
   }
@@ -109,16 +114,7 @@ export function SourceForm(props: SourceFormProps) {
         />
 
         {renderFormField('title')}
-
-        <TextFieldWithError
-          label="Description"
-          value={form.description}
-          onChange={description => setForm(f => ({ ...f, description }))}
-          message={getErrorMessage<Source>('description', errors)}
-          multiline
-          rows={6}
-        />
-
+        {renderFormField('description', { rows: 6, multiline: true })}
         {renderFormField('creator')}
         {renderFormField('rights')}
         {renderFormField('ethics')}
@@ -134,7 +130,7 @@ export function SourceForm(props: SourceFormProps) {
         {renderFormField('location')}
         {renderFormField('earliest')}
         {renderFormField('latest')}
-        {renderFormField('notes')}
+        {renderFormField('notes', { rows: 6, multiline: true })}
 
         <Label>Tags</Label>
         <SelectTagField
@@ -157,6 +153,7 @@ export function SourceForm(props: SourceFormProps) {
           values={values}
           onChange={setValues}
         />
+        <ErrorMsg msg={getErrorMessage<Source>('metadataValues', errors)} />
 
         <SubmitButton onClick={handleSubmit} />
       </form>
