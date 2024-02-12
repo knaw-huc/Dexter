@@ -6,7 +6,7 @@ import { getSourceWithResourcesById } from '../../utils/API';
 import { Languages } from '../language/Languages';
 import { SourceForm } from './SourceForm';
 import { EditButton } from '../common/EditButton';
-import { KeywordList } from '../keyword/KeywordList';
+import { TagList } from '../tag/TagList';
 import _ from 'lodash';
 import { FieldLabel, ShortFieldsSummary } from '../common/ShortFieldsSummary';
 import { SourceIcon } from './SourceIcon';
@@ -89,7 +89,7 @@ export const SourcePage = () => {
           {!_.isEmpty(source.keywords) && (
             <>
               <FieldLabel label="Keywords" />
-              <KeywordList keywords={source.keywords} />
+              <TagList keywords={source.keywords} />
             </>
           )}
           <ShortFieldsSummary<Source>

@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { ResultKeyword } from '../../model/DexterModel';
 import { deleteKeyword, getKeywords } from '../../utils/API';
-import { KeywordForm } from './KeywordForm';
-import { KeywordList } from './KeywordList';
+import { TagForm } from './TagForm';
+import { TagList } from './TagList';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
-import { LastBreadCrumb } from '../common/breadcrumb/LastBreadCrumb';
 
-export const KeywordsPage = () => {
+export const TagsPage = () => {
   const [keywords, setKeywords] = useState<ResultKeyword[]>([]);
 
   React.useEffect(() => {
@@ -32,9 +31,9 @@ export const KeywordsPage = () => {
     <>
       <HeaderBreadCrumb />
 
-      <KeywordForm setKeywords={setKeywords} />
+      <TagForm setKeywords={setKeywords} />
       <div style={{ marginTop: '1em' }}>
-        <KeywordList keywords={keywords} onDelete={handleDelete} />
+        <TagList keywords={keywords} onDelete={handleDelete} />
       </div>
     </>
   );

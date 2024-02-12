@@ -4,7 +4,7 @@ import { CorpusIndex } from './components/corpus/CorpusIndex';
 import { Page } from './components/Page';
 import { CorpusPage } from './components/corpus/CorpusPage';
 import CssBaseline from '@mui/material/CssBaseline';
-import { KeywordsPage } from './components/keyword/KeywordsPage';
+import { TagsPage } from './components/tag/TagsPage';
 import { SourcePage } from './components/source/SourcePage';
 import { Providers } from './Providers';
 import { SourceIndex } from './components/source/SourceIndex';
@@ -23,7 +23,7 @@ export function App() {
             <Route path="/corpora/:corpusId" element={<CorpusPage />} />
             <Route path="/sources" element={<SourceIndex />} />
             <Route path="/sources/:sourceId" element={<SourcePage />} />
-            <Route path="/keywords" element={<KeywordsPage />} />
+            <Route path="/keywords" element={<TagsPage />} />
             <Route path="/metadata" element={<MetadataKeyIndex />} />
             <Route
               path="*"

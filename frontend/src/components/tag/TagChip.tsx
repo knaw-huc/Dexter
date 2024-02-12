@@ -2,7 +2,7 @@ import { ResultKeyword } from '../../model/DexterModel';
 import Chip from '@mui/material/Chip';
 import React from 'react';
 
-export function KeywordChip(props: {
+export function TagChip(props: {
   keyword: ResultKeyword;
   onDelete?: () => void;
 }) {

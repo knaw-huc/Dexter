@@ -1,12 +1,13 @@
 import { ResultKeyword } from '../../model/DexterModel';
 import { Stack } from '@mui/material';
-import { KeywordChip } from './KeywordChip';
+import { TagChip } from './TagChip';
 import React from 'react';
-import styled from '@emotion/styled';
+import { SxProps } from '@mui/system';
+import { Theme } from '@mui/material/styles/createTheme';
 
-export function KeywordList(props: {
+export function TagList(props: {
   keywords: ResultKeyword[];
-  sx?: any;
+  sx?: SxProps<Theme>;
   onDelete?: (keyword: ResultKeyword) => void;
 }) {
   return (
@@ -22,13 +23,13 @@ export function KeywordList(props: {
     >
       {props.keywords?.map((keyword: ResultKeyword, index: number) =>
         props.onDelete ? (
-          <KeywordChip
+          <TagChip
             key={index}
             keyword={keyword}
             onDelete={() => props.onDelete && props.onDelete(keyword)}
           />
         ) : (
-          <KeywordChip key={index} keyword={keyword} />
+          <TagChip key={index} keyword={keyword} />
         ),
       )}
     </Stack>

@@ -25,8 +25,8 @@ import { LinkSourceButton } from '../source/LinkSourceButton';
 import { LinkSourceForm } from './LinkSourceForm';
 import _ from 'lodash';
 import { Grid } from '@mui/material';
-import { KeywordList } from '../keyword/KeywordList';
-import { KeywordsFilter } from '../keyword/KeywordsFilter';
+import { TagList } from '../tag/TagList';
+import { TagsFilter } from '../tag/TagsFilter';
 import { FieldLabel, ShortFieldsSummary } from '../common/ShortFieldsSummary';
 import { CorpusIcon } from './CorpusIcon';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
@@ -163,7 +163,7 @@ export const CorpusPage = () => {
           {!_.isEmpty(corpus.keywords) && (
             <>
               <FieldLabel label="Keywords" />
-              <KeywordList keywords={corpus.keywords} />
+              <TagList keywords={corpus.keywords} />
             </>
           )}
           <ShortFieldsSummary<Corpus>
@@ -201,7 +201,7 @@ export const CorpusPage = () => {
               <LinkSourceButton onClick={() => setShowLinkSourceForm(true)} />
             </Grid>
             <Grid item xs={6} md={8}>
-              <KeywordsFilter
+              <TagsFilter
                 all={_.uniqBy(
                   corpus.sources.map(s => s.keywords).flat(),
                   'val',

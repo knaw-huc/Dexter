@@ -1,13 +1,12 @@
 import React from 'react';
-import { ResultKeyword, Source } from '../../model/DexterModel';
+import { Source } from '../../model/DexterModel';
 import { HeaderLinkClamped } from '../common/HeaderLinkClamped';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, Grid } from '@mui/material';
 import { PClamped } from '../common/PClamped';
-import { KeywordList } from '../keyword/KeywordList';
+import { TagList } from '../tag/TagList';
 import { CloseInlineIcon } from '../common/CloseInlineIcon';
 import { SourceIcon } from './SourceIcon';
-import { grey } from '@mui/material/colors';
 
 interface SourceItemDropdownProps {
   source: Source;
@@ -48,7 +47,7 @@ export const SourcePreview = (props: SourceItemDropdownProps) => {
             <PClamped>{props.source.description}</PClamped>
           </Grid>
           <Grid item>
-            <KeywordList keywords={props.source.keywords} />
+            <TagList keywords={props.source.keywords} />
           </Grid>
         </Grid>
       </CardContent>

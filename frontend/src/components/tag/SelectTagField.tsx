@@ -7,7 +7,7 @@ import { useDebounce } from '../../utils/useDebounce';
 import { createKeyword, getKeywordsAutocomplete } from '../../utils/API';
 import _ from 'lodash';
 
-interface KeywordsFieldProps {
+interface TagsFieldProps {
   selected: ResultKeyword[];
   onChangeSelected: (selected: ResultKeyword[]) => void;
 
@@ -35,7 +35,7 @@ const CREATE_NEW_KEYWORD = 'create-new-keyword';
 /**
  * Create, link and unlink keywords
  */
-export const SelectKeywordsField = (props: KeywordsFieldProps) => {
+export const SelectTagField = (props: TagsFieldProps) => {
   const [inputValue, setInputValue] = React.useState('');
   const debouncedInput = useDebounce<string>(inputValue, 250);
   const [autocomplete, setAutocomplete] = useState([]);

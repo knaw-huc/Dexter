@@ -1,10 +1,10 @@
 import { ResultKeyword } from '../../model/DexterModel';
 import React, { useState } from 'react';
-import { SelectKeywordsField } from './SelectKeywordsField';
+import { SelectTagField } from './SelectTagField';
 import { ButtonWithIcon } from '../common/ButtonWithIcon';
 import { FilterIconStyled } from '../common/FilterIconStyled';
 
-export function KeywordsFilter(props: {
+export function TagsFilter(props: {
   all: ResultKeyword[];
   selected: ResultKeyword[];
   onChangeSelected: (keys: ResultKeyword[]) => void;
@@ -16,7 +16,7 @@ export function KeywordsFilter(props: {
   }
 
   return (
-    <SelectKeywordsField
+    <SelectTagField
       selected={props.selected}
       onChangeSelected={props.onChangeSelected}
       options={props.all}

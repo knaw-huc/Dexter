@@ -9,7 +9,7 @@ type NewKeywordsProps = {
   setKeywords: React.Dispatch<React.SetStateAction<ResultKeyword[]>>;
 };
 
-export function KeywordForm(props: NewKeywordsProps) {
+export function TagForm(props: NewKeywordsProps) {
   const { dispatchError } = useContext(errorContext);
   const [keyword, setKeyword] = useState('');
 

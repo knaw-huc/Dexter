@@ -6,7 +6,7 @@ import {
   ResultMetadataKey,
   Source,
 } from '../../model/DexterModel';
-import { SelectKeywordsField } from '../keyword/SelectKeywordsField';
+import { SelectTagField } from '../tag/SelectTagField';
 import { LanguagesField } from '../language/LanguagesField';
 import { ParentCorpusField } from './ParentCorpusField';
 import ScrollableModal from '../common/ScrollableModal';
@@ -135,7 +135,7 @@ export function CorpusForm(props: CorpusFormProps) {
           {renderTextField('contributor')}
           {renderTextField('notes', { rows: 6, multiline: true })}
           <Label>Keywords</Label>
-          <SelectKeywordsField
+          <SelectTagField
             selected={form.keywords}
             onChangeSelected={keywords => {
               setForm(f => ({ ...f, keywords }));

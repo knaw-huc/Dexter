@@ -6,7 +6,7 @@ import {
   Source,
 } from '../../model/DexterModel';
 import ScrollableModal from '../common/ScrollableModal';
-import { SelectKeywordsField } from '../keyword/SelectKeywordsField';
+import { SelectTagField } from '../tag/SelectTagField';
 import { LanguagesField } from '../language/LanguagesField';
 import { Label } from '../common/Label';
 import { ValidatedSelectField } from '../common/ValidatedSelectField';
@@ -136,7 +136,7 @@ export function SourceForm(props: SourceFormProps) {
         {renderFormField('notes')}
 
         <Label>Keywords</Label>
-        <SelectKeywordsField
+        <SelectTagField
           selected={form.keywords}
           onChangeSelected={keywords => setForm(f => ({ ...f, keywords }))}
           useAutocomplete
