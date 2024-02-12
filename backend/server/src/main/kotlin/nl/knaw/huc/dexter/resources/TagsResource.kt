@@ -1,12 +1,12 @@
 package nl.knaw.huc.dexter.resources
 
 import io.dropwizard.auth.Auth
-import nl.knaw.huc.dexter.api.FormKeyword
+import nl.knaw.huc.dexter.api.FormTag
 import nl.knaw.huc.dexter.api.ResourcePaths
 import nl.knaw.huc.dexter.api.ResourcePaths.AUTOCOMPLETE
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PARAM
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PATH
-import nl.knaw.huc.dexter.api.ResultKeyword
+import nl.knaw.huc.dexter.api.ResultTag
 import nl.knaw.huc.dexter.auth.DexterUser
 import nl.knaw.huc.dexter.auth.RoleNames
 import nl.knaw.huc.dexter.db.DaoBlock
@@ -20,62 +20,62 @@ import javax.ws.rs.*
 import javax.ws.rs.core.MediaType.APPLICATION_JSON
 import javax.ws.rs.core.Response
 
-@Path(ResourcePaths.KEYWORDS)
+@Path(ResourcePaths.TAGS)
 @RolesAllowed(RoleNames.USER)
 @Produces(APPLICATION_JSON)
 class TagsResource(private val jdbi: Jdbi) {
     private val log = LoggerFactory.getLogger(javaClass)
 
     @GET
-    fun list() = keywords().list()
+    fun list() = tags().list()
 
     @GET
     @Path(ID_PATH)
-    fun getKeyword(@PathParam(ID_PARAM) keywordId: Int) =
-        keywords().find(keywordId) ?: keywordNotFound(keywordId)
+    fun getTag(@PathParam(ID_PARAM) tagId: Int) =
+        tags().find(tagId) ?: tagNotFound(tagId)
 
     @POST
     @Path(AUTOCOMPLETE)
-    fun getKeywordLike(key: String): List<ResultKeyword> =
+    fun getTagLike(key: String): List<ResultTag> =
         key.takeIf { it.length > 0 }
-            ?.let { keywords().like("%$it%") }
+            ?.let { tags().like("%$it%") }
             ?: throw BadRequestException("key length MUST be > 0 (but was ${key.length}: '$key')")
 
     @POST
     @Consumes(APPLICATION_JSON)
-    fun createKeyword(keyword: FormKeyword): ResultKeyword =
-        keyword.run {
-            log.info("createKeyword: [$this]")
-            diagnoseViolations { keywords().insert(this) }
+    fun createTag(tag: FormTag): ResultTag =
+        tag.run {
+            log.info("createTag: [$this]")
+            diagnoseViolations { tags().insert(this) }
         }
 
     @PUT
     @Path(ID_PATH)
-    fun updateKeyword(@PathParam(ID_PARAM) id: Int, formKeyword: FormKeyword): ResultKeyword =
-        onExistingKeyword(id) { dao, kw ->
-            log.info("updateKeyword: keywordId=${kw.id}, formKeyword=$formKeyword")
-            dao.update(kw.id, formKeyword)
+    fun updateTag(@PathParam(ID_PARAM) id: Int, formTag: FormTag): ResultTag =
+        onExistingTag(id) { dao, kw ->
+            log.info("updateTag: tagId=${kw.id}, formTag=$formTag")
+            dao.update(kw.id, formTag)
         }
 
     @DELETE
     @Path(ID_PATH)
-    fun deleteKeyword(@PathParam(ID_PARAM) id: Int, @Auth user: DexterUser): Response =
-        onExistingKeyword(id) { dao, kw ->
-            log.warn("deleteKeyword[${user.name}] keyword=$kw")
+    fun deleteTag(@PathParam(ID_PARAM) id: Int, @Auth user: DexterUser): Response =
+        onExistingTag(id) { dao, kw ->
+            log.warn("deleteTag[${user.name}] tag=$kw")
             dao.delete(kw.id)
             Response.noContent().build()
         }
 
-    private fun <R> onExistingKeyword(keywordId: Int, block: DaoBlock<TagsDao, ResultKeyword, R>): R =
+    private fun <R> onExistingTag(tagId: Int, block: DaoBlock<TagsDao, ResultTag, R>): R =
         jdbi.inTransaction<R, Exception>(REPEATABLE_READ) { handle ->
             handle.attach(TagsDao::class.java).let { dao ->
-                dao.find(keywordId)?.let { keyword ->
-                    diagnoseViolations { block.execute(dao, keyword) }
-                } ?: keywordNotFound(keywordId)
+                dao.find(tagId)?.let { tag ->
+                    diagnoseViolations { block.execute(dao, tag) }
+                } ?: tagNotFound(tagId)
             }
         }
 
-    private fun keywords() = jdbi.onDemand(TagsDao::class.java)
+    private fun tags() = jdbi.onDemand(TagsDao::class.java)
 
-    private fun keywordNotFound(keywordId: Int): Nothing = throw NotFoundException("Keyword not found: $keywordId")
+    private fun tagNotFound(tagId: Int): Nothing = throw NotFoundException("Tag not found: $tagId")
 }

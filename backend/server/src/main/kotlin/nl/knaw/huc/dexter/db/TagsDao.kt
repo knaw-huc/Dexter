@@ -1,27 +1,27 @@
 package nl.knaw.huc.dexter.db
 
-import nl.knaw.huc.dexter.api.FormKeyword
-import nl.knaw.huc.dexter.api.ResultKeyword
+import nl.knaw.huc.dexter.api.FormTag
+import nl.knaw.huc.dexter.api.ResultTag
 import org.jdbi.v3.sqlobject.kotlin.BindKotlin
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
 
 interface TagsDao {
-    @SqlQuery("select * from keywords")
-    fun list(): List<ResultKeyword>
+    @SqlQuery("select * from tags")
+    fun list(): List<ResultTag>
 
-    @SqlQuery("select * from keywords where id = :id")
-    fun find(id: Int): ResultKeyword?
+    @SqlQuery("select * from tags where id = :id")
+    fun find(id: Int): ResultTag?
 
-    @SqlQuery("insert into keywords (val) values (:val) returning *")
-    fun insert(@BindKotlin keyword: FormKeyword): ResultKeyword
+    @SqlQuery("insert into tags (val) values (:val) returning *")
+    fun insert(@BindKotlin tag: FormTag): ResultTag
 
-    @SqlQuery("update keywords set val = :val where id = :id returning *")
-    fun update(id: Int, @BindKotlin keyword: FormKeyword): ResultKeyword
+    @SqlQuery("update tags set val = :val where id = :id returning *")
+    fun update(id: Int, @BindKotlin tag: FormTag): ResultTag
 
-    @SqlUpdate("delete from keywords where id = :id")
+    @SqlUpdate("delete from tags where id = :id")
     fun delete(id: Int)
 
-    @SqlQuery("select * from keywords where lower(val) like lower(:key)")
-    fun like(key: String): List<ResultKeyword>
+    @SqlQuery("select * from tags where lower(val) like lower(:key)")
+    fun like(key: String): List<ResultTag>
 }

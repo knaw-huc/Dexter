@@ -6,7 +6,7 @@ object ResourcePaths {
     const val ABOUT = "about"
     const val ADMIN = "admin"
     const val CORPORA = "corpora"
-    const val KEYWORDS = "keywords"
+    const val TAGS = "tags"
     const val LANGUAGES = "languages"
     const val METADATA = "metadata"
     const val SOURCES = "sources"

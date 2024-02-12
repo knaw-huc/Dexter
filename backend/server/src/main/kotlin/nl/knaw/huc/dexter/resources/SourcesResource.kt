@@ -6,7 +6,7 @@ import io.dropwizard.auth.Auth
 import nl.knaw.huc.dexter.api.*
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PARAM
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PATH
-import nl.knaw.huc.dexter.api.ResourcePaths.KEYWORDS
+import nl.knaw.huc.dexter.api.ResourcePaths.TAGS
 import nl.knaw.huc.dexter.api.ResourcePaths.LANGUAGES
 import nl.knaw.huc.dexter.api.ResourcePaths.METADATA
 import nl.knaw.huc.dexter.api.ResourcePaths.VALUES
@@ -111,43 +111,43 @@ class SourcesResource(private val jdbi: Jdbi) {
     }
 
     @GET
-    @Path("$ID_PATH/$KEYWORDS")
-    fun getKeywords(
+    @Path("$ID_PATH/$TAGS")
+    fun getTags(
         @PathParam(ID_PARAM) id: UUID, @Auth user: DexterUser
     ) = onAccessibleSource(id, user.id) { dao, src ->
-        dao.getKeywords(src.id)
+        dao.getTags(src.id)
     }
 
     @POST
     @Consumes(TEXT_PLAIN)
-    @Path("$ID_PATH/$KEYWORDS")
-    fun addKeyword(
-        @PathParam(ID_PARAM) id: UUID, keywordId: String, @Auth user: DexterUser
-    ): List<ResultKeyword> = onAccessibleSource(id, user.id) { dao, src ->
-        log.info("addKeyword: sourceId=${src.id}, keywordId=$keywordId")
-        dao.addKeyword(src.id, keywordId.toInt())
-        dao.getKeywords(src.id)
+    @Path("$ID_PATH/$TAGS")
+    fun addTag(
+        @PathParam(ID_PARAM) id: UUID, tagId: String, @Auth user: DexterUser
+    ): List<ResultTag> = onAccessibleSource(id, user.id) { dao, src ->
+        log.info("addTag: sourceId=${src.id}, tagId=$tagId")
+        dao.addTag(src.id, tagId.toInt())
+        dao.getTags(src.id)
     }
 
     @POST
     @Consumes(APPLICATION_JSON)
-    @Path("$ID_PATH/$KEYWORDS")
-    fun addKeywords(
-        @PathParam(ID_PARAM) id: UUID, keywordIds: List<Int>, @Auth user: DexterUser
-    ): List<ResultKeyword> = onAccessibleSource(id, user.id) { dao, src ->
-        log.info("addKeywords: sourceId=${src.id}, keywords=$keywordIds")
-        keywordIds.forEach { keywordId -> dao.addKeyword(src.id, keywordId) }
-        dao.getKeywords(src.id)
+    @Path("$ID_PATH/$TAGS")
+    fun addTags(
+        @PathParam(ID_PARAM) id: UUID, tagIds: List<Int>, @Auth user: DexterUser
+    ): List<ResultTag> = onAccessibleSource(id, user.id) { dao, src ->
+        log.info("addTags: sourceId=${src.id}, tags=$tagIds")
+        tagIds.forEach { tagId -> dao.addTag(src.id, tagId) }
+        dao.getTags(src.id)
     }
 
     @DELETE
-    @Path("$ID_PATH/$KEYWORDS/{keywordId}")
-    fun deleteKeyword(
-        @PathParam(ID_PARAM) id: UUID, @PathParam("keywordId") keywordId: Int, @Auth user: DexterUser
-    ): List<ResultKeyword> = onAccessibleSource(id, user.id) { dao, src ->
-        log.info("deleteKeyword: sourceId=${src.id}, keywordId=$keywordId")
-        dao.deleteKeyword(src.id, keywordId)
-        dao.getKeywords(src.id)
+    @Path("$ID_PATH/$TAGS/{tagId}")
+    fun deleteTag(
+        @PathParam(ID_PARAM) id: UUID, @PathParam("tagId") tagId: Int, @Auth user: DexterUser
+    ): List<ResultTag> = onAccessibleSource(id, user.id) { dao, src ->
+        log.info("deleteTag: sourceId=${src.id}, tagId=$tagId")
+        dao.deleteTag(src.id, tagId)
+        dao.getTags(src.id)
     }
 
     @GET

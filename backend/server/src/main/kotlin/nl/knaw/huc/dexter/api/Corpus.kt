@@ -55,7 +55,7 @@ data class ResultCorpusWithResources (
     val updatedAt: LocalDateTime,
 
     val parent: ResultCorpus? = null,
-    val keywords: List<ResultKeyword>,
+    val tags: List<ResultTag>,
     val languages: List<ResultLanguage>,
     val sources: List<ResultSourceWithResources>,
     val metadataValues: List<ResultMetadataValueWithResources>
@@ -63,7 +63,7 @@ data class ResultCorpusWithResources (
 
 fun ResultCorpus.toResultCorpusWithResources(
     parent: ResultCorpus? = null,
-    keywords: List<ResultKeyword>,
+    tags: List<ResultTag>,
     languages: List<ResultLanguage>,
     sources: List<ResultSourceWithResources>,
     metadataValues: List<ResultMetadataValueWithResources>
@@ -83,7 +83,7 @@ fun ResultCorpus.toResultCorpusWithResources(
     updatedAt = updatedAt,
 
     parent = parent,
-    keywords = keywords,
+    tags = tags,
     languages = languages,
     sources = sources,
     metadataValues = metadataValues

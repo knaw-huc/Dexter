@@ -20,7 +20,7 @@ class WithResourcesHelper {
             handle.attach(CorporaDao::class.java).let { corporaDao ->
                 return corpus.toResultCorpusWithResources(
                     if (corpus.parentId != null) corporaDao.find(corpus.parentId) else null,
-                    corporaDao.getKeywords(corpus.id),
+                    corporaDao.getTags(corpus.id),
                     corporaDao.getLanguages(corpus.id),
                     corporaDao.getSources(corpus.id).map { source ->
                         addSourceResources(source, handle)
@@ -36,7 +36,7 @@ class WithResourcesHelper {
         ): ResultSourceWithResources {
             handle.attach(SourcesDao::class.java).let { sourceDao ->
                 return source.toResultSourceWithResources(
-                    sourceDao.getKeywords(source.id),
+                    sourceDao.getTags(source.id),
                     sourceDao.getLanguages(source.id),
                     getSourceMetadataValueWithResources(source.id, handle)
                 )

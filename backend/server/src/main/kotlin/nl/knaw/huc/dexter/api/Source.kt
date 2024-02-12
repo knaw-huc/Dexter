@@ -55,13 +55,13 @@ data class ResultSourceWithResources (
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime,
 
-    val keywords: List<ResultKeyword>,
+    val tags: List<ResultTag>,
     val languages: List<ResultLanguage>,
     val metadataValues: List<ResultMetadataValueWithResources>
 )
 
 fun ResultSource.toResultSourceWithResources(
-    keywords: List<ResultKeyword>,
+    tags: List<ResultTag>,
     languages: List<ResultLanguage>,
     metadataValues: List<ResultMetadataValueWithResources>
 ) = ResultSourceWithResources(
@@ -80,7 +80,7 @@ fun ResultSource.toResultSourceWithResources(
     createdAt = createdAt,
     updatedAt = updatedAt,
 
-    keywords = keywords,
+    tags = tags,
     languages = languages,
     metadataValues = metadataValues
 )

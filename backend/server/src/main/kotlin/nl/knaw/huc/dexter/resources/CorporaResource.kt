@@ -6,7 +6,7 @@ import io.dropwizard.auth.Auth
 import nl.knaw.huc.dexter.api.*
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PARAM
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PATH
-import nl.knaw.huc.dexter.api.ResourcePaths.KEYWORDS
+import nl.knaw.huc.dexter.api.ResourcePaths.TAGS
 import nl.knaw.huc.dexter.api.ResourcePaths.LANGUAGES
 import nl.knaw.huc.dexter.api.ResourcePaths.METADATA
 import nl.knaw.huc.dexter.api.ResourcePaths.SOURCES
@@ -111,42 +111,42 @@ class CorporaResource(private val jdbi: Jdbi) {
         }
 
     @GET
-    @Path("$ID_PATH/$KEYWORDS")
-    fun getKeywords(@PathParam(ID_PARAM) id: UUID, @Auth user: DexterUser) =
+    @Path("$ID_PATH/$TAGS")
+    fun getTags(@PathParam(ID_PARAM) id: UUID, @Auth user: DexterUser) =
         onAccessibleCorpus(id, user.id) { dao, corpus ->
-            dao.getKeywords(corpus.id)
+            dao.getTags(corpus.id)
         }
 
     @POST
     @Consumes(TEXT_PLAIN)
-    @Path("$ID_PATH/$KEYWORDS")
-    fun addKeyword(@PathParam(ID_PARAM) id: UUID, keywordId: String, @Auth user: DexterUser) =
+    @Path("$ID_PATH/$TAGS")
+    fun addTag(@PathParam(ID_PARAM) id: UUID, tagId: String, @Auth user: DexterUser) =
         onAccessibleCorpus(id, user.id) { dao, corpus ->
-            log.info("addKeyword: corpusId=${corpus.id}, keywordId=$keywordId")
-            dao.addKeyword(corpus.id, keywordId.toInt())
-            dao.getKeywords(corpus.id)
+            log.info("addTag: corpusId=${corpus.id}, tagId=$tagId")
+            dao.addTag(corpus.id, tagId.toInt())
+            dao.getTags(corpus.id)
         }
 
     @POST
     @Consumes(APPLICATION_JSON)
-    @Path("$ID_PATH/$KEYWORDS")
-    fun addKeywords(@PathParam(ID_PARAM) id: UUID, keywordIs: List<Int>, @Auth user: DexterUser) =
+    @Path("$ID_PATH/$TAGS")
+    fun addTags(@PathParam(ID_PARAM) id: UUID, tagIs: List<Int>, @Auth user: DexterUser) =
         onAccessibleCorpus(id, user.id) { dao, corpus ->
-            log.info("addKeywords: corpusId=${corpus.id}, keywordIds=$keywordIs")
-            keywordIs.forEach { keywordId -> dao.addKeyword(corpus.id, keywordId) }
-            dao.getKeywords(corpus.id)
+            log.info("addTags: corpusId=${corpus.id}, tagIds=$tagIs")
+            tagIs.forEach { tagId -> dao.addTag(corpus.id, tagId) }
+            dao.getTags(corpus.id)
         }
 
     @DELETE
-    @Path("$ID_PATH/$KEYWORDS/{keywordId}")
-    fun deleteKeyword(
+    @Path("$ID_PATH/$TAGS/{tagId}")
+    fun deleteTag(
         @PathParam(ID_PARAM) id: UUID,
-        @PathParam("keywordId") keywordId: Int,
+        @PathParam("tagId") tagId: Int,
         @Auth user: DexterUser
     ) = onAccessibleCorpus(id, user.id) { dao, corpus ->
-        log.info("deleteKeyword: corpusId=${corpus.id}, keywordId=$keywordId")
-        dao.deleteKeyword(corpus.id, keywordId)
-        dao.getKeywords(corpus.id)
+        log.info("deleteTag: corpusId=${corpus.id}, tagId=$tagId")
+        dao.deleteTag(corpus.id, tagId)
+        dao.getTags(corpus.id)
     }
 
     @GET

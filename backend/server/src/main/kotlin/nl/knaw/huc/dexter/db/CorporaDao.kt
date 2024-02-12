@@ -41,15 +41,15 @@ interface CorporaDao {
     @SqlUpdate("delete from corpora where id = :id")
     fun delete(id: UUID)
 
-    @SqlQuery("select k.* from corpora_keywords ck join keywords k on ck.key_id = k.id where corpus_id = :corpusId")
-    @RegisterKotlinMapper(ResultKeyword::class)
-    fun getKeywords(corpusId: UUID): List<ResultKeyword>
+    @SqlQuery("select k.* from corpora_tags ck join tags k on ck.key_id = k.id where corpus_id = :corpusId")
+    @RegisterKotlinMapper(ResultTag::class)
+    fun getTags(corpusId: UUID): List<ResultTag>
 
-    @SqlUpdate("insert into corpora_keywords (corpus_id,key_id) values (:corpusId,:keywordId) on conflict do nothing")
-    fun addKeyword(corpusId: UUID, keywordId: Int)
+    @SqlUpdate("insert into corpora_tags (corpus_id,key_id) values (:corpusId,:tagId) on conflict do nothing")
+    fun addTag(corpusId: UUID, tagId: Int)
 
-    @SqlUpdate("delete from corpora_keywords where corpus_id = :corpusId and key_id = :keywordId")
-    fun deleteKeyword(corpusId: UUID, keywordId: Int)
+    @SqlUpdate("delete from corpora_tags where corpus_id = :corpusId and key_id = :tagId")
+    fun deleteTag(corpusId: UUID, tagId: Int)
 
     @SqlQuery("select l.* from corpora_languages cl join iso_639_3 l on cl.lang_id = l.id where corpus_id = :corpusId")
     fun getLanguages(corpusId: UUID): List<ResultLanguage>
@@ -67,7 +67,7 @@ interface CorporaDao {
         "select distinct on (s.id) s.* " +
                 "from corpora_sources cs " +
                 "  join sources s on cs.source_id = s.id " +
-                "  join sources_keywords sk on s.id = sk.source_id " +
+                "  join sources_tags sk on s.id = sk.source_id " +
                 "where corpus_id = :corpusId " +
                 "and sk.key_id in (<tags>)"
     )
