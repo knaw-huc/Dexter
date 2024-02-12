@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   Corpus,
-  ResultKeyword,
+  ResultTag,
   ResultLanguage,
   Source,
 } from '../../model/DexterModel';
@@ -47,7 +47,7 @@ export const CorpusPage = () => {
   const [showCorpusForm, setShowCorpusForm] = useState(false);
   const [showSourceForm, setShowSourceForm] = useState(false);
   const [showLinkSourceForm, setShowLinkSourceForm] = useState(false);
-  const [filterKeywords, setFilterKeywords] = useState<ResultKeyword[]>([]);
+  const [filterTags, setFilterTags] = useState<ResultTag[]>([]);
 
   const initResources = async (id: string) => {
     const corpusWithResources = await getCorpusWithResourcesById(id).catch(
@@ -133,11 +133,11 @@ export const CorpusPage = () => {
     if (!corpus?.sources) {
       return [];
     }
-    if (!filterKeywords.length) {
+    if (!filterTags.length) {
       return corpus.sources;
     }
     return corpus.sources.filter(cs =>
-      filterKeywords.every(fk => cs.keywords.find(csk => csk.id === fk.id)),
+      filterTags.every(fk => cs.tags.find(csk => csk.id === fk.id)),
     );
   }
 
@@ -160,10 +160,10 @@ export const CorpusPage = () => {
             {corpus.title || 'Untitled'}
           </h1>
           {corpus.description && <p>{corpus.description}</p>}
-          {!_.isEmpty(corpus.keywords) && (
+          {!_.isEmpty(corpus.tags) && (
             <>
-              <FieldLabel label="Keywords" />
-              <TagList keywords={corpus.keywords} />
+              <FieldLabel label="Tags" />
+              <TagList tags={corpus.tags} />
             </>
           )}
           <ShortFieldsSummary<Corpus>
@@ -202,12 +202,9 @@ export const CorpusPage = () => {
             </Grid>
             <Grid item xs={6} md={8}>
               <TagsFilter
-                all={_.uniqBy(
-                  corpus.sources.map(s => s.keywords).flat(),
-                  'val',
-                )}
-                selected={filterKeywords}
-                onChangeSelected={update => setFilterKeywords(update)}
+                all={_.uniqBy(corpus.sources.map(s => s.tags).flat(), 'val')}
+                selected={filterTags}
+                onChangeSelected={update => setFilterTags(update)}
               />
             </Grid>
           </Grid>

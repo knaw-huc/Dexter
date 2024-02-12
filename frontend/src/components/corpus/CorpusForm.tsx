@@ -134,16 +134,16 @@ export function CorpusForm(props: CorpusFormProps) {
           {renderTextField('latest')}
           {renderTextField('contributor')}
           {renderTextField('notes', { rows: 6, multiline: true })}
-          <Label>Keywords</Label>
+          <Label>Tags</Label>
           <SelectTagField
-            selected={form.keywords}
-            onChangeSelected={keywords => {
-              setForm(f => ({ ...f, keywords }));
+            selected={form.tags}
+            onChangeSelected={tags => {
+              setForm(f => ({ ...f, tags }));
             }}
             useAutocomplete
             allowCreatingNew
           />
-          <ErrorMsg msg={getErrorMessage<Corpus>('keywords', errors)} />
+          <ErrorMsg msg={getErrorMessage<Corpus>('tags', errors)} />
           <Label>Languages</Label>
           <LanguagesField
             selected={form.languages}

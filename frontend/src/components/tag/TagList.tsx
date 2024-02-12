@@ -1,4 +1,4 @@
-import { ResultKeyword } from '../../model/DexterModel';
+import { ResultTag } from '../../model/DexterModel';
 import { Stack } from '@mui/material';
 import { TagChip } from './TagChip';
 import React from 'react';
@@ -6,9 +6,9 @@ import { SxProps } from '@mui/system';
 import { Theme } from '@mui/material/styles/createTheme';
 
 export function TagList(props: {
-  keywords: ResultKeyword[];
+  tags: ResultTag[];
   sx?: SxProps<Theme>;
-  onDelete?: (keyword: ResultKeyword) => void;
+  onDelete?: (tag: ResultTag) => void;
 }) {
   return (
     <Stack
@@ -21,15 +21,15 @@ export function TagList(props: {
         lineHeight: '2em',
       }}
     >
-      {props.keywords?.map((keyword: ResultKeyword, index: number) =>
+      {props.tags?.map((tag: ResultTag, index: number) =>
         props.onDelete ? (
           <TagChip
             key={index}
-            keyword={keyword}
-            onDelete={() => props.onDelete && props.onDelete(keyword)}
+            tag={tag}
+            onDelete={() => props.onDelete && props.onDelete(tag)}
           />
         ) : (
-          <TagChip key={index} keyword={keyword} />
+          <TagChip key={index} tag={tag} />
         ),
       )}
     </Stack>

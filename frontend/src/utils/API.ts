@@ -1,6 +1,6 @@
 import {
   Corpus,
-  FormKeyword,
+  FormTag,
   FormMetadataKey,
   FormMetadataValue,
   ResultImport,
@@ -8,7 +8,7 @@ import {
   ResultMetadataValue,
   FormCorpus,
   FormSource,
-  ResultKeyword,
+  ResultTag,
   ResultLanguage,
   ResultSource,
   Source,
@@ -133,60 +133,58 @@ export const deleteSource = async (id: string): Promise<void> => {
   validateResponse({ response });
 };
 
-export const getKeywords = async () => {
-  return fetchValidated(`/api/keywords`);
+export const getTags = async () => {
+  return fetchValidated(`/api/tags`);
 };
 
-export const createKeyword = async (
-  newKeyword: FormKeyword,
-): Promise<ResultKeyword> => {
-  const response = await fetch('/api/keywords', {
+export const createTag = async (newTag: FormTag): Promise<ResultTag> => {
+  const response = await fetch('/api/tags', {
     method: 'POST',
     headers: headers,
-    body: JSON.stringify(newKeyword),
+    body: JSON.stringify(newTag),
   });
   validateResponse({ response });
   return response.json();
 };
 
-export const addKeywordsToCorpus = async (
+export const addTagsToCorpus = async (
   corpusId: string,
-  keywordId: string[],
-): Promise<ResultKeyword[]> => {
-  const response = await fetch(`/api/corpora/${corpusId}/keywords`, {
+  tagId: string[],
+): Promise<ResultTag[]> => {
+  const response = await fetch(`/api/corpora/${corpusId}/tags`, {
     method: 'POST',
     headers: headers,
-    body: JSON.stringify(keywordId),
+    body: JSON.stringify(tagId),
   });
   validateResponse({ response });
   return response.json();
 };
 
-export const addKeywordsToSource = async (
+export const addTagsToSource = async (
   sourceId: string,
-  keywordId: string[],
-): Promise<ResultKeyword[]> => {
-  const response = await fetch(`/api/sources/${sourceId}/keywords`, {
+  tagId: string[],
+): Promise<ResultTag[]> => {
+  const response = await fetch(`/api/sources/${sourceId}/tags`, {
     method: 'POST',
     headers: headers,
-    body: JSON.stringify(keywordId),
+    body: JSON.stringify(tagId),
   });
   validateResponse({ response });
   return response.json();
 };
 
-export const deleteKeyword = async (id: string): Promise<void> => {
-  const response = await fetch(`/api/keywords/${id}`, {
+export const deleteTag = async (id: string): Promise<void> => {
+  const response = await fetch(`/api/tags/${id}`, {
     method: 'DELETE',
     headers: headers,
   });
   validateResponse({ response });
 };
 
-export const getKeywordsAutocomplete = async (
+export const getTagsAutocomplete = async (
   input: string,
-): Promise<ResultKeyword[]> => {
-  const response = await fetch('/api/keywords/autocomplete', {
+): Promise<ResultTag[]> => {
+  const response = await fetch('/api/tags/autocomplete', {
     method: 'POST',
     headers: headers,
     body: input,
@@ -262,31 +260,25 @@ export const deleteLanguageFromSource = async (
   validateResponse({ response });
 };
 
-export const deleteKeywordFromCorpus = async (
+export const deleteTagFromCorpus = async (
   corpusId: string,
-  keywordId: string,
+  tagId: string,
 ): Promise<void> => {
-  const response = await fetch(
-    `/api/corpora/${corpusId}/keywords/${keywordId}`,
-    {
-      method: 'DELETE',
-      headers: headers,
-    },
-  );
+  const response = await fetch(`/api/corpora/${corpusId}/tags/${tagId}`, {
+    method: 'DELETE',
+    headers: headers,
+  });
   validateResponse({ response });
 };
 
-export const deleteKeywordFromSource = async (
+export const deleteTagFromSource = async (
   sourceId: string,
-  keywordId: string,
+  tagId: string,
 ): Promise<void> => {
-  const response = await fetch(
-    `/api/sources/${sourceId}/keywords/${keywordId}`,
-    {
-      method: 'DELETE',
-      headers: headers,
-    },
-  );
+  const response = await fetch(`/api/sources/${sourceId}/tags/${tagId}`, {
+    method: 'DELETE',
+    headers: headers,
+  });
   validateResponse({ response });
 };
 
@@ -375,12 +367,12 @@ export const deleteMetadataValueFromCorpus = async (
 ): Promise<void> => deleteMetadataValue(metadataValueId);
 
 export async function createMetadataKey(
-  newKeyword: FormMetadataKey,
+  newTag: FormMetadataKey,
 ): Promise<ResultMetadataKey> {
   const response = await fetch('/api/metadata/keys', {
     method: 'POST',
     headers: headers,
-    body: JSON.stringify(newKeyword),
+    body: JSON.stringify(newTag),
   });
   validateResponse({ response });
   return response.json();
@@ -388,12 +380,12 @@ export async function createMetadataKey(
 
 export async function updateMetadataKey(
   id: UUID,
-  newKeyword: FormMetadataKey,
+  newTag: FormMetadataKey,
 ): Promise<ResultMetadataKey> {
   const response = await fetch(`/api/metadata/keys/${id}`, {
     method: 'PUT',
     headers: headers,
-    body: JSON.stringify(newKeyword),
+    body: JSON.stringify(newTag),
   });
   validateResponse({ response });
   return response.json();

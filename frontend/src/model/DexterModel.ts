@@ -35,7 +35,7 @@ export type ResultCorpus = FormCorpus & {
  */
 export type Corpus = Omit<ResultCorpus, 'parentId'> & {
   parent?: ResultCorpus;
-  keywords: ResultKeyword[];
+  tags: ResultTag[];
   languages: ResultLanguage[];
   sources: Source[];
   metadataValues: MetadataValue[];
@@ -73,7 +73,7 @@ export type ResultSource = FormSource & {
  * Source including all child resources
  */
 export type Source = ResultSource & {
-  keywords: ResultKeyword[];
+  tags: ResultTag[];
   languages: ResultLanguage[];
   metadataValues: MetadataValue[];
 };
@@ -83,7 +83,7 @@ export type Source = ResultSource & {
  */
 export type SourceFormSubmit = Omit<Source, 'id'>;
 
-export interface ResultKeyword {
+export interface ResultTag {
   id: string;
   val: string;
 }
@@ -100,7 +100,7 @@ export type WithMetadata = {
   metadataValues: MetadataValue[];
 };
 
-export type FormKeyword = {
+export type FormTag = {
   val: string;
 };
 

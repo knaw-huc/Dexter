@@ -33,8 +33,8 @@ export const LanguagesField = (props: LanguagesFieldProps) => {
     setLoading(false);
     return result;
   };
-  const handleDeleteLanguage = (keyword: ResultLanguage) => {
-    const newSelected = props.selected.filter(l => l.id !== keyword.id);
+  const handleDeleteLanguage = (tag: ResultLanguage) => {
+    const newSelected = props.selected.filter(l => l.id !== tag.id);
     props.onChangeSelected(newSelected);
   };
 

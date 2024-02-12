@@ -1,24 +1,24 @@
 import TextField from '@mui/material/TextField';
 import React, { useContext, useState } from 'react';
-import { ResultKeyword } from '../../model/DexterModel';
-import { createKeyword, getKeywords } from '../../utils/API';
+import { ResultTag } from '../../model/DexterModel';
+import { createTag, getTags } from '../../utils/API';
 import { errorContext } from '../../state/error/errorContext';
 import { Button, Grid } from '@mui/material';
 
-type NewKeywordsProps = {
-  setKeywords: React.Dispatch<React.SetStateAction<ResultKeyword[]>>;
+type NewTagsProps = {
+  setTags: React.Dispatch<React.SetStateAction<ResultTag[]>>;
 };
 
-export function TagForm(props: NewKeywordsProps) {
+export function TagForm(props: NewTagsProps) {
   const { dispatchError } = useContext(errorContext);
-  const [keyword, setKeyword] = useState('');
+  const [tag, setTag] = useState('');
 
-  async function handleCreateKeyword() {
+  async function handleCreateTag() {
     try {
-      await createKeyword({ val: keyword });
-      const all = await getKeywords();
-      props.setKeywords(all);
-      setKeyword('');
+      await createTag({ val: tag });
+      const all = await getTags();
+      props.setTags(all);
+      setTag('');
     } catch (error) {
       dispatchError(error);
     }
@@ -26,26 +26,26 @@ export function TagForm(props: NewKeywordsProps) {
 
   return (
     <div>
-      <h1>Keywords</h1>
+      <h1>Tags</h1>
       <Grid container>
         <Grid item>
           <TextField
             variant="outlined"
-            placeholder="Add keyword..."
-            value={keyword}
+            placeholder="Add tag..."
+            value={tag}
             onKeyDown={e => {
               if (e.key === 'Enter') {
                 e.preventDefault();
-                handleCreateKeyword();
+                handleCreateTag();
               }
             }}
-            onChange={e => setKeyword(e.currentTarget.value)}
+            onChange={e => setTag(e.currentTarget.value)}
             autoFocus
           />
         </Grid>
         <Grid item alignItems="stretch" style={{ display: 'flex' }}>
           <Button
-            onClick={handleCreateKeyword}
+            onClick={handleCreateTag}
             sx={{ ml: '0.5em' }}
             variant="contained"
           >

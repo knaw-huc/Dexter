@@ -28,7 +28,7 @@ const defaults: Source = {
   earliest: undefined,
   latest: undefined,
   notes: undefined,
-  keywords: [],
+  tags: [],
   languages: [],
   metadataValues: [],
 

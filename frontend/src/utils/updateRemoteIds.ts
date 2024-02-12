@@ -1,14 +1,14 @@
 import { UUID } from '../model/DexterModel';
 import {
-  addKeywordsToCorpus,
-  addKeywordsToSource,
+  addTagsToCorpus,
+  addTagsToSource,
   addLanguagesToCorpus,
   addLanguagesToSource,
   addMetadataValueToCorpus,
   addMetadataValueToSource,
   addSourcesToCorpus,
-  deleteKeywordFromCorpus,
-  deleteKeywordFromSource,
+  deleteTagFromCorpus,
+  deleteTagFromSource,
   deleteLanguageFromCorpus,
   deleteLanguageFromSource,
   deleteMetadataValueFromCorpus,
@@ -34,8 +34,8 @@ export function updateLinkedResourcesWith<T extends WithId>(
 ): UpdateLinkedResources<T> {
   return async function (parentId: UUID, linkedResources: T[]) {
     const idsToUpdate = linkedResources.map(r => r.id);
-    const responseKeywords = await addIdToParent(parentId, idsToUpdate);
-    const keysToDelete: string[] = responseKeywords
+    const responseTags = await addIdToParent(parentId, idsToUpdate);
+    const keysToDelete: string[] = responseTags
       .map(r => r.id)
       .filter(r => !idsToUpdate.includes(r));
     for (const keyToDelete of keysToDelete) {
@@ -59,9 +59,9 @@ export const updateCorpusLanguages = updateLinkedResourcesWith(
   deleteLanguageFromCorpus,
 );
 
-export const updateCorpusKeywords = updateLinkedResourcesWith(
-  addKeywordsToCorpus,
-  deleteKeywordFromCorpus,
+export const updateCorpusTags = updateLinkedResourcesWith(
+  addTagsToCorpus,
+  deleteTagFromCorpus,
 );
 
 export const updateSourceMetadataValues = updateLinkedResourcesWith(
@@ -74,7 +74,7 @@ export const updateSourceLanguages = updateLinkedResourcesWith(
   deleteLanguageFromSource,
 );
 
-export const updateSourceKeywords = updateLinkedResourcesWith(
-  addKeywordsToSource,
-  deleteKeywordFromSource,
+export const updateSourceTags = updateLinkedResourcesWith(
+  addTagsToSource,
+  deleteTagFromSource,
 );

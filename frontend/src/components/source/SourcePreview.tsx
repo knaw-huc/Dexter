@@ -47,7 +47,7 @@ export const SourcePreview = (props: SourceItemDropdownProps) => {
             <PClamped>{props.source.description}</PClamped>
           </Grid>
           <Grid item>
-            <TagList keywords={props.source.keywords} />
+            <TagList tags={props.source.tags} />
           </Grid>
         </Grid>
       </CardContent>

@@ -23,7 +23,7 @@ export function App() {
             <Route path="/corpora/:corpusId" element={<CorpusPage />} />
             <Route path="/sources" element={<SourceIndex />} />
             <Route path="/sources/:sourceId" element={<SourcePage />} />
-            <Route path="/keywords" element={<TagsPage />} />
+            <Route path="/tags" element={<TagsPage />} />
             <Route path="/metadata" element={<MetadataKeyIndex />} />
             <Route
               path="*"

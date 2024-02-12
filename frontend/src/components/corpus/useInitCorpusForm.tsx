@@ -30,7 +30,7 @@ const defaults: Corpus = {
   latest: undefined,
   contributor: undefined,
   notes: undefined,
-  keywords: [],
+  tags: [],
   languages: [],
   sources: [],
   metadataValues: [],

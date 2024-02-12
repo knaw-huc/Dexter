@@ -13,7 +13,7 @@ import {
 import { createCorpus, updateCorpus } from '../../utils/API';
 import { submitMetadataValues } from '../../utils/submitMetadataValues';
 import {
-  updateCorpusKeywords,
+  updateCorpusTags,
   updateCorpusLanguages,
   updateCorpusMetadataValues,
   updateSources,
@@ -88,7 +88,7 @@ export function useSubmitCorpusForm(
   async function submitLinkedResources(id: string, data: CorpusFormSubmit) {
     const metadataValues = data.metadataValues.map(toResultMetadataValue);
     await updateCorpusMetadataValues(id, metadataValues);
-    await updateCorpusKeywords(id, data.keywords);
+    await updateCorpusTags(id, data.tags);
     await updateCorpusLanguages(id, data.languages);
     await updateSources(id, data.sources);
   }

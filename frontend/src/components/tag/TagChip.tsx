@@ -1,14 +1,11 @@
-import { ResultKeyword } from '../../model/DexterModel';
+import { ResultTag } from '../../model/DexterModel';
 import Chip from '@mui/material/Chip';
 import React from 'react';
 
-export function TagChip(props: {
-  keyword: ResultKeyword;
-  onDelete?: () => void;
-}) {
+export function TagChip(props: { tag: ResultTag; onDelete?: () => void }) {
   return (
     <Chip
-      label={props.keyword.val}
+      label={props.tag.val}
       variant="outlined"
       onDelete={props.onDelete}
       sx={{

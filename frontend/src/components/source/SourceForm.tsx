@@ -135,14 +135,14 @@ export function SourceForm(props: SourceFormProps) {
         {renderFormField('latest')}
         {renderFormField('notes')}
 
-        <Label>Keywords</Label>
+        <Label>Tags</Label>
         <SelectTagField
-          selected={form.keywords}
-          onChangeSelected={keywords => setForm(f => ({ ...f, keywords }))}
+          selected={form.tags}
+          onChangeSelected={tags => setForm(f => ({ ...f, tags }))}
           useAutocomplete
           allowCreatingNew
         />
-        <ErrorMsg msg={getErrorMessage<Source>('keywords', errors)} />
+        <ErrorMsg msg={getErrorMessage<Source>('tags', errors)} />
 
         <Label>Languages</Label>
         <LanguagesField

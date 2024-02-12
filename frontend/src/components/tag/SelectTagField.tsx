@@ -2,19 +2,19 @@ import { Autocomplete, Chip, TextField, TextFieldProps } from '@mui/material';
 import match from 'autosuggest-highlight/match';
 import parse from 'autosuggest-highlight/parse';
 import React, { useState } from 'react';
-import { ResultKeyword } from '../../model/DexterModel';
+import { ResultTag } from '../../model/DexterModel';
 import { useDebounce } from '../../utils/useDebounce';
-import { createKeyword, getKeywordsAutocomplete } from '../../utils/API';
+import { createTag, getTagsAutocomplete } from '../../utils/API';
 import _ from 'lodash';
 
 interface TagsFieldProps {
-  selected: ResultKeyword[];
-  onChangeSelected: (selected: ResultKeyword[]) => void;
+  selected: ResultTag[];
+  onChangeSelected: (selected: ResultTag[]) => void;
 
   /**
    * Options to select from
    */
-  options?: ResultKeyword[];
+  options?: ResultTag[];
 
   /**
    * Should additional options be fetched from autocomplete endpoint?
@@ -22,7 +22,7 @@ interface TagsFieldProps {
   useAutocomplete?: boolean;
 
   /**
-   * Should option be shown to create new keyword when not existing?
+   * Should option be shown to create new tag when not existing?
    */
   allowCreatingNew?: boolean;
 
@@ -30,10 +30,10 @@ interface TagsFieldProps {
 }
 
 const MIN_AUTOCOMPLETE_LENGTH = 1;
-const CREATE_NEW_KEYWORD = 'create-new-keyword';
+const CREATE_NEW_TAG = 'create-new-tag';
 
 /**
- * Create, link and unlink keywords
+ * Create, link and unlink tags
  */
 export const SelectTagField = (props: TagsFieldProps) => {
   const [inputValue, setInputValue] = React.useState('');
@@ -50,8 +50,8 @@ export const SelectTagField = (props: TagsFieldProps) => {
     const inputIsOption = options.find(o => o.val === inputValue);
     if (props.allowCreatingNew && !inputIsOption) {
       const createCurrentValue = {
-        id: CREATE_NEW_KEYWORD,
-        val: `Create new keyword: ${inputValue}`,
+        id: CREATE_NEW_TAG,
+        val: `Create new tag: ${inputValue}`,
       };
       options.push(createCurrentValue);
     }
@@ -59,8 +59,8 @@ export const SelectTagField = (props: TagsFieldProps) => {
     return uniqueOptions.sort(sortAlphanumeric);
   }
 
-  const handleDeleteKeyword = (keyword: ResultKeyword) => {
-    const newSelected = props.selected.filter(k => k.id !== keyword.id);
+  const handleDeleteTag = (tag: ResultTag) => {
+    const newSelected = props.selected.filter(k => k.id !== tag.id);
     props.onChangeSelected(newSelected);
   };
 
@@ -72,7 +72,7 @@ export const SelectTagField = (props: TagsFieldProps) => {
       return;
     }
     setLoading(true);
-    getKeywordsAutocomplete(debouncedInput).then(k => {
+    getTagsAutocomplete(debouncedInput).then(k => {
       setAutocomplete(k);
       setLoading(false);
     });
@@ -82,19 +82,17 @@ export const SelectTagField = (props: TagsFieldProps) => {
     return (
       <TextField
         {...params}
-        placeholder="Filter by keywords"
+        placeholder="Filter by tags"
         value={inputValue}
         size={props.size ? props.size : 'medium'}
       />
     );
   }
 
-  async function handleChangeSelected(data: ResultKeyword[]) {
-    const selectedIsNewKeyword = data.findIndex(
-      k => k.id === CREATE_NEW_KEYWORD,
-    );
-    if (selectedIsNewKeyword !== -1) {
-      data[selectedIsNewKeyword] = await createKeyword({ val: inputValue });
+  async function handleChangeSelected(data: ResultTag[]) {
+    const selectedIsNewTag = data.findIndex(k => k.id === CREATE_NEW_TAG);
+    if (selectedIsNewTag !== -1) {
+      data[selectedIsNewTag] = await createTag({ val: inputValue });
     }
     props.onChangeSelected(data);
   }
@@ -108,27 +106,27 @@ export const SelectTagField = (props: TagsFieldProps) => {
       }}
       multiple={true}
       loading={loading}
-      id="keywords-autocomplete"
+      id="tags-autocomplete"
       options={getOptions()}
-      getOptionLabel={(keyword: ResultKeyword) => keyword.val}
+      getOptionLabel={(tag: ResultTag) => tag.val}
       isOptionEqualToValue={(option, value) => option.val === value.val}
       value={props.selected}
       renderInput={renderInputField}
       forcePopupIcon={false}
       renderTags={(tagValue, getTagProps) =>
-        tagValue.map((keyword, index) => (
+        tagValue.map((tag, index) => (
           <Chip
             key={index}
-            label={keyword.val}
+            label={tag.val}
             {...getTagProps({ index })}
             onDelete={() => {
-              handleDeleteKeyword(keyword);
+              handleDeleteTag(tag);
             }}
             size={props.size ? props.size : 'medium'}
           />
         ))
       }
-      onChange={(_, data) => handleChangeSelected(data as ResultKeyword[])}
+      onChange={(_, data) => handleChangeSelected(data as ResultTag[])}
       renderOption={(props, option, { inputValue }) => {
         const matches = match(option.val, inputValue, {
           insideWords: true,
@@ -156,6 +154,6 @@ export const SelectTagField = (props: TagsFieldProps) => {
   );
 };
 
-function sortAlphanumeric(s1: ResultKeyword, s2: ResultKeyword) {
+function sortAlphanumeric(s1: ResultTag, s2: ResultTag) {
   return s1.val > s2.val ? 1 : -1;
 }

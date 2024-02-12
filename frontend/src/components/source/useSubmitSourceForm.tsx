@@ -16,7 +16,7 @@ import {
 } from '../../utils/API';
 import { submitMetadataValues } from '../../utils/submitMetadataValues';
 import {
-  updateSourceKeywords,
+  updateSourceTags,
   updateSourceLanguages,
   updateSourceMetadataValues,
 } from '../../utils/updateRemoteIds';
@@ -73,7 +73,7 @@ export function useSubmitSourceForm(
   async function submitLinkedResources(id: UUID, data: SourceFormSubmit) {
     const metadataValues = data.metadataValues.map(toResultMetadataValue);
     await updateSourceMetadataValues(id, metadataValues);
-    await updateSourceKeywords(id, data.keywords);
+    await updateSourceTags(id, data.tags);
     await updateSourceLanguages(id, data.languages);
   }
 
