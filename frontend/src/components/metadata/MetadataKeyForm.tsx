@@ -87,7 +87,6 @@ export function MetadataKeyForm(props: MetadataKeyFormProps) {
           {props.inEdit ? 'Edit metadata field' : 'Create new metadata field'}
         </h1>
         <form onSubmit={onSubmit(handleSubmit)}>
-          <input type="submit" />
           <FormErrorMessage error={errors.generic} />
 
           <Label>Metadata field</Label>

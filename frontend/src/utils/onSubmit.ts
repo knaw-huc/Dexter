@@ -1,7 +1,8 @@
 import React from 'react';
 
 /**
- * Prevent 'server submitting' the form on enter
+ * Trigger submit handler on enter,
+ * prevent submitting to server
  */
 export function onSubmit(handleSubmit: () => Promise<void>) {
   return function (event: React.FormEvent<HTMLFormElement | HTMLInputElement>) {

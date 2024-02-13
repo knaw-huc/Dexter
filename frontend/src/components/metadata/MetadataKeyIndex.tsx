@@ -35,6 +35,11 @@ export function MetadataKeyIndex() {
     setFormOpen(false);
   }
 
+  function handleClose() {
+    setToEdit(null);
+    setFormOpen(false);
+  }
+
   return (
     <>
       <div>
@@ -64,7 +69,7 @@ export function MetadataKeyIndex() {
         <MetadataKeyForm
           inEdit={toEdit}
           onSaved={handleSavedKey}
-          onClose={() => setFormOpen(false)}
+          onClose={handleClose}
         />
       )}
     </>
