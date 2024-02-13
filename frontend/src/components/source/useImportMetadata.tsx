@@ -53,13 +53,9 @@ export function useImportMetadata(
     }
 
     const update: Source = { ...form };
-    Object.keys(update).forEach((key: keyof Source) => {
-      if (tmsImport.imported[key]) {
-        if (typeof update[key] === 'string') {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (update as any)[key] = tmsImport.imported[key];
-        }
-      }
+    Object.keys(tmsImport.imported).forEach((key: keyof Source) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (update as any)[key] = tmsImport.imported[key];
     });
 
     setImportLoading(false);

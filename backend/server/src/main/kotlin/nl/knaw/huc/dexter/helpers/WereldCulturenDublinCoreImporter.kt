@@ -44,11 +44,11 @@ class WereldCulturenDublinCoreImporter() {
             ),
             Tms2Dexter(
                 "earliest",
-                "//crm:P108i_was_produced_by//crm:E12_Production//crm:P4_has_time-span//crm:P82a_begin_of_the_begin//text()"
+                "//crm:P4_has_time-span//crm:P82a_begin_of_the_begin//text()"
             ),
             Tms2Dexter(
                 "latest",
-                "//crm:P108i_was_produced_by//crm:E12_Production//crm:P4_has_time-span//crm:P82b_end_of_the_end//text()"
+                "//crm:P4_has_time-span//crm:P82b_end_of_the_end//text()"
             )
         )
     }
