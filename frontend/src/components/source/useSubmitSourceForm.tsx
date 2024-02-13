@@ -58,7 +58,7 @@ export function useSubmitSourceForm(
         values,
       );
       await submitLinkedResources(id, data);
-      onSubmitted({ id, ...data });
+      onSubmitted({ ...data, id });
     } catch (error) {
       await setFormErrors(error, setErrors);
     }

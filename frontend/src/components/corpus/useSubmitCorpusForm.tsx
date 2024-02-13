@@ -57,7 +57,7 @@ export function useSubmitCorpusForm(
         values,
       );
       await submitLinkedResources(id, data);
-      onSubmitted({ id, ...data });
+      onSubmitted({ ...data, id });
     } catch (e) {
       await setFormErrors(e, setErrors);
     }
