@@ -8,10 +8,10 @@ import {
 } from '../../model/DexterModel';
 import { SelectTagField } from '../tag/SelectTagField';
 import { LanguagesField } from '../language/LanguagesField';
-import { ParentCorpusField } from './ParentCorpusField';
+import { SelectParentCorpusField } from './SelectParentCorpusField';
 import ScrollableModal from '../common/ScrollableModal';
 import { ValidatedSelectField } from '../common/ValidatedSelectField';
-import { LinkSourceField } from './LinkSourceField';
+import { SelectSourcesField } from './SelectSourcesField';
 import {
   FormErrorMessage,
   FormErrors,
@@ -160,7 +160,7 @@ export function CorpusForm(props: CorpusFormProps) {
           <ErrorMessage error={errors.languages} />
 
           <Label>Add sources to corpus</Label>
-          <LinkSourceField
+          <SelectSourcesField
             options={props.sourceOptions}
             selected={form.sources}
             onLinkSource={handleLinkSource}
@@ -169,7 +169,7 @@ export function CorpusForm(props: CorpusFormProps) {
           <ErrorMessage error={errors.sources} />
 
           <Label>Add to main corpus</Label>
-          <ParentCorpusField
+          <SelectParentCorpusField
             selected={form.parent}
             options={props.parentOptions}
             onSelectParentCorpus={handleSelectParentCorpus}

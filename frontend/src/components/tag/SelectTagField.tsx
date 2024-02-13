@@ -101,7 +101,7 @@ export const SelectTagField = (props: TagsFieldProps) => {
     <Autocomplete
       inputValue={inputValue}
       open={debouncedInput.length >= MIN_AUTOCOMPLETE_LENGTH}
-      onInputChange={async (event, value) => {
+      onInputChange={async (_, value) => {
         setInputValue(value);
       }}
       multiple={true}

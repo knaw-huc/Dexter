@@ -7,14 +7,14 @@ import match from 'autosuggest-highlight/match';
 import parse from 'autosuggest-highlight/parse';
 import { normalizeInput } from '../../utils/normalizeInput';
 
-export type LinkSourceFieldProps = {
+export type SelectSourcesFieldProps = {
   options: ResultSource[];
   selected: ResultSource[];
   onLinkSource: (sourceId: string) => void;
   onUnlinkSource: (sourceId: string) => void;
 };
 
-export function LinkSourceField(props: LinkSourceFieldProps) {
+export function SelectSourcesField(props: SelectSourcesFieldProps) {
   const [inputValue, setInputValue] = useState<string>('');
   const normalizedInput = normalizeInput(inputValue);
 

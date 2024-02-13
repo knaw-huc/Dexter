@@ -21,8 +21,8 @@ import { SourcePreview } from '../source/SourcePreview';
 import { SourceForm } from '../source/SourceForm';
 import { EditButton } from '../common/EditButton';
 import { AddNewResourceButton } from '../source/AddNewResourceButton';
-import { LinkSourceButton } from '../source/LinkSourceButton';
-import { LinkSourceForm } from './LinkSourceForm';
+import { SelectSourceButton } from '../source/SelectSourceButton';
+import { SelectSourcesForm } from './SelectSourcesForm';
 import _ from 'lodash';
 import { Grid } from '@mui/material';
 import { TagList } from '../tag/TagList';
@@ -199,7 +199,7 @@ export const CorpusPage = () => {
                 title="New source"
                 onClick={() => setShowSourceForm(true)}
               />
-              <LinkSourceButton onClick={() => setShowLinkSourceForm(true)} />
+              <SelectSourceButton onClick={() => setShowLinkSourceForm(true)} />
             </Grid>
             <Grid item xs={6} md={8}>
               <TagsFilter
@@ -228,7 +228,7 @@ export const CorpusPage = () => {
           )}
 
           {showLinkSourceForm && (
-            <LinkSourceForm
+            <SelectSourcesForm
               options={sourceOptions}
               selected={corpus.sources}
               onLinkSource={sourceId => handleLinkSource(corpusId, sourceId)}

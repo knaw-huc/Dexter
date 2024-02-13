@@ -2,7 +2,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import match from 'autosuggest-highlight/match';
 import parse from 'autosuggest-highlight/parse';
-import React from 'react';
+import React, { useState } from 'react';
 import { ResultCorpus, ResultSource } from '../../model/DexterModel';
 
 interface SubCorpusFieldProps {
@@ -12,30 +12,20 @@ interface SubCorpusFieldProps {
   onDeleteParentCorpus: () => void;
 }
 
-export const ParentCorpusField = (props: SubCorpusFieldProps) => {
-  const [inputValue, setInputValue] = React.useState('');
+export const SelectParentCorpusField = (props: SubCorpusFieldProps) => {
+  const [inputValue, setInputValue] = useState('');
 
   return (
     <Autocomplete
       inputValue={inputValue}
-      onInputChange={async (event, value) => {
+      renderInput={params => (
+        <TextField {...params} margin="dense" value={inputValue} />
+      )}
+      onInputChange={async (_, value) => {
         setInputValue(value);
       }}
       multiple={false}
-      id="parent-corpus-autocomplete"
-      options={props.options}
-      getOptionLabel={(corpus: ResultCorpus) => corpus.title}
-      filterOptions={x => x}
-      isOptionEqualToValue={(option, value) => option.title === value?.title}
-      value={props.selected}
-      renderInput={params => (
-        <TextField
-          {...params}
-          margin="dense"
-          label="Select main corpus"
-          value={inputValue}
-        />
-      )}
+      value={props.selected ?? null}
       onChange={(_, selected) => {
         const selectedCorpus = selected as ResultSource;
         if (selectedCorpus?.id) {
@@ -44,6 +34,10 @@ export const ParentCorpusField = (props: SubCorpusFieldProps) => {
           props.onDeleteParentCorpus();
         }
       }}
+      options={props.options}
+      getOptionLabel={(corpus: ResultCorpus) => corpus.title}
+      filterOptions={x => x}
+      isOptionEqualToValue={(option, value) => option.title === value?.title}
       renderOption={(props, option, { inputValue }) => {
         const matches = match(option.title, inputValue, {
           insideWords: true,
