@@ -19,10 +19,11 @@ import javax.ws.rs.core.MediaType.TEXT_PLAIN
 private const val ISO_639_URL = "https://iso639-3.sil.org/code_tables/download_tables"
 
 private const val LANGUAGE_SEED_DESCRIPTION = "You can seed the languages table with the ISO 639-3 Code Set (UTF-8), " +
-        "a tab separated file that you can download (zipped) at $ISO_639_URL."
+        "a tab separated file that you can download (zipped) at $ISO_639_URL. " +
+        "E.g: curl --upload-file iso-639-3.tab <base_uri>/languages"
 
 @Path(LANGUAGES)
-@RolesAllowed(RoleNames.USER)
+@RolesAllowed(RoleNames.ROOT)
 @Produces(APPLICATION_JSON)
 class LanguagesResource(private val jdbi: Jdbi) {
     private val log = LoggerFactory.getLogger(javaClass)
