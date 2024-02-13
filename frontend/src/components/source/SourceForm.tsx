@@ -31,7 +31,7 @@ import { onSubmit } from '../../utils/onSubmit';
 type SourceFormProps = {
   sourceToEdit?: Source;
   corpusId?: string;
-  onSave: (data: Source) => void;
+  onSaved: (data: Source) => void;
   onClose: () => void;
 };
 
@@ -53,7 +53,7 @@ export function SourceForm(props: SourceFormProps) {
   const { submitSourceForm } = useSubmitSourceForm({
     sourceToEdit,
     setErrors,
-    onSubmitted: props.onSave,
+    onSubmitted: props.onSaved,
   });
   const { isImportLoading, loadImport } = useImportMetadata({ setErrors });
 

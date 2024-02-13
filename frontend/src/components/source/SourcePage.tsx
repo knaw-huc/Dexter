@@ -36,7 +36,7 @@ export const SourcePage = () => {
   const [source, setSource] = React.useState<Source>(null);
   const [showForm, setShowForm] = React.useState(false);
 
-  const handleSaveForm = (update: Source) => {
+  const handleSavedForm = (update: Source) => {
     setSource(update);
     setShowForm(false);
   };
@@ -137,7 +137,7 @@ export const SourcePage = () => {
       {showForm && (
         <SourceForm
           sourceToEdit={source}
-          onSave={handleSaveForm}
+          onSaved={handleSavedForm}
           onClose={() => {
             setShowForm(false);
           }}

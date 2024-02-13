@@ -33,7 +33,7 @@ type CorpusFormProps = {
   corpusToEdit?: Corpus;
   parentOptions: Corpus[];
   sourceOptions: Source[];
-  onSave: (edited: Corpus) => void;
+  onSaved: (edited: Corpus) => void;
   onClose: () => void;
 };
 
@@ -55,7 +55,7 @@ export function CorpusForm(props: CorpusFormProps) {
   const { submitCorpusForm } = useSubmitCorpusForm({
     corpusToEdit,
     setErrors,
-    onSubmitted: props.onSave,
+    onSubmitted: props.onSaved,
   });
 
   useEffect(init, []);

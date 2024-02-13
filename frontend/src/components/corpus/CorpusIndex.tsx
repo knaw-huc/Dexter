@@ -62,7 +62,7 @@ export function CorpusIndex() {
         <CorpusForm
           parentOptions={corpora}
           sourceOptions={sourceOptions}
-          onSave={handleSave}
+          onSaved={handleSave}
           onClose={() => setShowForm(false)}
         />
       )}

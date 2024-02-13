@@ -70,7 +70,7 @@ export const CorpusPage = () => {
     initResources(corpusId);
   }, [corpusId]);
 
-  const handleSaveCorpus = (corpus: Corpus) => {
+  const handleSavedCorpus = (corpus: Corpus) => {
     setCorpus(corpus);
     setShowCorpusForm(false);
   };
@@ -246,14 +246,14 @@ export const CorpusPage = () => {
           parentOptions={parentOptions}
           sourceOptions={sourceOptions}
           onClose={() => setShowCorpusForm(false)}
-          onSave={handleSaveCorpus}
+          onSaved={handleSavedCorpus}
         />
       )}
       {showSourceForm && (
         <SourceForm
           corpusId={corpusId}
           onClose={() => setShowSourceForm(false)}
-          onSave={handleSaveSource}
+          onSaved={handleSaveSource}
         />
       )}
     </div>

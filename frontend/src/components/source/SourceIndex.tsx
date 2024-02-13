@@ -77,7 +77,7 @@ export function SourceIndex() {
       {showForm && (
         <SourceForm
           onClose={handleCloseSource}
-          onSave={handleSaveSource}
+          onSaved={handleSaveSource}
           sourceToEdit={sourceToEdit}
         />
       )}
