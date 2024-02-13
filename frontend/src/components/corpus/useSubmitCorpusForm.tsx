@@ -18,7 +18,7 @@ import {
   updateCorpusTags,
   updateSources,
 } from '../../utils/updateRemoteIds';
-import * as yup from 'yup';
+import { corpusFormValidator } from './corpusFormValidator';
 
 type UseSubmitCorpusFormResult = {
   submitCorpusForm: (
@@ -35,12 +35,6 @@ type UseSubmitCorpusFormParams = {
   corpusId?: UUID;
 };
 
-const corpusSchema = yup.object({
-  title: yup.string().required('Title is required'),
-  earliest: yup.date().nullable(),
-  latest: yup.date().nullable(),
-});
-
 export function useSubmitCorpusForm(
   params: UseSubmitCorpusFormParams,
 ): UseSubmitCorpusFormResult {
@@ -52,7 +46,7 @@ export function useSubmitCorpusForm(
     values: ResultMetadataValue[],
   ): Promise<void> {
     try {
-      await corpusSchema.validate(data);
+      await corpusFormValidator.validate(data);
       const serverForm = toServerForm(data);
       const id = corpusToEdit
         ? await updateExistingCorpus(serverForm)

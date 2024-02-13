@@ -20,7 +20,7 @@ import {
   updateSourceMetadataValues,
   updateSourceTags,
 } from '../../utils/updateRemoteIds';
-import * as yup from 'yup';
+import { sourceFormValidator } from './sourceFormValidator';
 
 type UseSubmitSourceFormResult = {
   submitSourceForm: (
@@ -37,12 +37,6 @@ type UseSubmitSourceFormParams = {
   corpusId?: UUID;
 };
 
-const sourceSchema = yup.object({
-  title: yup.string().required('Title is required'),
-  earliest: yup.date().nullable(),
-  latest: yup.date().nullable(),
-});
-
 export function useSubmitSourceForm(
   params: UseSubmitSourceFormParams,
 ): UseSubmitSourceFormResult {
@@ -54,7 +48,7 @@ export function useSubmitSourceForm(
     values: ResultMetadataValue[],
   ): Promise<void> {
     try {
-      await sourceSchema.validate(data);
+      await sourceFormValidator.validate(data);
       const id: UUID = sourceToEdit
         ? await updateExistingSource(data)
         : await createNewSource(data);
