@@ -35,8 +35,8 @@ export function ImportField(props: ImportFieldProps) {
             {...textFieldProps}
             error={!!error}
             fullWidth
-            value={value}
-            onChange={e => onChange(e.target.value)}
+            value={value ?? ''}
+            onChange={e => onChange(e.target.value || undefined)}
           />
         }
         button={
