@@ -23,7 +23,7 @@ private const val LANGUAGE_SEED_DESCRIPTION = "You can seed the languages table 
         "E.g: curl --upload-file iso-639-3.tab <base_uri>/languages"
 
 @Path(LANGUAGES)
-@RolesAllowed(RoleNames.ROOT)
+@RolesAllowed(RoleNames.USER)
 @Produces(APPLICATION_JSON)
 class LanguagesResource(private val jdbi: Jdbi) {
     private val log = LoggerFactory.getLogger(javaClass)
@@ -40,6 +40,7 @@ class LanguagesResource(private val jdbi: Jdbi) {
 
     @PUT
     @Operation(description = LANGUAGE_SEED_DESCRIPTION)
+    @RolesAllowed(RoleNames.ROOT)
     @Consumes(TEXT_PLAIN)
     fun seed(@NotNull contents: String) =
         contents
