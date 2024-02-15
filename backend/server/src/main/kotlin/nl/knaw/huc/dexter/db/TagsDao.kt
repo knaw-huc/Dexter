@@ -5,6 +5,7 @@ import nl.knaw.huc.dexter.api.ResultTag
 import org.jdbi.v3.sqlobject.kotlin.BindKotlin
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
+import java.util.*
 
 interface TagsDao {
     @SqlQuery("select * from tags")
@@ -13,8 +14,8 @@ interface TagsDao {
     @SqlQuery("select * from tags where id = :id")
     fun find(id: Int): ResultTag?
 
-    @SqlQuery("insert into tags (val) values (:val) returning *")
-    fun insert(@BindKotlin tag: FormTag): ResultTag
+    @SqlQuery("insert into tags (val, created_by) values (:val, :userId) returning *")
+    fun insert(@BindKotlin tag: FormTag, userId: UUID): ResultTag
 
     @SqlQuery("update tags set val = :val where id = :id returning *")
     fun update(id: Int, @BindKotlin tag: FormTag): ResultTag

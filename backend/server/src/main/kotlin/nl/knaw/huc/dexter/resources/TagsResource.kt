@@ -43,10 +43,10 @@ class TagsResource(private val jdbi: Jdbi) {
 
     @POST
     @Consumes(APPLICATION_JSON)
-    fun createTag(tag: FormTag): ResultTag =
+    fun createTag(tag: FormTag, @Auth user: DexterUser): ResultTag =
         tag.run {
             log.info("createTag: [$this]")
-            diagnoseViolations { tags().insert(this) }
+            diagnoseViolations { tags().insert(this, user.id) }
         }
 
     @PUT

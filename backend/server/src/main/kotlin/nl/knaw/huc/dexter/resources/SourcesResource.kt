@@ -83,10 +83,8 @@ class SourcesResource(private val jdbi: Jdbi) {
     ): ResultSource {
         log.info("createSource[${user.name}]: formSource=[$formSource]")
         return jdbi.inTransaction<ResultSource, Exception>(REPEATABLE_READ) { tx ->
-            val userDao = tx.attach(UsersDao::class.java)
             val sourceDao = tx.attach(SourcesDao::class.java)
-            val createdBy = userDao.findByName(user.name) ?: throw NotFoundException("Unknown user: $user")
-            diagnoseViolations { sourceDao.insert(formSource, createdBy.id) }
+            diagnoseViolations { sourceDao.insert(formSource, user.id) }
         }
     }
 
