@@ -39,7 +39,7 @@ class MetadataValuesResource(private val jdbi: Jdbi) {
         @PathParam(ID_PARAM) metadataValueId: UUID,
         @Auth user: DexterUser
     ) =
-        onExistingMetadataValue(metadataValueId, user.id) { _, v -> v }
+        onAccessibleMetadataValue(metadataValueId, user.id) { _, v -> v }
 
     @POST
     @Consumes(APPLICATION_JSON)
@@ -61,7 +61,7 @@ class MetadataValuesResource(private val jdbi: Jdbi) {
         formMetadataValue: FormMetadataValue,
         @Auth user: DexterUser
     ): ResultMetadataValue =
-        onExistingMetadataValue(id, user.id) { dao, v ->
+        onAccessibleMetadataValue(id, user.id) { dao, v ->
             log.info("updateMetadataValue: metadataValueId=${v.id}, formMetadataValue=$formMetadataValue")
             dao.update(v.id, formMetadataValue)
         }
@@ -69,13 +69,13 @@ class MetadataValuesResource(private val jdbi: Jdbi) {
     @DELETE
     @Path(ID_PATH)
     fun deleteMetadataValue(@PathParam(ID_PARAM) id: UUID, @Auth user: DexterUser): Response =
-        onExistingMetadataValue(id, user.id) { dao, v ->
+        onAccessibleMetadataValue(id, user.id) { dao, v ->
             log.warn("deleteMetadataValue[${user.name}] metadataValue=$v")
             dao.delete(v.id)
             Response.noContent().build()
         }
 
-    private fun <R> onExistingMetadataValue(
+    private fun <R> onAccessibleMetadataValue(
         metadataValueId: UUID,
         userId: UUID,
         block: DaoBlock<MetadataValuesDao, ResultMetadataValue, R>

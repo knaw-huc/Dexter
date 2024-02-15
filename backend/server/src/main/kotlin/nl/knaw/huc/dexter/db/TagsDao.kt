@@ -8,8 +8,8 @@ import org.jdbi.v3.sqlobject.statement.SqlUpdate
 import java.util.*
 
 interface TagsDao {
-    @SqlQuery("select * from tags")
-    fun list(): List<ResultTag>
+    @SqlQuery("select * from tags where created_by = :userId")
+    fun listByUser(userId: UUID): List<ResultTag>
 
     @SqlQuery("select * from tags where id = :id")
     fun find(id: Int): ResultTag?
@@ -23,6 +23,6 @@ interface TagsDao {
     @SqlUpdate("delete from tags where id = :id")
     fun delete(id: Int)
 
-    @SqlQuery("select * from tags where lower(val) like lower(:key)")
-    fun like(key: String): List<ResultTag>
+    @SqlQuery("select * from tags where created_by = :userId and lower(val) like lower(:key)")
+    fun like(key: String, userId: UUID): List<ResultTag>
 }
