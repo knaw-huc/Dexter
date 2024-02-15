@@ -29,8 +29,7 @@ class DexterAuthenticator(
                 return Optional.of(RootUser(root.user, root.id))
             }
 
-            val found = list()
-                .find{u -> u.name == credentials.username}
+            val found = users().findByName(credentials.username)
                 ?: throw UnauthorizedException()
             val user = BasicUser(it.username, found.id)
 
@@ -46,7 +45,5 @@ class DexterAuthenticator(
     private fun isRoot(who: BasicCredentials) = who.username == root.user
 
     private fun users(): UsersDao = jdbi.onDemand(UsersDao::class.java)
-
-    private fun list() = users().list()
 
 }
