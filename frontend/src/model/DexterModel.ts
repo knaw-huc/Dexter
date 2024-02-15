@@ -151,6 +151,23 @@ export function toMetadataValue(
   };
 }
 
+export type SupportedMediaType = 'image/jpeg' | 'image/png';
+
+export type FormMedia = {
+  title: string;
+  url: URL;
+  mediaType: SupportedMediaType;
+  createdBy: UUID;
+};
+
+export type ResultMedia = {
+  id: UUID;
+  title: string;
+  url: URL;
+  mediaType: SupportedMediaType;
+  createdBy: UUID;
+};
+
 export type ResultImport = {
   isValidExternalReference: boolean;
   imported?: ResultDublinCoreMetadata;

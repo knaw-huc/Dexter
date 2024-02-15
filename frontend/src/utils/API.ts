@@ -1,12 +1,14 @@
 import {
   Corpus,
   FormCorpus,
+  FormMedia,
   FormMetadataKey,
   FormMetadataValue,
   FormSource,
   FormTag,
   ResultImport,
   ResultLanguage,
+  ResultMedia,
   ResultMetadataKey,
   ResultMetadataValue,
   ResultSource,
@@ -50,6 +52,15 @@ async function fetchValidatedWith(
   const response = await fetch(url, {
     method,
     body: JSON.stringify(json),
+    headers: headers,
+  });
+  validateResponse({ response });
+  return response.json();
+}
+
+async function fetchDeleteValidated(url: string) {
+  const response = await fetch(url, {
+    method: 'DELETE',
     headers: headers,
   });
   validateResponse({ response });
@@ -443,3 +454,38 @@ export const addMetadataValueToCorpus = async (
     'POST',
     metadataValueIds,
   );
+
+export const createMedia = async (form: FormMedia) =>
+  fetchValidatedWith(`/api/media`, 'POST', form);
+
+export const updateMedia = async (
+  id: UUID,
+  form: FormMedia,
+): Promise<ResultMedia> => fetchValidatedWith(`/api/media/${id}`, 'PUT', form);
+
+export const deleteMedia = async (mediaId: UUID) =>
+  fetchDeleteValidated(`/api/media/${mediaId}`);
+
+export const addMediaToSource = async (
+  sourceId: string,
+  mediaIds: string[],
+): Promise<ResultMedia[]> =>
+  fetchValidatedWith(`/api/sources/${sourceId}/media`, 'POST', mediaIds);
+
+export const addMediaToCorpus = async (
+  corpusId: string,
+  mediaIds: string[],
+): Promise<ResultMedia[]> =>
+  fetchValidatedWith(`/api/corpora/${corpusId}/media`, 'POST', mediaIds);
+
+export const deleteMediaFromCorpus = async (
+  corpusId: string,
+  mediaId: string,
+): Promise<ResultLanguage[]> =>
+  fetchDeleteValidated(`/api/corpora/${corpusId}/media/${mediaId}`);
+
+export const deleteMediaFromSource = async (
+  sourceId: string,
+  mediaId: string,
+): Promise<ResultLanguage[]> =>
+  fetchDeleteValidated(`/api/sources/${sourceId}/media/${mediaId}`);
