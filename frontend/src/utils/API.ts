@@ -302,7 +302,7 @@ export const addMetadataValueToCorpus = async (
  * Media:
  */
 
-export const createMedia = async (form: FormMedia) =>
+export const createMedia = async (form: FormMedia): Promise<ResultMedia> =>
   fetchValidatedWith(`/${api}/${media}`, POST, form);
 
 export const updateMedia = async (
@@ -329,11 +329,11 @@ export const addMediaToCorpus = async (
 export const deleteMediaFromCorpus = async (
   corpusId: string,
   mediaId: string,
-): Promise<ResultLanguage[]> =>
+): Promise<ResultMedia[]> =>
   fetchValidatedDelete(`/${api}/${corpora}/${corpusId}/${media}/${mediaId}`);
 
 export const deleteMediaFromSource = async (
   sourceId: string,
   mediaId: string,
-): Promise<ResultLanguage[]> =>
+): Promise<ResultMedia[]> =>
   fetchValidatedDelete(`/${api}/${sources}/${sourceId}/${media}/${mediaId}`);
