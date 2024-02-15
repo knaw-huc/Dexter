@@ -1,5 +1,6 @@
 package nl.knaw.huc.dexter.db
 
+import ResultMedia
 import ResultMetadataValue
 import nl.knaw.huc.dexter.api.*
 import org.jdbi.v3.sqlobject.customizer.BindList
@@ -90,6 +91,12 @@ interface CorporaDao {
 
     @SqlUpdate("insert into metadata_values_sources_corpora (corpus_id, metadata_value_id) values (:corpusId, :valueId) on conflict do nothing")
     fun addMetadataValue(corpusId: UUID, valueId: UUID)
+
+    @SqlQuery("select * from media m " +
+            "join corpora_media cm on m.id = cm.media_id " +
+            "where corpus_id = :corpusId")
+    @RegisterKotlinMapper(ResultMedia::class)
+    fun getMedia(corpusId: UUID): List<ResultMedia>
 
     companion object {
         fun corpusNotFound(corpusId: UUID): Nothing = throw NotFoundException("Corpus not found: $corpusId")

@@ -1,5 +1,6 @@
 package nl.knaw.huc.dexter.api
 
+import ResultMedia
 import ResultMetadataValueWithResources
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -61,7 +62,8 @@ data class ResultCorpusWithResources (
     val tags: List<ResultTag>,
     val languages: List<ResultLanguage>,
     val sources: List<ResultSourceWithResources>,
-    val metadataValues: List<ResultMetadataValueWithResources>
+    val metadataValues: List<ResultMetadataValueWithResources>,
+    val media: List<ResultMedia>
 )
 
 fun ResultCorpus.toResultCorpusWithResources(
@@ -69,7 +71,8 @@ fun ResultCorpus.toResultCorpusWithResources(
     tags: List<ResultTag>,
     languages: List<ResultLanguage>,
     sources: List<ResultSourceWithResources>,
-    metadataValues: List<ResultMetadataValueWithResources>
+    metadataValues: List<ResultMetadataValueWithResources>,
+    media: List<ResultMedia>
 ) = ResultCorpusWithResources(
     id = id,
     title = title,
@@ -90,5 +93,6 @@ fun ResultCorpus.toResultCorpusWithResources(
     tags = tags,
     languages = languages,
     sources = sources,
-    metadataValues = metadataValues
+    metadataValues = metadataValues,
+    media = media
 )

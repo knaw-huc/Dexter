@@ -1,5 +1,6 @@
 package nl.knaw.huc.dexter.db
 
+import ResultMedia
 import ResultMetadataValue
 import nl.knaw.huc.dexter.api.*
 import org.jdbi.v3.sqlobject.kotlin.BindKotlin
@@ -70,6 +71,12 @@ interface SourcesDao {
 
     @SqlUpdate("insert into metadata_values_sources_corpora (source_id, metadata_value_id) values (:sourceId, :valueId) on conflict do nothing")
     fun addMetadataValue(sourceId: UUID, valueId: UUID)
+
+    @SqlQuery("select * from media m " +
+            "join sources_media sm on m.id = sm.media_id " +
+            "where source_id = :sourceId")
+    @RegisterKotlinMapper(ResultMedia::class)
+    fun getMedia(sourceId: UUID): List<ResultMedia>
 
     companion object {
         fun sourceNotFound(sourceId: UUID): Nothing = throw NotFoundException("Source not found: $sourceId")

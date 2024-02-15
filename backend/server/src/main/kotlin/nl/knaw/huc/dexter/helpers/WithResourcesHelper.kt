@@ -25,7 +25,8 @@ class WithResourcesHelper {
                     corporaDao.getSources(corpus.id).map { source ->
                         addSourceResources(source, handle)
                     },
-                    getCorpusMetadataValueWithResources(corpus.id, handle)
+                    getCorpusMetadataValueWithResources(corpus.id, handle),
+                    corporaDao.getMedia(corpus.id)
                 )
             }
         }
@@ -38,7 +39,8 @@ class WithResourcesHelper {
                 return source.toResultSourceWithResources(
                     sourceDao.getTags(source.id),
                     sourceDao.getLanguages(source.id),
-                    getSourceMetadataValueWithResources(source.id, handle)
+                    getSourceMetadataValueWithResources(source.id, handle),
+                    sourceDao.getMedia(source.id)
                 )
             }
         }
