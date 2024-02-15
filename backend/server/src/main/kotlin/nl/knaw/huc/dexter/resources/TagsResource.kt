@@ -45,7 +45,6 @@ class TagsResource(private val jdbi: Jdbi) {
         @Auth user: DexterUser
     ): List<ResultTag> =
         key.takeIf { it.isNotEmpty() }
-            // TODO: filter by user
             ?.let { tags().like("%$it%", user.id) }
             ?: throw BadRequestException("key length MUST be > 0 (but was ${key.length}: '$key')")
 

@@ -9,6 +9,7 @@ object ResourcePaths {
     const val TAGS = "tags"
     const val LANGUAGES = "languages"
     const val METADATA = "metadata"
+    const val MEDIA = "media"
     const val SOURCES = "sources"
     const val USER = "user"
     const val WERELDCULTUREN = "wereldculturen"
