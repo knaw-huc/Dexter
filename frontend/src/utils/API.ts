@@ -1,16 +1,16 @@
 import {
   Corpus,
-  FormTag,
+  FormCorpus,
   FormMetadataKey,
   FormMetadataValue,
+  FormSource,
+  FormTag,
   ResultImport,
+  ResultLanguage,
   ResultMetadataKey,
   ResultMetadataValue,
-  FormCorpus,
-  FormSource,
-  ResultTag,
-  ResultLanguage,
   ResultSource,
+  ResultTag,
   Source,
   UUID,
 } from '../model/DexterModel';
@@ -39,6 +39,21 @@ export class ResponseError extends Error {
 export async function toReadable(prefixMessage: string, e: ResponseError) {
   const json = await e.response.json();
   return { message: `${prefixMessage}: ${json.message}` };
+}
+
+async function fetchValidatedWith(
+  url: string,
+  method: 'PUT' | 'POST',
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  json: any,
+) {
+  const response = await fetch(url, {
+    method,
+    body: JSON.stringify(json),
+    headers: headers,
+  });
+  validateResponse({ response });
+  return response.json();
 }
 
 export const getCorporaWithResources = async (): Promise<Corpus[]> => {
@@ -402,41 +417,29 @@ export async function createMetadataValue(
   validateResponse({ response });
   return response.json();
 }
-export async function updateMetadataValue(
+
+export const updateMetadataValue = (
   id: UUID,
   form: FormMetadataValue,
-): Promise<ResultMetadataValue> {
-  const response = await fetch(`/api/metadata/values/${id}`, {
-    method: 'PUT',
-    headers: headers,
-    body: JSON.stringify(form),
-  });
-  validateResponse({ response });
-  return response.json();
-}
+): Promise<ResultMetadataValue> =>
+  fetchValidatedWith(`/api/metadata/values/${id}`, 'PUT', form);
 
 export const addMetadataValueToSource = async (
   sourceId: string,
   metadataValueIds: string[],
-): Promise<ResultMetadataValue[]> => {
-  const response = await fetch(`/api/sources/${sourceId}/metadata/values`, {
-    method: 'POST',
-    headers: headers,
-    body: JSON.stringify(metadataValueIds),
-  });
-  validateResponse({ response });
-  return response.json();
-};
+): Promise<ResultMetadataValue[]> =>
+  fetchValidatedWith(
+    `/api/sources/${sourceId}/metadata/values`,
+    'POST',
+    metadataValueIds,
+  );
 
 export const addMetadataValueToCorpus = async (
   corpusId: string,
   metadataValueIds: string[],
-): Promise<ResultMetadataValue[]> => {
-  const response = await fetch(`/api/corpora/${corpusId}/metadata/values`, {
-    method: 'POST',
-    headers: headers,
-    body: JSON.stringify(metadataValueIds),
-  });
-  validateResponse({ response });
-  return response.json();
-};
+): Promise<ResultMetadataValue[]> =>
+  fetchValidatedWith(
+    `/api/corpora/${corpusId}/metadata/values`,
+    'POST',
+    metadataValueIds,
+  );
