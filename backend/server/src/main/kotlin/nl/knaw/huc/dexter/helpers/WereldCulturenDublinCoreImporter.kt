@@ -18,9 +18,8 @@ data class Tms2Dexter(
     val tmsPath: String
 )
 
-class WereldCulturenDublinCoreImporter() {
+class WereldCulturenDublinCoreImporter {
     private val client: Client = ClientBuilder.newClient()
-    private val objectMapper: ObjectMapper = ObjectMapper()
     private val xpath: XPath
     private val tms2DexterFields: List<Tms2Dexter>
 
@@ -53,7 +52,7 @@ class WereldCulturenDublinCoreImporter() {
         )
     }
 
-    fun import(url: String): ResultDublinCoreMetadata {
+    fun import(url: String): ImportedFields {
         val xmlResponse: String = client
             .target(url)
             .request()

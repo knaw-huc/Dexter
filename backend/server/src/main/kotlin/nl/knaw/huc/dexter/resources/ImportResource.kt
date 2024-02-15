@@ -1,14 +1,13 @@
 package nl.knaw.huc.dexter.resources
 
 import FormTmsImport
-import ResultTmsImport
+import ResultImport
 import WereldCulturenDublinCoreImporter
 import io.dropwizard.auth.Auth
 import nl.knaw.huc.dexter.api.ResourcePaths
 import nl.knaw.huc.dexter.auth.DexterUser
 import nl.knaw.huc.dexter.auth.RoleNames
 import org.slf4j.LoggerFactory
-import java.text.MessageFormat
 import javax.annotation.security.RolesAllowed
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType.APPLICATION_JSON
@@ -20,27 +19,27 @@ import javax.ws.rs.core.MediaType.APPLICATION_JSON
 @RolesAllowed(RoleNames.USER)
 @Produces(APPLICATION_JSON)
 class ImportResource(
-    private val mapper: WereldCulturenDublinCoreImporter
+    private val importer: WereldCulturenDublinCoreImporter
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
-    private val importableUrlMatcher = Regex("https://hdl\\.handle\\.net/20\\.500\\.11840/([0-9]*)")
-    private val resourceUrl = "https://collectie.wereldculturen.nl/ccrdf/ccrdf.py?command=search&query="
+    private val wereldculturenHandleUrlMatcher = Regex("https://hdl\\.handle\\.net/20\\.500\\.11840/([0-9]*)")
+    private val wereldculturenResourceUrl = "https://collectie.wereldculturen.nl/ccrdf/ccrdf.py?command=search&query="
 
     @POST
     @Path("/${ResourcePaths.WERELDCULTUREN}")
     @Consumes(APPLICATION_JSON)
-    fun convertTmsLinkedArtExportIntoDublinCoreFields(
+    fun importWereldculturen(
         form: FormTmsImport,
         @Auth user: DexterUser
-    ): ResultTmsImport {
+    ): ResultImport {
         log.info("user=[${user.name}]: formCorpus=[$form]")
-        val found = this.importableUrlMatcher.find(form.url)
+        val found = this.wereldculturenHandleUrlMatcher.find(form.url)
         return if (found == null || found.groups.isEmpty()) {
-            ResultTmsImport(false)
+            ResultImport(false)
         } else {
             val sourceId = found.groups[1]?.value
-            val url = resourceUrl + sourceId
-            ResultTmsImport(true, mapper.import(url))
+            val url = wereldculturenResourceUrl + sourceId
+            ResultImport(true, importer.import(url))
         }
     }
 
