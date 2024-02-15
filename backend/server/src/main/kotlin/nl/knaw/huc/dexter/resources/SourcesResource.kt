@@ -1,5 +1,6 @@
 package nl.knaw.huc.dexter.resources
 
+import ResultMedia
 import ResultMetadataValue
 import UnauthorizedException
 import io.dropwizard.auth.Auth
@@ -8,6 +9,7 @@ import nl.knaw.huc.dexter.api.ResourcePaths.ID_PARAM
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PATH
 import nl.knaw.huc.dexter.api.ResourcePaths.TAGS
 import nl.knaw.huc.dexter.api.ResourcePaths.LANGUAGES
+import nl.knaw.huc.dexter.api.ResourcePaths.MEDIA
 import nl.knaw.huc.dexter.api.ResourcePaths.METADATA
 import nl.knaw.huc.dexter.api.ResourcePaths.VALUES
 import nl.knaw.huc.dexter.api.ResourcePaths.WITH_RESOURCES
@@ -17,7 +19,6 @@ import nl.knaw.huc.dexter.db.DaoBlock
 import nl.knaw.huc.dexter.db.HandleBlock
 import nl.knaw.huc.dexter.db.SourcesDao
 import nl.knaw.huc.dexter.db.SourcesDao.Companion.sourceNotFound
-import nl.knaw.huc.dexter.db.UsersDao
 import nl.knaw.huc.dexter.helpers.PsqlDiagnosticsHelper.Companion.diagnoseViolations
 import nl.knaw.huc.dexter.helpers.WithResourcesHelper.Companion.addSourceResources
 import org.jdbi.v3.core.Jdbi
@@ -193,6 +194,40 @@ class SourcesResource(private val jdbi: Jdbi) {
         @PathParam(ID_PARAM) id: UUID, @Auth user: DexterUser
     ): List<ResultMetadataValue> = onAccessibleSource(id, user.id) { dao, sourceId ->
         dao.getMetadataValues(sourceId.id)
+    }
+
+    @GET
+    @Path("$ID_PATH/$MEDIA")
+    fun getMedia(
+        @PathParam(ID_PARAM) id: UUID,
+        @Auth user: DexterUser
+    ): List<ResultMedia> = onAccessibleSource(id, user.id) { dao, sourceId ->
+        dao.getMedia(sourceId.id)
+    }
+
+    @POST
+    @Consumes(APPLICATION_JSON)
+    @Path("$ID_PATH/$MEDIA")
+    fun addMedia(
+        @PathParam(ID_PARAM) id: UUID,
+        mediaIds: List<Int>,
+        @Auth user: DexterUser
+    ): List<ResultMedia> = onAccessibleSource(id, user.id) { dao, src ->
+        log.info("addMedia: sourceId=${src.id}, media=$mediaIds")
+        mediaIds.forEach { mediaId -> dao.addMedia(src.id, mediaId) }
+        dao.getMedia(src.id)
+    }
+
+    @DELETE
+    @Path("$ID_PATH/$MEDIA/{mediaId}")
+    fun deleteMedia(
+        @PathParam(ID_PARAM) id: UUID,
+        @PathParam("mediaId") mediaId: Int,
+        @Auth user: DexterUser
+    ): List<ResultMedia> = onAccessibleSource(id, user.id) { dao, src ->
+        log.info("deleteMedia: sourceId=${src.id}, mediaId=$mediaId")
+        dao.deleteMedia(src.id, mediaId)
+        dao.getMedia(src.id)
     }
 
     @POST

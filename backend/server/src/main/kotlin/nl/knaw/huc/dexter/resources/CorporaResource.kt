@@ -1,5 +1,6 @@
 package nl.knaw.huc.dexter.resources
 
+import ResultMedia
 import ResultMetadataValue
 import UnauthorizedException
 import io.dropwizard.auth.Auth
@@ -8,6 +9,7 @@ import nl.knaw.huc.dexter.api.ResourcePaths.ID_PARAM
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PATH
 import nl.knaw.huc.dexter.api.ResourcePaths.TAGS
 import nl.knaw.huc.dexter.api.ResourcePaths.LANGUAGES
+import nl.knaw.huc.dexter.api.ResourcePaths.MEDIA
 import nl.knaw.huc.dexter.api.ResourcePaths.METADATA
 import nl.knaw.huc.dexter.api.ResourcePaths.SOURCES
 import nl.knaw.huc.dexter.api.ResourcePaths.VALUES
@@ -245,6 +247,42 @@ class CorporaResource(private val jdbi: Jdbi) {
             metadataValueIds.forEach { sourceId -> dao.addMetadataValue(corpus.id, sourceId) }
             dao.getMetadataValues(corpus.id)
         }
+
+    @GET
+    @Path("$ID_PATH/$MEDIA")
+    fun getMedia(
+        @PathParam(ID_PARAM) id: UUID,
+        @Auth user: DexterUser
+    ): List<ResultMedia> = onAccessibleCorpus(id, user.id) { dao, corpusId ->
+        dao.getMedia(corpusId.id)
+    }
+
+    @POST
+    @Consumes(APPLICATION_JSON)
+    @Path("$ID_PATH/$MEDIA")
+    fun addMedia(
+        @PathParam(ID_PARAM) id: UUID,
+        mediaIds: List<Int>,
+        @Auth user: DexterUser
+    ): List<ResultMedia> = onAccessibleCorpus(id, user.id) { dao, corpus ->
+        log.info("addMedia: corpusId=${corpus.id}, media=$mediaIds")
+        mediaIds.forEach { mediaId -> dao.addMedia(corpus.id, mediaId) }
+        dao.getMedia(corpus.id)
+    }
+
+    @DELETE
+    @Path("$ID_PATH/$MEDIA/{mediaId}")
+    fun deleteMedia(
+        @PathParam(ID_PARAM) id: UUID,
+        @PathParam("mediaId") mediaId: Int,
+        @Auth user: DexterUser
+    ): List<ResultMedia> = onAccessibleCorpus(id, user.id) { dao, corpus ->
+        log.info("deleteMedia: corpusId=${corpus.id}, mediaId=$mediaId")
+        dao.deleteMedia(corpus.id, mediaId)
+        dao.getMedia(corpus.id)
+    }
+
+
 
     private fun <R> onAccessibleCorpusWithHandle(
         corpusId: UUID,
