@@ -17,7 +17,6 @@ import {
   UUID,
 } from '../model/DexterModel';
 import { validateResponse } from './validateResponse';
-import { fetchValidated } from './fetchValidated';
 import _ from 'lodash';
 
 // Resources:
@@ -56,6 +55,15 @@ export class ResponseError extends Error {
 export async function toReadable(prefixMessage: string, e: ResponseError) {
   const json = await e.response.json();
   return { message: `${prefixMessage}: ${json.message}` };
+}
+
+async function fetchValidated(path: string) {
+  const response = await fetch(path, {
+    headers,
+    method: 'GET',
+  });
+  validateResponse({ response });
+  return response.json();
 }
 
 async function fetchValidatedWith(
