@@ -7,6 +7,7 @@ import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import { DeleteIconStyled } from '../common/DeleteIconStyled';
 import { compareFormMetadataValues } from '../../utils/compareMetadataValues';
+import _ from 'lodash';
 
 type MetadataValueFormFieldsProps = {
   keys: ResultMetadataKey[];
@@ -55,6 +56,9 @@ export function MetadataValueFormFields(props: MetadataValueFormFieldsProps) {
     props.onChange(update);
   }
 
+  const createMetadataKeyMsg =
+    'Custom metadata fields can be created at /metadata';
+  const selectMetadataKeyMsg = 'Select a custom metadata field';
   return (
     <>
       <FormControl fullWidth>
@@ -68,7 +72,9 @@ export function MetadataValueFormFields(props: MetadataValueFormFieldsProps) {
               onChange={e => setSelectedKeyId(e.target.value)}
             >
               <MenuItem value={NONE_SELECTED}>
-                Select a custom metadata field
+                {_.isEmpty(props.keys)
+                  ? createMetadataKeyMsg
+                  : selectMetadataKeyMsg}
               </MenuItem>
               {props.keys
                 .filter(k => !props.values.find(v => v.keyId === k.id))
