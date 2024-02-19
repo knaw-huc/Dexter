@@ -1,11 +1,19 @@
 import { DateTime } from 'luxon';
 import { AnyObject } from 'yup/es/types';
 import * as yup from 'yup';
+import isUrl from './isUrl';
 
 export const validDate = {
   message: 'Invalid ISO date  format (e.g. 1911-11-11)',
   test: (earliest: string) => {
     return DateTime.fromISO(earliest).isValid;
+  },
+};
+
+export const validUrl = {
+  message: 'Invalid url',
+  test: (url: string) => {
+    return isUrl(url);
   },
 };
 

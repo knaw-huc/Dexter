@@ -4,18 +4,22 @@ import { FormErrors, setFormErrors } from '../common/FormError';
 import { ResultImport, Source } from '../../model/DexterModel';
 import { postImport } from '../../utils/API';
 
-type UseImportMetadataResult = {
+type WithExternalRef = {
+  externalRef?: string;
+};
+
+type UseImportMetadataResult<T extends WithExternalRef> = {
   isImportLoading: boolean;
-  loadImport: (form: Source) => Promise<Source>;
+  loadImport: (form: T) => Promise<T>;
 };
 
 type UseImportMetadataParams = {
   setErrors: Dispatch<SetStateAction<FormErrors<Source>>>;
 };
 
-export function useImportMetadata(
+export function useImportMetadata<T extends WithExternalRef>(
   params: UseImportMetadataParams,
-): UseImportMetadataResult {
+): UseImportMetadataResult<T> {
   const [isImportLoading, setImportLoading] = useState(false);
 
   function checkCanImporting(externalRef: string) {
@@ -32,7 +36,7 @@ export function useImportMetadata(
     return isUrl(externalRef);
   }
 
-  async function loadImport(form: Source): Promise<Source> {
+  async function loadImport(form: T): Promise<T> {
     if (!checkCanImporting(form.externalRef)) {
       return;
     }
@@ -52,7 +56,7 @@ export function useImportMetadata(
       return form;
     }
 
-    const update: Source = { ...form };
+    const update: T = { ...form };
     Object.keys(tmsImport.imported).forEach((key: keyof Source) => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (update as any)[key] = tmsImport.imported[key];

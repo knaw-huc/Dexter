@@ -3,7 +3,7 @@ import { Source } from '../../model/DexterModel';
 import { SourceListItem } from './SourceListItem';
 import { getSourcesWithResources } from '../../utils/API';
 import { SourceForm } from './SourceForm';
-import { AddNewResourceButton } from './AddNewResourceButton';
+import { AddNewResourceButton } from '../common/AddNewResourceButton';
 import { List } from '@mui/material';
 import { errorContext } from '../../state/error/errorContext';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';

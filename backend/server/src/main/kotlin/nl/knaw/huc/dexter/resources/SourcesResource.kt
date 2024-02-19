@@ -196,6 +196,17 @@ class SourcesResource(private val jdbi: Jdbi) {
         dao.getMetadataValues(sourceId.id)
     }
 
+    @POST
+    @Consumes(APPLICATION_JSON)
+    @Path("$ID_PATH/$METADATA/$VALUES")
+    fun addMetadataValues(
+        @PathParam(ID_PARAM) sourceId: UUID, metadataValueIds: List<UUID>, @Auth user: DexterUser
+    ): List<ResultMetadataValue> = onAccessibleSource(sourceId, user.id) { dao, source ->
+        log.info("addMetadataValues: sourceId=${source.id}, metadataValueIds=$metadataValueIds")
+        metadataValueIds.forEach { sourceId -> dao.addMetadataValue(source.id, sourceId) }
+        dao.getMetadataValues(source.id)
+    }
+
     @GET
     @Path("$ID_PATH/$MEDIA")
     fun getMedia(
@@ -210,7 +221,7 @@ class SourcesResource(private val jdbi: Jdbi) {
     @Path("$ID_PATH/$MEDIA")
     fun addMedia(
         @PathParam(ID_PARAM) id: UUID,
-        mediaIds: List<Int>,
+        mediaIds: List<UUID>,
         @Auth user: DexterUser
     ): List<ResultMedia> = onAccessibleSource(id, user.id) { dao, src ->
         log.info("addMedia: sourceId=${src.id}, media=$mediaIds")
@@ -222,23 +233,12 @@ class SourcesResource(private val jdbi: Jdbi) {
     @Path("$ID_PATH/$MEDIA/{mediaId}")
     fun deleteMedia(
         @PathParam(ID_PARAM) id: UUID,
-        @PathParam("mediaId") mediaId: Int,
+        @PathParam("mediaId") mediaId: UUID,
         @Auth user: DexterUser
     ): List<ResultMedia> = onAccessibleSource(id, user.id) { dao, src ->
         log.info("deleteMedia: sourceId=${src.id}, mediaId=$mediaId")
         dao.deleteMedia(src.id, mediaId)
         dao.getMedia(src.id)
-    }
-
-    @POST
-    @Consumes(APPLICATION_JSON)
-    @Path("$ID_PATH/$METADATA/$VALUES")
-    fun addMetadataValues(
-        @PathParam(ID_PARAM) sourceId: UUID, metadataValueIds: List<UUID>, @Auth user: DexterUser
-    ): List<ResultMetadataValue> = onAccessibleSource(sourceId, user.id) { dao, source ->
-        log.info("addMetadataValues: sourceId=${source.id}, metadataValueIds=$metadataValueIds")
-        metadataValueIds.forEach { sourceId -> dao.addMetadataValue(source.id, sourceId) }
-        dao.getMetadataValues(source.id)
     }
 
     private fun <R> onAccessibleSourceWithHandle(

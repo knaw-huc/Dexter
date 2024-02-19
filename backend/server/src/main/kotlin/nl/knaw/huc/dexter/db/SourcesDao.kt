@@ -79,10 +79,10 @@ interface SourcesDao {
     fun getMedia(sourceId: UUID): List<ResultMedia>
 
     @SqlUpdate("insert into sources_media (source_id, media_id) values (:sourceId,:mediaId) on conflict do nothing")
-    fun addMedia(sourceId: UUID, mediaId: Int)
+    fun addMedia(sourceId: UUID, mediaId: UUID)
 
     @SqlUpdate("delete from sources_media where source_id = :sourceId and media_id = :mediaId")
-    fun deleteMedia(sourceId: UUID, mediaId: Int)
+    fun deleteMedia(sourceId: UUID, mediaId: UUID)
 
 
     companion object {

@@ -78,12 +78,16 @@ export type Source = ResultSource & {
   tags: ResultTag[];
   languages: ResultLanguage[];
   metadataValues: MetadataValue[];
+  media: ResultMedia[];
 };
 
 /**
- * Source update
+ * Source update:
+ * - ID can be undefined
  */
-export type SourceFormSubmit = Omit<Source, 'id'>;
+export type SourceFormSubmit = Omit<Source, 'id' | 'metadataValues'> & {
+  metadataValues: FormMetadataValue[];
+};
 
 export interface ResultTag {
   id: string;
@@ -152,18 +156,25 @@ export function toMetadataValue(
 }
 
 export type SupportedMediaType = 'image/jpeg' | 'image/png';
+export const supportedMediaTypes = ['image/jpeg', 'image/png'];
+export const supportedMediaSubTypes = supportedMediaTypes.map(
+  t => t.split('/')[1],
+);
+export function isSupportedMediaType(
+  mediaType: string,
+): mediaType is SupportedMediaType {
+  return supportedMediaTypes.includes(mediaType);
+}
 
 export type FormMedia = {
   title: string;
-  url: URL;
-  mediaType: SupportedMediaType;
-  createdBy: UUID;
+  url: string;
 };
 
 export type ResultMedia = {
   id: UUID;
   title: string;
-  url: URL;
+  url: string;
   mediaType: SupportedMediaType;
   createdBy: UUID;
 };

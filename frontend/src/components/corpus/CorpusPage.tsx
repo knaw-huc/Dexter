@@ -20,7 +20,7 @@ import { Languages } from '../language/Languages';
 import { SourcePreview } from '../source/SourcePreview';
 import { SourceForm } from '../source/SourceForm';
 import { EditButton } from '../common/EditButton';
-import { AddNewResourceButton } from '../source/AddNewResourceButton';
+import { AddNewResourceButton } from '../common/AddNewResourceButton';
 import { SelectSourceButton } from '../source/SelectSourceButton';
 import { SelectSourcesForm } from './SelectSourcesForm';
 import _ from 'lodash';

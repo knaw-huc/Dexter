@@ -11,7 +11,7 @@ import {
   UUID,
 } from '../../model/DexterModel';
 import { createCorpus, updateCorpus } from '../../utils/API';
-import { submitMetadataValues } from '../../utils/submitMetadataValues';
+import { createMetadataValues } from '../../utils/createMetadataValues';
 import {
   updateCorpusLanguages,
   updateCorpusMetadataValues,
@@ -41,23 +41,28 @@ export function useSubmitCorpusForm(
   const { corpusToEdit, onSubmitted, setErrors } = params;
 
   async function submitCorpusForm(
-    data: CorpusFormSubmit,
+    toSubmit: CorpusFormSubmit,
     keys: ResultMetadataKey[],
     values: ResultMetadataValue[],
   ): Promise<void> {
     try {
-      await corpusFormValidator.validate(data);
-      const serverForm = toServerForm(data);
+      await corpusFormValidator.validate(toSubmit);
+      const serverForm = toServerForm(toSubmit);
       const id = corpusToEdit
         ? await updateExistingCorpus(serverForm)
         : await createNewCorpus(serverForm);
-      data.metadataValues = await submitMetadataValues(
+      const metadataValues = await createMetadataValues(
         corpusToEdit,
         keys,
         values,
       );
-      await submitLinkedResources(id, data);
-      onSubmitted({ ...data, id });
+      const corpus: Corpus = {
+        ...toSubmit,
+        metadataValues,
+        id,
+      };
+      await linkResources(corpus);
+      onSubmitted(corpus);
     } catch (e) {
       await setFormErrors(e, setErrors);
     }
@@ -79,7 +84,8 @@ export function useSubmitCorpusForm(
     return corpusId;
   }
 
-  async function submitLinkedResources(id: string, data: CorpusFormSubmit) {
+  async function linkResources(data: Corpus) {
+    const id = data.id;
     const metadataValues = data.metadataValues.map(toResultMetadataValue);
     await updateCorpusMetadataValues(id, metadataValues);
     await updateCorpusTags(id, data.tags);

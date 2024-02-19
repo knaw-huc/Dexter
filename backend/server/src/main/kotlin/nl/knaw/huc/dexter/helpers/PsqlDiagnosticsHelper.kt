@@ -32,6 +32,11 @@ enum class PsqlDiagnosticsHelper(
         "metadata_keys_key",
         "Metadata keys MUST be unique",
         includeDetail = true
+    ),
+    MEDIA_UNIQUE_URL_CONSTRAINT(
+        "media_unique_url_created_by",
+        "Media url MUST be unique",
+        includeDetail = true
     );
 
     companion object {
@@ -49,7 +54,7 @@ enum class PsqlDiagnosticsHelper(
                         val msg: String = values()
                             .find { it.constraint == errMsg.constraint }
                             ?.let {
-                                if (it.includeDetail) "$it.msg. ${errMsg.detail}"
+                                if (it.includeDetail) "$it: ${errMsg.detail}"
                                 else it.msg
                             }
                             ?: errMsg.detail

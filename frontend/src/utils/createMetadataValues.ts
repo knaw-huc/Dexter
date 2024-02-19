@@ -8,7 +8,7 @@ import {
 } from '../model/DexterModel';
 import { createMetadataValue, updateMetadataValue } from './API';
 
-export async function submitMetadataValues(
+export async function createMetadataValues(
   toEdit: WithMetadata | undefined,
   keys: ResultMetadataKey[],
   values: FormMetadataValue[],

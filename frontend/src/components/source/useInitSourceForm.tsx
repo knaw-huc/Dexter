@@ -1,9 +1,8 @@
 import { Dispatch, SetStateAction, useState } from 'react';
 import {
-  Corpus,
-  FormMetadataValue,
   ResultMetadataKey,
   Source,
+  SourceFormSubmit,
   toFormMetadataValue,
 } from '../../model/DexterModel';
 import { getMetadataKeys } from '../../utils/API';
@@ -16,9 +15,8 @@ type UseInitSourceFormResult = {
 
 type UseInitSourceFormParams = {
   sourceToEdit?: Source;
-  setForm: Dispatch<SetStateAction<Source>>;
-  setErrors: Dispatch<SetStateAction<FormErrors<Source>>>;
-  setValues: Dispatch<SetStateAction<FormMetadataValue[]>>;
+  setForm: Dispatch<SetStateAction<SourceFormSubmit>>;
+  setErrors: Dispatch<SetStateAction<FormErrors<SourceFormSubmit>>>;
   setKeys: Dispatch<ResultMetadataKey[]>;
 };
 
@@ -34,6 +32,7 @@ const defaults: Source = {
   tags: [],
   languages: [],
   metadataValues: [],
+  media: [],
 
   // Not created or modified by form:
   id: undefined,
@@ -42,10 +41,17 @@ const defaults: Source = {
   updatedAt: undefined,
 };
 
+function toSourceForm(toEdit?: Source): SourceFormSubmit {
+  return {
+    ...(toEdit || defaults),
+    metadataValues: toEdit?.metadataValues.map(toFormMetadataValue) || [],
+  };
+}
+
 export function useInitSourceForm(
   params: UseInitSourceFormParams,
 ): UseInitSourceFormResult {
-  const { sourceToEdit, setForm, setErrors, setKeys, setValues } = params;
+  const { sourceToEdit, setForm, setErrors, setKeys } = params;
   const [isInit, setInit] = useState(false);
 
   function init() {
@@ -56,13 +62,9 @@ export function useInitSourceForm(
         return;
       }
 
-      const toEdit = sourceToEdit;
-      setForm({ ...(toEdit ?? defaults) });
-      setErrors({} as FormErrors<Corpus>);
+      setForm(toSourceForm(sourceToEdit));
+      setErrors({} as FormErrors<SourceFormSubmit>);
       setKeys(await getMetadataKeys());
-      if (toEdit) {
-        setValues(toEdit.metadataValues.map(toFormMetadataValue));
-      }
       setInit(true);
     }
   }

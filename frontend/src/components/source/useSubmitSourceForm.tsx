@@ -1,12 +1,9 @@
 import { Dispatch, SetStateAction } from 'react';
 import { FormErrors, setFormErrors } from '../common/FormError';
 import {
-  FormMetadataValue,
   ResultMetadataKey,
-  ResultMetadataValue,
   Source,
   SourceFormSubmit,
-  toResultMetadataValue,
   UUID,
 } from '../../model/DexterModel';
 import {
@@ -14,9 +11,10 @@ import {
   createSource,
   updateSource,
 } from '../../utils/API';
-import { submitMetadataValues } from '../../utils/submitMetadataValues';
+import { createMetadataValues } from '../../utils/createMetadataValues';
 import {
   updateSourceLanguages,
+  updateSourceMedia,
   updateSourceMetadataValues,
   updateSourceTags,
 } from '../../utils/updateRemoteIds';
@@ -24,9 +22,8 @@ import { sourceFormValidator } from './sourceFormValidator';
 
 type UseSubmitSourceFormResult = {
   submitSourceForm: (
-    form: Source,
+    form: SourceFormSubmit,
     keys: ResultMetadataKey[],
-    values: FormMetadataValue[],
   ) => Promise<void>;
 };
 
@@ -43,32 +40,42 @@ export function useSubmitSourceForm(
   const { setErrors, sourceToEdit, corpusId, onSubmitted } = params;
 
   async function submitSourceForm(
-    data: SourceFormSubmit,
+    toSubmit: SourceFormSubmit,
     keys: ResultMetadataKey[],
-    values: ResultMetadataValue[],
   ): Promise<void> {
     try {
-      await sourceFormValidator.validate(data);
+      await sourceFormValidator.validate(toSubmit);
       const id: UUID = sourceToEdit
-        ? await updateExistingSource(data)
-        : await createNewSource(data);
-      data.metadataValues = await submitMetadataValues(
+        ? await updateExistingSource(toSubmit)
+        : await createNewSource(toSubmit);
+
+      /**
+       * Create metadata values here
+       * instead of metadata value component
+       * to prevent the creation of inaccessible db entries.
+       * All other resources can be viewed and deleted
+       * independently of their resource page.
+       */
+      const metadataValues = await createMetadataValues(
         sourceToEdit,
         keys,
-        values,
+        toSubmit.metadataValues,
       );
-      await submitLinkedResources(id, data);
-      onSubmitted({ ...data, id });
+
+      const source: Source = { ...toSubmit, id, metadataValues };
+      await linkResources(source);
+      onSubmitted(source);
     } catch (error) {
       await setFormErrors(error, setErrors);
     }
   }
 
-  async function submitLinkedResources(id: UUID, data: SourceFormSubmit) {
-    const metadataValues = data.metadataValues.map(toResultMetadataValue);
-    await updateSourceMetadataValues(id, metadataValues);
-    await updateSourceTags(id, data.tags);
-    await updateSourceLanguages(id, data.languages);
+  async function linkResources(source: Source) {
+    const id = source.id;
+    await updateSourceMetadataValues(id, source.metadataValues);
+    await updateSourceTags(id, source.tags);
+    await updateSourceLanguages(id, source.languages);
+    await updateSourceMedia(id, source.media);
   }
 
   async function updateExistingSource(data: SourceFormSubmit): Promise<UUID> {

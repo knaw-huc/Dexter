@@ -81,10 +81,8 @@ class CorporaResource(private val jdbi: Jdbi) {
     fun createCorpus(formCorpus: FormCorpus, @Auth user: DexterUser): ResultCorpus {
         log.info("createCorpus[${user.name}]: formCorpus=[$formCorpus]")
         return jdbi.inTransaction<ResultCorpus, Exception>(REPEATABLE_READ) { tx ->
-            val userDao = tx.attach(UsersDao::class.java)
             val corpusDao = tx.attach(CorporaDao::class.java)
-            val createdBy = userDao.findByName(user.name) ?: throw NotFoundException("Unknown user: $user")
-            diagnoseViolations { corpusDao.insert(formCorpus, createdBy.id) }
+            diagnoseViolations { corpusDao.insert(formCorpus, user.id) }
         }
     }
 
@@ -262,7 +260,7 @@ class CorporaResource(private val jdbi: Jdbi) {
     @Path("$ID_PATH/$MEDIA")
     fun addMedia(
         @PathParam(ID_PARAM) id: UUID,
-        mediaIds: List<Int>,
+        mediaIds: List<UUID>,
         @Auth user: DexterUser
     ): List<ResultMedia> = onAccessibleCorpus(id, user.id) { dao, corpus ->
         log.info("addMedia: corpusId=${corpus.id}, media=$mediaIds")
@@ -274,15 +272,13 @@ class CorporaResource(private val jdbi: Jdbi) {
     @Path("$ID_PATH/$MEDIA/{mediaId}")
     fun deleteMedia(
         @PathParam(ID_PARAM) id: UUID,
-        @PathParam("mediaId") mediaId: Int,
+        @PathParam("mediaId") mediaId: UUID,
         @Auth user: DexterUser
     ): List<ResultMedia> = onAccessibleCorpus(id, user.id) { dao, corpus ->
         log.info("deleteMedia: corpusId=${corpus.id}, mediaId=$mediaId")
         dao.deleteMedia(corpus.id, mediaId)
         dao.getMedia(corpus.id)
     }
-
-
 
     private fun <R> onAccessibleCorpusWithHandle(
         corpusId: UUID,

@@ -48,9 +48,7 @@ class MetadataValuesResource(private val jdbi: Jdbi) {
         @Auth user: DexterUser
     ): ResultMetadataValue {
         return jdbi.inTransaction<ResultMetadataValue, Exception>(REPEATABLE_READ) { tx ->
-            val userDao = tx.attach(UsersDao::class.java)
-            val createdBy = userDao.findByName(user.name) ?: throw NotFoundException("Unknown user: $user")
-            diagnoseViolations { metadataValues().insert(metadataValue, createdBy.id) }
+            diagnoseViolations { metadataValues().insert(metadataValue, user.id) }
         }
     }
 

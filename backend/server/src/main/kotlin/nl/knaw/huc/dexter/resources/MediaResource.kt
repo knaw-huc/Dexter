@@ -1,7 +1,9 @@
 package nl.knaw.huc.dexter.resources
 
 import FormMedia
+import MediaTypeChecker.Companion.getMediaType
 import ResultMedia
+import SupportedMediaType
 import UnauthorizedException
 import io.dropwizard.auth.Auth
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PARAM
@@ -11,16 +13,23 @@ import nl.knaw.huc.dexter.auth.DexterUser
 import nl.knaw.huc.dexter.auth.RoleNames
 import nl.knaw.huc.dexter.db.DaoBlock
 import nl.knaw.huc.dexter.db.MediaDao
-import nl.knaw.huc.dexter.db.UsersDao
+import nl.knaw.huc.dexter.db.MediaDao.Companion.mediaNotFound
+import nl.knaw.huc.dexter.db.MediaDao.Companion.mediaTypeNotSupported
 import nl.knaw.huc.dexter.helpers.PsqlDiagnosticsHelper.Companion.diagnoseViolations
+import org.apache.commons.lang3.StringUtils.isBlank
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel.REPEATABLE_READ
 import org.slf4j.LoggerFactory
+import toMedia
+import java.net.URL
 import java.util.*
 import javax.annotation.security.RolesAllowed
 import javax.ws.rs.*
+import javax.ws.rs.client.Client
+import javax.ws.rs.client.ClientBuilder
 import javax.ws.rs.core.MediaType.APPLICATION_JSON
 import javax.ws.rs.core.Response
+
 
 @Path(MEDIA)
 @RolesAllowed(RoleNames.USER)
@@ -43,13 +52,12 @@ class MediaResource(private val jdbi: Jdbi) {
     @POST
     @Consumes(APPLICATION_JSON)
     fun createMedia(
-        media: FormMedia,
+        mediaForm: FormMedia,
         @Auth user: DexterUser
     ): ResultMedia {
+        val media = mediaForm.toMedia(getMediaType(mediaForm.url))
         return jdbi.inTransaction<ResultMedia, Exception>(REPEATABLE_READ) { tx ->
-            val userDao = tx.attach(UsersDao::class.java)
-            val createdBy = userDao.findByName(user.name) ?: throw NotFoundException("Unknown user: $user")
-            diagnoseViolations { media().insert(media, createdBy.id) }
+            diagnoseViolations { media().insert(media, user.id) }
         }
     }
 
@@ -57,13 +65,15 @@ class MediaResource(private val jdbi: Jdbi) {
     @Path(ID_PATH)
     fun updateMedia(
         @PathParam(ID_PARAM) id: UUID,
-        formMedia: FormMedia,
+        mediaForm: FormMedia,
         @Auth user: DexterUser
-    ): ResultMedia =
-        onAccessibleMedia(id, user.id) { dao, m ->
-            log.info("updateMedia: mediaId=${m.id}, formMedia=$formMedia")
-            dao.update(m.id, formMedia)
+    ): ResultMedia {
+        val media = mediaForm.toMedia(getMediaType(mediaForm.url))
+        return onAccessibleMedia(id, user.id) { dao, m ->
+            log.info("updateMedia: mediaId=${m.id}, formMedia=$media")
+            dao.update(m.id, media)
         }
+    }
 
     @DELETE
     @Path(ID_PATH)
@@ -92,6 +102,4 @@ class MediaResource(private val jdbi: Jdbi) {
 
     private fun media() = jdbi.onDemand(MediaDao::class.java)
 
-    private fun mediaNotFound(mediaId: UUID): Nothing =
-        throw NotFoundException("Media not found: $mediaId")
 }

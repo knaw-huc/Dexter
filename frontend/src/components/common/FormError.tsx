@@ -29,6 +29,20 @@ function isValidationError(error: Error): error is ValidationError {
   return !!(error as ValidationError).path;
 }
 
+const constraintToError: Record<
+  string,
+  { field: string; error: ErrorWithMessage }
+> = {
+  UNIQUE_TITLE_CONSTRAINT: {
+    field: 'title',
+    error: { message: 'Title already exists' },
+  },
+  MEDIA_UNIQUE_URL_CONSTRAINT: {
+    field: 'url',
+    error: { message: 'Media entry with this url already exists' },
+  },
+};
+
 /**
  * Filter backend errors by their message constraint,
  * or return 'generic' error
@@ -39,9 +53,10 @@ export async function setFormErrors<T>(
 ): Promise<void> {
   if (isResponseError(error)) {
     const errorResponseBody = await error.response.json();
-    if (errorResponseBody.message.includes('UNIQUE_TITLE_CONSTRAINT')) {
-      const title = { message: 'Title already exists' };
-      return dispatch(prev => ({ ...prev, title }));
+    for (const [constraint, { field, error }] of _.entries(constraintToError)) {
+      if (errorResponseBody.message.includes(constraint)) {
+        return dispatch(prev => _.set({ ...prev }, field as keyof T, error));
+      }
     }
   } else if (isValidationError(error)) {
     return dispatch(prev => _.set({ ...prev }, error.path as keyof T, error));

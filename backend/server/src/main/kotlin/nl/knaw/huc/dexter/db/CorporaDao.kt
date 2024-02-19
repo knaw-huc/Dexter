@@ -99,10 +99,10 @@ interface CorporaDao {
     fun getMedia(corpusId: UUID): List<ResultMedia>
 
     @SqlUpdate("insert into corpora_media (corpus_id, media_id) values (:corpusId, :mediaId) on conflict do nothing")
-    fun addMedia(corpusId: UUID, mediaId: Int)
+    fun addMedia(corpusId: UUID, mediaId: UUID)
 
     @SqlUpdate("delete from corpora_media where corpus_id = :corpusId and media_id = :mediaId")
-    fun deleteMedia(corpusId: UUID, mediaId: Int)
+    fun deleteMedia(corpusId: UUID, mediaId: UUID)
     
     companion object {
         fun corpusNotFound(corpusId: UUID): Nothing = throw NotFoundException("Corpus not found: $corpusId")

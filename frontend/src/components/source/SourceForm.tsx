@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import {
   AccessOptions,
-  FormMetadataValue,
   ResultMetadataKey,
   Source,
+  SourceFormSubmit,
 } from '../../model/DexterModel';
 import ScrollableModal from '../common/ScrollableModal';
 import { SelectTagField } from '../tag/SelectTagField';
@@ -38,24 +38,24 @@ type SourceFormProps = {
 export function SourceForm(props: SourceFormProps) {
   const sourceToEdit = props.sourceToEdit;
 
-  const [form, setForm] = useState<Source>();
-  const [errors, setErrors] = useState<FormErrors<Source>>();
+  const [form, setForm] = useState<SourceFormSubmit>();
+  const [errors, setErrors] = useState<FormErrors<SourceFormSubmit>>();
   const [keys, setKeys] = useState<ResultMetadataKey[]>([]);
-  const [values, setValues] = useState<FormMetadataValue[]>([]);
 
   const { init, isInit } = useInitSourceForm({
     sourceToEdit,
     setForm,
     setErrors,
     setKeys,
-    setValues,
   });
   const { submitSourceForm } = useSubmitSourceForm({
     sourceToEdit,
     setErrors,
     onSubmitted: props.onSaved,
   });
-  const { isImportLoading, loadImport } = useImportMetadata({ setErrors });
+  const { isImportLoading, loadImport } = useImportMetadata<SourceFormSubmit>({
+    setErrors,
+  });
 
   useEffect(init, []);
   useEffect(scrollToError, [errors]);
@@ -65,11 +65,11 @@ export function SourceForm(props: SourceFormProps) {
   }
 
   async function handleSubmit() {
-    await submitSourceForm(form, keys, values);
+    await submitSourceForm(form, keys);
   }
 
   function renderFormField(
-    fieldName: keyof Source,
+    fieldName: keyof SourceFormSubmit,
     props?: TextareaFieldProps,
   ) {
     return (
@@ -150,10 +150,9 @@ export function SourceForm(props: SourceFormProps) {
 
         <MetadataValueFormFields
           keys={keys}
-          values={values}
-          onChange={setValues}
+          values={form.metadataValues}
+          onChange={metadataValues => setForm(f => ({ ...f, metadataValues }))}
         />
-        <ErrorMessage error={errors.metadataValues} />
 
         <SubmitButton onClick={handleSubmit} />
       </form>

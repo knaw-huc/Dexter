@@ -3,7 +3,7 @@ import { getMetadataKeys } from '../../utils/API';
 import { errorContext } from '../../state/error/errorContext';
 import { ResultMetadataKey } from '../../model/DexterModel';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
-import { AddNewResourceButton } from '../source/AddNewResourceButton';
+import { AddNewResourceButton } from '../common/AddNewResourceButton';
 import { MetadataKeyListItem } from './MetadataKeyListItem';
 import { MetadataKeyForm } from './MetadataKeyForm';
 import { ErrorBoundary } from '../common/ErrorBoundary';

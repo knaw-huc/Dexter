@@ -28,6 +28,7 @@ const keys = 'keys';
 const values = 'values';
 const media = 'media';
 const tags = 'tags';
+const withResources = 'with-resources';
 
 // Update methods:
 const POST = 'POST';
@@ -99,11 +100,11 @@ async function fetchValidatedDelete(url: string) {
 }
 
 export const getCorporaWithResources = async (): Promise<Corpus[]> => {
-  return fetchValidated(`/${api}/${corpora}/with-resources`);
+  return fetchValidated(`/${api}/${corpora}/${withResources}`);
 };
 
 export const getCorpusWithResourcesById = async (id: string): Promise<Corpus> =>
-  fetchValidated(`/${api}/${corpora}/${id}/with-resources`);
+  fetchValidated(`/${api}/${corpora}/${id}/${withResources}`);
 
 export const createCorpus = async (newCorpus: FormCorpus): Promise<Corpus> =>
   fetchValidatedWith(`/${api}/${corpora}`, POST, newCorpus);
@@ -117,11 +118,11 @@ export const deleteCollection = async (id: string): Promise<void> =>
   fetchValidatedDelete(`/${api}/${corpora}/${id}`);
 
 export const getSourcesWithResources = async (): Promise<Source[]> => {
-  return fetchValidated(`/${api}/${sources}/with-resources`);
+  return fetchValidated(`/${api}/${sources}/${withResources}`);
 };
 
 export const getSourceWithResourcesById = async (id: string) =>
-  fetchValidated(`/${api}/${sources}/${id}/with-resources`);
+  fetchValidated(`/${api}/${sources}/${id}/${withResources}`);
 
 export const createSource = async (
   newSource: FormSource,
@@ -309,6 +310,8 @@ export const addMetadataValueToCorpus = async (
 /**
  * Media:
  */
+export const getMedia = async (): Promise<ResultMedia[]> =>
+  fetchValidated(`/${api}/${media}`);
 
 export const createMedia = async (form: FormMedia): Promise<ResultMedia> =>
   fetchValidatedWith(`/${api}/${media}`, POST, form);
