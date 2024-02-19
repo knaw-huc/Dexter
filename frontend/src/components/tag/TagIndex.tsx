@@ -5,7 +5,7 @@ import { TagForm } from './TagForm';
 import { TagList } from './TagList';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
 
-export const TagsPage = () => {
+export const TagIndex = () => {
   const [tags, setTags] = useState<ResultTag[]>([]);
 
   React.useEffect(() => {

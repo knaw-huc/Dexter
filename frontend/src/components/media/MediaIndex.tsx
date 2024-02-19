@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { ResultMedia } from '../../model/DexterModel';
-import { MediaListItem } from './MediaListItem';
+import { MediaCard } from './MediaCard';
 import { MediaForm } from './MediaForm';
 import { AddNewResourceButton } from '../common/AddNewResourceButton';
-import { List } from '@mui/material';
+import { Grid } from '@mui/material';
 import { errorContext } from '../../state/error/errorContext';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
 import { getMedia } from '../../utils/API';
@@ -16,7 +16,7 @@ export function MediaIndex() {
   const [mediaToEdit, setMediaToEdit] = React.useState<ResultMedia>(null);
 
   useEffect(() => {
-    async function initRemedia() {
+    async function init() {
       try {
         setMedia(await getMedia());
       } catch (e) {
@@ -26,7 +26,7 @@ export function MediaIndex() {
 
     if (!isInit) {
       setInit(true);
-      initRemedia();
+      init();
     }
   }, [isInit]);
 
@@ -76,16 +76,17 @@ export function MediaIndex() {
         />
       )}
       {media && (
-        <List sx={{ mt: '1em' }}>
+        <Grid container spacing={2}>
           {media.map(media => (
-            <MediaListItem
-              key={media.id}
-              media={media}
-              onDelete={() => handleDelete(media)}
-              onEdit={() => handleEdit(media)}
-            />
+            <Grid item key={media.id} xs={4}>
+              <MediaCard
+                media={media}
+                onDelete={() => handleDelete(media)}
+                onEdit={() => handleEdit(media)}
+              />
+            </Grid>
           ))}
-        </List>
+        </Grid>
       )}
     </>
   );

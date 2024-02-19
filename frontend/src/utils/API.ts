@@ -18,17 +18,17 @@ import {
 } from '../model/DexterModel';
 import { validateResponse } from './validateResponse';
 import _ from 'lodash';
-
-// Resources:
-const api = 'api';
-const sources = 'sources';
-const corpora = 'corpora';
-const metadata = 'metadata';
-const keys = 'keys';
-const values = 'values';
-const media = 'media';
-const tags = 'tags';
-const withResources = 'with-resources';
+import {
+  api,
+  corpora,
+  keys,
+  media,
+  metadata,
+  sources,
+  tags,
+  values,
+  withResources,
+} from '../model/Resources';
 
 // Update methods:
 const POST = 'POST';
@@ -312,6 +312,9 @@ export const addMetadataValueToCorpus = async (
  */
 export const getMedia = async (): Promise<ResultMedia[]> =>
   fetchValidated(`/${api}/${media}`);
+
+export const getMediaEntry = async (id: UUID): Promise<ResultMedia> =>
+  fetchValidated(`/${api}/${media}/${id}`);
 
 export const createMedia = async (form: FormMedia): Promise<ResultMedia> =>
   fetchValidatedWith(`/${api}/${media}`, POST, form);

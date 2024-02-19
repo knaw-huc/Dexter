@@ -44,8 +44,8 @@ export function MediaForm(props: MediaFormProps) {
     const init = async () => {
       const inEdit = props.inEdit;
       setForm({
-        url: inEdit.url,
-        title: inEdit.title,
+        url: inEdit?.url || '',
+        title: inEdit?.title || '',
       });
       setErrors({} as FormErrors<FormMedia>);
       setInit(true);
@@ -58,11 +58,7 @@ export function MediaForm(props: MediaFormProps) {
   useEffect(scrollToError, [errors]);
 
   async function createNewMedia() {
-    try {
-      return createMedia(form);
-    } catch (e) {
-      await setFormErrors(e, setErrors);
-    }
+    return createMedia(form);
   }
 
   async function updateExistingMedia(): Promise<ResultMedia> {
@@ -93,10 +89,9 @@ export function MediaForm(props: MediaFormProps) {
           onClick={props.onClose}
         />
 
-        <h1>{props.inEdit ? 'Edit media field' : 'Create new media field'}</h1>
+        <h1>{props.inEdit ? 'Edit media' : 'Add media'}</h1>
         <form onSubmit={onSubmit(handleSubmit)}>
           <FormErrorMessage error={errors.generic} />
-
           <ErrorMessage error={errors.title} />
           <TextField
             fullWidth

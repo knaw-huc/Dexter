@@ -15,7 +15,12 @@ export function FormErrorMessage(props: { error?: ErrorWithMessage }) {
   }
 
   return (
-    <Alert ref={ref} className={ERROR_MESSAGE_CLASS} severity="error">
+    <Alert
+      ref={ref}
+      className={ERROR_MESSAGE_CLASS}
+      severity="error"
+      style={{ marginBottom: '0.5em' }}
+    >
       An error occurred: {formError.message}
     </Alert>
   );
@@ -52,11 +57,14 @@ export async function setFormErrors<T>(
   dispatch: DispatchFormError<T>,
 ): Promise<void> {
   if (isResponseError(error)) {
-    const errorResponseBody = await error.response.json();
+    const responseError = await error.response.json();
     for (const [constraint, { field, error }] of _.entries(constraintToError)) {
-      if (errorResponseBody.message.includes(constraint)) {
+      if (responseError.message.includes(constraint)) {
         return dispatch(prev => _.set({ ...prev }, field as keyof T, error));
       }
+    }
+    if (responseError.message) {
+      return dispatch(f => ({ ...f, generic: responseError }));
     }
   } else if (isValidationError(error)) {
     return dispatch(prev => _.set({ ...prev }, error.path as keyof T, error));

@@ -44,8 +44,11 @@ interface MediaDao {
 
         fun mediaTypeNotSupported(found: String): Nothing =
             throw BadRequestException(
-                "Media type $found but should be one of ${
-                    SupportedMediaType.values().joinToString { "-" }
+                "Media type found: $found, but should be one of: ${
+                    SupportedMediaType
+                        .values()
+                        .map { it -> it.mediaType }
+                        .joinToString(", ")
                 }"
             )
     }
