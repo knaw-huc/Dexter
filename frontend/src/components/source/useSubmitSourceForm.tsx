@@ -51,10 +51,10 @@ export function useSubmitSourceForm(
 
       /**
        * Create metadata values here
-       * instead of metadata value component
-       * to prevent the creation of inaccessible db entries.
-       * All other resources can be viewed and deleted
-       * independently of their resource page.
+       * and not in the metadata value form component
+       * to prevent creating inaccessible db entries.
+       * (All other resources can be viewed and deleted
+       * at their resource page.)
        */
       const metadataValues = await createMetadataValues(
         sourceToEdit,
