@@ -1,5 +1,3 @@
-import { Dispatch, SetStateAction } from 'react';
-import { FormErrors, setFormErrors } from '../common/FormError';
 import {
   Corpus,
   CorpusFormSubmit,
@@ -30,7 +28,7 @@ type UseSubmitCorpusFormResult = {
 
 type UseSubmitCorpusFormParams = {
   corpusToEdit?: Corpus;
-  setErrors: Dispatch<SetStateAction<FormErrors<Corpus>>>;
+  setError: (error: Error) => Promise<void>;
   onSubmitted: (submitted: Corpus) => void;
   corpusId?: UUID;
 };
@@ -38,7 +36,7 @@ type UseSubmitCorpusFormParams = {
 export function useSubmitCorpusForm(
   params: UseSubmitCorpusFormParams,
 ): UseSubmitCorpusFormResult {
-  const { corpusToEdit, onSubmitted, setErrors } = params;
+  const { corpusToEdit, onSubmitted, setError } = params;
 
   async function submitCorpusForm(
     toSubmit: CorpusFormSubmit,
@@ -64,7 +62,7 @@ export function useSubmitCorpusForm(
       await linkResources(corpus);
       onSubmitted(corpus);
     } catch (e) {
-      await setFormErrors(e, setErrors);
+      await setError(e);
     }
   }
 

@@ -1,8 +1,8 @@
-import { Dispatch, SetStateAction, useState } from 'react';
+import { useState } from 'react';
 import isUrl from '../../utils/isUrl';
-import { FormErrors, setFormErrors } from '../common/FormError';
 import { ResultImport, Source } from '../../model/DexterModel';
 import { postImport } from '../../utils/API';
+import { ErrorWithMessage } from '../ErrorHandler';
 
 type WithExternalRef = {
   externalRef?: string;
@@ -14,12 +14,14 @@ type UseImportMetadataResult<T extends WithExternalRef> = {
 };
 
 type UseImportMetadataParams = {
-  setErrors: Dispatch<SetStateAction<FormErrors<Source>>>;
+  setError: (error: ErrorWithMessage) => Promise<void>;
+  setFieldError: (field: keyof Source, error: ErrorWithMessage) => void;
 };
 
 export function useImportMetadata<T extends WithExternalRef>(
   params: UseImportMetadataParams,
 ): UseImportMetadataResult<T> {
+  const { setError, setFieldError } = params;
   const [isImportLoading, setImportLoading] = useState(false);
 
   function checkCanImporting(externalRef: string) {
@@ -45,13 +47,12 @@ export function useImportMetadata<T extends WithExternalRef>(
     try {
       tmsImport = await postImport(new URL(form.externalRef));
     } catch (e) {
-      await setFormErrors(e, params.setErrors);
+      await setError(e);
     }
     if (!tmsImport?.isValidExternalReference) {
-      params.setErrors(prev => ({
-        ...prev,
-        externalRef: { message: 'External reference could not be imported' },
-      }));
+      setFieldError('externalRef', {
+        message: 'External reference could not be imported',
+      });
       setImportLoading(false);
       return form;
     }

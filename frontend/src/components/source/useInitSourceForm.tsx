@@ -6,7 +6,6 @@ import {
   toFormMetadataValue,
 } from '../../model/DexterModel';
 import { getMetadataKeys } from '../../utils/API';
-import { FormErrors } from '../common/FormError';
 
 type UseInitSourceFormResult = {
   init: () => void;
@@ -16,7 +15,6 @@ type UseInitSourceFormResult = {
 type UseInitSourceFormParams = {
   sourceToEdit?: Source;
   setForm: Dispatch<SetStateAction<SourceFormSubmit>>;
-  setErrors: Dispatch<SetStateAction<FormErrors<SourceFormSubmit>>>;
   setKeys: Dispatch<ResultMetadataKey[]>;
 };
 
@@ -51,7 +49,7 @@ function toSourceForm(toEdit?: Source): SourceFormSubmit {
 export function useInitSourceForm(
   params: UseInitSourceFormParams,
 ): UseInitSourceFormResult {
-  const { sourceToEdit, setForm, setErrors, setKeys } = params;
+  const { sourceToEdit, setForm, setKeys } = params;
   const [isInit, setInit] = useState(false);
 
   function init() {
@@ -63,7 +61,6 @@ export function useInitSourceForm(
       }
 
       setForm(toSourceForm(sourceToEdit));
-      setErrors({} as FormErrors<SourceFormSubmit>);
       setKeys(await getMetadataKeys());
       setInit(true);
     }

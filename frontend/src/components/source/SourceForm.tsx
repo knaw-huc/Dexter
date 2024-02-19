@@ -12,11 +12,7 @@ import { Label } from '../common/Label';
 import { ValidatedSelectField } from '../common/ValidatedSelectField';
 import { ErrorMessage } from '../common/ErrorMessage';
 import { TextFieldWithError } from './TextFieldWithError';
-import {
-  FormErrorMessage,
-  FormErrors,
-  scrollToError,
-} from '../common/FormError';
+import { FormErrorMessage, scrollToError } from '../common/FormError';
 import { CloseInlineIcon } from '../common/CloseInlineIcon';
 import { SubmitButton } from '../common/SubmitButton';
 import { ImportField } from './ImportField';
@@ -27,6 +23,7 @@ import { useSubmitSourceForm } from './useSubmitSourceForm';
 import { useInitSourceForm } from './useInitSourceForm';
 import { TextareaFieldProps } from '../common/TextareaFieldProps';
 import { onSubmit } from '../../utils/onSubmit';
+import { useFormErrors } from '../common/useFormErrors';
 
 type SourceFormProps = {
   sourceToEdit?: Source;
@@ -39,22 +36,22 @@ export function SourceForm(props: SourceFormProps) {
   const sourceToEdit = props.sourceToEdit;
 
   const [form, setForm] = useState<SourceFormSubmit>();
-  const [errors, setErrors] = useState<FormErrors<SourceFormSubmit>>();
+  const { errors, setError, setFieldError } = useFormErrors<Source>();
   const [keys, setKeys] = useState<ResultMetadataKey[]>([]);
 
   const { init, isInit } = useInitSourceForm({
     sourceToEdit,
     setForm,
-    setErrors,
     setKeys,
   });
   const { submitSourceForm } = useSubmitSourceForm({
     sourceToEdit,
-    setErrors,
+    setError,
     onSubmitted: props.onSaved,
   });
   const { isImportLoading, loadImport } = useImportMetadata<SourceFormSubmit>({
-    setErrors,
+    setError,
+    setFieldError,
   });
 
   useEffect(init, []);

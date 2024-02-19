@@ -8,18 +8,14 @@ import {
 } from '../../model/DexterModel';
 import { createMedia, updateMedia } from '../../utils/API';
 import ScrollableModal from '../common/ScrollableModal';
-import {
-  FormErrorMessage,
-  FormErrors,
-  scrollToError,
-  setFormErrors,
-} from '../common/FormError';
+import { FormErrorMessage, scrollToError } from '../common/FormError';
 import { CloseInlineIcon } from '../common/CloseInlineIcon';
 import { SubmitButton } from '../common/SubmitButton';
 import { ErrorMessage } from '../common/ErrorMessage';
 import * as yup from 'yup';
 import { onSubmit } from '../../utils/onSubmit';
 import { validUrl } from '../../utils/validateFields';
+import { useFormErrors } from '../common/useFormErrors';
 
 type MediaFormProps = {
   inEdit?: ResultMedia;
@@ -36,8 +32,8 @@ const mediaSchema = yup.object({
 });
 
 export function MediaForm(props: MediaFormProps) {
-  const [errors, setErrors] = useState<FormErrors<FormMedia>>();
   const [form, setForm] = useState<FormMedia>();
+  const { errors, setError } = useFormErrors<FormMedia>();
   const [isInit, setInit] = useState(false);
 
   useEffect(() => {
@@ -47,7 +43,6 @@ export function MediaForm(props: MediaFormProps) {
         url: inEdit?.url || '',
         title: inEdit?.title || '',
       });
-      setErrors({} as FormErrors<FormMedia>);
       setInit(true);
     };
     if (!isInit) {
@@ -74,7 +69,7 @@ export function MediaForm(props: MediaFormProps) {
         : await createNewMedia();
       props.onSaved(result);
     } catch (error) {
-      await setFormErrors(error, setErrors);
+      await setError(error);
     }
   }
 

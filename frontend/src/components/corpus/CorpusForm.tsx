@@ -12,11 +12,7 @@ import { SelectParentCorpusField } from './SelectParentCorpusField';
 import ScrollableModal from '../common/ScrollableModal';
 import { ValidatedSelectField } from '../common/ValidatedSelectField';
 import { SelectSourcesField } from './SelectSourcesField';
-import {
-  FormErrorMessage,
-  FormErrors,
-  scrollToError,
-} from '../common/FormError';
+import { FormErrorMessage, scrollToError } from '../common/FormError';
 import { TextFieldWithError } from '../source/TextFieldWithError';
 import { ErrorMessage } from '../common/ErrorMessage';
 import _ from 'lodash';
@@ -28,6 +24,7 @@ import { TextareaFieldProps } from '../common/TextareaFieldProps';
 import { useInitCorpusForm } from './useInitCorpusForm';
 import { useSubmitCorpusForm } from './useSubmitCorpusForm';
 import { onSubmit } from '../../utils/onSubmit';
+import { useFormErrors } from '../common/useFormErrors';
 
 type CorpusFormProps = {
   corpusToEdit?: Corpus;
@@ -41,20 +38,19 @@ export function CorpusForm(props: CorpusFormProps) {
   const corpusToEdit = props.corpusToEdit;
 
   const [form, setForm] = useState<Corpus>();
-  const [errors, setErrors] = useState<FormErrors<Corpus>>();
+  const { errors, setError } = useFormErrors<Corpus>();
   const [keys, setKeys] = useState<ResultMetadataKey[]>([]);
   const [values, setValues] = useState<FormMetadataValue[]>([]);
 
   const { init, isInit } = useInitCorpusForm({
     corpusToEdit,
     setForm,
-    setErrors,
     setKeys,
     setValues,
   });
   const { submitCorpusForm } = useSubmitCorpusForm({
     corpusToEdit,
-    setErrors,
+    setError,
     onSubmitted: props.onSaved,
   });
 

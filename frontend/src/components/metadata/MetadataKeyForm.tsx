@@ -4,18 +4,14 @@ import React, { ChangeEvent, useEffect, useState } from 'react';
 import { FormMetadataKey, ResultMetadataKey } from '../../model/DexterModel';
 import { createMetadataKey, updateMetadataKey } from '../../utils/API';
 import ScrollableModal from '../common/ScrollableModal';
-import {
-  FormErrorMessage,
-  FormErrors,
-  scrollToError,
-  setFormErrors,
-} from '../common/FormError';
+import { FormErrorMessage, scrollToError } from '../common/FormError';
 import { CloseInlineIcon } from '../common/CloseInlineIcon';
 import { SubmitButton } from '../common/SubmitButton';
 import { ErrorMessage } from '../common/ErrorMessage';
 import { Label } from '../common/Label';
 import * as yup from 'yup';
 import { onSubmit } from '../../utils/onSubmit';
+import { useFormErrors } from '../common/useFormErrors';
 
 type MetadataKeyFormProps = {
   inEdit?: ResultMetadataKey;
@@ -31,14 +27,13 @@ const metadataKeySchema = yup.object({
 });
 
 export function MetadataKeyForm(props: MetadataKeyFormProps) {
-  const [errors, setErrors] = useState<FormErrors<FormMetadataKey>>();
+  const { errors, setError } = useFormErrors<FormMetadataKey>();
   const [keyField, setKeyField] = useState('');
   const [isInit, setInit] = useState(false);
 
   useEffect(() => {
     const init = async () => {
       setKeyField(props.inEdit?.key || '');
-      setErrors({} as FormErrors<FormMetadataKey>);
       setInit(true);
     };
     if (!isInit) {
@@ -68,7 +63,7 @@ export function MetadataKeyForm(props: MetadataKeyFormProps) {
         : await createNewMetadataKey(data);
       props.onSaved({ id, ...data });
     } catch (error) {
-      await setFormErrors(error, setErrors);
+      await setError(error);
     }
   }
 

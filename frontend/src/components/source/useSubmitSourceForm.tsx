@@ -1,5 +1,3 @@
-import { Dispatch, SetStateAction } from 'react';
-import { FormErrors, setFormErrors } from '../common/FormError';
 import {
   ResultMetadataKey,
   Source,
@@ -29,7 +27,7 @@ type UseSubmitSourceFormResult = {
 
 type UseSubmitSourceFormParams = {
   sourceToEdit?: Source;
-  setErrors: Dispatch<SetStateAction<FormErrors<Source>>>;
+  setError: (error: Error) => Promise<void>;
   onSubmitted: (submitted: Source) => void;
   corpusId?: UUID;
 };
@@ -37,7 +35,7 @@ type UseSubmitSourceFormParams = {
 export function useSubmitSourceForm(
   params: UseSubmitSourceFormParams,
 ): UseSubmitSourceFormResult {
-  const { setErrors, sourceToEdit, corpusId, onSubmitted } = params;
+  const { setError, sourceToEdit, corpusId, onSubmitted } = params;
 
   async function submitSourceForm(
     toSubmit: SourceFormSubmit,
@@ -66,7 +64,7 @@ export function useSubmitSourceForm(
       await linkResources(source);
       onSubmitted(source);
     } catch (error) {
-      await setFormErrors(error, setErrors);
+      await setError(error);
     }
   }
 
