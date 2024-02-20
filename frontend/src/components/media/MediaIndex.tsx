@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { ResultMedia } from '../../model/DexterModel';
-import { MediaCard } from './MediaCard';
+import { image, ResultMedia } from '../../model/DexterModel';
+import { MediaPreview } from './MediaPreview';
 import { MediaForm } from './MediaForm';
 import { AddNewResourceButton } from '../common/AddNewResourceButton';
 import { Grid } from '@mui/material';
@@ -18,7 +18,8 @@ export function MediaIndex() {
   useEffect(() => {
     async function init() {
       try {
-        setMedia(await getMedia());
+        // TODO: support multiple media types
+        setMedia(await getMedia(image));
       } catch (e) {
         dispatchError(e);
       }
@@ -79,7 +80,7 @@ export function MediaIndex() {
         <Grid container spacing={2}>
           {media.map(media => (
             <Grid item key={media.id} xs={4}>
-              <MediaCard
+              <MediaPreview
                 media={media}
                 onDelete={() => handleDelete(media)}
                 onEdit={() => handleEdit(media)}

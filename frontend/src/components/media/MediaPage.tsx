@@ -8,6 +8,7 @@ import { getMediaEntry } from '../../utils/API';
 import { ResultMedia } from '../../model/DexterModel';
 import { MediaForm } from './MediaForm';
 import { Grid } from '@mui/material';
+import { Title } from './Title';
 
 export function MediaPage() {
   const [media, setMedia] = useState<ResultMedia>();
@@ -51,7 +52,7 @@ export function MediaPage() {
           <EditButton onEdit={() => setShowForm(true)} />
           <h1 style={{ marginTop: 0 }}>
             <MediaIcon />
-            {media.title || 'Untitled'}
+            <Title title={media.title} />
           </h1>
           <img src={media.url} alt={media.title} width="100%" />
         </Grid>

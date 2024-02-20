@@ -7,6 +7,7 @@ import { PClamped } from '../common/PClamped';
 import { TagList } from '../tag/TagList';
 import { CloseInlineIcon } from '../common/CloseInlineIcon';
 import { SourceIcon } from './SourceIcon';
+import { Title } from '../media/Title';
 
 interface SourceItemDropdownProps {
   source: Source;
@@ -42,7 +43,7 @@ export const SourcePreview = (props: SourceItemDropdownProps) => {
               onClick={() => navigate(`/sources/${props.source.id}`)}
             >
               <SourceIcon fontSize="small" />
-              {props.source.title}
+              <Title title={props.source.title} />
             </HeaderLinkClamped>
             <PClamped>{props.source.description}</PClamped>
           </Grid>

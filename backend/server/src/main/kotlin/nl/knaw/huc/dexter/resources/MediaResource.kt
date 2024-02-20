@@ -4,6 +4,7 @@ import FormMedia
 import MediaTypeChecker.Companion.getMediaType
 import ResultMedia
 import SupportedMediaType
+import SupportedMediaTypeType
 import UnauthorizedException
 import io.dropwizard.auth.Auth
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PARAM
@@ -14,19 +15,14 @@ import nl.knaw.huc.dexter.auth.RoleNames
 import nl.knaw.huc.dexter.db.DaoBlock
 import nl.knaw.huc.dexter.db.MediaDao
 import nl.knaw.huc.dexter.db.MediaDao.Companion.mediaNotFound
-import nl.knaw.huc.dexter.db.MediaDao.Companion.mediaTypeNotSupported
 import nl.knaw.huc.dexter.helpers.PsqlDiagnosticsHelper.Companion.diagnoseViolations
-import org.apache.commons.lang3.StringUtils.isBlank
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel.REPEATABLE_READ
 import org.slf4j.LoggerFactory
 import toMedia
-import java.net.URL
 import java.util.*
 import javax.annotation.security.RolesAllowed
 import javax.ws.rs.*
-import javax.ws.rs.client.Client
-import javax.ws.rs.client.ClientBuilder
 import javax.ws.rs.core.MediaType.APPLICATION_JSON
 import javax.ws.rs.core.Response
 
@@ -38,8 +34,18 @@ class MediaResource(private val jdbi: Jdbi) {
     private val log = LoggerFactory.getLogger(javaClass)
 
     @GET
-    fun list(@Auth user: DexterUser) = media()
-        .listByUser(user.id)
+    fun list(
+        @QueryParam("type") type: SupportedMediaTypeType?,
+        @Auth user: DexterUser
+    ): List<ResultMedia> {
+        if(type == null) {
+            return media()
+                .listByUser(user.id)
+        }
+        val mediaTypes = SupportedMediaType.byType(type)
+        return media()
+            .listByUserAndTypes(user.id, mediaTypes)
+    }
 
     @GET
     @Path(ID_PATH)
@@ -100,6 +106,7 @@ class MediaResource(private val jdbi: Jdbi) {
             }
         }
 
-    private fun media() = jdbi.onDemand(MediaDao::class.java)
+    private fun media() = jdbi
+        .onDemand(MediaDao::class.java)
 
 }

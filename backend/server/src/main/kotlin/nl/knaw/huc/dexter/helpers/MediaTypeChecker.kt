@@ -26,7 +26,6 @@ class MediaTypeChecker {
                 throw BadRequestException("No media type found for url $url")
             }
             return SupportedMediaType.fromMediaType(contentType)
-                ?: MediaDao.mediaTypeNotSupported(contentType)
         }
     }
 }

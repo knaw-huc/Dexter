@@ -17,6 +17,7 @@ import isUrl from '../../utils/isUrl';
 import OpenInNewOutlinedIcon from '@mui/icons-material/OpenInNewOutlined';
 import styled from '@emotion/styled';
 import { MetadataValuePageFields } from '../metadata/MetadataValuePageFields';
+import { Title } from '../media/Title';
 
 const OpenInNewOutlinedIconStyled = styled(OpenInNewOutlinedIcon)`
   margin-left: 0.4em;
@@ -84,7 +85,7 @@ export const SourcePage = () => {
           />
           <h1>
             <SourceIcon verticalAlign="middle" fontSize="large" />
-            {source.title}
+            <Title title={source.title} />
           </h1>
           <p>{source.description}</p>
           {!_.isEmpty(source.tags) && (

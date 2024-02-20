@@ -6,6 +6,7 @@ import { Card, CardActions, CardMedia, Grid, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { EditIconStyled } from '../common/EditButton';
 import { DeleteIconStyled } from '../common/DeleteIconStyled';
+import { Title } from './Title';
 
 type MediaItemProps = {
   media: ResultMedia;
@@ -13,7 +14,7 @@ type MediaItemProps = {
   onEdit: () => void;
 };
 
-export const MediaCard = (props: MediaItemProps) => {
+export const MediaPreview = (props: MediaItemProps) => {
   const navigate = useNavigate();
 
   function handleSelect() {
@@ -52,8 +53,8 @@ export const MediaCard = (props: MediaItemProps) => {
         <CardActions>
           <Grid container spacing={2}>
             <Grid item xs={9}>
-              <Typography gutterBottom variant="h5">
-                {props.media.title}
+              <Typography gutterBottom variant="h5" sx={{ ml: '0.25em' }}>
+                <Title title={props.media.title} />
               </Typography>
             </Grid>
             <Grid

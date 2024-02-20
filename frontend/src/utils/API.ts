@@ -14,6 +14,7 @@ import {
   ResultSource,
   ResultTag,
   Source,
+  SupportedMediaTypeType,
   UUID,
 } from '../model/DexterModel';
 import { validateResponse } from './validateResponse';
@@ -58,8 +59,12 @@ export async function toReadable(prefixMessage: string, e: ResponseError) {
   return { message: `${prefixMessage}: ${json.message}` };
 }
 
-async function fetchValidated(path: string) {
-  const response = await fetch(path, {
+async function fetchValidated(path: string, params?: Record<string, string>) {
+  let url = path;
+  if (!_.isEmpty(params)) {
+    url += `?${new URLSearchParams(params)}`;
+  }
+  const response = await fetch(url, {
     headers,
     method: 'GET',
   });
@@ -310,8 +315,9 @@ export const addMetadataValueToCorpus = async (
 /**
  * Media:
  */
-export const getMedia = async (): Promise<ResultMedia[]> =>
-  fetchValidated(`/${api}/${media}`);
+export const getMedia = async (
+  type?: SupportedMediaTypeType,
+): Promise<ResultMedia[]> => fetchValidated(`/${api}/${media}`, { type });
 
 export const getMediaEntry = async (id: UUID): Promise<ResultMedia> =>
   fetchValidated(`/${api}/${media}/${id}`);

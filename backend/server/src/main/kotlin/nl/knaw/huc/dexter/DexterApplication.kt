@@ -1,5 +1,7 @@
 package nl.knaw.huc.dexter
 
+import SupportedMediaType
+import SupportedMediaTypeSerializer
 import UnauthorizedExceptionMapper
 import UserResource
 import WereldCulturenDublinCoreImporter
@@ -140,6 +142,7 @@ class DexterApplication : Application<DexterConfiguration>() {
     private fun customizeObjectMapper(environment: Environment) {
         val module = SimpleModule().apply {
             addSerializer(LocalDateTime::class.java, LocalDateTimeSerializer(dateFormatString))
+            addSerializer(SupportedMediaType::class.java, SupportedMediaTypeSerializer())
         }
         environment.objectMapper.apply {
             dateFormat = SimpleDateFormat(dateFormatString)

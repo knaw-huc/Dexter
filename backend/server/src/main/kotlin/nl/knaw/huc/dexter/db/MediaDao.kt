@@ -2,6 +2,8 @@ package nl.knaw.huc.dexter.db
 
 import Media
 import ResultMedia
+import SupportedMediaType
+import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.kotlin.BindKotlin
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
@@ -12,6 +14,13 @@ import javax.ws.rs.NotFoundException
 interface MediaDao {
     @SqlQuery("select * from media where created_by = :userId")
     fun listByUser(userId: UUID): List<ResultMedia>
+
+    @SqlQuery("select * from media where created_by = :userId and media_type in (<mediaTypes>)")
+    fun listByUserAndTypes(
+        userId: UUID,
+        @BindList("mediaTypes") mediaTypes: List<SupportedMediaType>
+    ): List<ResultMedia>
+
 
     @SqlQuery("select * from media where id = :id")
     fun find(id: UUID): ResultMedia?

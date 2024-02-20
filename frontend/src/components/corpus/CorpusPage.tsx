@@ -34,6 +34,7 @@ import { CorporaBreadCrumbLink } from './CorporaBreadCrumbLink';
 import { CorpusParentBreadCrumbLink } from './CorpusParentBreadCrumbLink';
 import { NoResults } from '../common/NoResults';
 import { MetadataValuePageFields } from '../metadata/MetadataValuePageFields';
+import { Title } from '../media/Title';
 
 export const CorpusPage = () => {
   const [corpus, setCorpus] = useState<Corpus>(null);
@@ -158,7 +159,7 @@ export const CorpusPage = () => {
           <EditButton onEdit={() => setShowCorpusForm(true)} />
           <h1 style={{ marginTop: 0 }}>
             <CorpusIcon />
-            {corpus.title || 'Untitled'}
+            <Title title={corpus.title} />
           </h1>
           {corpus.description && <p>{corpus.description}</p>}
           {!_.isEmpty(corpus.tags) && (

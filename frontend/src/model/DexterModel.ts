@@ -156,15 +156,8 @@ export function toMetadataValue(
 }
 
 export type SupportedMediaType = 'image/jpeg' | 'image/png';
-export const supportedMediaTypes = ['image/jpeg', 'image/png'];
-export const supportedMediaSubTypes = supportedMediaTypes.map(
-  t => t.split('/')[1],
-);
-export function isSupportedMediaType(
-  mediaType: string,
-): mediaType is SupportedMediaType {
-  return supportedMediaTypes.includes(mediaType);
-}
+export type SupportedMediaTypeType = 'image';
+export const image = 'image';
 
 export type FormMedia = {
   title: string;
