@@ -24,6 +24,7 @@ import { useInitSourceForm } from './useInitSourceForm';
 import { TextareaFieldProps } from '../common/TextareaFieldProps';
 import { onSubmit } from '../../utils/onSubmit';
 import { useFormErrors } from '../common/useFormErrors';
+import { SelectMediaField } from '../media/SelectMediaField';
 
 type SourceFormProps = {
   sourceToEdit?: Source;
@@ -149,6 +150,16 @@ export function SourceForm(props: SourceFormProps) {
           values={form.metadataValues}
           onChange={metadataValues => setForm(f => ({ ...f, metadataValues }))}
         />
+        <ErrorMessage error={errors.metadataValues} />
+
+        <Label>Media</Label>
+        <SelectMediaField
+          selected={form.media}
+          onChangeSelected={media => setForm(f => ({ ...f, media }))}
+          useAutocomplete
+          allowCreatingNew
+        />
+        <ErrorMessage error={errors.media} />
 
         <SubmitButton onClick={handleSubmit} />
       </form>

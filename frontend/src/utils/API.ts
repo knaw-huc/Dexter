@@ -357,3 +357,8 @@ export const deleteMediaFromSource = async (
   mediaId: string,
 ): Promise<ResultMedia[]> =>
   fetchValidatedDelete(`/${api}/${sources}/${sourceId}/${media}/${mediaId}`);
+
+export const getMediaAutocomplete = async (
+  input: string,
+): Promise<ResultMedia[]> =>
+  fetchValidatedWith(`/${api}/${media}/autocomplete`, POST, input);

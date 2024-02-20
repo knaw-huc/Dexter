@@ -7,9 +7,11 @@ import SupportedMediaType
 import SupportedMediaTypeType
 import UnauthorizedException
 import io.dropwizard.auth.Auth
+import nl.knaw.huc.dexter.api.ResourcePaths
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PARAM
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PATH
 import nl.knaw.huc.dexter.api.ResourcePaths.MEDIA
+import nl.knaw.huc.dexter.api.ResultTag
 import nl.knaw.huc.dexter.auth.DexterUser
 import nl.knaw.huc.dexter.auth.RoleNames
 import nl.knaw.huc.dexter.db.DaoBlock
@@ -54,6 +56,16 @@ class MediaResource(private val jdbi: Jdbi) {
         @Auth user: DexterUser
     ) =
         onAccessibleMedia(mediaId, user.id) { _, m -> m }
+
+    @POST
+    @Path(ResourcePaths.AUTOCOMPLETE)
+    fun getMediaLike(
+        needle: String,
+        @Auth user: DexterUser
+    ): List<ResultMedia> =
+        needle.takeIf { it.isNotEmpty() }
+            ?.let { media().like("%$it%", user.id) }
+            ?: throw BadRequestException("autocomplete string MUST be > 0 (but was ${needle.length}: '$needle')")
 
     @POST
     @Consumes(APPLICATION_JSON)

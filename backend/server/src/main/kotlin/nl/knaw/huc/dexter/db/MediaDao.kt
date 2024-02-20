@@ -40,6 +40,16 @@ interface MediaDao {
     )
     fun update(id: UUID, @BindKotlin media: Media): ResultMedia
 
+    @SqlQuery("select * " +
+            "from media " +
+            "where created_by = :userId " +
+            "and (" +
+            "  lower(url) like lower(:needle) " +
+            "  or " +
+            "  lower(title) like lower(:needle)" +
+            ")")
+    fun like(needle: String, userId: UUID): List<ResultMedia>
+
     /**
      * Cascaded delete also deletes link table entries
      */
