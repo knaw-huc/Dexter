@@ -156,6 +156,7 @@ export function toMetadataValue(
 }
 
 export type SupportedMediaType = 'image/jpeg' | 'image/png';
+export const supportedMediaTypes = ['image/jpeg', 'image/png'];
 export type SupportedMediaTypeType = 'image';
 export const image = 'image';
 

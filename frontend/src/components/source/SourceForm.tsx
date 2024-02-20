@@ -12,7 +12,7 @@ import { Label } from '../common/Label';
 import { ValidatedSelectField } from '../common/ValidatedSelectField';
 import { ErrorMessage } from '../common/ErrorMessage';
 import { TextFieldWithError } from './TextFieldWithError';
-import { FormErrorMessage, scrollToError } from '../common/FormError';
+import { FormErrorMessage } from '../common/FormError';
 import { CloseInlineIcon } from '../common/CloseInlineIcon';
 import { SubmitButton } from '../common/SubmitButton';
 import { ImportField } from './ImportField';
@@ -55,7 +55,6 @@ export function SourceForm(props: SourceFormProps) {
   });
 
   useEffect(init, []);
-  useEffect(scrollToError, [errors]);
 
   async function handleImportMetadata() {
     setForm(await loadImport(form));

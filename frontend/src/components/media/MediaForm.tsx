@@ -4,11 +4,11 @@ import React, { useEffect, useState } from 'react';
 import {
   FormMedia,
   ResultMedia,
-  supportedMediaSubTypes,
+  supportedMediaTypes,
 } from '../../model/DexterModel';
 import { createMedia, updateMedia } from '../../utils/API';
 import ScrollableModal from '../common/ScrollableModal';
-import { FormErrorMessage, scrollToError } from '../common/FormError';
+import { FormErrorMessage } from '../common/FormError';
 import { CloseInlineIcon } from '../common/CloseInlineIcon';
 import { SubmitButton } from '../common/SubmitButton';
 import { ErrorMessage } from '../common/ErrorMessage';
@@ -49,8 +49,6 @@ export function MediaForm(props: MediaFormProps) {
       init();
     }
   }, [isInit]);
-
-  useEffect(scrollToError, [errors]);
 
   async function createNewMedia() {
     return createMedia(form);
@@ -101,7 +99,7 @@ export function MediaForm(props: MediaFormProps) {
           <ErrorMessage error={errors.url} />
           <TextField
             fullWidth
-            placeholder={`Url (${supportedMediaSubTypes.join(', ')})`}
+            placeholder={`Url (${supportedMediaTypes.join(', ')})`}
             value={form.url}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setForm(f => ({ ...f, url: event.target.value }));

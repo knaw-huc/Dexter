@@ -12,7 +12,7 @@ import { SelectParentCorpusField } from './SelectParentCorpusField';
 import ScrollableModal from '../common/ScrollableModal';
 import { ValidatedSelectField } from '../common/ValidatedSelectField';
 import { SelectSourcesField } from './SelectSourcesField';
-import { FormErrorMessage, scrollToError } from '../common/FormError';
+import { FormErrorMessage } from '../common/FormError';
 import { TextFieldWithError } from '../source/TextFieldWithError';
 import { ErrorMessage } from '../common/ErrorMessage';
 import _ from 'lodash';
@@ -55,7 +55,6 @@ export function CorpusForm(props: CorpusFormProps) {
   });
 
   useEffect(init, []);
-  useEffect(scrollToError, [errors]);
 
   async function handleSubmit() {
     await submitCorpusForm(form, keys, values);

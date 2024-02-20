@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ResponseError } from '../../utils/API';
-import { FormErrors } from './FormError';
+import { FormErrors, scrollToError } from './FormError';
 import { ErrorWithMessage } from '../ErrorHandler';
 import _ from 'lodash';
 import { ValidationError } from 'yup';
@@ -34,6 +34,9 @@ const constraintToError: Record<
  */
 export function useFormErrors<T>(): UseFormErrorsResult<T> {
   const [errors, setErrors] = useState<FormErrors<T>>({} as FormErrors<T>);
+
+  useEffect(scrollToError, [errors]);
+
   async function setFormError<T>(error: Error): Promise<void> {
     if (isResponseError(error)) {
       const responseError = await error.response.json();
@@ -62,6 +65,7 @@ export function useFormErrors<T>(): UseFormErrorsResult<T> {
   function isResponseError(error: Error): error is ResponseError {
     return !!(error as ResponseError).response;
   }
+
   function isValidationError(error: Error): error is ValidationError {
     return !!(error as ValidationError).path;
   }

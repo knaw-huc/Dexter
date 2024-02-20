@@ -4,7 +4,7 @@ import React, { ChangeEvent, useEffect, useState } from 'react';
 import { FormMetadataKey, ResultMetadataKey } from '../../model/DexterModel';
 import { createMetadataKey, updateMetadataKey } from '../../utils/API';
 import ScrollableModal from '../common/ScrollableModal';
-import { FormErrorMessage, scrollToError } from '../common/FormError';
+import { FormErrorMessage } from '../common/FormError';
 import { CloseInlineIcon } from '../common/CloseInlineIcon';
 import { SubmitButton } from '../common/SubmitButton';
 import { ErrorMessage } from '../common/ErrorMessage';
@@ -40,8 +40,6 @@ export function MetadataKeyForm(props: MetadataKeyFormProps) {
       init();
     }
   }, [isInit]);
-
-  useEffect(scrollToError, [errors]);
 
   async function createNewMetadataKey(data: FormMetadataKey) {
     const newMetadataKey = await createMetadataKey(data);
