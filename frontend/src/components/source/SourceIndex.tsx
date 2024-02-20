@@ -7,6 +7,7 @@ import { AddNewResourceButton } from '../common/AddNewResourceButton';
 import { List } from '@mui/material';
 import { errorContext } from '../../state/error/errorContext';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
+import { SourceIcon } from './SourceIcon';
 
 export function SourceIndex() {
   const [showForm, setShowForm] = React.useState(false);
@@ -72,7 +73,10 @@ export function SourceIndex() {
           />
         </div>
 
-        <h1>Sources</h1>
+        <h1>
+          <SourceIcon />
+          Sources
+        </h1>
       </div>
       {showForm && (
         <SourceForm

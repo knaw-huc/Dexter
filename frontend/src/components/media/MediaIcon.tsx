@@ -3,9 +3,9 @@ import {
   ResourceIconProps,
   styleResourceIcon,
 } from '../../utils/styleResourceIcon';
-import PermMediaIcon from '@mui/icons-material/PermMedia';
+import PermMediaOutlinedIcon from '@mui/icons-material/PermMediaOutlined';
 
-const PermMediaIconStyled = styleResourceIcon(PermMediaIcon);
+const PermMediaOutlinedIconStyled = styleResourceIcon(PermMediaOutlinedIcon);
 
 type MediaIconprops = ResourceIconProps & {
   filled?: boolean;
@@ -16,5 +16,5 @@ export function MediaIcon(props: MediaIconprops) {
     ...props,
     fontSize: props.fontSize ? props.fontSize : 'inherit',
   };
-  return <PermMediaIconStyled {...iconProps} />;
+  return <PermMediaOutlinedIconStyled {...iconProps} />;
 }

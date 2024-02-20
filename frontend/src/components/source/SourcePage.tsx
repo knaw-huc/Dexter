@@ -29,6 +29,7 @@ import { MediaForm } from '../media/MediaForm';
 import { AddNewResourceButton } from '../common/AddNewResourceButton';
 import { SelectExistingResourceButton } from './SelectExistingResourceButton';
 import { SelectMediaForm } from './SelectMediaForm';
+import { MediaIcon } from '../media/MediaIcon';
 
 const OpenInNewOutlinedIconStyled = styled(OpenInNewOutlinedIcon)`
   margin-left: 0.4em;
@@ -181,7 +182,10 @@ export const SourcePage = () => {
           />
         </div>
       )}
-      <h2>Media</h2>
+      <h2>
+        <MediaIcon />
+        Media
+      </h2>
       <Grid container spacing={2}>
         <Grid item xs={6} md={4}>
           <AddNewResourceButton

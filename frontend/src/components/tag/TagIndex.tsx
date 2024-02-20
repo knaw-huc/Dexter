@@ -4,6 +4,7 @@ import { deleteTag, getTags } from '../../utils/API';
 import { TagForm } from './TagForm';
 import { TagList } from './TagList';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
+import { TagIcon } from './tagIcon';
 
 export const TagIndex = () => {
   const [tags, setTags] = useState<ResultTag[]>([]);
@@ -28,7 +29,10 @@ export const TagIndex = () => {
   return (
     <>
       <HeaderBreadCrumb />
-
+      <h1>
+        <TagIcon />
+        Tags
+      </h1>
       <TagForm setTags={setTags} />
       <div style={{ marginTop: '1em' }}>
         <TagList tags={tags} onDelete={handleDelete} />

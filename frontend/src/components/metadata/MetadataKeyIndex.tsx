@@ -7,6 +7,7 @@ import { AddNewResourceButton } from '../common/AddNewResourceButton';
 import { MetadataKeyListItem } from './MetadataKeyListItem';
 import { MetadataKeyForm } from './MetadataKeyForm';
 import { ErrorBoundary } from '../common/ErrorBoundary';
+import { MetadataKeyIcon } from './MetadataKeyIcon';
 
 export function MetadataKeyIndex() {
   const [keys, setKeys] = useState<ResultMetadataKey[]>();
@@ -52,7 +53,10 @@ export function MetadataKeyIndex() {
           />
         </div>
 
-        <h1>Custom metadata fields</h1>
+        <h1>
+          <MetadataKeyIcon />
+          Custom metadata fields
+        </h1>
       </div>
 
       <ErrorBoundary>

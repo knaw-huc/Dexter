@@ -7,6 +7,7 @@ import { Grid } from '@mui/material';
 import { errorContext } from '../../state/error/errorContext';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
 import { deleteMedia, getMedia } from '../../utils/API';
+import { MediaIcon } from './MediaIcon';
 
 export function MediaIndex() {
   const [showForm, setShowForm] = React.useState(false);
@@ -74,7 +75,10 @@ export function MediaIndex() {
           />
         </div>
 
-        <h1>Media</h1>
+        <h1>
+          <MediaIcon />
+          Media
+        </h1>
       </div>
       {showForm && (
         <MediaForm

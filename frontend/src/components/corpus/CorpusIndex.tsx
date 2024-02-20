@@ -11,6 +11,7 @@ import { AddIconStyled } from '../common/AddIconStyled';
 import { ButtonWithIcon } from '../common/ButtonWithIcon';
 import { Grid } from '@mui/material';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
+import { CorpusIcon } from './CorpusIcon';
 
 export function CorpusIndex() {
   const [showForm, setShowForm] = React.useState(false);
@@ -55,8 +56,10 @@ export function CorpusIndex() {
             Corpus
           </ButtonWithIcon>
         </div>
-
-        <h1>Corpora</h1>
+        <h1>
+          <CorpusIcon />
+          Corpora
+        </h1>
       </div>
       {showForm && (
         <CorpusForm
