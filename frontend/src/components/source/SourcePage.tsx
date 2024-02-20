@@ -1,8 +1,11 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { ResultLanguage, Source } from '../../model/DexterModel';
+import { ResultLanguage, ResultMedia, Source } from '../../model/DexterModel';
 import { deleteLanguageFromSourceWithWarning } from '../../utils/deleteLanguageFromSourceWithWarning';
-import { getSourceWithResourcesById } from '../../utils/API';
+import {
+  deleteMediaFromSource,
+  getSourceWithResourcesById,
+} from '../../utils/API';
 import { Languages } from '../language/Languages';
 import { SourceForm } from './SourceForm';
 import { EditButton } from '../common/EditButton';
@@ -18,6 +21,10 @@ import OpenInNewOutlinedIcon from '@mui/icons-material/OpenInNewOutlined';
 import styled from '@emotion/styled';
 import { MetadataValuePageFields } from '../metadata/MetadataValuePageFields';
 import { Title } from '../media/Title';
+import { Grid } from '@mui/material';
+import { NoResults } from '../common/NoResults';
+import { MediaPreview } from '../media/MediaPreview';
+import { MediaForm } from '../media/MediaForm';
 
 const OpenInNewOutlinedIconStyled = styled(OpenInNewOutlinedIcon)`
   margin-left: 0.4em;
@@ -36,6 +43,8 @@ export const SourcePage = () => {
 
   const [source, setSource] = React.useState<Source>(null);
   const [showForm, setShowForm] = React.useState(false);
+  const [showMediaForm, setMediaShowForm] = React.useState(false);
+  const [mediaToEdit, setMediaToEdit] = React.useState(null);
 
   const handleSavedForm = (update: Source) => {
     setSource(update);
@@ -52,13 +61,18 @@ export const SourcePage = () => {
     }
   }, [sourceId]);
 
-  const handleDeleteLanguage = async (language: ResultLanguage) => {
+  const handleUnlinkLanguage = async (language: ResultLanguage) => {
     await deleteLanguageFromSourceWithWarning(language, params.sourceId);
-    setSource(source => ({
-      ...source,
-      languages: source.languages.filter(l => l.id !== language.id),
+    setSource(s => ({
+      ...s,
+      languages: s.languages.filter(l => l.id !== language.id),
     }));
   };
+
+  async function handleUnlinkMedia(media: ResultMedia) {
+    await deleteMediaFromSource(sourceId, media.id);
+    setSource(s => ({ ...s, media: s.media.filter(m => m.id !== media.id) }));
+  }
 
   const shortSourceFields: (keyof Source)[] = [
     'location',
@@ -70,71 +84,107 @@ export const SourcePage = () => {
     'creator',
   ];
 
+  function handleEditMedia(media: ResultMedia) {
+    setMediaToEdit(media);
+    setMediaShowForm(true);
+  }
+
+  if (!source) {
+    return;
+  }
+
+  function handleSavedMedia(edited: ResultMedia) {
+    setSource(s => ({
+      ...s,
+      media: s.media.map(s => (s.id === edited.id ? edited : s)),
+    }));
+    setMediaToEdit(null);
+    setMediaShowForm(false);
+  }
+
+  function handleCloseMedia() {
+    setMediaToEdit(null);
+    setMediaShowForm(false);
+  }
+
   return (
     <div>
       <HeaderBreadCrumb>
         <SourcesBreadCrumbLink />
       </HeaderBreadCrumb>
 
-      {source && (
+      <EditButton
+        onEdit={() => {
+          setShowForm(true);
+        }}
+      />
+      <h1>
+        <SourceIcon verticalAlign="middle" fontSize="large" />
+        <Title title={source.title} />
+      </h1>
+      <p>{source.description}</p>
+      {!_.isEmpty(source.tags) && (
         <>
-          <EditButton
-            onEdit={() => {
-              setShowForm(true);
-            }}
-          />
-          <h1>
-            <SourceIcon verticalAlign="middle" fontSize="large" />
-            <Title title={source.title} />
-          </h1>
-          <p>{source.description}</p>
-          {!_.isEmpty(source.tags) && (
-            <>
-              <FieldLabel label="Tags" />
-              <TagList tags={source.tags} />
-            </>
-          )}
-          <ShortFieldsSummary<Source>
-            resource={source}
-            fieldNames={shortSourceFields}
-          />
-          {source.externalRef && (
-            <p style={{ marginTop: '-0.9em' }}>
-              <span style={{ color: grey[600] }}>External reference: </span>
-              {isUrl(source.externalRef) ? (
-                <>
-                  <A href={source.externalRef} target="_blank" rel="noreferrer">
-                    {source.externalRef}
-                  </A>
-                  <OpenInNewOutlinedIconStyled fontSize="inherit" />
-                </>
-              ) : (
-                <>{source.externalRef}</>
-              )}
-            </p>
-          )}
-          {source.notes && (
-            <>
-              <h2>Notes</h2>
-              <p>{source.notes}</p>
-            </>
-          )}
-
-          {!_.isEmpty(source.metadataValues) && (
-            <MetadataValuePageFields values={source.metadataValues} />
-          )}
-
-          {!_.isEmpty(source.languages) && (
-            <div>
-              <h4>Languages</h4>
-              <Languages
-                languages={source.languages}
-                onDelete={handleDeleteLanguage}
-              />
-            </div>
-          )}
+          <FieldLabel label="Tags" />
+          <TagList tags={source.tags} />
         </>
       )}
+      <ShortFieldsSummary<Source>
+        resource={source}
+        fieldNames={shortSourceFields}
+      />
+      {source.externalRef && (
+        <p style={{ marginTop: '-0.9em' }}>
+          <span style={{ color: grey[600] }}>External reference: </span>
+          {isUrl(source.externalRef) ? (
+            <>
+              <A href={source.externalRef} target="_blank" rel="noreferrer">
+                {source.externalRef}
+              </A>
+              <OpenInNewOutlinedIconStyled fontSize="inherit" />
+            </>
+          ) : (
+            <>{source.externalRef}</>
+          )}
+        </p>
+      )}
+      {source.notes && (
+        <>
+          <h2>Notes</h2>
+          <p>{source.notes}</p>
+        </>
+      )}
+
+      {!_.isEmpty(source.metadataValues) && (
+        <MetadataValuePageFields values={source.metadataValues} />
+      )}
+
+      {!_.isEmpty(source.languages) && (
+        <div>
+          <h4>Languages</h4>
+          <Languages
+            languages={source.languages}
+            onDelete={handleUnlinkLanguage}
+          />
+        </div>
+      )}
+      <h2>Media</h2>
+      {!_.isEmpty(source.media) ? (
+        <Grid container spacing={2} sx={{ pl: 0.1, pr: 1, mt: 2, mb: 2 }}>
+          {source.media.map(media => (
+            <Grid item xs={4} key={media.id}>
+              <MediaPreview
+                media={media}
+                onDelete={() => handleUnlinkMedia(media)}
+                onEdit={() => handleEditMedia(media)}
+              />
+            </Grid>
+          ))}
+        </Grid>
+      ) : (
+        <NoResults message="No media" />
+      )}
+
       {showForm && (
         <SourceForm
           sourceToEdit={source}
@@ -142,6 +192,13 @@ export const SourcePage = () => {
           onClose={() => {
             setShowForm(false);
           }}
+        />
+      )}
+      {showMediaForm && (
+        <MediaForm
+          onClose={handleCloseMedia}
+          onSaved={handleSavedMedia}
+          inEdit={mediaToEdit}
         />
       )}
     </div>

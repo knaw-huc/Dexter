@@ -1,6 +1,5 @@
 import { grey } from '@mui/material/colors';
 import { ResultMedia } from '../../model/DexterModel';
-import { deleteMedia } from '../../utils/API';
 import React from 'react';
 import { Card, CardActions, CardMedia, Grid, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
@@ -23,13 +22,6 @@ export const MediaPreview = (props: MediaItemProps) => {
 
   function handleDelete(e: React.MouseEvent) {
     e.stopPropagation();
-    const warning = window.confirm(
-      'Are you sure you wish to delete this media entry?',
-    );
-
-    if (warning === false) return;
-
-    deleteMedia(props.media.id).then(() => props.onDelete());
     props.onDelete();
   }
 

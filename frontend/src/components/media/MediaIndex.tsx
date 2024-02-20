@@ -6,7 +6,7 @@ import { AddNewResourceButton } from '../common/AddNewResourceButton';
 import { Grid } from '@mui/material';
 import { errorContext } from '../../state/error/errorContext';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
-import { getMedia } from '../../utils/API';
+import { deleteMedia, getMedia } from '../../utils/API';
 
 export function MediaIndex() {
   const [showForm, setShowForm] = React.useState(false);
@@ -31,9 +31,16 @@ export function MediaIndex() {
     }
   }, [isInit]);
 
-  const handleDelete = (media: ResultMedia) => {
+  async function handleDelete(media: ResultMedia) {
+    const warning = window.confirm(
+      'Are you sure you wish to delete this media entry?',
+    );
+
+    if (warning === false) return;
+
+    await deleteMedia(media.id);
     setMedia(prev => prev.filter(m => m.id !== media.id));
-  };
+  }
 
   const handleEdit = (media: ResultMedia) => {
     setMediaToEdit(media);
