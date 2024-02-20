@@ -32,7 +32,7 @@ export const MediaPreview = (props: MediaItemProps) => {
 
   return (
     <>
-      <Card sx={{ maxWidth: 345 }}>
+      <Card>
         <CardMedia
           sx={{
             height: 140,
@@ -53,7 +53,11 @@ export const MediaPreview = (props: MediaItemProps) => {
               item
               xs={3}
               alignItems="stretch"
-              style={{ display: 'flex', marginTop: '0.25em' }}
+              style={{
+                display: 'flex',
+                marginTop: '0.25em',
+                minWidth: '80px',
+              }}
             >
               <span style={{ color: grey[500] }}>
                 <EditIconStyled hoverColor="black" onClick={handleEdit} />

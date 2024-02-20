@@ -21,7 +21,7 @@ export function SelectSourcesField(props: SelectSourcesFieldProps) {
   return (
     <Autocomplete
       inputValue={inputValue}
-      onInputChange={async (event, value) => {
+      onInputChange={async (_, value) => {
         setInputValue(value);
       }}
       multiple={true}

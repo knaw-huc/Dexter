@@ -21,7 +21,7 @@ import { SourcePreview } from '../source/SourcePreview';
 import { SourceForm } from '../source/SourceForm';
 import { EditButton } from '../common/EditButton';
 import { AddNewResourceButton } from '../common/AddNewResourceButton';
-import { SelectSourceButton } from '../source/SelectSourceButton';
+import { SelectExistingResourceButton } from '../source/SelectExistingResourceButton';
 import { SelectSourcesForm } from './SelectSourcesForm';
 import _ from 'lodash';
 import { Grid } from '@mui/material';
@@ -200,7 +200,10 @@ export const CorpusPage = () => {
                 title="New source"
                 onClick={() => setShowSourceForm(true)}
               />
-              <SelectSourceButton onClick={() => setShowLinkSourceForm(true)} />
+              <SelectExistingResourceButton
+                title="Existing source"
+                onClick={() => setShowLinkSourceForm(true)}
+              />
             </Grid>
             <Grid item xs={6} md={8}>
               <TagsFilter

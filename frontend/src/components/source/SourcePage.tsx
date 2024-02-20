@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { ResultLanguage, ResultMedia, Source } from '../../model/DexterModel';
 import { deleteLanguageFromSourceWithWarning } from '../../utils/deleteLanguageFromSourceWithWarning';
 import {
+  addMediaToSource,
   deleteMediaFromSource,
   getSourceWithResourcesById,
 } from '../../utils/API';
@@ -25,6 +26,9 @@ import { Grid } from '@mui/material';
 import { NoResults } from '../common/NoResults';
 import { MediaPreview } from '../media/MediaPreview';
 import { MediaForm } from '../media/MediaForm';
+import { AddNewResourceButton } from '../common/AddNewResourceButton';
+import { SelectExistingResourceButton } from './SelectExistingResourceButton';
+import { SelectMediaForm } from './SelectMediaForm';
 
 const OpenInNewOutlinedIconStyled = styled(OpenInNewOutlinedIcon)`
   margin-left: 0.4em;
@@ -45,6 +49,7 @@ export const SourcePage = () => {
   const [showForm, setShowForm] = React.useState(false);
   const [showMediaForm, setMediaShowForm] = React.useState(false);
   const [mediaToEdit, setMediaToEdit] = React.useState(null);
+  const [showSelectMediaForm, setShowSelectMediaForm] = React.useState(null);
 
   const handleSavedForm = (update: Source) => {
     setSource(update);
@@ -105,6 +110,14 @@ export const SourcePage = () => {
   function handleCloseMedia() {
     setMediaToEdit(null);
     setMediaShowForm(false);
+  }
+
+  async function handleChangeSelectedMedia(media: ResultMedia[]) {
+    await addMediaToSource(
+      sourceId,
+      media.map(m => m.id),
+    );
+    setSource(s => ({ ...s, media }));
   }
 
   return (
@@ -169,10 +182,23 @@ export const SourcePage = () => {
         </div>
       )}
       <h2>Media</h2>
+      <Grid container spacing={2}>
+        <Grid item xs={6} md={4}>
+          <AddNewResourceButton
+            title="New media"
+            onClick={() => setMediaShowForm(true)}
+          />
+          <SelectExistingResourceButton
+            title="Existing media"
+            onClick={() => setShowSelectMediaForm(true)}
+          />
+        </Grid>
+        <Grid item xs={6} md={8}></Grid>
+      </Grid>
       {!_.isEmpty(source.media) ? (
-        <Grid container spacing={2} sx={{ pl: 0.1, pr: 1, mt: 2, mb: 2 }}>
+        <Grid container spacing={2} sx={{ pl: 0.1, mt: 2, mb: 2 }}>
           {source.media.map(media => (
-            <Grid item xs={4} key={media.id}>
+            <Grid item xs={2} key={media.id}>
               <MediaPreview
                 media={media}
                 onDelete={() => handleUnlinkMedia(media)}
@@ -199,6 +225,14 @@ export const SourcePage = () => {
           onClose={handleCloseMedia}
           onSaved={handleSavedMedia}
           inEdit={mediaToEdit}
+        />
+      )}
+      {showSelectMediaForm && (
+        <SelectMediaForm
+          selected={source.media}
+          onChangeSelected={handleChangeSelectedMedia}
+          onClose={() => setShowSelectMediaForm(false)}
+          useAutocomplete
         />
       )}
     </div>

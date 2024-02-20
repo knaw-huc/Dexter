@@ -9,7 +9,7 @@ import { truncateMiddle } from '../../utils/truncateMiddle';
 import isUrl from '../../utils/isUrl';
 import { UNTITLED } from './Title';
 
-interface MediaFieldProps {
+export interface SelectMediaFieldProps {
   selected: ResultMedia[];
   onChangeSelected: (selected: ResultMedia[]) => void;
 
@@ -45,7 +45,7 @@ const createNewMediaOption: Omit<ResultMedia, 'url'> = {
 /**
  * Create, link and unlink media
  */
-export const SelectMediaField = (props: MediaFieldProps) => {
+export const SelectMediaField = (props: SelectMediaFieldProps) => {
   const [inputValue, setInputValue] = React.useState('');
   const debouncedInput = useDebounce<string>(inputValue, 250);
   const [autocomplete, setAutocomplete] = useState([]);
