@@ -95,13 +95,12 @@ async function fetchValidatedWith(
   return response.json();
 }
 
-async function fetchValidatedDelete(url: string) {
+async function fetchValidatedDelete(url: string): Promise<void> {
   const response = await fetch(url, {
     method: 'DELETE',
     headers: headers,
   });
   validateResponse({ response });
-  return response.json();
 }
 
 export const getCorporaWithResources = async (): Promise<Corpus[]> => {
@@ -186,7 +185,7 @@ export const addLanguagesToCorpus = async (
 export const deleteLanguageFromCorpus = async (
   corpusId: string,
   languageId: string,
-): Promise<ResultLanguage[]> =>
+): Promise<void> =>
   fetchValidatedDelete(
     `/${api}/${corpora}/${corpusId}/languages/${languageId}`,
   );
@@ -349,13 +348,13 @@ export const addMediaToCorpus = async (
 export const deleteMediaFromCorpus = async (
   corpusId: string,
   mediaId: string,
-): Promise<ResultMedia[]> =>
+): Promise<void> =>
   fetchValidatedDelete(`/${api}/${corpora}/${corpusId}/${media}/${mediaId}`);
 
 export const deleteMediaFromSource = async (
   sourceId: string,
   mediaId: string,
-): Promise<ResultMedia[]> =>
+): Promise<void> =>
   fetchValidatedDelete(`/${api}/${sources}/${sourceId}/${media}/${mediaId}`);
 
 export const getMediaAutocomplete = async (

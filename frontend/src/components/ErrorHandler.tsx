@@ -33,6 +33,8 @@ export default class ErrorHandler extends Component<
     console.error(error);
   }
 
+  static getDerivedStateFromError() {}
+
   render() {
     const error = this.state.error || this.props.error;
     if (!error) {
