@@ -5,7 +5,7 @@ import { ErrorMessage } from './ErrorMessage';
 import { Access } from '../../model/DexterModel';
 import { ErrorWithMessage } from '../ErrorHandler';
 
-export type SelectFieldProps = Omit<SelectProps, 'error'> & {
+export type SelectFieldProps = Omit<SelectProps, 'error' | 'variant'> & {
   error?: ErrorWithMessage;
   onSelectOption: (selected: Access) => void;
   selectedOption: string;
