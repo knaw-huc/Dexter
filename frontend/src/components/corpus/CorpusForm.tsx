@@ -171,7 +171,7 @@ export function CorpusForm(props: CorpusFormProps) {
           />
           <ErrorMessage error={errors.sources} />
 
-          {!props.parentOptions && (
+          {props.parentOptions && (
             <>
               <Label>Add to main corpus</Label>
               <SelectCorpusField
