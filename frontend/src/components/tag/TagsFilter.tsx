@@ -8,6 +8,7 @@ export function TagsFilter(props: {
   all: ResultTag[];
   selected: ResultTag[];
   onChangeSelected: (keys: ResultTag[]) => void;
+  placeholder?: string;
 }) {
   const [isOpen, setOpen] = useState(!!props.selected.length);
 
@@ -21,6 +22,7 @@ export function TagsFilter(props: {
       onChangeSelected={props.onChangeSelected}
       options={props.all}
       size="small"
+      placeholder={props.placeholder}
     />
   );
 }

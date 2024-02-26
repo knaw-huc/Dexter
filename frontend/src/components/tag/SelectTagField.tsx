@@ -27,6 +27,8 @@ interface TagsFieldProps {
   allowCreatingNew?: boolean;
 
   size?: 'small' | 'medium';
+
+  placeholder?: string;
 }
 
 const MIN_AUTOCOMPLETE_LENGTH = 1;
@@ -82,7 +84,7 @@ export const SelectTagField = (props: TagsFieldProps) => {
     return (
       <TextField
         {...params}
-        placeholder="Filter by tags"
+        placeholder={props.placeholder ?? 'Filter by tags'}
         value={inputValue}
         size={props.size ? props.size : 'medium'}
       />
@@ -97,17 +99,18 @@ export const SelectTagField = (props: TagsFieldProps) => {
     props.onChangeSelected(data);
   }
 
+  const options = getOptions();
+
   return (
     <Autocomplete
       inputValue={inputValue}
-      open={debouncedInput.length >= MIN_AUTOCOMPLETE_LENGTH}
       onInputChange={async (_, value) => {
         setInputValue(value);
       }}
       multiple={true}
       loading={loading}
       id="tags-autocomplete"
-      options={getOptions()}
+      options={options}
       getOptionLabel={(tag: ResultTag) => tag.val}
       isOptionEqualToValue={(option, value) => option.val === value.val}
       value={props.selected}

@@ -41,6 +41,19 @@ import { CorpusPreview } from './CorpusPreview';
 import { H2Styled } from '../common/H2Styled';
 import { SelectCorpusForm } from './SelectCorpusForm';
 
+function getAllSourceTags(corpus: Corpus) {
+  return _.uniqBy(corpus.sources.map(s => s.tags).flat(), 'id');
+}
+
+function getCorpusTags(subcorpus: Corpus): ResultTag[] {
+  const all = [
+    ...subcorpus.tags,
+    ...subcorpus.sources.flatMap(s => s.tags),
+    ...subcorpus.subcorpora.flatMap(getCorpusTags),
+  ];
+  return _.uniqBy(all, 'id');
+}
+
 export const CorpusPage = () => {
   const [corpus, setCorpus] = useState<Corpus>(null);
   const [sourceOptions, setSourceOptions] = useState<Source[]>(null);
@@ -53,9 +66,13 @@ export const CorpusPage = () => {
   const [showCorpusForm, setShowCorpusForm] = useState(false);
   const [showSubcorpusForm, setShowSubcorpusForm] = useState(false);
   const [showSelectSubcorpusForm, setShowSelectSubcorpusForm] = useState(false);
+  const [subcorpusFilterTags, setSubcorpusFilterTags] = useState<ResultTag[]>(
+    [],
+  );
+
   const [showSourceForm, setShowSourceForm] = useState(false);
   const [showSelectSourceForm, setShowSelectSourceForm] = useState(false);
-  const [filterTags, setFilterTags] = useState<ResultTag[]>([]);
+  const [sourceFilterTags, setSourceFilterTags] = useState<ResultTag[]>([]);
 
   const initResources = async (id: string) => {
     const corpusWithResources = await getCorpusWithResourcesById(id).catch(
@@ -156,6 +173,11 @@ export const CorpusPage = () => {
     }));
   };
 
+  function handleCloseCorpusForm() {
+    setShowSubcorpusForm(false);
+    setShowCorpusForm(false);
+  }
+
   const handleDeselectSubcorpus = async (subcorpusId: string) => {
     const warning = window.confirm(
       'Are you sure you wish to remove this subcorpus from this corpus?',
@@ -188,23 +210,37 @@ export const CorpusPage = () => {
     'contributor',
   ];
 
-  function getFilteredCorpusSources() {
+  function getFilteredSources(): Source[] {
     if (!corpus?.sources) {
       return [];
     }
-    if (!filterTags.length) {
+    if (!sourceFilterTags.length) {
       return corpus.sources;
     }
     return corpus.sources.filter(cs =>
-      filterTags.every(ft => cs.tags.find(cst => cst.id === ft.id)),
+      sourceFilterTags.every(ft => cs.tags.find(cst => cst.id === ft.id)),
     );
   }
 
-  const filteredCorpusSources = getFilteredCorpusSources();
+  function getFilteredSubcorpora(): Corpus[] {
+    if (!corpus?.subcorpora) {
+      return [];
+    }
+    if (!subcorpusFilterTags.length) {
+      return corpus.subcorpora;
+    }
+    return corpus.subcorpora.filter(subcorpus => {
+      const subcorpusTags = getCorpusTags(subcorpus);
+      return subcorpusFilterTags.every(ft =>
+        subcorpusTags.find(cst => cst.id === ft.id),
+      );
+    });
+  }
 
   if (!corpus) {
     return null;
   }
+
   return (
     <div>
       <HeaderBreadCrumb>
@@ -251,44 +287,46 @@ export const CorpusPage = () => {
         <MetadataValuePageFields values={corpus.metadataValues} />
       )}
 
-      <H2Styled>
-        <CorpusIcon />
-        Subcorpora
-      </H2Styled>
-      <Grid container spacing={2}>
-        <Grid item xs={6} md={4}>
-          <AddNewResourceButton
-            title="New subcorpus"
-            onClick={() => {
-              setShowSubcorpusForm(true);
-            }}
-          />
-          <SelectExistingResourceButton
-            title="Existing corpus"
-            onClick={() => setShowSelectSubcorpusForm(true)}
-          />
-        </Grid>
-        <Grid item xs={6} md={8}>
-          <TagsFilter
-            all={_.uniqBy(corpus.sources.map(s => s.tags).flat(), 'val')}
-            selected={filterTags}
-            onChangeSelected={update => setFilterTags(update)}
-          />
-        </Grid>
-      </Grid>
-      {!_.isEmpty(corpus.subcorpora) ? (
-        <Grid container spacing={2} sx={{ pl: 0.1, pr: 1, mt: 2, mb: 2 }}>
-          {corpus.subcorpora.map(c => (
-            <Grid item xs={4} key={c.id}>
-              <CorpusPreview
-                corpus={c}
-                onDeleted={() => handleDeletedSubcorpus(corpus)}
+      {!_.isEmpty(corpus.subcorpora) && (
+        <>
+          <H2Styled>
+            <CorpusIcon />
+            Subcorpora
+          </H2Styled>
+          <Grid container spacing={2}>
+            <Grid item xs={6} md={4}>
+              <AddNewResourceButton
+                title="New corpus"
+                onClick={() => {
+                  setShowSubcorpusForm(true);
+                }}
+              />
+              <SelectExistingResourceButton
+                title="Existing corpus"
+                onClick={() => setShowSelectSubcorpusForm(true)}
               />
             </Grid>
-          ))}
-        </Grid>
-      ) : (
-        <NoResults message="No subcorpora" />
+            <Grid item xs={6} md={8}>
+              <TagsFilter
+                placeholder="Filter corpora by their tags, plus the tags of their subcorpora and sources "
+                all={getCorpusTags(corpus)}
+                selected={subcorpusFilterTags}
+                onChangeSelected={update => setSubcorpusFilterTags(update)}
+              />
+            </Grid>
+          </Grid>
+
+          <Grid container spacing={2} sx={{ pl: 0.1, pr: 1, mt: 2, mb: 2 }}>
+            {getFilteredSubcorpora().map(c => (
+              <Grid item xs={4} key={c.id}>
+                <CorpusPreview
+                  corpus={c}
+                  onDeleted={() => handleDeletedSubcorpus(corpus)}
+                />
+              </Grid>
+            ))}
+          </Grid>
+        </>
       )}
 
       <H2Styled>
@@ -308,15 +346,16 @@ export const CorpusPage = () => {
         </Grid>
         <Grid item xs={6} md={8}>
           <TagsFilter
-            all={_.uniqBy(corpus.sources.map(s => s.tags).flat(), 'val')}
-            selected={filterTags}
-            onChangeSelected={update => setFilterTags(update)}
+            placeholder="Filter sources by their tags"
+            all={getAllSourceTags(corpus)}
+            selected={sourceFilterTags}
+            onChangeSelected={update => setSourceFilterTags(update)}
           />
         </Grid>
       </Grid>
       {!_.isEmpty(corpus.sources) ? (
         <Grid container spacing={2} sx={{ pl: 0.1, pr: 1, mt: 2, mb: 2 }}>
-          {filteredCorpusSources.map(source => (
+          {getFilteredSources().map(source => (
             <Grid item xs={4} key={source.id}>
               <SourcePreview
                 source={source}
@@ -334,9 +373,10 @@ export const CorpusPage = () => {
 
       {(showCorpusForm || showSubcorpusForm) && (
         <CorpusForm
+          corpusToEdit={corpus}
           parentOptions={showSubcorpusForm ? null : corpusOptions}
           sourceOptions={sourceOptions}
-          onClose={() => setShowSubcorpusForm(false)}
+          onClose={handleCloseCorpusForm}
           onSaved={handleSavedCorpusForm}
         />
       )}
