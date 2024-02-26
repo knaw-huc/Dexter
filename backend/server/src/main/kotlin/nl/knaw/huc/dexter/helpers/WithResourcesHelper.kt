@@ -26,7 +26,10 @@ class WithResourcesHelper {
                         addSourceResources(source, handle)
                     },
                     getCorpusMetadataValueWithResources(corpus.id, handle),
-                    corporaDao.getMedia(corpus.id)
+                    corporaDao.getMedia(corpus.id),
+                    corporaDao.getSubcorpora(corpus.id).map { subcorpus ->
+                        addCorpusResources(subcorpus, handle)
+                    }
                 )
             }
         }

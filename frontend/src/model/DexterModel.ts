@@ -40,6 +40,7 @@ export type Corpus = Omit<ResultCorpus, 'parentId'> & {
   languages: ResultLanguage[];
   sources: Source[];
   metadataValues: MetadataValue[];
+  subcorpora: Corpus[];
 };
 
 /**

@@ -36,6 +36,8 @@ import { NoResults } from '../common/NoResults';
 import { MetadataValuePageFields } from '../metadata/MetadataValuePageFields';
 import { Title } from '../media/Title';
 import { SourceIcon } from '../source/SourceIcon';
+import { CorpusPreview } from './CorpusPreview';
+import { H2Styled } from '../common/H2Styled';
 
 export const CorpusPage = () => {
   const [corpus, setCorpus] = useState<Corpus>(null);
@@ -122,6 +124,13 @@ export const CorpusPage = () => {
     }));
   };
 
+  function handleDeletedSubcorpus(subcorpus: Corpus) {
+    setCorpus(corpus => ({
+      ...corpus,
+      subcorpora: corpus.subcorpora.filter(c => c.id !== subcorpus.id),
+    }));
+  }
+
   const shortCorpusFields: (keyof Corpus)[] = [
     'location',
     'earliest',
@@ -194,10 +203,29 @@ export const CorpusPage = () => {
             <MetadataValuePageFields values={corpus.metadataValues} />
           )}
 
-          <h2>
+          <H2Styled>
+            <CorpusIcon />
+            Subcorpora
+          </H2Styled>
+          {!_.isEmpty(corpus.subcorpora) ? (
+            <Grid container spacing={2} sx={{ pl: 0.1, pr: 1, mt: 2, mb: 2 }}>
+              {corpus.subcorpora.map(c => (
+                <Grid item xs={4} key={c.id}>
+                  <CorpusPreview
+                    corpus={c}
+                    onDeleted={() => handleDeletedSubcorpus(corpus)}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          ) : (
+            <NoResults message="No subcorpora" />
+          )}
+
+          <H2Styled>
             <SourceIcon />
             Sources
-          </h2>
+          </H2Styled>
           <Grid container spacing={2}>
             <Grid item xs={6} md={4}>
               <AddNewResourceButton

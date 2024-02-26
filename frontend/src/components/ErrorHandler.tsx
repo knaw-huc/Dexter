@@ -41,7 +41,9 @@ export default class ErrorHandler extends Component<
     return (
       <div style={{ margin: '1em' }}>
         <Alert severity="error">
-          Er trad een fout op: <code>{error.message}</code>
+          An error occurred:
+          <br />
+          <code>{error.message}</code>
         </Alert>
       </div>
     );

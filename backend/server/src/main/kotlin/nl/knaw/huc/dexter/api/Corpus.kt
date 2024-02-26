@@ -63,7 +63,8 @@ data class ResultCorpusWithResources (
     val languages: List<ResultLanguage>,
     val sources: List<ResultSourceWithResources>,
     val metadataValues: List<ResultMetadataValueWithResources>,
-    val media: List<ResultMedia>
+    val media: List<ResultMedia>,
+    val subcorpora: List<ResultCorpusWithResources>
 )
 
 fun ResultCorpus.toResultCorpusWithResources(
@@ -72,7 +73,8 @@ fun ResultCorpus.toResultCorpusWithResources(
     languages: List<ResultLanguage>,
     sources: List<ResultSourceWithResources>,
     metadataValues: List<ResultMetadataValueWithResources>,
-    media: List<ResultMedia>
+    media: List<ResultMedia>,
+    subcorpora: List<ResultCorpusWithResources>
 ) = ResultCorpusWithResources(
     id = id,
     title = title,
@@ -94,5 +96,6 @@ fun ResultCorpus.toResultCorpusWithResources(
     languages = languages,
     sources = sources,
     metadataValues = metadataValues,
-    media = media
+    media = media,
+    subcorpora = subcorpora
 )

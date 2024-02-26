@@ -75,7 +75,7 @@ export function CorpusIndex() {
             <Grid item xs={4} height="150px" key={index}>
               <CorpusPreview
                 corpus={corpus}
-                onDelete={() => handleDelete(corpus)}
+                onDeleted={() => handleDelete(corpus)}
               />
             </Grid>
           ))}

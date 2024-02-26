@@ -34,6 +34,7 @@ const defaults: Corpus = {
   languages: [],
   sources: [],
   metadataValues: [],
+  subcorpora: [],
 
   // Not created or modified by form:
   id: undefined,

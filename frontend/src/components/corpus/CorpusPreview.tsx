@@ -14,7 +14,7 @@ import { Title } from '../media/Title';
 
 type CorpusPreviewProps = {
   corpus: Corpus;
-  onDelete: () => void;
+  onDeleted: () => void;
 };
 
 const DeleteIconStyled = styled(DeleteIcon)`
@@ -38,7 +38,7 @@ export function CorpusPreview(props: CorpusPreviewProps) {
     if (warning === false) return;
 
     await deleteCollection(collection.id).catch(dispatchError);
-    props.onDelete();
+    props.onDeleted();
   };
 
   const corpus = props.corpus;

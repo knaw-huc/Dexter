@@ -30,6 +30,7 @@ import { AddNewResourceButton } from '../common/AddNewResourceButton';
 import { SelectExistingResourceButton } from './SelectExistingResourceButton';
 import { SelectMediaForm } from './SelectMediaForm';
 import { MediaIcon } from '../media/MediaIcon';
+import { H2Styled } from '../common/H2Styled';
 
 const OpenInNewOutlinedIconStyled = styled(OpenInNewOutlinedIcon)`
   margin-left: 0.4em;
@@ -164,7 +165,7 @@ export const SourcePage = () => {
       )}
       {source.notes && (
         <>
-          <h2>Notes</h2>
+          <H2Styled>Notes</H2Styled>
           <p>{source.notes}</p>
         </>
       )}
@@ -182,10 +183,10 @@ export const SourcePage = () => {
           />
         </div>
       )}
-      <h2>
+      <H2Styled>
         <MediaIcon />
         Media
-      </h2>
+      </H2Styled>
       <Grid container spacing={2}>
         <Grid item xs={6} md={4}>
           <AddNewResourceButton

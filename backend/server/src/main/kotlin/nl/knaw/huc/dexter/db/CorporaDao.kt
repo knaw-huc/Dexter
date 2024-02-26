@@ -103,7 +103,11 @@ interface CorporaDao {
 
     @SqlUpdate("delete from corpora_media where corpus_id = :corpusId and media_id = :mediaId")
     fun deleteMedia(corpusId: UUID, mediaId: UUID)
-    
+
+    @SqlQuery("select * from corpora where parent_id = :parentId")
+    @RegisterKotlinMapper(ResultCorpus::class)
+    fun getSubcorpora(parentId: UUID): List<ResultCorpus>
+
     companion object {
         fun corpusNotFound(corpusId: UUID): Nothing = throw NotFoundException("Corpus not found: $corpusId")
     }
