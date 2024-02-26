@@ -100,12 +100,26 @@ export const SourcePage = () => {
     return;
   }
 
-  function handleSavedMedia(edited: ResultMedia) {
+  async function handleSavedMedia(media: ResultMedia) {
+    if (mediaToEdit) {
+      handleEditedMedia(media);
+    } else {
+      await addCreatedMedia(media);
+    }
+  }
+
+  function handleEditedMedia(media: ResultMedia) {
     setSource(s => ({
       ...s,
-      media: s.media.map(s => (s.id === edited.id ? edited : s)),
+      media: s.media.map(s => (s.id === media.id ? media : s)),
     }));
     setMediaToEdit(null);
+    setMediaShowForm(false);
+  }
+
+  async function addCreatedMedia(media: ResultMedia) {
+    await addMediaToSource(sourceId, [media.id]);
+    setSource(s => ({ ...s, media: [...s.media, media] }));
     setMediaShowForm(false);
   }
 
