@@ -8,7 +8,6 @@ import {
 } from '../../model/DexterModel';
 import { SelectTagField } from '../tag/SelectTagField';
 import { LanguagesField } from '../language/LanguagesField';
-import { SelectParentCorpusField } from './SelectParentCorpusField';
 import ScrollableModal from '../common/ScrollableModal';
 import { ValidatedSelectField } from '../common/ValidatedSelectField';
 import { SelectSourcesField } from './SelectSourcesField';
@@ -25,10 +24,19 @@ import { useInitCorpusForm } from './useInitCorpusForm';
 import { useSubmitCorpusForm } from './useSubmitCorpusForm';
 import { onSubmit } from '../../utils/onSubmit';
 import { useFormErrors } from '../common/useFormErrors';
+import { SelectCorpusField } from './SelectCorpusField';
 
 type CorpusFormProps = {
+  /**
+   * When none provided, create new
+   */
   corpusToEdit?: Corpus;
-  parentOptions: Corpus[];
+
+  /**
+   * When none provided, hide parent corpus field
+   */
+  parentOptions?: Corpus[];
+
   sourceOptions: Source[];
   onSaved: (edited: Corpus) => void;
   onClose: () => void;
@@ -158,19 +166,23 @@ export function CorpusForm(props: CorpusFormProps) {
           <SelectSourcesField
             options={props.sourceOptions}
             selected={form.sources}
-            onLinkSource={handleLinkSource}
-            onUnlinkSource={handleUnlinkSource}
+            onSelectSource={handleLinkSource}
+            onDeselectSource={handleUnlinkSource}
           />
           <ErrorMessage error={errors.sources} />
 
-          <Label>Add to main corpus</Label>
-          <SelectParentCorpusField
-            selected={form.parent}
-            options={props.parentOptions}
-            onSelectParentCorpus={handleSelectParentCorpus}
-            onDeleteParentCorpus={handleDeleteParentCorpus}
-          />
-          <ErrorMessage error={errors.parent} />
+          {!props.parentOptions && (
+            <>
+              <Label>Add to main corpus</Label>
+              <SelectCorpusField
+                selected={form.parent}
+                options={props.parentOptions}
+                onSelectCorpus={handleSelectParentCorpus}
+                onDeselectCorpus={handleDeleteParentCorpus}
+              />
+              <ErrorMessage error={errors.parent} />
+            </>
+          )}
 
           <MetadataValueFormFields
             keys={keys}

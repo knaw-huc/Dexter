@@ -5,14 +5,14 @@ import parse from 'autosuggest-highlight/parse';
 import React, { useState } from 'react';
 import { ResultCorpus, ResultSource } from '../../model/DexterModel';
 
-interface SubCorpusFieldProps {
+export type SelectCorpusFieldProps = {
   options: ResultCorpus[];
   selected?: ResultCorpus;
-  onSelectParentCorpus: (corpusId: string) => void;
-  onDeleteParentCorpus: () => void;
-}
+  onSelectCorpus: (corpusId: string) => void;
+  onDeselectCorpus: (corpusId: string) => void;
+};
 
-export const SelectParentCorpusField = (props: SubCorpusFieldProps) => {
+export const SelectCorpusField = (props: SelectCorpusFieldProps) => {
   const [inputValue, setInputValue] = useState('');
 
   return (
@@ -29,9 +29,9 @@ export const SelectParentCorpusField = (props: SubCorpusFieldProps) => {
       onChange={(_, selected) => {
         const selectedCorpus = selected as ResultSource;
         if (selectedCorpus?.id) {
-          props.onSelectParentCorpus(selectedCorpus.id);
+          props.onSelectCorpus(selectedCorpus.id);
         } else {
-          props.onDeleteParentCorpus();
+          props.onDeselectCorpus(selectedCorpus.id);
         }
       }}
       options={props.options}

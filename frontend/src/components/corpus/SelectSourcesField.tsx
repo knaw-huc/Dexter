@@ -10,8 +10,8 @@ import { normalizeInput } from '../../utils/normalizeInput';
 export type SelectSourcesFieldProps = {
   options: ResultSource[];
   selected: ResultSource[];
-  onLinkSource: (sourceId: string) => void;
-  onUnlinkSource: (sourceId: string) => void;
+  onSelectSource: (sourceId: string) => void;
+  onDeselectSource: (sourceId: string) => void;
 };
 
 export function SelectSourcesField(props: SelectSourcesFieldProps) {
@@ -51,7 +51,7 @@ export function SelectSourcesField(props: SelectSourcesFieldProps) {
             key={index}
             {...getTagProps({ index })}
             onDelete={() => {
-              props.onUnlinkSource(source.id);
+              props.onDeselectSource(source.id);
             }}
           />
         ))
@@ -61,7 +61,7 @@ export function SelectSourcesField(props: SelectSourcesFieldProps) {
         if (!selectedSource) {
           return;
         }
-        props.onLinkSource(selectedSource.id);
+        props.onSelectSource(selectedSource.id);
       }}
       renderOption={(props, option, { inputValue }) => {
         const matches = match(option.title, inputValue, {
