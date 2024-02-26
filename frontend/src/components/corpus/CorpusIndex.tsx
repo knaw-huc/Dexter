@@ -72,7 +72,7 @@ export function CorpusIndex() {
       {corpora && (
         <Grid container spacing={2} sx={{ pl: 0.1, pr: 1, mt: 2, mb: 2 }}>
           {corpora.map((corpus: Corpus, index: number) => (
-            <Grid item xs={4} height="150px" key={index}>
+            <Grid item xs={4} key={index}>
               <CorpusPreview
                 corpus={corpus}
                 onDeleted={() => handleDelete(corpus)}
