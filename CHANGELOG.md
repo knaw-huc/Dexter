@@ -3,6 +3,17 @@
 ## [Development](https://github.com/knaw-huc/Dexter/tree/development)
 🧪 Features / ✨ Enhancements / 🔧 Technical / 🐛 Bug Fixes
 
+## [v0.12.0](https://github.com/knaw-huc/Dexter/releases/tag/v0.12.0) / 2024-02-13
+### 🧪 Features 
+- Add 'media' (only images now) with an url and title
+- Add media to sources
+- Display image in preview of corpora and sources
+
+### ✨ Enhancements 
+- Display subcorpora on the corpus page
+- Filter subcorpora by their tags and the tags of their subcorpora and sources
+
+
 ## [v0.11.0](https://github.com/knaw-huc/Dexter/releases/tag/v0.11.0) / 2024-02-13
 
 ### 🧪 Features

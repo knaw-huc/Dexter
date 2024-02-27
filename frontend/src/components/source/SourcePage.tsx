@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { ResultLanguage, ResultMedia, Source } from '../../model/DexterModel';
 import { deleteLanguageFromSourceWithWarning } from '../../utils/deleteLanguageFromSourceWithWarning';
@@ -47,11 +47,11 @@ export const SourcePage = () => {
   const params = useParams();
   const sourceId = params.sourceId;
 
-  const [source, setSource] = React.useState<Source>(null);
-  const [showForm, setShowForm] = React.useState(false);
-  const [showMediaForm, setMediaShowForm] = React.useState(false);
-  const [mediaToEdit, setMediaToEdit] = React.useState(null);
-  const [showSelectMediaForm, setShowSelectMediaForm] = React.useState(null);
+  const [source, setSource] = useState<Source>(null);
+  const [showForm, setShowForm] = useState(false);
+  const [showMediaForm, setMediaShowForm] = useState(false);
+  const [mediaToEdit, setMediaToEdit] = useState(null);
+  const [showSelectMediaForm, setShowSelectMediaForm] = useState(null);
 
   const handleSavedForm = (update: Source) => {
     setSource(update);
@@ -62,7 +62,7 @@ export const SourcePage = () => {
     setSource(await getSourceWithResourcesById(sourceId));
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (sourceId) {
       initSource();
     }
