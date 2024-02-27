@@ -33,7 +33,7 @@
 - Replace form management of react-hook-form by plain react code
 - Document database model in readme
 
-## [v0.10.0](https://github.com/knaw-huc/Dexter/releases/tag/v0.10.0) / 2024-01-22
+## [v0.10.0](https://github.com/knaw-huc/Dexter/releases/tag/v0.10.0)
 
 ### 🧪 Features
 - Filter corpus sources by keywords
