@@ -53,20 +53,18 @@ export const SourcePage = () => {
   const [mediaToEdit, setMediaToEdit] = useState(null);
   const [showSelectMediaForm, setShowSelectMediaForm] = useState(null);
 
+  useEffect(() => {
+    init();
+  }, []);
+
+  const init = async () => {
+    setSource(await getSourceWithResourcesById(sourceId));
+  };
+
   const handleSavedForm = (update: Source) => {
     setSource(update);
     setShowForm(false);
   };
-
-  const initSource = async () => {
-    setSource(await getSourceWithResourcesById(sourceId));
-  };
-
-  useEffect(() => {
-    if (sourceId) {
-      initSource();
-    }
-  }, [sourceId]);
 
   const handleUnlinkLanguage = async (language: ResultLanguage) => {
     await deleteLanguageFromSourceWithWarning(language, params.sourceId);
@@ -81,23 +79,9 @@ export const SourcePage = () => {
     setSource(s => ({ ...s, media: s.media.filter(m => m.id !== media.id) }));
   }
 
-  const shortSourceFields: (keyof Source)[] = [
-    'location',
-    'earliest',
-    'latest',
-    'rights',
-    'ethics',
-    'access',
-    'creator',
-  ];
-
   function handleEditMedia(media: ResultMedia) {
     setMediaToEdit(media);
     setMediaShowForm(true);
-  }
-
-  if (!source) {
-    return;
   }
 
   async function handleSavedMedia(media: ResultMedia) {
@@ -136,6 +120,19 @@ export const SourcePage = () => {
     setSource(s => ({ ...s, media }));
   }
 
+  const shortSourceFields: (keyof Source)[] = [
+    'location',
+    'earliest',
+    'latest',
+    'rights',
+    'ethics',
+    'access',
+    'creator',
+  ];
+
+  if (!source) {
+    return null;
+  }
   return (
     <div>
       <HeaderBreadCrumb>
