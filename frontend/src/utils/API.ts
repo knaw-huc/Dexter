@@ -27,6 +27,7 @@ import {
   metadata,
   sources,
   tags,
+  user,
   values,
   withResources,
 } from '../model/Resources';
@@ -59,7 +60,7 @@ export async function toReadable(prefixMessage: string, e: ResponseError) {
   return { message: `${prefixMessage}: ${json.message}` };
 }
 
-async function fetchValidated(path: string, params?: Record<string, string>) {
+async function getValidated(path: string, params?: Record<string, string>) {
   let url = path;
   if (!_.isEmpty(params)) {
     url += `?${new URLSearchParams(params)}`;
@@ -72,11 +73,18 @@ async function fetchValidated(path: string, params?: Record<string, string>) {
   return response.json();
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type BodyToStringify = string | any;
+
+const postValidated = (url: string, content?: BodyToStringify) =>
+  fetchValidatedWith(url, POST, content);
+const putValidated = (url: string, content?: BodyToStringify) =>
+  fetchValidatedWith(url, PUT, content);
+
 async function fetchValidatedWith(
   url: string,
   method: 'PUT' | 'POST',
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  content?: string | any,
+  content?: BodyToStringify,
 ) {
   let body: string;
   if (_.isNil(content)) {
@@ -95,7 +103,7 @@ async function fetchValidatedWith(
   return response.json();
 }
 
-async function fetchValidatedDelete(url: string): Promise<void> {
+async function deleteValidated(url: string): Promise<void> {
   const response = await fetch(url, {
     method: 'DELETE',
     headers: headers,
@@ -103,162 +111,164 @@ async function fetchValidatedDelete(url: string): Promise<void> {
   validateResponse({ response });
 }
 
+/**
+ * Corpus:
+ */
+
 export const getCorporaWithResources = async (): Promise<Corpus[]> => {
-  return fetchValidated(`/${api}/${corpora}/${withResources}`);
+  return getValidated(`/${api}/${corpora}/${withResources}`);
 };
 
 export const getCorpusWithResourcesById = async (id: string): Promise<Corpus> =>
-  fetchValidated(`/${api}/${corpora}/${id}/${withResources}`);
+  getValidated(`/${api}/${corpora}/${id}/${withResources}`);
 
 export const createCorpus = async (newCorpus: FormCorpus): Promise<Corpus> =>
-  fetchValidatedWith(`/${api}/${corpora}`, POST, newCorpus);
+  postValidated(`/${api}/${corpora}`, newCorpus);
 export const updateCorpus = async (
   id: string,
   updatedCorpus: FormCorpus,
-): Promise<Corpus> =>
-  fetchValidatedWith(`/${api}/${corpora}/${id}`, PUT, updatedCorpus);
+): Promise<Corpus> => putValidated(`/${api}/${corpora}/${id}`, updatedCorpus);
 
-export const deleteCollection = async (id: string): Promise<void> =>
-  fetchValidatedDelete(`/${api}/${corpora}/${id}`);
+export const deleteCorpus = async (id: string): Promise<void> =>
+  deleteValidated(`/${api}/${corpora}/${id}`);
+
+/**
+ * Source:
+ */
 
 export const getSourcesWithResources = async (): Promise<Source[]> => {
-  return fetchValidated(`/${api}/${sources}/${withResources}`);
+  return getValidated(`/${api}/${sources}/${withResources}`);
 };
 
 export const getSourceWithResourcesById = async (id: string) =>
-  fetchValidated(`/${api}/${sources}/${id}/${withResources}`);
+  getValidated(`/${api}/${sources}/${id}/${withResources}`);
 
 export const createSource = async (
   newSource: FormSource,
-): Promise<ResultSource> =>
-  fetchValidatedWith(`/${api}/${sources}`, POST, newSource);
+): Promise<ResultSource> => postValidated(`/${api}/${sources}`, newSource);
 
 export const updateSource = async (
   id: string,
   updatedSource: FormSource,
-): Promise<Source> =>
-  fetchValidatedWith(`/${api}/${sources}/${id}`, PUT, updatedSource);
+): Promise<Source> => putValidated(`/${api}/${sources}/${id}`, updatedSource);
 
 export const deleteSource = async (id: string): Promise<void> =>
-  fetchValidatedDelete(`/${api}/${sources}/${id}`);
-
-export const getTags = async () => fetchValidated(`/${api}/${tags}`);
-
-export const createTag = async (newTag: FormTag): Promise<ResultTag> =>
-  fetchValidatedWith(`/${api}/${tags}`, POST, newTag);
-
-export const addTagsToCorpus = async (
-  corpusId: string,
-  tagId: string[],
-): Promise<ResultTag[]> =>
-  fetchValidatedWith(`/${api}/${corpora}/${corpusId}/${tags}`, POST, tagId);
-
-export const addTagsToSource = async (
-  sourceId: string,
-  tagId: string[],
-): Promise<ResultTag[]> =>
-  fetchValidatedWith(`/${api}/${sources}/${sourceId}/${tags}`, POST, tagId);
-
-export const deleteTag = async (id: string): Promise<void> =>
-  fetchValidatedDelete(`/${api}/${tags}/${id}`);
-
-export const getTagsAutocomplete = async (
-  input: string,
-): Promise<ResultTag[]> =>
-  fetchValidatedWith(`/${api}/${tags}/autocomplete`, POST, input);
-
-export const getLanguagesAutocomplete = async (
-  input: string,
-): Promise<ResultLanguage[]> =>
-  fetchValidatedWith(`/${api}/languages/autocomplete`, POST, input);
-
-export const addLanguagesToCorpus = async (
-  corpusId: string,
-  languageId: string[],
-): Promise<ResultLanguage[]> =>
-  fetchValidatedWith(
-    `/${api}/${corpora}/${corpusId}/languages`,
-    POST,
-    languageId,
-  );
-
-export const deleteLanguageFromCorpus = async (
-  corpusId: string,
-  languageId: string,
-): Promise<void> =>
-  fetchValidatedDelete(
-    `/${api}/${corpora}/${corpusId}/languages/${languageId}`,
-  );
-
-export const addLanguagesToSource = async (
-  corpusId: string,
-  languageId: string[],
-): Promise<ResultLanguage[]> =>
-  fetchValidatedWith(
-    `/${api}/${sources}/${corpusId}/languages`,
-    POST,
-    languageId,
-  );
-
-export const deleteLanguageFromSource = async (
-  sourceId: string,
-  languageId: string,
-): Promise<void> =>
-  fetchValidatedDelete(
-    `/${api}/${sources}/${sourceId}/languages/${languageId}`,
-  );
-
-export const deleteTagFromCorpus = async (
-  corpusId: string,
-  tagId: string,
-): Promise<void> =>
-  fetchValidatedDelete(`/${api}/${corpora}/${corpusId}/${tags}/${tagId}`);
-
-export const deleteTagFromSource = async (
-  sourceId: string,
-  tagId: string,
-): Promise<void> =>
-  fetchValidatedDelete(`/${api}/${sources}/${sourceId}/${tags}/${tagId}`);
+  deleteValidated(`/${api}/${sources}/${id}`);
 
 export const addSourcesToCorpus = async (
   corpusId: string,
   sourceIds: string[],
 ): Promise<Source[]> =>
-  fetchValidatedWith(
-    `/${api}/${corpora}/${corpusId}/${sources}`,
-    POST,
-    sourceIds,
-  );
+  postValidated(`/${api}/${corpora}/${corpusId}/${sources}`, sourceIds);
 
 export const deleteSourceFromCorpus = async (
   corpusId: string,
   sourceId: string,
 ): Promise<void> =>
-  fetchValidatedDelete(`/${api}/${corpora}/${corpusId}/${sources}/${sourceId}`);
+  deleteValidated(`/${api}/${corpora}/${corpusId}/${sources}/${sourceId}`);
 
-export type ResultDublinCoreMetadata = Record<string, string>;
+/**
+ * Language:
+ */
+
+export const getLanguagesAutocomplete = async (
+  input: string,
+): Promise<ResultLanguage[]> =>
+  postValidated(`/${api}/languages/autocomplete`, input);
+
+export const addLanguagesToCorpus = async (
+  corpusId: string,
+  languageId: string[],
+): Promise<ResultLanguage[]> =>
+  postValidated(`/${api}/${corpora}/${corpusId}/languages`, languageId);
+
+export const deleteLanguageFromCorpus = async (
+  corpusId: string,
+  languageId: string,
+): Promise<void> =>
+  deleteValidated(`/${api}/${corpora}/${corpusId}/languages/${languageId}`);
+
+export const addLanguagesToSource = async (
+  corpusId: string,
+  languageId: string[],
+): Promise<ResultLanguage[]> =>
+  postValidated(`/${api}/${sources}/${corpusId}/languages`, languageId);
+
+export const deleteLanguageFromSource = async (
+  sourceId: string,
+  languageId: string,
+): Promise<void> =>
+  deleteValidated(`/${api}/${sources}/${sourceId}/languages/${languageId}`);
+
+/**
+ * Tags:
+ */
+
+export const getTags = async () => getValidated(`/${api}/${tags}`);
+
+export const createTag = async (newTag: FormTag): Promise<ResultTag> =>
+  postValidated(`/${api}/${tags}`, newTag);
+
+export const addTagsToCorpus = async (
+  corpusId: string,
+  tagId: string[],
+): Promise<ResultTag[]> =>
+  postValidated(`/${api}/${corpora}/${corpusId}/${tags}`, tagId);
+
+export const addTagsToSource = async (
+  sourceId: string,
+  tagId: string[],
+): Promise<ResultTag[]> =>
+  postValidated(`/${api}/${sources}/${sourceId}/${tags}`, tagId);
+
+export const deleteTag = async (id: string): Promise<void> =>
+  deleteValidated(`/${api}/${tags}/${id}`);
+
+export const getTagsAutocomplete = async (
+  input: string,
+): Promise<ResultTag[]> => postValidated(`/${api}/${tags}/autocomplete`, input);
+
+export const deleteTagFromCorpus = async (
+  corpusId: string,
+  tagId: string,
+): Promise<void> =>
+  deleteValidated(`/${api}/${corpora}/${corpusId}/${tags}/${tagId}`);
+
+export const deleteTagFromSource = async (
+  sourceId: string,
+  tagId: string,
+): Promise<void> =>
+  deleteValidated(`/${api}/${sources}/${sourceId}/${tags}/${tagId}`);
+
+/**
+ * Import:
+ */
 
 export const postImport = async (url: URL): Promise<ResultImport> =>
-  fetchValidatedWith(`/${api}/import/wereldculturen`, POST, { url });
+  postValidated(`/${api}/import/wereldculturen`, { url });
+
+/**
+ * User:
+ */
 
 export type LoginResponse = {
   name: string;
 };
 export const login = async (): Promise<LoginResponse> =>
-  fetchValidatedWith(`/${api}/user/login`, POST);
+  postValidated(`/${api}/${user}/login`);
 
 /**
- * Metadata
+ * Metadata:
  */
 
 export const getMetadataKeys = async (): Promise<ResultMetadataKey[]> =>
-  fetchValidated(`/${api}/${metadata}/${keys}`);
+  getValidated(`/${api}/${metadata}/${keys}`);
 
 export const deleteMetadataKey = async (id: string): Promise<void> =>
-  fetchValidatedDelete(`/${api}/${metadata}/${keys}/${id}`);
+  deleteValidated(`/${api}/${metadata}/${keys}/${id}`);
 
 export const deleteMetadataValue = async (id: string): Promise<void> =>
-  fetchValidatedDelete(`/${api}/${metadata}/${values}/${id}`);
+  deleteValidated(`/${api}/${metadata}/${values}/${id}`);
 
 export const deleteMetadataValueFromSource = async (
   _: string,
@@ -272,32 +282,31 @@ export const deleteMetadataValueFromCorpus = async (
 export const createMetadataKey = async (
   newTag: FormMetadataKey,
 ): Promise<ResultMetadataKey> =>
-  fetchValidatedWith(`/${api}/${metadata}/${keys}`, POST, newTag);
+  postValidated(`/${api}/${metadata}/${keys}`, newTag);
 
 export const updateMetadataKey = async (
   id: UUID,
   newTag: FormMetadataKey,
 ): Promise<ResultMetadataKey> =>
-  fetchValidatedWith(`/${api}/${metadata}/${keys}/${id}`, PUT, newTag);
+  putValidated(`/${api}/${metadata}/${keys}/${id}`, newTag);
 
 export const createMetadataValue = async (
   form: FormMetadataValue,
 ): Promise<ResultMetadataValue> =>
-  fetchValidatedWith(`/${api}/${metadata}/${values}`, POST, form);
+  postValidated(`/${api}/${metadata}/${values}`, form);
 
 export const updateMetadataValue = (
   id: UUID,
   form: FormMetadataValue,
 ): Promise<ResultMetadataValue> =>
-  fetchValidatedWith(`/${api}/${metadata}/${values}/${id}`, PUT, form);
+  putValidated(`/${api}/${metadata}/${values}/${id}`, form);
 
 export const addMetadataValueToSource = async (
   sourceId: string,
   metadataValueIds: string[],
 ): Promise<ResultMetadataValue[]> =>
-  fetchValidatedWith(
+  postValidated(
     `/${api}/${sources}/${sourceId}/${metadata}/${values}`,
-    POST,
     metadataValueIds,
   );
 
@@ -305,59 +314,58 @@ export const addMetadataValueToCorpus = async (
   corpusId: string,
   metadataValueIds: string[],
 ): Promise<ResultMetadataValue[]> =>
-  fetchValidatedWith(
+  postValidated(
     `/${api}/${corpora}/${corpusId}/${metadata}/${values}`,
-    POST,
     metadataValueIds,
   );
 
 /**
  * Media:
  */
+
 export const getMedia = async (
   type?: SupportedMediaTypeType,
-): Promise<ResultMedia[]> => fetchValidated(`/${api}/${media}`, { type });
+): Promise<ResultMedia[]> => getValidated(`/${api}/${media}`, { type });
 
 export const getMediaEntry = async (id: UUID): Promise<ResultMedia> =>
-  fetchValidated(`/${api}/${media}/${id}`);
+  getValidated(`/${api}/${media}/${id}`);
 
 export const createMedia = async (form: FormMedia): Promise<ResultMedia> =>
-  fetchValidatedWith(`/${api}/${media}`, POST, form);
+  postValidated(`/${api}/${media}`, form);
 
 export const updateMedia = async (
   id: UUID,
   form: FormMedia,
-): Promise<ResultMedia> =>
-  fetchValidatedWith(`/${api}/${media}/${id}`, PUT, form);
+): Promise<ResultMedia> => putValidated(`/${api}/${media}/${id}`, form);
 
 export const deleteMedia = async (mediaId: UUID) =>
-  fetchValidatedDelete(`/${api}/${media}/${mediaId}`);
+  deleteValidated(`/${api}/${media}/${mediaId}`);
 
 export const addMediaToSource = async (
   sourceId: string,
   mediaIds: string[],
 ): Promise<ResultMedia[]> =>
-  fetchValidatedWith(`/${api}/${sources}/${sourceId}/${media}`, POST, mediaIds);
+  postValidated(`/${api}/${sources}/${sourceId}/${media}`, mediaIds);
 
 export const addMediaToCorpus = async (
   corpusId: string,
   mediaIds: string[],
 ): Promise<ResultMedia[]> =>
-  fetchValidatedWith(`/${api}/${corpora}/${corpusId}/${media}`, POST, mediaIds);
+  postValidated(`/${api}/${corpora}/${corpusId}/${media}`, mediaIds);
 
 export const deleteMediaFromCorpus = async (
   corpusId: string,
   mediaId: string,
 ): Promise<void> =>
-  fetchValidatedDelete(`/${api}/${corpora}/${corpusId}/${media}/${mediaId}`);
+  deleteValidated(`/${api}/${corpora}/${corpusId}/${media}/${mediaId}`);
 
 export const deleteMediaFromSource = async (
   sourceId: string,
   mediaId: string,
 ): Promise<void> =>
-  fetchValidatedDelete(`/${api}/${sources}/${sourceId}/${media}/${mediaId}`);
+  deleteValidated(`/${api}/${sources}/${sourceId}/${media}/${mediaId}`);
 
 export const getMediaAutocomplete = async (
   input: string,
 ): Promise<ResultMedia[]> =>
-  fetchValidatedWith(`/${api}/${media}/autocomplete`, POST, input);
+  postValidated(`/${api}/${media}/autocomplete`, input);

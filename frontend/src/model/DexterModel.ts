@@ -1,5 +1,3 @@
-import { ResultDublinCoreMetadata } from '../utils/API';
-
 export type UUID = string;
 export type LocalDate = string;
 export type LocalDateTime = string;
@@ -177,6 +175,8 @@ export type ResultMedia = {
   mediaType: SupportedMediaType;
   createdBy: UUID;
 };
+
+export type ResultDublinCoreMetadata = Record<string, string>;
 
 export type ResultImport = {
   isValidExternalReference: boolean;

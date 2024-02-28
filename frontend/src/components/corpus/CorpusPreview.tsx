@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Corpus, isImage } from '../../model/DexterModel';
 import { useNavigate } from 'react-router-dom';
-import { deleteCollection } from '../../utils/API';
+import { deleteCorpus } from '../../utils/API';
 import { errorContext } from '../../state/error/errorContext';
 import { Card, CardContent, Grid } from '@mui/material';
 import { HeaderLinkClamped } from '../common/HeaderLinkClamped';
@@ -27,7 +27,7 @@ export function CorpusPreview(props: CorpusPreviewProps) {
 
     if (warning === false) return;
 
-    await deleteCollection(collection.id).catch(dispatchError);
+    await deleteCorpus(collection.id).catch(dispatchError);
     props.onDeleted();
   };
 
