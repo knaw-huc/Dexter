@@ -1,5 +1,6 @@
 package nl.knaw.huc.dexter
 
+import JsonProcessingExceptionWithIdMapper
 import SupportedMediaType
 import SupportedMediaTypeSerializer
 import UnauthorizedExceptionMapper
@@ -89,7 +90,6 @@ class DexterApplication : Application<DexterConfiguration>() {
             )
             register(RolesAllowedDynamicFeature::class.java)
             register(AuthValueFactoryProvider.Binder(DexterUser::class.java))
-
             register(AboutResource(configuration, name, appVersion))
             register(AdminResource(jdbi))
             register(CorporaResource(jdbi))
@@ -102,6 +102,7 @@ class DexterApplication : Application<DexterConfiguration>() {
             register(TagsResource(jdbi))
             register(UserResource())
 
+            register(JsonProcessingExceptionWithIdMapper())
             register(UnauthorizedExceptionMapper())
         }
     }
