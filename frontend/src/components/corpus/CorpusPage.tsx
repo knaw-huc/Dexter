@@ -41,19 +41,6 @@ import { CorpusPreview } from './CorpusPreview';
 import { H2Styled } from '../common/H2Styled';
 import { SelectCorpusForm } from './SelectCorpusForm';
 
-function getAllSourceTags(corpus: Corpus) {
-  return _.uniqBy(corpus.sources.map(s => s.tags).flat(), 'id');
-}
-
-function getCorpusTags(subcorpus: Corpus): ResultTag[] {
-  const all = [
-    ...subcorpus.tags,
-    ...subcorpus.sources.flatMap(s => s.tags),
-    ...subcorpus.subcorpora.flatMap(getCorpusTags),
-  ];
-  return _.uniqBy(all, 'id');
-}
-
 export const CorpusPage = () => {
   const [corpus, setCorpus] = useState<Corpus>(null);
   const [sourceOptions, setSourceOptions] = useState<Source[]>(null);
@@ -409,3 +396,16 @@ export const CorpusPage = () => {
     </div>
   );
 };
+
+function getAllSourceTags(corpus: Corpus) {
+  return _.uniqBy(corpus.sources.map(s => s.tags).flat(), 'id');
+}
+
+function getCorpusTags(subcorpus: Corpus): ResultTag[] {
+  const all = [
+    ...subcorpus.tags,
+    ...subcorpus.sources.flatMap(s => s.tags),
+    ...subcorpus.subcorpora.flatMap(getCorpusTags),
+  ];
+  return _.uniqBy(all, 'id');
+}
