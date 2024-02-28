@@ -62,14 +62,16 @@ data class ResultSourceWithResources (
     val tags: List<ResultTag>,
     val languages: List<ResultLanguage>,
     val metadataValues: List<ResultMetadataValueWithResources>,
-    val media: List<ResultMedia>
+    val media: List<ResultMedia>,
+    val corpora: List<ResultCorpus>
 )
 
 fun ResultSource.toResultSourceWithResources(
     tags: List<ResultTag>,
     languages: List<ResultLanguage>,
     metadataValues: List<ResultMetadataValueWithResources>,
-    media: List<ResultMedia>
+    media: List<ResultMedia>,
+    corpora: List<ResultCorpus>
 ) = ResultSourceWithResources(
     id = id,
     externalRef = externalRef,
@@ -90,5 +92,6 @@ fun ResultSource.toResultSourceWithResources(
     tags = tags,
     languages = languages,
     metadataValues = metadataValues,
-    media = media
+    media = media,
+    corpora = corpora
 )

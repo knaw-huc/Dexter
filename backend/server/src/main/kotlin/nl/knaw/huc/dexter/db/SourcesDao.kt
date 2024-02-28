@@ -84,6 +84,11 @@ interface SourcesDao {
     @SqlUpdate("delete from sources_media where source_id = :sourceId and media_id = :mediaId")
     fun deleteMedia(sourceId: UUID, mediaId: UUID)
 
+    @SqlQuery("select * from corpora c " +
+            "join corpora_sources cs on c.id = cs.corpus_id " +
+            "where cs.source_id = :sourceId")
+    @RegisterKotlinMapper(ResultCorpus::class)
+    fun getCorpora(sourceId: UUID): List<ResultCorpus>
 
     companion object {
         fun sourceNotFound(sourceId: UUID): Nothing = throw NotFoundException("Source not found: $sourceId")

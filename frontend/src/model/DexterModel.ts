@@ -78,6 +78,7 @@ export type Source = ResultSource & {
   languages: ResultLanguage[];
   metadataValues: MetadataValue[];
   media: ResultMedia[];
+  corpora: ResultCorpus[];
 };
 
 /**
