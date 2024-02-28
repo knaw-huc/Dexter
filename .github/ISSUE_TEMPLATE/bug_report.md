@@ -6,15 +6,13 @@ labels: ''
 assignees: ''
 
 ---
+**What did you try to do? And what happened?**
 
 **Describe the bug**
 Please describe your problem as clear and short as posible.
 
-**How to reproduce the bug?**
 1. Go to '...'
 2. Click on '....'
-3. Scroll down to '....'
-4. See error '...'
-
-**Expected behavior**
-What did you expect to happen?
+3. Fill out form with these values: '...'
+4. Scroll down to '....'
+5. See error '...'
