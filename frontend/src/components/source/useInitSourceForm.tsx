@@ -31,6 +31,7 @@ const defaults: Source = {
   languages: [],
   metadataValues: [],
   media: [],
+  corpora: [],
 
   // Not created or modified by form:
   id: undefined,
