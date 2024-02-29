@@ -12,6 +12,7 @@
 ### ✨ Enhancements 
 - Display subcorpora on the corpus page
 - Filter subcorpora by their tags and the tags of their subcorpora and sources
+- Move languages to summary paragraph on source and corpus page
 
 ### 🔧 Technical
 - Add ID to json parsing error responses to trace it back to backend error logging for more details 
