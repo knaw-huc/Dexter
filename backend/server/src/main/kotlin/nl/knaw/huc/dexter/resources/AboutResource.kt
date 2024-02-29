@@ -33,7 +33,6 @@ class AboutResource(
     )
 
     @Operation(description = "Get server info")
-//    @RolesAllowed("admin")
     @Timed
     @GET
     fun getAboutInfo(

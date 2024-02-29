@@ -21,9 +21,13 @@ export const SourcePreview = (props: SourceItemDropdownProps) => {
 
   const headerImage = props.source.media.find(m => isImage(m.mediaType))?.url;
 
+  function navigateToSource() {
+    return navigate(`/sources/${props.source.id}`);
+  }
+
   return (
     <Card style={{ height: '100%' }}>
-      <CardHeaderImage src={headerImage} />
+      <CardHeaderImage src={headerImage} onClick={navigateToSource} />
       <CardContent style={{ height: '100%', paddingBottom: '1em' }}>
         <Grid container>
           <Grid item sx={{ maxHeight: '110px' }} xs={12}>
@@ -34,9 +38,7 @@ export const SourcePreview = (props: SourceItemDropdownProps) => {
                 props.onUnlinkSource();
               }}
             />
-            <HeaderLinkClamped
-              onClick={() => navigate(`/sources/${props.source.id}`)}
-            >
+            <HeaderLinkClamped onClick={navigateToSource}>
               <SourceIcon fontSize="small" />
               <Title title={props.source.title} />
             </HeaderLinkClamped>

@@ -35,9 +35,9 @@ export default function Header() {
             onClick={() => navigate('/')}
             variant="h6"
             noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
+            component="span"
             sx={{
+              cursor: 'pointer',
               mr: 2,
               display: { xs: 'none', md: 'flex' },
               fontFamily: 'monospace',

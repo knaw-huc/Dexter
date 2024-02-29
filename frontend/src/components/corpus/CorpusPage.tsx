@@ -1,23 +1,16 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import {
-  Corpus,
-  ResultLanguage,
-  ResultTag,
-  Source,
-} from '../../model/DexterModel';
+import { Corpus, ResultTag, Source } from '../../model/DexterModel';
 import { CorpusForm } from './CorpusForm';
 import { errorContext } from '../../state/error/errorContext';
 import {
   addSourcesToCorpus,
-  deleteLanguageFromCorpus,
   deleteSourceFromCorpus,
   getCorporaWithResources,
   getCorpusWithResourcesById,
   getSourcesWithResources,
   updateCorpus,
 } from '../../utils/API';
-import { Languages } from '../language/Languages';
 import { SourcePreview } from '../source/SourcePreview';
 import { SourceForm } from '../source/SourceForm';
 import { EditButton } from '../common/EditButton';
@@ -40,19 +33,6 @@ import { SourceIcon } from '../source/SourceIcon';
 import { CorpusPreview } from './CorpusPreview';
 import { H2Styled } from '../common/H2Styled';
 import { SelectCorpusForm } from './SelectCorpusForm';
-
-function getAllSourceTags(corpus: Corpus) {
-  return _.uniqBy(corpus.sources.map(s => s.tags).flat(), 'id');
-}
-
-function getCorpusTags(subcorpus: Corpus): ResultTag[] {
-  const all = [
-    ...subcorpus.tags,
-    ...subcorpus.sources.flatMap(s => s.tags),
-    ...subcorpus.subcorpora.flatMap(getCorpusTags),
-  ];
-  return _.uniqBy(all, 'id');
-}
 
 export const CorpusPage = () => {
   const [corpus, setCorpus] = useState<Corpus>(null);
@@ -125,21 +105,6 @@ export const CorpusPage = () => {
     }));
     setShowSourceForm(false);
   };
-
-  const handleDeleteLanguage = async (language: ResultLanguage) => {
-    const warning = window.confirm(
-      'Are you sure you wish to delete this language?',
-    );
-
-    if (warning === false) return;
-
-    await deleteLanguageFromCorpus(corpusId, language.id);
-    setCorpus(corpus => ({
-      ...corpus,
-      languages: corpus.languages.filter(l => l.id !== language.id),
-    }));
-  };
-
   const handleSelectSource = async (corpusId: string, sourceId: string) => {
     await addSourcesToCorpus(corpusId, [sourceId]);
     const toLink = sourceOptions.find(s => s.id === sourceId);
@@ -202,6 +167,7 @@ export const CorpusPage = () => {
 
   const shortCorpusFields: (keyof Corpus)[] = [
     'location',
+    'languages',
     'earliest',
     'latest',
     'rights',
@@ -265,17 +231,11 @@ export const CorpusPage = () => {
       <ShortFieldsSummary<Corpus>
         resource={corpus}
         fieldNames={shortCorpusFields}
+        fieldMapper={(corpus, field) =>
+          field === 'languages' && corpus[field].map(l => l.refName).join(', ')
+        }
       />
 
-      {!_.isEmpty(corpus.languages) && (
-        <div>
-          <h4>Languages:</h4>
-          <Languages
-            languages={corpus.languages}
-            onDelete={handleDeleteLanguage}
-          />
-        </div>
-      )}
       {corpus.notes && (
         <>
           <h2>Notes</h2>
@@ -409,3 +369,16 @@ export const CorpusPage = () => {
     </div>
   );
 };
+
+function getAllSourceTags(corpus: Corpus) {
+  return _.uniqBy(corpus.sources.map(s => s.tags).flat(), 'id');
+}
+
+function getCorpusTags(subcorpus: Corpus): ResultTag[] {
+  const all = [
+    ...subcorpus.tags,
+    ...subcorpus.sources.flatMap(s => s.tags),
+    ...subcorpus.subcorpora.flatMap(getCorpusTags),
+  ];
+  return _.uniqBy(all, 'id');
+}

@@ -1,6 +1,6 @@
 import { ResultTag } from '../../model/DexterModel';
 import { Stack } from '@mui/material';
-import { TagChip } from './TagChip';
+import { ResourceChip } from './ResourceChip';
 import React from 'react';
 import { SxProps } from '@mui/system';
 import { Theme } from '@mui/material/styles/createTheme';
@@ -21,15 +21,15 @@ export function TagList(props: {
         lineHeight: '2em',
       }}
     >
-      {props.tags?.map((tag: ResultTag, index: number) =>
+      {props.tags.map((tag: ResultTag, index: number) =>
         props.onDelete ? (
-          <TagChip
+          <ResourceChip
             key={index}
-            tag={tag}
+            text={tag.val}
             onDelete={() => props.onDelete && props.onDelete(tag)}
           />
         ) : (
-          <TagChip key={index} tag={tag} />
+          <ResourceChip key={index} text={tag.val} />
         ),
       )}
     </Stack>

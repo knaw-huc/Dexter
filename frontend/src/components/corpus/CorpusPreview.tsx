@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Corpus, isImage } from '../../model/DexterModel';
 import { useNavigate } from 'react-router-dom';
-import { deleteCollection } from '../../utils/API';
+import { deleteCorpus } from '../../utils/API';
 import { errorContext } from '../../state/error/errorContext';
 import { Card, CardContent, Grid } from '@mui/material';
 import { HeaderLinkClamped } from '../common/HeaderLinkClamped';
@@ -27,7 +27,7 @@ export function CorpusPreview(props: CorpusPreviewProps) {
 
     if (warning === false) return;
 
-    await deleteCollection(collection.id).catch(dispatchError);
+    await deleteCorpus(collection.id).catch(dispatchError);
     props.onDeleted();
   };
 
@@ -36,9 +36,13 @@ export function CorpusPreview(props: CorpusPreviewProps) {
     .find(s => isImage(s.mediaType))?.url;
 
   const corpus = props.corpus;
+  function navigateToCorpus() {
+    return navigate(`/corpora/${corpus.id}`);
+  }
+
   return (
     <Card style={{ height: '100%' }}>
-      <CardHeaderImage src={headerImage} />
+      <CardHeaderImage src={headerImage} onClick={navigateToCorpus} />
       <CardContent style={{ height: '100%', paddingBottom: '1em' }}>
         <Grid container>
           <Grid item sx={{ maxHeight: '110px' }} xs={12}>
@@ -46,9 +50,7 @@ export function CorpusPreview(props: CorpusPreviewProps) {
               style={{ float: 'right', top: 0 }}
               onClick={() => handleDelete(corpus)}
             />
-            <HeaderLinkClamped
-              onClick={() => navigate(`/corpora/${corpus.id}`)}
-            >
+            <HeaderLinkClamped onClick={navigateToCorpus}>
               <CorpusIcon />
               <Title title={corpus.title} />
             </HeaderLinkClamped>

@@ -43,7 +43,8 @@ class WithResourcesHelper {
                     sourceDao.getTags(source.id),
                     sourceDao.getLanguages(source.id),
                     getSourceMetadataValueWithResources(source.id, handle),
-                    sourceDao.getMedia(source.id)
+                    sourceDao.getMedia(source.id),
+                    sourceDao.getCorpora(source.id)
                 )
             }
         }
