@@ -21,7 +21,7 @@ import javax.ws.rs.ext.Provider
 @Provider
 class JsonProcessingExceptionWithIdMapper : LoggingExceptionMapper<JsonProcessingException>() {
 
-    val log: Logger = LoggerFactory.getLogger(AboutResource::class.java)
+    val log: Logger = LoggerFactory.getLogger(JsonProcessingExceptionWithIdMapper::class.java)
 
     override fun toResponse(exception: JsonProcessingException): Response {
         val errorId = UUID.randomUUID();
