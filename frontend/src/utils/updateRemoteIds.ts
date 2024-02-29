@@ -38,12 +38,12 @@ export function updateLinkedResourcesWith<T extends WithId>(
 ): UpdateLinkedResources<T> {
   return async function (parentId: UUID, linkedResources: T[]) {
     const idsToUpdate = linkedResources.map(r => r.id);
-    const responseTags = await addIdToParent(parentId, idsToUpdate);
-    const keysToDelete: string[] = responseTags
+    const responseResources = await addIdToParent(parentId, idsToUpdate);
+    const idsToDelete: string[] = responseResources
       .map(r => r.id)
       .filter(r => !idsToUpdate.includes(r));
-    for (const keyToDelete of keysToDelete) {
-      await deleteIdFromParent(parentId, keyToDelete);
+    for (const idToDelete of idsToDelete) {
+      await deleteIdFromParent(parentId, idToDelete);
     }
   };
 }
