@@ -1,45 +1,53 @@
 import TextField from '@mui/material/TextField';
-import React, { useContext, useState } from 'react';
-import { ResultTag } from '../../model/DexterModel';
-import { createTag, getTags } from '../../utils/API';
-import { errorContext } from '../../state/error/errorContext';
+import React, { useState } from 'react';
+import { FormTag, ResultTag } from '../../model/DexterModel';
+import { createTag } from '../../utils/API';
 import { Button, Grid } from '@mui/material';
+import { useFormErrors } from '../common/useFormErrors';
+import * as yup from 'yup';
+import { FormErrorMessage } from '../common/FormError';
+import { ErrorMessage } from '../common/ErrorMessage';
 
 type NewTagsProps = {
-  setTags: React.Dispatch<React.SetStateAction<ResultTag[]>>;
+  onSaved: (newTag: ResultTag) => void;
 };
 
+const tagSchema = yup.object({
+  val: yup.string().required('Tag cannot be empty'),
+});
 export function TagForm(props: NewTagsProps) {
-  const { dispatchError } = useContext(errorContext);
-  const [tag, setTag] = useState('');
+  const [form, setForm] = useState<FormTag>({ val: '' });
+  const { errors, setError } = useFormErrors<FormTag>();
 
   async function handleCreateTag() {
     try {
-      await createTag({ val: tag });
-      const all = await getTags();
-      props.setTags(all);
-      setTag('');
+      await tagSchema.validate(form);
+      const newTag = await createTag(form);
+      props.onSaved(newTag);
     } catch (error) {
-      dispatchError(error);
+      await setError(error);
     }
   }
 
   return (
     <div>
-      <h1>Tags</h1>
+      <FormErrorMessage error={errors.generic} />
+      <ErrorMessage error={errors.val} />
       <Grid container>
         <Grid item>
           <TextField
             variant="outlined"
             placeholder="Add tag..."
-            value={tag}
+            value={form.val}
             onKeyDown={e => {
               if (e.key === 'Enter') {
                 e.preventDefault();
                 handleCreateTag();
               }
             }}
-            onChange={e => setTag(e.currentTarget.value)}
+            onChange={event =>
+              setForm(f => ({ ...f, val: event.target.value }))
+            }
             autoFocus
           />
         </Grid>

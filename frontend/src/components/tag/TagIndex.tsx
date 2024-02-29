@@ -33,7 +33,7 @@ export const TagIndex = () => {
         <TagIcon />
         Tags
       </h1>
-      <TagForm setTags={setTags} />
+      <TagForm onSaved={newTag => setTags(t => [...t, newTag])} />
       <div style={{ marginTop: '1em' }}>
         <TagList tags={tags} onDelete={handleDelete} />
       </div>
