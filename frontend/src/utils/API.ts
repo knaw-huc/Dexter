@@ -49,7 +49,8 @@ export class ResponseError extends Error {
   constructor(params: ResponseErrorParams) {
     super();
     const { statusText, url, status } = params.response;
-    this.message = `${statusText}: request to ${url} failed with ${status}`;
+    const statusPrefix = statusText ? statusText + ': ' : '';
+    this.message = `${statusPrefix}request to ${url} failed with ${status}`;
     this.name = this.constructor.name;
     this.response = params.response;
   }
