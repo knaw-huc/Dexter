@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { ResultLanguage, ResultMedia, Source } from '../../model/DexterModel';
-import { deleteLanguageFromSourceWithWarning } from '../../utils/deleteLanguageFromSourceWithWarning';
+import { ResultMedia, Source } from '../../model/DexterModel';
 import {
   addMediaToSource,
   deleteMediaFromSource,
   getSourceWithResourcesById,
 } from '../../utils/API';
-import { Languages } from '../language/Languages';
 import { SourceForm } from './SourceForm';
 import { EditButton } from '../common/EditButton';
 import { TagList } from '../tag/TagList';
 import _ from 'lodash';
-import { FieldLabel, ShortFieldsSummary } from '../common/ShortFieldsSummary';
+import {
+  FieldLabel,
+  ShortFieldsSummary,
+  SummaryP,
+} from '../common/ShortFieldsSummary';
 import { SourceIcon } from './SourceIcon';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
 import { SourcesBreadCrumbLink } from './SourcesBreadCrumbLink';
@@ -66,14 +68,6 @@ export const SourcePage = () => {
     setShowForm(false);
   };
 
-  const handleUnlinkLanguage = async (language: ResultLanguage) => {
-    await deleteLanguageFromSourceWithWarning(language, params.sourceId);
-    setSource(s => ({
-      ...s,
-      languages: s.languages.filter(l => l.id !== language.id),
-    }));
-  };
-
   async function handleUnlinkMedia(media: ResultMedia) {
     await deleteMediaFromSource(sourceId, media.id);
     setSource(s => ({ ...s, media: s.media.filter(m => m.id !== media.id) }));
@@ -122,6 +116,7 @@ export const SourcePage = () => {
 
   const shortSourceFields: (keyof Source)[] = [
     'location',
+    'languages',
     'earliest',
     'latest',
     'rights',
@@ -158,9 +153,12 @@ export const SourcePage = () => {
       <ShortFieldsSummary<Source>
         resource={source}
         fieldNames={shortSourceFields}
+        fieldMapper={(source, field) =>
+          field === 'languages' && source[field].map(l => l.refName).join(', ')
+        }
       />
       {source.externalRef && (
-        <p style={{ marginTop: '-0.9em' }}>
+        <SummaryP>
           <span style={{ color: grey[600] }}>External reference: </span>
           {isUrl(source.externalRef) ? (
             <>
@@ -172,7 +170,7 @@ export const SourcePage = () => {
           ) : (
             <>{source.externalRef}</>
           )}
-        </p>
+        </SummaryP>
       )}
       {source.notes && (
         <>
@@ -185,15 +183,6 @@ export const SourcePage = () => {
         <MetadataValuePageFields values={source.metadataValues} />
       )}
 
-      {!_.isEmpty(source.languages) && (
-        <div>
-          <h4>Languages</h4>
-          <Languages
-            languages={source.languages}
-            onDelete={handleUnlinkLanguage}
-          />
-        </div>
-      )}
       <H2Styled>
         <MediaIcon />
         Media
