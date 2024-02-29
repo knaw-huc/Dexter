@@ -118,7 +118,6 @@ export const SelectMediaField = (props: SelectMediaFieldProps) => {
       }}
       multiple={true}
       loading={loading}
-      id="media-autocomplete"
       options={getOptions()}
       isOptionEqualToValue={(option, value) => option.url === value.url}
       value={props.selected}
