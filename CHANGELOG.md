@@ -3,7 +3,7 @@
 ## [Development](https://github.com/knaw-huc/Dexter/tree/development)
 🧪 Features / ✨ Enhancements / 🔧 Technical / 🐛 Bug Fixes
 
-## [v0.12](https://github.com/knaw-huc/Dexter/releases/tag/v0.12.0)
+## [v0.12](https://github.com/knaw-huc/Dexter/releases/tag/v0.12.2)
 ### 🧪 Features 
 - Add 'media' (only images now) with an url and title
 - Add media to sources
