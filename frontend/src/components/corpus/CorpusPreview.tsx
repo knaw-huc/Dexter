@@ -46,10 +46,7 @@ export function CorpusPreview(props: CorpusPreviewProps) {
       <CardContent style={{ height: '100%', paddingBottom: '1em' }}>
         <Grid container>
           <Grid item sx={{ maxHeight: '110px' }} xs={12}>
-            <CloseInlineIcon
-              style={{ float: 'right', top: 0 }}
-              onClick={() => handleDelete(corpus)}
-            />
+            <CloseInlineIcon onClick={() => handleDelete(corpus)} />
             <HeaderLinkClamped onClick={navigateToCorpus}>
               <CorpusIcon />
               <Title title={corpus.title} />

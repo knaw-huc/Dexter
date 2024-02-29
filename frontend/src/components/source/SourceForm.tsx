@@ -92,10 +92,7 @@ export function SourceForm(props: SourceFormProps) {
   }
   return (
     <ScrollableModal handleClose={props.onClose}>
-      <CloseInlineIcon
-        style={{ float: 'right', top: 0 }}
-        onClick={props.onClose}
-      />
+      <CloseInlineIcon onClick={props.onClose} />
 
       <h1>{sourceToEdit ? 'Edit source' : 'Create new source'}</h1>
       <FormErrorMessage error={errors.generic} />

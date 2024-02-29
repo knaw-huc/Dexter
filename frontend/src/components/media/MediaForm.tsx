@@ -77,10 +77,7 @@ export function MediaForm(props: MediaFormProps) {
   return (
     <>
       <ScrollableModal handleClose={props.onClose} fullHeight={false}>
-        <CloseInlineIcon
-          style={{ float: 'right', top: 0 }}
-          onClick={props.onClose}
-        />
+        <CloseInlineIcon onClick={props.onClose} />
 
         <h1>{props.inEdit ? 'Edit media' : 'Add media'}</h1>
         <form onSubmit={onSubmit(handleSubmit)}>

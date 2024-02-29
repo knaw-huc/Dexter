@@ -115,10 +115,7 @@ export function CorpusForm(props: CorpusFormProps) {
   return (
     <>
       <ScrollableModal handleClose={props.onClose}>
-        <CloseInlineIcon
-          style={{ float: 'right', top: 0 }}
-          onClick={props.onClose}
-        />
+        <CloseInlineIcon onClick={props.onClose} />
         <h1>{corpusToEdit ? 'Edit corpus' : 'Create new corpus'}</h1>
         <FormErrorMessage error={errors.generic} />
         <form onSubmit={onSubmit(handleSubmit)}>

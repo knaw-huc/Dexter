@@ -32,7 +32,6 @@ export const SourcePreview = (props: SourceItemDropdownProps) => {
         <Grid container>
           <Grid item sx={{ maxHeight: '110px' }} xs={12}>
             <CloseInlineIcon
-              style={{ float: 'right', top: 0 }}
               onClick={(e: React.MouseEvent<HTMLInputElement>) => {
                 e.stopPropagation();
                 props.onUnlinkSource();
