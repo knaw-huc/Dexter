@@ -1,5 +1,5 @@
 import { grey } from '@mui/material/colors';
-import { Source } from '../../model/DexterModel';
+import { isImage, Source } from '../../model/DexterModel';
 import { deleteSource } from '../../utils/API';
 import React from 'react';
 import { Avatar, ListItemAvatar, ListItemText } from '@mui/material';
@@ -9,13 +9,13 @@ import { DeleteIconStyled } from '../common/DeleteIconStyled';
 import { SourceIcon } from './SourceIcon';
 import { ListItemButtonStyled } from '../common/ListItemButtonStyled';
 
-type SourceItemProps = {
+type SourceListItemProps = {
   source: Source;
   onDelete: () => void;
   onEdit: () => void;
 };
 
-export const SourceListItem = (props: SourceItemProps) => {
+export const SourceListItem = (props: SourceListItemProps) => {
   const navigate = useNavigate();
 
   function handleSelect() {
@@ -39,6 +39,8 @@ export const SourceListItem = (props: SourceItemProps) => {
     props.onEdit();
   }
 
+  const img = props.source.media.find(m => isImage(m.mediaType));
+
   return (
     <ListItemButtonStyled
       onClick={handleSelect}
@@ -51,9 +53,13 @@ export const SourceListItem = (props: SourceItemProps) => {
       sx={{ ml: 0, pl: 0 }}
     >
       <ListItemAvatar sx={{ ml: '1em' }}>
-        <Avatar>
-          <SourceIcon iconColor="white" isInline={false} filled={true} />
-        </Avatar>
+        {img ? (
+          <Avatar src={img.url} />
+        ) : (
+          <Avatar>
+            <SourceIcon iconColor="white" isInline={false} filled={true} />
+          </Avatar>
+        )}
       </ListItemAvatar>
       <ListItemText>{props.source.title}</ListItemText>
     </ListItemButtonStyled>
