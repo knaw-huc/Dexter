@@ -8,6 +8,7 @@ import { grey } from '@mui/material/colors';
 import { truncateMiddle } from '../../utils/truncateMiddle';
 import isUrl from '../../utils/isUrl';
 import { UNTITLED } from './Title';
+import { HighlightedLabel } from '../common/HighlightedLabel';
 
 export interface SelectMediaFieldProps {
   selected: ResultMedia[];
@@ -164,17 +165,7 @@ function toSelectedLabel(media: ResultMedia): JSX.Element {
 
 function toOptionLabel(media: ResultMedia, inputValue: string): JSX.Element {
   const label = toStringLabel(media);
-  const pattern = `(.*)(${inputValue})(.*)`;
-  const matches = label.match(pattern);
-  return matches ? (
-    <>
-      {matches[1]}
-      <strong>{matches[2]}</strong>
-      {matches[3]}
-    </>
-  ) : (
-    <>{label}</>
-  );
+  return HighlightedLabel({ toMatch: inputValue, text: label });
 }
 
 function toStringLabel(media: ResultMedia): string {
