@@ -76,7 +76,7 @@ export function MediaForm(props: MediaFormProps) {
   }
   return (
     <>
-      <ScrollableModal show={true} handleClose={props.onClose}>
+      <ScrollableModal handleClose={props.onClose} fullHeight={false}>
         <CloseInlineIcon
           style={{ float: 'right', top: 0 }}
           onClick={props.onClose}

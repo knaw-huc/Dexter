@@ -12,7 +12,7 @@ export type SelectSourcesFormProps = SelectSourcesFieldProps & {
 
 export function SelectSourcesForm(props: SelectSourcesFormProps) {
   return (
-    <ScrollableModal show={true} handleClose={props.onClose} fullHeight={false}>
+    <ScrollableModal handleClose={props.onClose} fullHeight={false}>
       <SelectSourcesField {...props} />
       <Button variant="contained" onClick={props.onClose}>
         Close

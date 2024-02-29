@@ -12,7 +12,7 @@ export type SelectMediaFormProps = SelectMediaFieldProps & {
 
 export function SelectMediaForm(props: SelectMediaFormProps) {
   return (
-    <ScrollableModal show={true} handleClose={props.onClose} fullHeight={false}>
+    <ScrollableModal handleClose={props.onClose} fullHeight={false}>
       <SelectMediaField {...props} />
       <Button
         variant="contained"

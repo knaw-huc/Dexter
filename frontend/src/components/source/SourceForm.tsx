@@ -91,7 +91,7 @@ export function SourceForm(props: SourceFormProps) {
     return null;
   }
   return (
-    <ScrollableModal show={true} handleClose={props.onClose}>
+    <ScrollableModal handleClose={props.onClose}>
       <CloseInlineIcon
         style={{ float: 'right', top: 0 }}
         onClick={props.onClose}

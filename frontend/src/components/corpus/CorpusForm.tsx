@@ -114,7 +114,7 @@ export function CorpusForm(props: CorpusFormProps) {
   }
   return (
     <>
-      <ScrollableModal show={true} handleClose={props.onClose}>
+      <ScrollableModal handleClose={props.onClose}>
         <CloseInlineIcon
           style={{ float: 'right', top: 0 }}
           onClick={props.onClose}
