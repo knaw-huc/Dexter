@@ -23,6 +23,7 @@ export function TagForm(props: NewTagsProps) {
     try {
       await tagSchema.validate(form);
       const newTag = await createTag(form);
+      setForm(f => ({ ...f, val: '' }));
       props.onSaved(newTag);
     } catch (error) {
       await setError(error);
