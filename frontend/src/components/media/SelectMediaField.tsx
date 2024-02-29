@@ -36,7 +36,7 @@ const CREATE_NEW_MEDIA = 'create-new-media';
 
 const createNewMediaOption: Omit<ResultMedia, 'url'> = {
   id: CREATE_NEW_MEDIA,
-  title: `Create new media with current url`,
+  title: `Create new media from current url`,
   // backend determines media type and createdBy:
   mediaType: 'unknown' as SupportedMediaType,
   createdBy: undefined,
@@ -123,19 +123,21 @@ export const SelectMediaField = (props: SelectMediaFieldProps) => {
       value={props.selected}
       renderInput={renderInputField}
       forcePopupIcon={false}
-      renderTags={(mediaValue, getMediaProps) =>
-        mediaValue.map((media: ResultMedia, index) => (
-          <Chip
-            key={index}
-            label={toSelectedLabel(media)}
-            {...getMediaProps({ index })}
-            onDelete={() => {
-              handleDeleteMedia(media);
-            }}
-            size={props.size ? props.size : 'medium'}
-          />
-        ))
-      }
+      renderTags={(mediaValue, getMediaProps) => (
+        <div style={{ width: '100%' }}>
+          {mediaValue.map((media: ResultMedia, index) => (
+            <Chip
+              key={index}
+              label={toSelectedLabel(media)}
+              {...getMediaProps({ index })}
+              onDelete={() => {
+                handleDeleteMedia(media);
+              }}
+              size={props.size ? props.size : 'medium'}
+            />
+          ))}
+        </div>
+      )}
       onChange={(_, data) => handleChangeSelected(data as ResultMedia[])}
       renderOption={(props, option: ResultMedia) => {
         const label = toOptionLabel(option, inputValue);
@@ -176,9 +178,7 @@ function toOptionLabel(media: ResultMedia, inputValue: string): JSX.Element {
 }
 
 function toStringLabel(media: ResultMedia): string {
-  const title = _.truncate(media?.title || '', { length: 40 });
-  const url = truncateMiddle(media?.url, 40);
-  return title ? `${title} (${url})` : url;
+  return media.title ? `${media.title} (${media.url})` : media.url;
 }
 
 function sortAlphanumeric(s1: ResultMedia, s2: ResultMedia) {
