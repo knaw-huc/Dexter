@@ -146,7 +146,7 @@ export const SelectMediaField = (props: SelectMediaFieldProps) => {
           </li>
         );
       }}
-      getOptionLabel={(option: ResultMedia) => option.url}
+      getOptionLabel={(option: ResultMedia) => toStringLabel(option)}
     />
   );
 };
