@@ -1,5 +1,5 @@
 import { Autocomplete, Chip, TextField, TextFieldProps } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { HTMLAttributes, useEffect, useState } from 'react';
 import { ResultMedia, SupportedMediaType } from '../../model/DexterModel';
 import { useDebounce } from '../../utils/useDebounce';
 import { createMedia, getMediaAutocomplete } from '../../utils/API';
@@ -9,6 +9,7 @@ import { truncateMiddle } from '../../utils/truncateMiddle';
 import isUrl from '../../utils/isUrl';
 import { UNTITLED } from './Title';
 import { HighlightedLabel } from '../common/HighlightedLabel';
+import { AutocompleteRenderGetTagProps } from '@mui/material/Autocomplete/Autocomplete';
 
 export interface SelectMediaFieldProps {
   selected: ResultMedia[];
@@ -116,13 +117,48 @@ export const SelectMediaField = (props: SelectMediaFieldProps) => {
     props.onChangeSelected(data);
   }
 
+  function rendertags(
+    mediaValue: ResultMedia[],
+    getMediaProps: AutocompleteRenderGetTagProps,
+  ) {
+    return (
+      <div style={{ width: '100%' }}>
+        {mediaValue.map((media: ResultMedia, index) => (
+          <Chip
+            key={index}
+            label={toSelectedLabel(media)}
+            {...getMediaProps({ index })}
+            onDelete={() => {
+              handleDeleteMedia(media);
+            }}
+            size={props.size ? props.size : 'medium'}
+          />
+        ))}
+      </div>
+    );
+  }
+
+  function renderOption(
+    props: HTMLAttributes<HTMLLIElement>,
+    option: ResultMedia,
+  ) {
+    const label = toOptionLabel(option, inputValue);
+    return (
+      <li {...props} style={{ display: 'block' }}>
+        {label}
+      </li>
+    );
+  }
+
+  function removeSelected(options: ResultMedia[]) {
+    return options.filter(o => !props.selected.find(s => s.id === o.id));
+  }
+
   return (
     <Autocomplete
       multiple={true}
       inputValue={inputValue}
-      onInputChange={async (_, value) => {
-        setInputValue(value);
-      }}
+      onInputChange={async (_, value) => setInputValue(value)}
       loading={loading}
       value={props.selected}
       onChange={(_, data) => handleChangeSelected(data as ResultMedia[])}
@@ -130,32 +166,9 @@ export const SelectMediaField = (props: SelectMediaFieldProps) => {
       options={getOptions()}
       isOptionEqualToValue={(option, value) => option.url === value.url}
       getOptionLabel={(option: ResultMedia) => toStringLabel(option)}
-      renderOption={(props, option: ResultMedia) => {
-        const label = toOptionLabel(option, inputValue);
-        return (
-          <li {...props} style={{ display: 'block' }}>
-            {label}
-          </li>
-        );
-      }}
-      filterOptions={options =>
-        options.filter(o => !props.selected.find(s => s.id === o.id))
-      }
-      renderTags={(mediaValue, getMediaProps) => (
-        <div style={{ width: '100%' }}>
-          {mediaValue.map((media: ResultMedia, index) => (
-            <Chip
-              key={index}
-              label={toSelectedLabel(media)}
-              {...getMediaProps({ index })}
-              onDelete={() => {
-                handleDeleteMedia(media);
-              }}
-              size={props.size ? props.size : 'medium'}
-            />
-          ))}
-        </div>
-      )}
+      renderOption={renderOption}
+      filterOptions={removeSelected}
+      renderTags={rendertags}
     />
   );
 };
