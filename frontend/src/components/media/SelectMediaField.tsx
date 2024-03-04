@@ -49,7 +49,7 @@ export const SelectMediaField = (props: SelectMediaFieldProps) => {
     return options.sort(sortAlphanumeric);
   }
 
-  function handleCreateNew(toCreate: ResultMedia) {
+  async function handleCreateNew(toCreate: ResultMedia) {
     return createMedia({ url: toCreate.url, title: '' });
   }
 

@@ -16,9 +16,15 @@ export type MultiAutocompleteProps<T> = {
   onRemoveSelected: (selected: T) => void;
   onAddSelected: (selected: T) => void;
 
+  /**
+   * Create new when option with id {@link CREATE_NEW_OPTION} is selected:
+   */
   allowCreatingNew: boolean;
-  // Only needed when allowCreatingNew:
-  onCreateSelected?: (selected: T) => Promise<T>;
+
+  /**
+   * Only needed when allowCreatingNew:
+   */
+  onCreateSelected?: (selected: T, inputValue: string) => Promise<T>;
 };
 
 export const CREATE_NEW_OPTION = 'create-new-option';
@@ -58,7 +64,7 @@ export function MultiAutocomplete<T extends WithId>(
       return;
     }
     if (props.allowCreatingNew && update.id === CREATE_NEW_OPTION) {
-      update = await props.onCreateSelected(update);
+      update = await props.onCreateSelected(update, inputValue);
     }
     props.onAddSelected(update);
   }
