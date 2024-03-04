@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ResultTag } from '../../model/DexterModel';
 import { deleteTag, getTags } from '../../utils/API';
 import { TagForm } from './TagForm';
 import { TagList } from './TagList';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
 import { TagIcon } from './tagIcon';
+import { useAsyncError } from '../../utils/useAsyncError';
 
 export const TagIndex = () => {
   const [tags, setTags] = useState<ResultTag[]>([]);
+  const throwError = useAsyncError();
 
-  React.useEffect(() => {
+  useEffect(() => {
     init();
 
     async function init() {
@@ -22,7 +24,7 @@ export const TagIndex = () => {
 
     if (warning === false) return;
 
-    await deleteTag(toDelete.id);
+    await deleteTag(toDelete.id).catch(e => throwError(e));
     setTags(prev => prev.filter(t => t.id !== toDelete.id));
   }
 

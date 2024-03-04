@@ -1,5 +1,12 @@
-import React, { Component, PropsWithChildren } from 'react';
-import { Alert } from '@mui/material';
+import React, {
+  Component,
+  ErrorInfo,
+  PropsWithChildren,
+  useEffect,
+  useState,
+} from 'react';
+import { isResponseError } from './common/isResponseError';
+import { ErrorAlert } from './common/ErrorAlert';
 
 export type ErrorWithMessage = {
   message: string;
@@ -10,7 +17,7 @@ type ErrorBoundaryProps = PropsWithChildren & {
 };
 
 type ErrorBoundaryState = {
-  error: Error;
+  error?: Error;
 };
 
 /**
@@ -24,30 +31,57 @@ export default class ErrorHandler extends Component<
 > {
   constructor(props: ErrorBoundaryProps) {
     super(props);
-    this.state = {
-      error: props.error,
-    };
+    this.state = { error: null };
   }
 
-  componentDidCatch(error: Error) {
-    console.error(error);
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.error('ErrorHandler >', error, errorInfo);
+    this.setState({ error });
   }
-
-  static getDerivedStateFromError() {}
 
   render() {
-    const error = this.state.error || this.props.error;
-    if (!error) {
+    if (!this.state.error) {
       return this.props.children;
     }
     return (
       <div style={{ margin: '1em' }}>
-        <Alert severity="error">
-          An error occurred:
-          <br />
-          <code>{error.message}</code>
-        </Alert>
+        <ErrorHandlerAlert
+          error={this.state.error}
+          deleteError={() => this.setState({ error: null })}
+        />
+
+        {this.props.children}
       </div>
     );
   }
+}
+export type ErrorHandlerAlertProps = {
+  error: Error;
+  deleteError: () => void;
+};
+
+export function ErrorHandlerAlert(props: ErrorHandlerAlertProps) {
+  const [message, setMessage] = useState('');
+
+  const error = props.error;
+
+  useEffect(() => {
+    handleError();
+
+    async function handleError() {
+      if (!error) {
+        setMessage('');
+      } else if (isResponseError(error)) {
+        const body = await error.response.json();
+        setMessage(body.message);
+      } else {
+        setMessage(error.message);
+      }
+    }
+  }, [error]);
+
+  if (!message) {
+    return null;
+  }
+  return <ErrorAlert message={message} onClose={() => setMessage('')} />;
 }

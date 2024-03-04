@@ -1,26 +1,16 @@
-import React, { useRef } from 'react';
-import { Alert } from '@mui/material';
+import React from 'react';
 import { ERROR_MESSAGE_CLASS } from './ErrorMessage';
 import { ErrorWithMessage } from '../ErrorHandler';
+import { ErrorAlert } from './ErrorAlert';
 
 export function FormErrorMessage(props: { error?: ErrorWithMessage }) {
   const formError = props.error;
-  const ref = useRef(null);
 
   if (!formError) {
     return null;
   }
 
-  return (
-    <Alert
-      ref={ref}
-      className={ERROR_MESSAGE_CLASS}
-      severity="error"
-      style={{ marginBottom: '0.5em' }}
-    >
-      An error occurred: {formError.message}
-    </Alert>
-  );
+  return <ErrorAlert message={formError.message} />;
 }
 
 export type FormField<T> = keyof T | 'generic';

@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { ResponseError } from '../../utils/API';
 import { FormErrors, scrollToError } from './FormError';
 import { ErrorWithMessage } from '../ErrorHandler';
 import _ from 'lodash';
 import { ValidationError } from 'yup';
+import { isResponseError } from './isResponseError';
 
 type UseFormErrorsResult<T> = {
   errors: FormErrors<T>;
@@ -40,9 +40,8 @@ export function useFormErrors<T>(): UseFormErrorsResult<T> {
   async function setFormError<T>(error: Error): Promise<void> {
     if (isResponseError(error)) {
       const responseError = await error.response.json();
-      for (const [constraint, { field, error }] of _.entries(
-        constraintToError,
-      )) {
+      const constraints = _.entries(constraintToError);
+      for (const [constraint, { field, error }] of constraints) {
         if (responseError.message.includes(constraint)) {
           return setErrors(prev => _.set({ ...prev }, field as keyof T, error));
         }
@@ -54,16 +53,13 @@ export function useFormErrors<T>(): UseFormErrorsResult<T> {
       return setErrors(prev =>
         _.set({ ...prev }, error.path as keyof T, error),
       );
+    } else {
+      setErrors(prev => ({ ...prev, generic: error }));
     }
-    setErrors(prev => ({ ...prev, generic: error }));
   }
 
   function clearErrors() {
     setErrors({} as FormErrors<T>);
-  }
-
-  function isResponseError(error: Error): error is ResponseError {
-    return !!(error as ResponseError).response;
   }
 
   function isValidationError(error: Error): error is ValidationError {
