@@ -53,11 +53,7 @@ export const SelectMediaField = (props: SelectMediaFieldProps) => {
   const [loading, setLoading] = React.useState(false);
 
   function getOptions() {
-    const options: ResultMedia[] = [
-      ...autocomplete,
-      ...props.selected,
-      ...(props.options ?? []),
-    ];
+    const options: ResultMedia[] = [...autocomplete, ...(props.options ?? [])];
     const inputIsOption = options.find(o => o.url === inputValue);
     if (props.allowCreatingNew && !inputIsOption && isUrl(inputValue)) {
       options.push({
@@ -65,7 +61,10 @@ export const SelectMediaField = (props: SelectMediaFieldProps) => {
         url: inputValue,
       });
     }
-    const uniqueOptions = _.uniqBy(options, 'url');
+    const withoutSelected = options.filter(
+      o => !props.selected.find(s => s.id === o.id),
+    );
+    const uniqueOptions = _.uniqBy(withoutSelected, 'url');
     return uniqueOptions.sort(sortAlphanumeric);
   }
 
@@ -73,6 +72,12 @@ export const SelectMediaField = (props: SelectMediaFieldProps) => {
     const newSelected = props.selected.filter(t => t.id !== media.id);
     props.onChangeSelected(newSelected);
   };
+
+  useEffect(() => {
+    if (inputValue.length >= MIN_AUTOCOMPLETE_LENGTH) {
+      setLoading(true);
+    }
+  }, [inputValue]);
 
   useEffect(() => {
     if (
@@ -112,18 +117,26 @@ export const SelectMediaField = (props: SelectMediaFieldProps) => {
 
   return (
     <Autocomplete
+      multiple={true}
       inputValue={inputValue}
-      open={debouncedInput.length >= MIN_AUTOCOMPLETE_LENGTH}
       onInputChange={async (_, value) => {
         setInputValue(value);
       }}
-      multiple={true}
       loading={loading}
+      value={props.selected}
+      onChange={(_, data) => handleChangeSelected(data as ResultMedia[])}
+      renderInput={renderInputField}
       options={getOptions()}
       isOptionEqualToValue={(option, value) => option.url === value.url}
-      value={props.selected}
-      renderInput={renderInputField}
-      forcePopupIcon={false}
+      getOptionLabel={(option: ResultMedia) => toStringLabel(option)}
+      renderOption={(props, option: ResultMedia) => {
+        const label = toOptionLabel(option, inputValue);
+        return (
+          <li {...props} style={{ display: 'block' }}>
+            {label}
+          </li>
+        );
+      }}
       renderTags={(mediaValue, getMediaProps) => (
         <div style={{ width: '100%' }}>
           {mediaValue.map((media: ResultMedia, index) => (
@@ -139,16 +152,6 @@ export const SelectMediaField = (props: SelectMediaFieldProps) => {
           ))}
         </div>
       )}
-      onChange={(_, data) => handleChangeSelected(data as ResultMedia[])}
-      renderOption={(props, option: ResultMedia) => {
-        const label = toOptionLabel(option, inputValue);
-        return (
-          <li {...props} style={{ display: 'block' }}>
-            {label}
-          </li>
-        );
-      }}
-      getOptionLabel={(option: ResultMedia) => toStringLabel(option)}
     />
   );
 };
