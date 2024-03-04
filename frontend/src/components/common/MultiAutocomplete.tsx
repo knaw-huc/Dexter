@@ -13,7 +13,9 @@ export type MultiAutocompleteProps<T> = {
   toSelectedLabel: (o: T) => JSX.Element;
   isOptionEqualToValue: (option: T, value: T) => boolean;
   onChangeSelected: (selected: T[]) => void;
-  onCreateNew: (toCreate: T) => Promise<T>;
+  allowCreatingNew: boolean;
+  // Only needed when allowCreatingNew:
+  onCreateNew?: (toCreate: T) => Promise<T>;
 };
 
 export const CREATE_NEW_OPTION = 'create-new-option';
@@ -46,12 +48,18 @@ export function MultiAutocomplete<T extends WithId>(
     return options.filter(o => !props.selected.find(s => s.id === o.id));
   }
 
-  async function handleChangeSelected(data: T[]) {
-    const selectedIsNew = data.findIndex(t => t.id === CREATE_NEW_OPTION);
-    if (selectedIsNew !== -1) {
-      data[selectedIsNew] = await props.onCreateNew(data[selectedIsNew]);
+  async function createNewWhenSelected(data: T[]) {
+    const isNewSelected = data.findIndex(t => t.id === CREATE_NEW_OPTION);
+    if (isNewSelected !== -1) {
+      data[isNewSelected] = await props.onCreateNew(data[isNewSelected]);
     }
-    props.onChangeSelected(data);
+  }
+
+  async function handleChangeSelected(update: T[]) {
+    if (props.allowCreatingNew) {
+      await createNewWhenSelected(update);
+    }
+    props.onChangeSelected(update);
   }
 
   function renderOption(

@@ -62,6 +62,24 @@ export const SelectMediaField = (props: SelectMediaFieldProps) => {
     return toOptions(inputValue, autocompleteOptions);
   }
 
+  function toSelectedLabel(media: ResultMedia): JSX.Element {
+    const title = _.truncate(media?.title || UNTITLED, { length: 40 });
+    const url = truncateMiddle(media?.url || '', 20);
+    return (
+      <>
+        {title} <span style={{ color: grey[700] }}>({url})</span>
+      </>
+    );
+  }
+
+  function toStringLabel(media: ResultMedia): string {
+    return media.title ? `${media.title} (${media.url})` : media.url;
+  }
+
+  function sortAlphanumeric(s1: ResultMedia, s2: ResultMedia) {
+    return s1.title > s2.title ? 1 : -1;
+  }
+
   return (
     <MultiAutocomplete<ResultMedia>
       placeholder="Find media by url or title"
@@ -71,25 +89,8 @@ export const SelectMediaField = (props: SelectMediaFieldProps) => {
       toSelectedLabel={toSelectedLabel}
       isOptionEqualToValue={(option, value) => option.url === value.url}
       onChangeSelected={props.onChangeSelected}
+      allowCreatingNew={props.allowCreatingNew}
       onCreateNew={handleCreateNew}
     />
   );
 };
-
-function toSelectedLabel(media: ResultMedia): JSX.Element {
-  const title = _.truncate(media?.title || UNTITLED, { length: 40 });
-  const url = truncateMiddle(media?.url || '', 20);
-  return (
-    <>
-      {title} <span style={{ color: grey[700] }}>({url})</span>
-    </>
-  );
-}
-
-function toStringLabel(media: ResultMedia): string {
-  return media.title ? `${media.title} (${media.url})` : media.url;
-}
-
-function sortAlphanumeric(s1: ResultMedia, s2: ResultMedia) {
-  return s1.title > s2.title ? 1 : -1;
-}
