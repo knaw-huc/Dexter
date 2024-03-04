@@ -38,8 +38,8 @@ export function MultiAutocomplete<T extends WithId>(
   useEffect(() => {
     props.onAutocomplete(debouncedInput).then(update => {
       const withSelected = [...props.selected, ...update];
-      const uniq = _.uniqWith(withSelected, props.isOptionEqualToValue);
-      setOptions(uniq);
+      const unique = _.uniqWith(withSelected, props.isOptionEqualToValue);
+      setOptions(unique);
       setLoading(false);
     });
   }, [debouncedInput]);
@@ -101,9 +101,7 @@ export function MultiAutocomplete<T extends WithId>(
                 : props.toStringLabel(s)
             }
             {...getAutocompleteProps({ index })}
-            onDelete={() => {
-              handleRemoveSelected(s);
-            }}
+            onDelete={() => handleRemoveSelected(s)}
             size="medium"
           />
         ))}

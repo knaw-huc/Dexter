@@ -38,7 +38,7 @@ const createNewMediaOption: Omit<ResultMedia, 'url'> = {
  */
 export const SelectMediaField = (props: SelectMediaFieldProps) => {
   function toOptions(inputValue: string, autocomplete: ResultMedia[]) {
-    const options: ResultMedia[] = [...autocomplete, ...props.selected];
+    const options = [...autocomplete];
     const inputIsOption = options.find(o => o.url === inputValue);
     if (props.allowCreatingNew && !inputIsOption && isUrl(inputValue)) {
       options.push({
@@ -46,8 +46,7 @@ export const SelectMediaField = (props: SelectMediaFieldProps) => {
         url: inputValue,
       });
     }
-    const uniqueOptions = _.uniqBy(options, 'url');
-    return uniqueOptions.sort(sortAlphanumeric);
+    return options.sort(sortAlphanumeric);
   }
 
   function handleCreateNew(toCreate: ResultMedia) {
