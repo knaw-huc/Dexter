@@ -237,7 +237,6 @@ export const SourcePage = () => {
           selected={source.media}
           onChangeSelected={handleChangeSelectedMedia}
           onClose={() => setShowSelectMediaForm(false)}
-          useAutocomplete
         />
       )}
     </div>

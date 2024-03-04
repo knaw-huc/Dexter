@@ -153,7 +153,6 @@ export function SourceForm(props: SourceFormProps) {
         <SelectMediaField
           selected={form.media}
           onChangeSelected={media => setForm(f => ({ ...f, media }))}
-          useAutocomplete
           allowCreatingNew
         />
         <ErrorMessage error={errors.media} />

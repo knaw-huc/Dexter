@@ -22,12 +22,12 @@ export type FormCorpus = {
 /**
  * Corpus result as sent by server
  */
-export type ResultCorpus = FormCorpus & {
-  id: UUID;
-  createdBy: UUID;
-  createdAt: LocalDateTime;
-  updatedAt: LocalDateTime;
-};
+export type ResultCorpus = FormCorpus &
+  WithId & {
+    createdBy: UUID;
+    createdAt: LocalDateTime;
+    updatedAt: LocalDateTime;
+  };
 
 /**
  * Corpus including child resources
@@ -63,12 +63,12 @@ export type FormSource = {
 /**
  * Source result as send by server
  */
-export type ResultSource = FormSource & {
-  id: UUID;
-  createdBy: UUID;
-  createdAt: LocalDateTime;
-  updatedAt: LocalDateTime;
-};
+export type ResultSource = FormSource &
+  WithId & {
+    createdBy: UUID;
+    createdAt: LocalDateTime;
+    updatedAt: LocalDateTime;
+  };
 
 /**
  * Source including all child resources
@@ -89,10 +89,11 @@ export type SourceFormSubmit = Omit<Source, 'id' | 'metadataValues'> & {
   metadataValues: FormMetadataValue[];
 };
 
-export interface ResultTag {
-  id: string;
+export type FormTag = {
   val: string;
-}
+};
+
+export type ResultTag = FormTag & WithId;
 
 export enum Access {
   CLOSED = 'Closed',
@@ -106,29 +107,18 @@ export type WithMetadata = {
   metadataValues: MetadataValue[];
 };
 
-export type FormTag = {
-  val: string;
-};
-
 export type FormMetadataKey = {
   key: string;
 };
 
-export type ResultMetadataKey = {
-  id: UUID;
-  key: string;
-};
+export type ResultMetadataKey = FormMetadataKey & WithId;
 
 export type FormMetadataValue = {
   keyId: UUID;
   value: string;
 };
 
-export type ResultMetadataValue = {
-  id: UUID;
-  keyId: UUID;
-  value: string;
-};
+export type ResultMetadataValue = FormMetadataValue & WithId;
 
 export type MetadataValue = Omit<ResultMetadataValue, 'keyId'> & {
   key: ResultMetadataKey;
@@ -169,13 +159,11 @@ export type FormMedia = {
   url: string;
 };
 
-export type ResultMedia = {
-  id: UUID;
-  title: string;
-  url: string;
-  mediaType: SupportedMediaType;
-  createdBy: UUID;
-};
+export type ResultMedia = FormMedia &
+  WithId & {
+    mediaType: SupportedMediaType;
+    createdBy: UUID;
+  };
 
 export type ResultDublinCoreMetadata = Record<string, string>;
 
@@ -194,3 +182,7 @@ export interface ResultLanguage {
   refName: string;
   comment: string;
 }
+
+export type WithId = {
+  id: string;
+};
