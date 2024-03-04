@@ -80,6 +80,16 @@ export const SelectMediaField = (props: SelectMediaFieldProps) => {
     return s1.title > s2.title ? 1 : -1;
   }
 
+  function handleRemoveSelected(option: ResultMedia) {
+    return props.onChangeSelected(
+      props.selected.filter(s => s.id !== option.id),
+    );
+  }
+
+  function handleAddSelected(option: ResultMedia) {
+    return props.onChangeSelected([...props.selected, option]);
+  }
+
   return (
     <MultiAutocomplete<ResultMedia>
       placeholder="Find media by url or title"
@@ -88,9 +98,10 @@ export const SelectMediaField = (props: SelectMediaFieldProps) => {
       toStringLabel={toStringLabel}
       toSelectedLabel={toSelectedLabel}
       isOptionEqualToValue={(option, value) => option.url === value.url}
-      onChangeSelected={props.onChangeSelected}
+      onAddSelected={handleAddSelected}
+      onRemoveSelected={handleRemoveSelected}
       allowCreatingNew={props.allowCreatingNew}
-      onCreateNew={handleCreateNew}
+      onCreateSelected={handleCreateNew}
     />
   );
 };

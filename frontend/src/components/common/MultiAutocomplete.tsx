@@ -4,18 +4,21 @@ import { useDebounce } from '../../utils/useDebounce';
 import { HighlightedLabel } from './HighlightedLabel';
 import { AutocompleteRenderGetTagProps } from '@mui/material/Autocomplete/Autocomplete';
 import { WithId } from '../../model/DexterModel';
+import _ from 'lodash';
 
 export type MultiAutocompleteProps<T> = {
   placeholder: string;
   selected: T[];
   onAutocomplete: (inputValue: string) => Promise<T[]>;
   toStringLabel: (o: T) => string;
-  toSelectedLabel: (o: T) => JSX.Element;
+  toSelectedLabel?: (o: T) => JSX.Element;
   isOptionEqualToValue: (option: T, value: T) => boolean;
-  onChangeSelected: (selected: T[]) => void;
+  onRemoveSelected: (selected: T) => void;
+  onAddSelected: (selected: T) => void;
+
   allowCreatingNew: boolean;
   // Only needed when allowCreatingNew:
-  onCreateNew?: (toCreate: T) => Promise<T>;
+  onCreateSelected?: (selected: T) => Promise<T>;
 };
 
 export const CREATE_NEW_OPTION = 'create-new-option';
@@ -34,32 +37,30 @@ export function MultiAutocomplete<T extends WithId>(
 
   useEffect(() => {
     props.onAutocomplete(debouncedInput).then(update => {
-      setOptions(update);
+      const withSelected = [...props.selected, ...update];
+      const uniq = _.uniqWith(withSelected, props.isOptionEqualToValue);
+      setOptions(uniq);
       setLoading(false);
     });
   }, [debouncedInput]);
 
-  async function handleRemoveSelected(media: T) {
-    const newSelected = props.selected.filter(t => t.id !== media.id);
-    props.onChangeSelected(newSelected);
+  async function handleRemoveSelected(selected: T) {
+    props.onRemoveSelected(selected);
   }
 
   function removeSelected(options: T[]) {
     return options.filter(o => !props.selected.find(s => s.id === o.id));
   }
 
-  async function createNewWhenSelected(data: T[]) {
-    const isNewSelected = data.findIndex(t => t.id === CREATE_NEW_OPTION);
-    if (isNewSelected !== -1) {
-      data[isNewSelected] = await props.onCreateNew(data[isNewSelected]);
+  async function handleChangeSelected(selected: T[]) {
+    let update = selected.at(-1) as T;
+    if (!update) {
+      return;
     }
-  }
-
-  async function handleChangeSelected(update: T[]) {
-    if (props.allowCreatingNew) {
-      await createNewWhenSelected(update);
+    if (props.allowCreatingNew && update.id === CREATE_NEW_OPTION) {
+      update = await props.onCreateSelected(update);
     }
-    props.onChangeSelected(update);
+    props.onAddSelected(update);
   }
 
   function renderOption(
@@ -94,7 +95,11 @@ export function MultiAutocomplete<T extends WithId>(
         {selected.map((s: T, index) => (
           <Chip
             key={index}
-            label={props.toSelectedLabel(s)}
+            label={
+              props.toSelectedLabel
+                ? props.toSelectedLabel(s)
+                : props.toStringLabel(s)
+            }
             {...getAutocompleteProps({ index })}
             onDelete={() => {
               handleRemoveSelected(s);

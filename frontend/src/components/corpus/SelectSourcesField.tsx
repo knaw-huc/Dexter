@@ -1,11 +1,7 @@
-import { ResultSource, Source } from '../../model/DexterModel';
-import React, { useState } from 'react';
-import Autocomplete from '@mui/material/Autocomplete';
-import TextField from '@mui/material/TextField';
-import Chip from '@mui/material/Chip';
-import match from 'autosuggest-highlight/match';
-import parse from 'autosuggest-highlight/parse';
+import { ResultSource } from '../../model/DexterModel';
+import React from 'react';
 import { normalizeInput } from '../../utils/normalizeInput';
+import { MultiAutocomplete } from '../common/MultiAutocomplete';
 
 export type SelectSourcesFieldProps = {
   options: ResultSource[];
@@ -15,77 +11,27 @@ export type SelectSourcesFieldProps = {
 };
 
 export function SelectSourcesField(props: SelectSourcesFieldProps) {
-  const [inputValue, setInputValue] = useState<string>('');
-  const normalizedInput = normalizeInput(inputValue);
+  function isOptionEqualToValue(option: ResultSource, value: ResultSource) {
+    return normalizeInput(option.title) === normalizeInput(value.title);
+  }
+
+  function handleAutocomplete(inputValue: string) {
+    const options = props.options.filter(o =>
+      normalizeInput(o.title).includes(normalizeInput(inputValue)),
+    );
+    return Promise.resolve(options);
+  }
 
   return (
-    <Autocomplete
-      inputValue={inputValue}
-      onInputChange={async (_, value) => {
-        setInputValue(value);
-      }}
-      multiple={true}
-      id="link-source-autocomplete"
-      options={props.options}
-      getOptionLabel={(source: Source) => source.title}
-      filterOptions={all =>
-        all.filter(source =>
-          normalizeInput(source.title).includes(normalizedInput),
-        )
-      }
-      isOptionEqualToValue={(option, value) => option.title === value?.title}
-      filterSelectedOptions
-      value={props.selected}
-      renderInput={params => (
-        <TextField
-          {...params}
-          margin="dense"
-          label="Search and select sources"
-          value={inputValue}
-        />
-      )}
-      renderTags={(tagValue, getTagProps) =>
-        tagValue.map((source, index) => (
-          <Chip
-            label={source.title}
-            key={index}
-            {...getTagProps({ index })}
-            onDelete={() => {
-              props.onDeselectSource(source.id);
-            }}
-          />
-        ))
-      }
-      onChange={(_, selected) => {
-        const selectedSource = selected.at(-1) as ResultSource;
-        if (!selectedSource) {
-          return;
-        }
-        props.onSelectSource(selectedSource.id);
-      }}
-      renderOption={(props, option, { inputValue }) => {
-        const matches = match(option.title, inputValue, {
-          insideWords: true,
-        });
-        const parts = parse(option.title, matches);
-
-        return (
-          <li {...props}>
-            <div>
-              {parts.map((part, index) => (
-                <span
-                  key={index}
-                  style={{
-                    fontWeight: part.highlight ? 700 : 400,
-                  }}
-                >
-                  {part.text}
-                </span>
-              ))}
-            </div>
-          </li>
-        );
-      }}
+    <MultiAutocomplete<ResultSource>
+      placeholder="Search and select sources"
+      selected={props.selected}
+      onAutocomplete={handleAutocomplete}
+      toStringLabel={o => o.title}
+      isOptionEqualToValue={isOptionEqualToValue}
+      onAddSelected={o => props.onSelectSource(o.id)}
+      onRemoveSelected={o => props.onDeselectSource(o.id)}
+      allowCreatingNew={false}
     />
   );
 }
