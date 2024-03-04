@@ -10,18 +10,10 @@ import { SourceForm } from './SourceForm';
 import { EditButton } from '../common/EditButton';
 import { TagList } from '../tag/TagList';
 import _ from 'lodash';
-import {
-  FieldLabel,
-  ShortFieldsSummary,
-  SummaryP,
-} from '../common/ShortFieldsSummary';
+import { FieldLabel, ShortFieldsSummary } from '../common/ShortFieldsSummary';
 import { SourceIcon } from './SourceIcon';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
 import { SourcesBreadCrumbLink } from './SourcesBreadCrumbLink';
-import { blue, grey } from '@mui/material/colors';
-import isUrl from '../../utils/isUrl';
-import OpenInNewOutlinedIcon from '@mui/icons-material/OpenInNewOutlined';
-import styled from '@emotion/styled';
 import { MetadataValuePageFields } from '../metadata/MetadataValuePageFields';
 import { Title } from '../media/Title';
 import { Grid } from '@mui/material';
@@ -33,18 +25,8 @@ import { SelectExistingResourceButton } from './SelectExistingResourceButton';
 import { SelectMediaForm } from './SelectMediaForm';
 import { MediaIcon } from '../media/MediaIcon';
 import { H2Styled } from '../common/H2Styled';
+import { ExternalLink } from '../common/ExternalLink';
 
-const OpenInNewOutlinedIconStyled = styled(OpenInNewOutlinedIcon)`
-  margin-left: 0.4em;
-`;
-const A = styled.a`
-  color: ${blue[600]};
-  text-decoration: none;
-
-  &:hover {
-    text-decoration: underline;
-  }
-`;
 export const SourcePage = () => {
   const params = useParams();
   const sourceId = params.sourceId;
@@ -158,19 +140,7 @@ export const SourcePage = () => {
         }
       />
       {source.externalRef && (
-        <SummaryP>
-          <span style={{ color: grey[600] }}>External reference: </span>
-          {isUrl(source.externalRef) ? (
-            <>
-              <A href={source.externalRef} target="_blank" rel="noreferrer">
-                {source.externalRef}
-              </A>
-              <OpenInNewOutlinedIconStyled fontSize="inherit" />
-            </>
-          ) : (
-            <>{source.externalRef}</>
-          )}
-        </SummaryP>
+        <ExternalLink url={source.externalRef} fieldName="externalRef" />
       )}
       {source.notes && (
         <>

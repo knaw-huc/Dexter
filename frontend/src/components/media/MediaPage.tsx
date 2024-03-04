@@ -10,6 +10,8 @@ import { MediaForm } from './MediaForm';
 import { Grid } from '@mui/material';
 import { Title } from './Title';
 
+import { ExternalLink } from '../common/ExternalLink';
+
 export function MediaPage() {
   const [media, setMedia] = useState<ResultMedia>();
   const [showForm, setShowForm] = useState<boolean>(false);
@@ -54,6 +56,7 @@ export function MediaPage() {
             <MediaIcon />
             <Title title={media.title} />
           </h1>
+          <ExternalLink url={media.url} fieldName="External url" />
           <img src={media.url} alt={media.title} width="100%" />
         </Grid>
       </Grid>
