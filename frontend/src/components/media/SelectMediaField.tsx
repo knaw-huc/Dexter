@@ -53,7 +53,11 @@ export const SelectMediaField = (props: SelectMediaFieldProps) => {
   const [loading, setLoading] = React.useState(false);
 
   function getOptions() {
-    const options: ResultMedia[] = [...autocomplete, ...(props.options ?? [])];
+    const options: ResultMedia[] = [
+      ...autocomplete,
+      ...props.selected,
+      ...(props.options ?? []),
+    ];
     const inputIsOption = options.find(o => o.url === inputValue);
     if (props.allowCreatingNew && !inputIsOption && isUrl(inputValue)) {
       options.push({
@@ -61,10 +65,7 @@ export const SelectMediaField = (props: SelectMediaFieldProps) => {
         url: inputValue,
       });
     }
-    const withoutSelected = options.filter(
-      o => !props.selected.find(s => s.id === o.id),
-    );
-    const uniqueOptions = _.uniqBy(withoutSelected, 'url');
+    const uniqueOptions = _.uniqBy(options, 'url');
     return uniqueOptions.sort(sortAlphanumeric);
   }
 
@@ -74,7 +75,7 @@ export const SelectMediaField = (props: SelectMediaFieldProps) => {
   };
 
   useEffect(() => {
-    if (inputValue.length >= MIN_AUTOCOMPLETE_LENGTH) {
+    if (props.useAutocomplete && inputValue.length >= MIN_AUTOCOMPLETE_LENGTH) {
       setLoading(true);
     }
   }, [inputValue]);
@@ -84,9 +85,9 @@ export const SelectMediaField = (props: SelectMediaFieldProps) => {
       !props.useAutocomplete ||
       debouncedInput.length < MIN_AUTOCOMPLETE_LENGTH
     ) {
+      setAutocomplete([]);
       return;
     }
-    setLoading(true);
     getMediaAutocomplete(debouncedInput).then(t => {
       setAutocomplete(t);
       setLoading(false);
@@ -137,6 +138,9 @@ export const SelectMediaField = (props: SelectMediaFieldProps) => {
           </li>
         );
       }}
+      filterOptions={options =>
+        options.filter(o => !props.selected.find(s => s.id === o.id))
+      }
       renderTags={(mediaValue, getMediaProps) => (
         <div style={{ width: '100%' }}>
           {mediaValue.map((media: ResultMedia, index) => (

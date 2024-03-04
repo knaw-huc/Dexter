@@ -4,7 +4,7 @@ export function HighlightedLabel(props: {
   toMatch: string;
   text: string;
 }): JSX.Element {
-  const pattern = `(.*)(${props.toMatch})(.*)`;
+  const pattern = new RegExp(`(.*)(${props.toMatch})(.*)`, 'i');
   const matches = props.text.match(pattern);
   return matches ? (
     <>
