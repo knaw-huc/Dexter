@@ -9,7 +9,7 @@ export type LanguagesFieldProps = {
 };
 
 export function LanguagesField(props: LanguagesFieldProps) {
-  async function handleAutocomplete(input: string) {
+  async function handleAutocompleteOptions(input: string) {
     return await getLanguagesAutocomplete(input);
   }
 
@@ -25,7 +25,7 @@ export function LanguagesField(props: LanguagesFieldProps) {
     <MultiAutocomplete<ResultLanguage>
       placeholder="Search and select languages"
       selected={props.selected}
-      onAutocomplete={handleAutocomplete}
+      onAutocompleteOptions={handleAutocompleteOptions}
       toStringLabel={o => o.refName}
       isOptionEqualToValue={(option, value) => option.id === value.id}
       onAddSelected={handleAddSelected}

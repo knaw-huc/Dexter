@@ -53,7 +53,7 @@ export const SelectMediaField = (props: SelectMediaFieldProps) => {
     return createMedia({ url: toCreate.url, title: '' });
   }
 
-  async function handleAutocomplete(inputValue: string) {
+  async function handleAutocompleteOptions(inputValue: string) {
     const canAutocomplete = inputValue.length >= MIN_AUTOCOMPLETE_LENGTH;
     const autocompleteOptions = canAutocomplete
       ? await getMediaAutocomplete(inputValue)
@@ -93,7 +93,7 @@ export const SelectMediaField = (props: SelectMediaFieldProps) => {
     <MultiAutocomplete<ResultMedia>
       placeholder="Find media by url or title"
       selected={props.selected}
-      onAutocomplete={handleAutocomplete}
+      onAutocompleteOptions={handleAutocompleteOptions}
       toStringLabel={toStringLabel}
       toSelectedLabel={toSelectedLabel}
       isOptionEqualToValue={(option, value) => option.url === value.url}

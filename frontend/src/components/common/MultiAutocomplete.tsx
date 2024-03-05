@@ -9,7 +9,7 @@ import _ from 'lodash';
 export type MultiAutocompleteProps<T> = {
   placeholder: string;
   selected: T[];
-  onAutocomplete: (inputValue: string) => Promise<T[]>;
+  onAutocompleteOptions: (inputValue: string) => Promise<T[]>;
   toStringLabel: (o: T) => string;
   toSelectedLabel?: (o: T) => JSX.Element;
   isOptionEqualToValue: (option: T, value: T) => boolean;
@@ -42,7 +42,7 @@ export function MultiAutocomplete<T extends WithId>(
   }, [inputValue]);
 
   useEffect(() => {
-    props.onAutocomplete(debouncedInput).then(update => {
+    props.onAutocompleteOptions(debouncedInput).then(update => {
       const withSelected = [...props.selected, ...update];
       const unique = _.uniqWith(withSelected, props.isOptionEqualToValue);
       setOptions(unique);

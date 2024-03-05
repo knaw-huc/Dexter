@@ -41,7 +41,9 @@ export const SelectTagField = (props: TagsFieldProps) => {
     props.onChangeSelected(newSelected);
   };
 
-  async function handleAutocomplete(inputValue: string): Promise<ResultTag[]> {
+  async function handleAutocompleteOptions(
+    inputValue: string,
+  ): Promise<ResultTag[]> {
     if (inputValue.length < MIN_AUTOCOMPLETE_LENGTH) {
       return [];
     }
@@ -74,7 +76,7 @@ export const SelectTagField = (props: TagsFieldProps) => {
     <MultiAutocomplete<ResultTag>
       placeholder="Add and create tags"
       selected={props.selected}
-      onAutocomplete={handleAutocomplete}
+      onAutocompleteOptions={handleAutocompleteOptions}
       toStringLabel={o => o.val}
       isOptionEqualToValue={(option, value) => option.val === value.val}
       onAddSelected={handleAddSelected}

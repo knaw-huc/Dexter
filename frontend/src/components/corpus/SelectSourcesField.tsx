@@ -1,6 +1,6 @@
 import { ResultSource } from '../../model/DexterModel';
 import React from 'react';
-import { normalizeInput } from '../../utils/normalizeInput';
+import { normalize } from '../../utils/normalize';
 import { MultiAutocomplete } from '../common/MultiAutocomplete';
 
 export type SelectSourcesFieldProps = {
@@ -12,12 +12,12 @@ export type SelectSourcesFieldProps = {
 
 export function SelectSourcesField(props: SelectSourcesFieldProps) {
   function isOptionEqualToValue(option: ResultSource, value: ResultSource) {
-    return normalizeInput(option.title) === normalizeInput(value.title);
+    return normalize(option.title) === normalize(value.title);
   }
 
-  function handleAutocomplete(inputValue: string) {
+  function handleAutocompleteOptions(inputValue: string) {
     const options = props.options.filter(o =>
-      normalizeInput(o.title).includes(normalizeInput(inputValue)),
+      normalize(o.title).includes(normalize(inputValue)),
     );
     return Promise.resolve(options);
   }
@@ -26,7 +26,7 @@ export function SelectSourcesField(props: SelectSourcesFieldProps) {
     <MultiAutocomplete<ResultSource>
       placeholder="Search and select sources"
       selected={props.selected}
-      onAutocomplete={handleAutocomplete}
+      onAutocompleteOptions={handleAutocompleteOptions}
       toStringLabel={o => o.title}
       isOptionEqualToValue={isOptionEqualToValue}
       onAddSelected={o => props.onSelectSource(o.id)}
