@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Corpus, isImage } from '../../model/DexterModel';
 import { useNavigate } from 'react-router-dom';
-import { deleteCorpus } from '../../utils/API';
+import { deleteCorpus, deleteMetadataValue } from '../../utils/API';
 import { errorContext } from '../../state/error/errorContext';
 import { Card, CardContent, Grid } from '@mui/material';
 import { HeaderLinkClamped } from '../common/HeaderLinkClamped';
@@ -27,7 +27,14 @@ export function CorpusPreview(props: CorpusPreviewProps) {
 
     if (warning === false) return;
 
-    await deleteCorpus(collection.id).catch(dispatchError);
+    try {
+      for (const value of collection.metadataValues) {
+        await deleteMetadataValue(value.id);
+      }
+      await deleteCorpus(collection.id);
+    } catch (e) {
+      dispatchError(e);
+    }
     props.onDeleted();
   };
 

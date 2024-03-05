@@ -31,6 +31,7 @@ import {
   values,
   withResources,
 } from '../model/Resources';
+import { ErrorWithMessage } from '../components/ErrorHandler';
 
 // Update methods:
 const POST = 'POST';
@@ -46,19 +47,24 @@ export type ResponseErrorParams = {
 
 export class ResponseError extends Error {
   response: Response;
-  constructor(params: ResponseErrorParams) {
+  json: ErrorWithMessage;
+  private constructor() {
     super();
+  }
+  static async from(params: ResponseErrorParams): Promise<ResponseError> {
+    const e = new ResponseError();
     const { statusText, url, status } = params.response;
     const statusPrefix = statusText ? statusText + ': ' : '';
-    this.message = `${statusPrefix}request to ${url} failed with ${status}`;
-    this.name = this.constructor.name;
-    this.response = params.response;
+    e.message = `${statusPrefix}request to ${url} failed with ${status}`;
+    e.name = this.constructor.name;
+    e.response = params.response;
+    e.json = await params.response.json();
+    return e;
   }
 }
 
 export async function toReadable(prefixMessage: string, e: ResponseError) {
-  const json = await e.response.json();
-  return { message: `${prefixMessage}: ${json.message}` };
+  return { message: `${prefixMessage}: ${e.json.message}` };
 }
 
 async function getValidated(path: string, params?: Record<string, string>) {
@@ -70,7 +76,7 @@ async function getValidated(path: string, params?: Record<string, string>) {
     headers,
     method: 'GET',
   });
-  validateResponse({ response });
+  await validateResponse({ response });
   return response.json();
 }
 
@@ -100,7 +106,7 @@ async function fetchValidatedWith(
     body,
     headers: headers,
   });
-  validateResponse({ response });
+  await validateResponse({ response });
   return response.json();
 }
 
@@ -109,7 +115,7 @@ async function deleteValidated(url: string): Promise<void> {
     method: 'DELETE',
     headers: headers,
   });
-  validateResponse({ response });
+  await validateResponse({ response });
 }
 
 /**

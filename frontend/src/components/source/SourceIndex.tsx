@@ -1,26 +1,33 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Source } from '../../model/DexterModel';
 import { SourceListItem } from './SourceListItem';
-import { deleteSource, getSourcesWithResources } from '../../utils/API';
+import {
+  deleteMetadataValue,
+  deleteSource,
+  getSourcesWithResources,
+} from '../../utils/API';
 import { SourceForm } from './SourceForm';
 import { AddNewResourceButton } from '../common/AddNewResourceButton';
 import { List } from '@mui/material';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
 import { SourceIcon } from './SourceIcon';
-import { useAsyncError } from '../../utils/useAsyncError';
+import { errorContext } from '../../state/error/errorContext';
 
 export function SourceIndex() {
   const [showForm, setShowForm] = useState(false);
   const [sources, setSources] = useState<Source[]>();
   const [isInit, setInit] = useState(false);
   const [sourceToEdit, setSourceToEdit] = useState<Source>(null);
-  const throwError = useAsyncError();
+  const { dispatchError } = useContext(errorContext);
 
   useEffect(() => {
     async function initResources() {
-      getSourcesWithResources()
-        .then(sources => setSources(sources))
-        .catch(throwError);
+      try {
+        const sources = await getSourcesWithResources();
+        setSources(sources);
+      } catch (e) {
+        dispatchError(e);
+      }
     }
 
     if (!isInit) {
@@ -29,18 +36,22 @@ export function SourceIndex() {
     }
   }, [isInit]);
 
-  const handleDelete = (source: Source) => {
+  const handleDelete = async (source: Source) => {
     const warning = window.confirm(
       'Are you sure you wish to delete this source?',
     );
 
     if (warning === false) return;
 
-    deleteSource(source.id)
-      .then(() =>
-        setSources(sources => sources.filter(s => s.id !== source.id)),
-      )
-      .catch(throwError);
+    try {
+      for (const mv of source.metadataValues) {
+        await deleteMetadataValue(mv.id);
+      }
+      await deleteSource(source.id);
+    } catch (e) {
+      dispatchError(e);
+    }
+    setSources(sources => sources.filter(s => s.id !== source.id));
   };
 
   const handleEdit = (source: Source) => {

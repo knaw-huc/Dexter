@@ -39,7 +39,7 @@ export function useFormErrors<T>(): UseFormErrorsResult<T> {
 
   async function setFormError<T>(error: Error): Promise<void> {
     if (isResponseError(error)) {
-      const responseError = await error.response.json();
+      const responseError = error.json;
       const constraints = _.entries(constraintToError);
       for (const [constraint, { field, error }] of constraints) {
         if (responseError.message.includes(constraint)) {

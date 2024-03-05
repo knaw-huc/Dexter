@@ -34,19 +34,31 @@ export default class ErrorHandler extends Component<
     this.state = { error: null };
   }
 
+  static getDerivedStateFromProps(
+    props: ErrorBoundaryProps,
+    state: ErrorBoundaryState,
+  ) {
+    const update = { ...state };
+    if (props.error) {
+      update.error = props.error;
+    }
+    return update;
+  }
+
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('ErrorHandler >', error, errorInfo);
     this.setState({ error });
   }
 
   render() {
-    if (!this.state.error) {
+    const error = this.state.error;
+    if (!error) {
       return this.props.children;
     }
     return (
       <div style={{ margin: '1em' }}>
         <ErrorHandlerAlert
-          error={this.state.error}
+          error={error}
           deleteError={() => this.setState({ error: null })}
         />
 
@@ -72,7 +84,7 @@ export function ErrorHandlerAlert(props: ErrorHandlerAlertProps) {
       if (!error) {
         setMessage('');
       } else if (isResponseError(error)) {
-        const body = await error.response.json();
+        const body = error.json;
         setMessage(body.message);
       } else {
         setMessage(error.message);
