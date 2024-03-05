@@ -83,5 +83,11 @@ export function ErrorHandlerAlert(props: ErrorHandlerAlertProps) {
   if (!message) {
     return null;
   }
-  return <ErrorAlert message={message} onClose={() => setMessage('')} />;
+  return (
+    <ErrorAlert
+      message={message}
+      onClose={() => setMessage('')}
+      sx={{ marginBottom: '1em' }}
+    />
+  );
 }

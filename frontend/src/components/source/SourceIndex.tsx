@@ -1,28 +1,26 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Source } from '../../model/DexterModel';
 import { SourceListItem } from './SourceListItem';
-import { getSourcesWithResources } from '../../utils/API';
+import { deleteSource, getSourcesWithResources } from '../../utils/API';
 import { SourceForm } from './SourceForm';
 import { AddNewResourceButton } from '../common/AddNewResourceButton';
 import { List } from '@mui/material';
-import { errorContext } from '../../state/error/errorContext';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
 import { SourceIcon } from './SourceIcon';
+import { useAsyncError } from '../../utils/useAsyncError';
 
 export function SourceIndex() {
-  const [showForm, setShowForm] = React.useState(false);
+  const [showForm, setShowForm] = useState(false);
   const [sources, setSources] = useState<Source[]>();
   const [isInit, setInit] = useState(false);
-  const { dispatchError } = useContext(errorContext);
-  const [sourceToEdit, setSourceToEdit] = React.useState<Source>(null);
+  const [sourceToEdit, setSourceToEdit] = useState<Source>(null);
+  const throwError = useAsyncError();
 
   useEffect(() => {
     async function initResources() {
-      try {
-        setSources(await getSourcesWithResources());
-      } catch (e) {
-        dispatchError(e);
-      }
+      getSourcesWithResources()
+        .then(sources => setSources(sources))
+        .catch(throwError);
     }
 
     if (!isInit) {
@@ -32,7 +30,17 @@ export function SourceIndex() {
   }, [isInit]);
 
   const handleDelete = (source: Source) => {
-    setSources(sources => sources.filter(s => s.id !== source.id));
+    const warning = window.confirm(
+      'Are you sure you wish to delete this source?',
+    );
+
+    if (warning === false) return;
+
+    deleteSource(source.id)
+      .then(() =>
+        setSources(sources => sources.filter(s => s.id !== source.id)),
+      )
+      .catch(throwError);
   };
 
   const handleEdit = (source: Source) => {

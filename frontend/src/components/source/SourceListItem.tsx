@@ -1,6 +1,5 @@
 import { grey } from '@mui/material/colors';
 import { isImage, Source } from '../../model/DexterModel';
-import { deleteSource } from '../../utils/API';
 import React from 'react';
 import { Avatar, ListItemAvatar, ListItemText } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
@@ -22,15 +21,8 @@ export const SourceListItem = (props: SourceListItemProps) => {
     navigate(`/sources/${props.source.id}`);
   }
 
-  function handleDelete(e: React.MouseEvent) {
+  function handleDeleted(e: React.MouseEvent) {
     e.stopPropagation();
-    const warning = window.confirm(
-      'Are you sure you wish to delete this source?',
-    );
-
-    if (warning === false) return;
-
-    deleteSource(props.source.id).then(() => props.onDelete());
     props.onDelete();
   }
 
@@ -47,7 +39,7 @@ export const SourceListItem = (props: SourceListItemProps) => {
       secondaryAction={
         <span style={{ color: grey[500] }}>
           <EditIconStyled hoverColor="black" onClick={handleEdit} />
-          <DeleteIconStyled onClick={handleDelete} />
+          <DeleteIconStyled onClick={handleDeleted} />
         </span>
       }
       sx={{ ml: 0, pl: 0 }}
