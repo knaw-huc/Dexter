@@ -11,8 +11,6 @@ alter table sources_tags
     rename constraint sources_keywords_source_id_key_id_key to sources_tags_source_id_tag_id_key;
 alter table sources_tags
     rename constraint sources_keywords_key_id_fkey to sources_tags_tag_id_fkey;
-alter table sources_tags
-    rename constraint sources_tags_source_id_fkey to sources_keys_source_id_fkey;
 alter index sources_keywords_key_id_source_id_idx
     rename to sources_tags_tag_id_source_id_idx;
 
