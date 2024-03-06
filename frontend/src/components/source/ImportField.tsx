@@ -1,11 +1,11 @@
 import React from 'react';
 import { Label } from '../common/Label';
-import { ErrorMessage } from '../common/ErrorMessage';
 import { TextFieldStyled } from './TextFieldStyled';
 import { Button, CircularProgress, Tooltip } from '@mui/material';
 import { HelpIconStyled } from '../common/HelpIconStyled';
 import { InputButtonGrid } from '../common/InputButtonGrid';
 import { TextFormFieldProps } from './TextFieldWithError';
+import { ErrorP } from '../common/error/ErrorP';
 
 type ImportFieldProps = TextFormFieldProps & {
   onImport: () => void;
@@ -51,7 +51,7 @@ export function ImportField(props: ImportFieldProps) {
           </Button>
         }
       />
-      {error && <ErrorMessage error={error} />}
+      {error && <ErrorP error={error} />}
     </div>
   );
 }

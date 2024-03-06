@@ -31,7 +31,7 @@ import {
   values,
   withResources,
 } from '../model/Resources';
-import { ErrorWithMessage } from '../components/ErrorHandler';
+import { ErrorWithMessage } from '../components/common/error/ErrorWithMessage';
 
 // Update methods:
 const POST = 'POST';

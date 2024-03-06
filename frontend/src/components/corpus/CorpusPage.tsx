@@ -1,8 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Corpus, ResultTag, Source } from '../../model/DexterModel';
 import { CorpusForm } from './CorpusForm';
-import { errorContext } from '../../state/error/errorContext';
 import {
   addSourcesToCorpus,
   deleteSourceFromCorpus,
@@ -33,15 +32,15 @@ import { SourceIcon } from '../source/SourceIcon';
 import { CorpusPreview } from './CorpusPreview';
 import { H2Styled } from '../common/H2Styled';
 import { SelectCorpusForm } from './SelectCorpusForm';
+import { useThrowSync } from '../common/error/useThrowSync';
 
 export const CorpusPage = () => {
+  const params = useParams();
+  const corpusId = params.corpusId;
+
   const [corpus, setCorpus] = useState<Corpus>(null);
   const [sourceOptions, setSourceOptions] = useState<Source[]>(null);
   const [corpusOptions, setCorpusOptions] = useState<Corpus[]>(null);
-  const { dispatchError } = useContext(errorContext);
-  const params = useParams();
-
-  const corpusId = params.corpusId;
 
   const [showCorpusForm, setShowCorpusForm] = useState(false);
   const [showSubcorpusForm, setShowSubcorpusForm] = useState(false);
@@ -49,30 +48,31 @@ export const CorpusPage = () => {
   const [subcorpusFilterTags, setSubcorpusFilterTags] = useState<ResultTag[]>(
     [],
   );
-
   const [showSourceForm, setShowSourceForm] = useState(false);
   const [showSelectSourceForm, setShowSelectSourceForm] = useState(false);
   const [sourceFilterTags, setSourceFilterTags] = useState<ResultTag[]>([]);
 
-  const initResources = async (id: string) => {
-    const corpusWithResources = await getCorpusWithResourcesById(id).catch(
-      dispatchError,
-    );
-    if (!corpusWithResources) {
-      dispatchError(new Error(`No corpus found with ID ${id}`));
-      return;
-    }
-    setCorpus({
-      ...corpusWithResources,
-    });
-    setSourceOptions(await getSourcesWithResources());
-    setCorpusOptions(
-      await getCorporaWithResources().then(all => all.filter(c => c.id !== id)),
-    );
-  };
+  const throwSync = useThrowSync();
 
   useEffect(() => {
-    initResources(corpusId);
+    init();
+
+    async function init() {
+      try {
+        const corpusWithResources = await getCorpusWithResourcesById(corpusId);
+        setCorpus({
+          ...corpusWithResources,
+        });
+        setSourceOptions(await getSourcesWithResources());
+        setCorpusOptions(
+          await getCorporaWithResources().then(all =>
+            all.filter(c => c.id !== corpusId),
+          ),
+        );
+      } catch (e) {
+        throwSync(new Error(`Could not init page of corpus ${corpusId}`, e));
+      }
+    }
   }, [corpusId]);
 
   const handleSavedCorpusForm = (corpus: Corpus) => {

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Source } from '../../model/DexterModel';
 import { SourceListItem } from './SourceListItem';
 import {
@@ -11,30 +11,27 @@ import { AddNewResourceButton } from '../common/AddNewResourceButton';
 import { List } from '@mui/material';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
 import { SourceIcon } from './SourceIcon';
-import { errorContext } from '../../state/error/errorContext';
+import { useThrowSync } from '../common/error/useThrowSync';
 
 export function SourceIndex() {
   const [showForm, setShowForm] = useState(false);
   const [sources, setSources] = useState<Source[]>();
-  const [isInit, setInit] = useState(false);
   const [sourceToEdit, setSourceToEdit] = useState<Source>(null);
-  const { dispatchError } = useContext(errorContext);
+
+  const throwSync = useThrowSync();
 
   useEffect(() => {
-    async function initResources() {
+    init();
+
+    async function init() {
       try {
         const sources = await getSourcesWithResources();
         setSources(sources);
       } catch (e) {
-        dispatchError(e);
+        throwSync(e);
       }
     }
-
-    if (!isInit) {
-      setInit(true);
-      initResources();
-    }
-  }, [isInit]);
+  }, []);
 
   const handleDelete = async (source: Source) => {
     const warning = window.confirm(
@@ -49,7 +46,7 @@ export function SourceIndex() {
       }
       await deleteSource(source.id);
     } catch (e) {
-      dispatchError(e);
+      throwSync(e);
     }
     setSources(sources => sources.filter(s => s.id !== source.id));
   };

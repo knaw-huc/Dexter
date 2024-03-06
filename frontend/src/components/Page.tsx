@@ -1,12 +1,10 @@
 import { Container } from '@mui/material';
-import React, { useContext } from 'react';
+import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Header from './/Header';
-import ErrorHandler from './ErrorHandler';
-import { errorContext } from '../state/error/errorContext';
+import ErrorBoundary from './common/error/ErrorBoundary';
 
 export const Page = () => {
-  const { errorState } = useContext(errorContext);
   return (
     <div>
       <Header />
@@ -15,9 +13,9 @@ export const Page = () => {
           marginTop: '2em',
         }}
       >
-        <ErrorHandler error={errorState.error}>
+        <ErrorBoundary>
           <Outlet />
-        </ErrorHandler>
+        </ErrorBoundary>
       </Container>
     </div>
   );

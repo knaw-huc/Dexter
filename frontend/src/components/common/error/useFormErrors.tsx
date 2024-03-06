@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { FormErrors, scrollToError } from './FormError';
-import { ErrorWithMessage } from '../ErrorHandler';
 import _ from 'lodash';
 import { ValidationError } from 'yup';
-import { isResponseError } from './isResponseError';
+import { FormErrors } from './FormError';
+import { ErrorWithMessage } from './ErrorWithMessage';
+import { scrollToError } from './scrollToError';
+import { isResponseError } from '../isResponseError';
 
 type UseFormErrorsResult<T> = {
   errors: FormErrors<T>;

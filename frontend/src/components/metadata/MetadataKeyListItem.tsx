@@ -1,14 +1,13 @@
 import { grey } from '@mui/material/colors';
 import { ResultMetadataKey } from '../../model/DexterModel';
-import { deleteMetadataKey, toReadable } from '../../utils/API';
+import { deleteMetadataKey } from '../../utils/API';
 import React, { ChangeEvent } from 'react';
 import { Avatar, ListItemAvatar, ListItemText } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 import { EditIconStyled } from '../common/EditButton';
 import { DeleteIconStyled } from '../common/DeleteIconStyled';
 import { MetadataKeyIcon } from './MetadataKeyIcon';
 import { ListItemButtonStyled } from '../common/ListItemButtonStyled';
-import { useAsyncError } from '../../utils/useAsyncError';
+import { useThrowSync } from '../common/error/useThrowSync';
 
 type MetadataKeyItemProps = {
   metadataKey: ResultMetadataKey;
@@ -17,7 +16,7 @@ type MetadataKeyItemProps = {
 };
 
 export const MetadataKeyListItem = (props: MetadataKeyItemProps) => {
-  const throwError = useAsyncError();
+  const throwSync = useThrowSync();
 
   async function handleDelete(e: React.MouseEvent) {
     e.stopPropagation();
@@ -29,9 +28,7 @@ export const MetadataKeyListItem = (props: MetadataKeyItemProps) => {
 
     await deleteMetadataKey(props.metadataKey.id)
       .then(props.onDeleted)
-      .catch(async e => {
-        throwError(await toReadable('Could not delete field', e));
-      });
+      .catch(throwSync);
   }
 
   function handleEditClick(e: ChangeEvent<HTMLInputElement>) {

@@ -5,11 +5,11 @@ import { TagForm } from './TagForm';
 import { TagList } from './TagList';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
 import { TagIcon } from './tagIcon';
-import { useAsyncError } from '../../utils/useAsyncError';
+import { useThrowSync } from '../common/error/useThrowSync';
 
 export const TagIndex = () => {
   const [tags, setTags] = useState<ResultTag[]>([]);
-  const throwError = useAsyncError();
+  const throwSync = useThrowSync();
 
   useEffect(() => {
     init();
@@ -24,7 +24,7 @@ export const TagIndex = () => {
 
     if (warning === false) return;
 
-    await deleteTag(toDelete.id).catch(e => throwError(e));
+    await deleteTag(toDelete.id).catch(e => throwSync(e));
     setTags(prev => prev.filter(t => t.id !== toDelete.id));
   }
 

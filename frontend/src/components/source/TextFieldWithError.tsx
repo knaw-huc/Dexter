@@ -1,9 +1,9 @@
 import React from 'react';
 import { Label } from '../common/Label';
-import { ErrorMessage } from '../common/ErrorMessage';
+import { ErrorP } from '../common/error/ErrorP';
 import { TextFieldStyled } from './TextFieldStyled';
 import { TextareaFieldProps } from '../common/TextareaFieldProps';
-import { ErrorWithMessage } from '../ErrorHandler';
+import { ErrorWithMessage } from '../common/error/ErrorWithMessage';
 
 export type TextFormFieldProps = TextareaFieldProps & {
   label: string;
@@ -21,7 +21,7 @@ export function TextFieldWithError(props: TextFormFieldProps) {
   return (
     <>
       <Label style={{ textTransform: 'capitalize' }}>{label}</Label>
-      {error && <ErrorMessage error={error} />}
+      {error && <ErrorP error={error} />}
       <TextFieldStyled
         {...textFieldProps}
         fullWidth={true}

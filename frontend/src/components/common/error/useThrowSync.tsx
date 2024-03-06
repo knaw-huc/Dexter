@@ -1,10 +1,11 @@
 import { useCallback, useState } from 'react';
-import { ErrorWithMessage } from '../components/ErrorHandler';
+import { ErrorWithMessage } from './ErrorWithMessage';
 
 /**
- * Convert async into sync error catchable by error boundaries
+ * Make async errors 'synchronous' again,
+ * allowing errors to be caught by error boundaries
  */
-export const useAsyncError = () => {
+export const useThrowSync = () => {
   const [, setError] = useState();
   return useCallback(
     (e: ErrorWithMessage) => {

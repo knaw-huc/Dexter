@@ -2,7 +2,7 @@ import { useState } from 'react';
 import isUrl from '../../utils/isUrl';
 import { ResultImport, Source } from '../../model/DexterModel';
 import { postImport } from '../../utils/API';
-import { ErrorWithMessage } from '../ErrorHandler';
+import { ErrorWithMessage } from '../common/error/ErrorWithMessage';
 
 type WithExternalRef = {
   externalRef?: string;

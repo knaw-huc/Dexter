@@ -1,8 +1,8 @@
 import { Alert, AlertProps, Theme } from '@mui/material';
-import { ERROR_MESSAGE_CLASS } from './ErrorMessage';
+import { ERROR_MESSAGE_CLASS } from './ErrorP';
 import React from 'react';
-import { CloseInlineIcon } from './CloseInlineIcon';
 import { SxProps } from '@mui/system';
+import { CloseInlineIcon } from '../CloseInlineIcon';
 
 export function ErrorAlert(props: {
   message: string;

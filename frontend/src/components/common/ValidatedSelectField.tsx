@@ -1,9 +1,9 @@
 import React from 'react';
 import { FormControl, MenuItem, Select, SelectProps } from '@mui/material';
 import { Label } from './Label';
-import { ErrorMessage } from './ErrorMessage';
 import { Access } from '../../model/DexterModel';
-import { ErrorWithMessage } from '../ErrorHandler';
+import { ErrorWithMessage } from './error/ErrorWithMessage';
+import { ErrorP } from './error/ErrorP';
 
 export type SelectFieldProps = Omit<SelectProps, 'error' | 'variant'> & {
   error?: ErrorWithMessage;
@@ -35,7 +35,7 @@ export function ValidatedSelectField(props: SelectFieldProps) {
           ))}
         </Select>
       </FormControl>
-      <ErrorMessage error={error} />
+      <ErrorP error={error} />
     </>
   );
 }

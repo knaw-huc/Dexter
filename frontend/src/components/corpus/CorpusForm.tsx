@@ -11,9 +11,7 @@ import { LanguagesField } from '../language/LanguagesField';
 import ScrollableModal from '../common/ScrollableModal';
 import { ValidatedSelectField } from '../common/ValidatedSelectField';
 import { SelectSourcesField } from './SelectSourcesField';
-import { FormErrorMessage } from '../common/FormError';
 import { TextFieldWithError } from '../source/TextFieldWithError';
-import { ErrorMessage } from '../common/ErrorMessage';
 import _ from 'lodash';
 import { CloseInlineIcon } from '../common/CloseInlineIcon';
 import { SubmitButton } from '../common/SubmitButton';
@@ -23,8 +21,10 @@ import { TextareaFieldProps } from '../common/TextareaFieldProps';
 import { useInitCorpusForm } from './useInitCorpusForm';
 import { useSubmitCorpusForm } from './useSubmitCorpusForm';
 import { onSubmit } from '../../utils/onSubmit';
-import { useFormErrors } from '../common/useFormErrors';
 import { SelectCorpusField } from './SelectCorpusField';
+import { useFormErrors } from '../common/error/useFormErrors';
+import { FormErrorMessage } from '../common/error/FormError';
+import { ErrorP } from '../common/error/ErrorP';
 
 type CorpusFormProps = {
   /**
@@ -131,7 +131,7 @@ export function CorpusForm(props: CorpusFormProps) {
             onSelectOption={access => setForm(f => ({ ...f, access }))}
             options={AccessOptions}
           />
-          <ErrorMessage error={errors.access} />
+          <ErrorP error={errors.access} />
 
           {renderTextField('location')}
           {renderTextField('earliest')}
@@ -148,7 +148,7 @@ export function CorpusForm(props: CorpusFormProps) {
             useAutocomplete
             allowCreatingNew
           />
-          <ErrorMessage error={errors.tags} />
+          <ErrorP error={errors.tags} />
 
           <Label>Languages</Label>
           <LanguagesField
@@ -157,7 +157,7 @@ export function CorpusForm(props: CorpusFormProps) {
               setForm(f => ({ ...f, languages }));
             }}
           />
-          <ErrorMessage error={errors.languages} />
+          <ErrorP error={errors.languages} />
 
           <Label>Add sources to corpus</Label>
           <SelectSourcesField
@@ -166,7 +166,7 @@ export function CorpusForm(props: CorpusFormProps) {
             onSelectSource={handleLinkSource}
             onDeselectSource={handleUnlinkSource}
           />
-          <ErrorMessage error={errors.sources} />
+          <ErrorP error={errors.sources} />
 
           {props.parentOptions && (
             <>
@@ -177,7 +177,7 @@ export function CorpusForm(props: CorpusFormProps) {
                 onSelectCorpus={handleSelectParentCorpus}
                 onDeselectCorpus={handleDeleteParentCorpus}
               />
-              <ErrorMessage error={errors.parent} />
+              <ErrorP error={errors.parent} />
             </>
           )}
 
@@ -186,7 +186,7 @@ export function CorpusForm(props: CorpusFormProps) {
             values={values}
             onChange={setValues}
           />
-          <ErrorMessage error={errors.metadataValues} />
+          <ErrorP error={errors.metadataValues} />
 
           <SubmitButton onClick={handleSubmit} />
         </form>

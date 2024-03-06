@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { ErrorWithMessage } from '../ErrorHandler';
+
+import { ErrorWithMessage } from './ErrorWithMessage';
 
 export const ERROR_MESSAGE_CLASS = 'error-msg';
 
@@ -9,7 +10,7 @@ export const ErrorMsgStyled = styled.p`
   margin-top: 0.5em;
   margin-bottom: 0;
 `;
-export function ErrorMessage(props: { error: ErrorWithMessage }) {
+export function ErrorP(props: { error: ErrorWithMessage }) {
   if (!props.error) {
     return null;
   }

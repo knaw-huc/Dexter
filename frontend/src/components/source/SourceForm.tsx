@@ -10,9 +10,7 @@ import { SelectTagField } from '../tag/SelectTagField';
 import { LanguagesField } from '../language/LanguagesField';
 import { Label } from '../common/Label';
 import { ValidatedSelectField } from '../common/ValidatedSelectField';
-import { ErrorMessage } from '../common/ErrorMessage';
 import { TextFieldWithError } from './TextFieldWithError';
-import { FormErrorMessage } from '../common/FormError';
 import { CloseInlineIcon } from '../common/CloseInlineIcon';
 import { SubmitButton } from '../common/SubmitButton';
 import { ImportField } from './ImportField';
@@ -23,8 +21,10 @@ import { useSubmitSourceForm } from './useSubmitSourceForm';
 import { useInitSourceForm } from './useInitSourceForm';
 import { TextareaFieldProps } from '../common/TextareaFieldProps';
 import { onSubmit } from '../../utils/onSubmit';
-import { useFormErrors } from '../common/useFormErrors';
 import { SelectMediaField } from '../media/SelectMediaField';
+import { useFormErrors } from '../common/error/useFormErrors';
+import { FormErrorMessage } from '../common/error/FormError';
+import { ErrorP } from '../common/error/ErrorP';
 
 type SourceFormProps = {
   sourceToEdit?: Source;
@@ -133,21 +133,21 @@ export function SourceForm(props: SourceFormProps) {
           useAutocomplete
           allowCreatingNew
         />
-        <ErrorMessage error={errors.tags} />
+        <ErrorP error={errors.tags} />
 
         <Label>Languages</Label>
         <LanguagesField
           selected={form.languages}
           onChangeSelected={languages => setForm(f => ({ ...f, languages }))}
         />
-        <ErrorMessage error={errors.languages} />
+        <ErrorP error={errors.languages} />
 
         <MetadataValueFormFields
           keys={keys}
           values={form.metadataValues}
           onChange={metadataValues => setForm(f => ({ ...f, metadataValues }))}
         />
-        <ErrorMessage error={errors.metadataValues} />
+        <ErrorP error={errors.metadataValues} />
 
         <Label>Media</Label>
         <SelectMediaField
@@ -155,7 +155,7 @@ export function SourceForm(props: SourceFormProps) {
           onChangeSelected={media => setForm(f => ({ ...f, media }))}
           allowCreatingNew
         />
-        <ErrorMessage error={errors.media} />
+        <ErrorP error={errors.media} />
 
         <SubmitButton onClick={handleSubmit} />
       </form>
