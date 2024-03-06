@@ -12,24 +12,16 @@ import { useThrowSync } from '../common/error/useThrowSync';
 export function MediaIndex() {
   const [showForm, setShowForm] = React.useState(false);
   const [media, setMedia] = useState<ResultMedia[]>();
-  const [isInit, setInit] = useState(false);
   const [mediaToEdit, setMediaToEdit] = React.useState<ResultMedia>(null);
 
   const throwSync = useThrowSync();
+
   useEffect(() => {
-    if (!isInit) {
-      setInit(true);
-      init();
-    }
-    async function init() {
-      try {
-        // TODO: support multiple media types
-        setMedia(await getMedia(image));
-      } catch (e) {
-        throwSync(e);
-      }
-    }
-  }, [isInit]);
+    // TODO: support multiple media types
+    getMedia(image)
+      .then(media => setMedia(media))
+      .catch(throwSync);
+  }, []);
 
   async function handleDelete(media: ResultMedia) {
     const warning = window.confirm(

@@ -12,11 +12,9 @@ export const TagIndex = () => {
   const throwSync = useThrowSync();
 
   useEffect(() => {
-    init();
-
-    async function init() {
-      setTags(await getTags());
-    }
+    getTags()
+      .then(tags => setTags(tags))
+      .catch(throwSync);
   }, []);
 
   async function handleDelete(toDelete: ResultTag) {

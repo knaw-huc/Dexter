@@ -6,6 +6,7 @@ type ErrorBoundaryProps = PropsWithChildren;
 
 type ErrorBoundaryState = {
   error?: Error;
+  isShown: boolean;
 };
 
 export default class ErrorBoundary extends Component<
@@ -14,12 +15,12 @@ export default class ErrorBoundary extends Component<
 > {
   constructor(props: ErrorBoundaryProps) {
     super(props);
-    this.state = { error: null };
+    this.state = { error: null, isShown: false };
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('ErrorHandler >', error, errorInfo);
-    this.setState({ error });
+    console.error('ErrorBoundary >', error, errorInfo);
+    this.setState({ error, isShown: true });
   }
 
   render() {
@@ -27,14 +28,15 @@ export default class ErrorBoundary extends Component<
     if (!error) {
       return this.props.children;
     }
+    if (!this.state.isShown) {
+      return null;
+    }
     return (
       <div style={{ margin: '1em' }}>
         <ErrorBoundaryAlert
           error={error}
-          onClose={() => this.setState({ error: null })}
+          onClose={() => this.setState({ isShown: false })}
         />
-
-        {this.props.children}
       </div>
     );
   }
