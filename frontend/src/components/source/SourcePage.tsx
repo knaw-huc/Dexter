@@ -26,24 +26,21 @@ import { SelectMediaForm } from './SelectMediaForm';
 import { MediaIcon } from '../media/MediaIcon';
 import { H2Styled } from '../common/H2Styled';
 import { ExternalLink } from '../common/ExternalLink';
+import { useThrowSync } from '../common/error/useThrowSync';
 
 export const SourcePage = () => {
-  const params = useParams();
-  const sourceId = params.sourceId;
+  const sourceId = useParams().sourceId;
 
-  const [source, setSource] = useState<Source>(null);
+  const [source, setSource] = useState<Source>();
   const [showForm, setShowForm] = useState(false);
   const [showMediaForm, setMediaShowForm] = useState(false);
   const [mediaToEdit, setMediaToEdit] = useState(null);
   const [showSelectMediaForm, setShowSelectMediaForm] = useState(null);
+  const throwSync = useThrowSync();
 
   useEffect(() => {
-    init();
+    getSourceWithResourcesById(sourceId).then(setSource).catch(throwSync);
   }, []);
-
-  const init = async () => {
-    setSource(await getSourceWithResourcesById(sourceId));
-  };
 
   const handleSavedForm = (update: Source) => {
     setSource(update);

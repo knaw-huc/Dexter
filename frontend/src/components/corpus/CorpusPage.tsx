@@ -35,12 +35,11 @@ import { SelectCorpusForm } from './SelectCorpusForm';
 import { useThrowSync } from '../common/error/useThrowSync';
 
 export const CorpusPage = () => {
-  const params = useParams();
-  const corpusId = params.corpusId;
+  const corpusId = useParams().corpusId;
 
-  const [corpus, setCorpus] = useState<Corpus>(null);
-  const [sourceOptions, setSourceOptions] = useState<Source[]>(null);
-  const [corpusOptions, setCorpusOptions] = useState<Corpus[]>(null);
+  const [corpus, setCorpus] = useState<Corpus>();
+  const [sourceOptions, setSourceOptions] = useState<Source[]>();
+  const [corpusOptions, setCorpusOptions] = useState<Corpus[]>();
 
   const [showCorpusForm, setShowCorpusForm] = useState(false);
   const [showSubcorpusForm, setShowSubcorpusForm] = useState(false);
@@ -70,10 +69,10 @@ export const CorpusPage = () => {
           ),
         );
       } catch (e) {
-        throwSync(new Error(`Could not init page of corpus ${corpusId}`, e));
+        throwSync(e);
       }
     }
-  }, [corpusId]);
+  }, []);
 
   const handleSavedCorpusForm = (corpus: Corpus) => {
     if (showCorpusForm) {
@@ -206,7 +205,6 @@ export const CorpusPage = () => {
   if (!corpus) {
     return null;
   }
-
   return (
     <div>
       <HeaderBreadCrumb>

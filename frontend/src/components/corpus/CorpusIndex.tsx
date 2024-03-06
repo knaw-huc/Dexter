@@ -14,8 +14,8 @@ import { CorpusIcon } from './CorpusIcon';
 import { useThrowSync } from '../common/error/useThrowSync';
 
 export function CorpusIndex() {
-  const [showForm, setShowForm] = React.useState(false);
   const [corpora, setCorpora] = useState<Corpus[]>();
+  const [showForm, setShowForm] = React.useState(false);
   const [sourceOptions, setSourceOptions] = useState<Source[]>();
   const throwSync = useThrowSync();
 
@@ -41,6 +41,9 @@ export function CorpusIndex() {
     setShowForm(false);
   }
 
+  if (!corpora) {
+    return null;
+  }
   return (
     <>
       <div>

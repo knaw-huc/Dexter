@@ -8,13 +8,11 @@ import { TagIcon } from './tagIcon';
 import { useThrowSync } from '../common/error/useThrowSync';
 
 export const TagIndex = () => {
-  const [tags, setTags] = useState<ResultTag[]>([]);
+  const [tags, setTags] = useState<ResultTag[]>();
   const throwSync = useThrowSync();
 
   useEffect(() => {
-    getTags()
-      .then(tags => setTags(tags))
-      .catch(throwSync);
+    getTags().then(setTags).catch(throwSync);
   }, []);
 
   async function handleDelete(toDelete: ResultTag) {
@@ -26,6 +24,9 @@ export const TagIndex = () => {
     setTags(prev => prev.filter(t => t.id !== toDelete.id));
   }
 
+  if (!tags) {
+    return null;
+  }
   return (
     <>
       <HeaderBreadCrumb />

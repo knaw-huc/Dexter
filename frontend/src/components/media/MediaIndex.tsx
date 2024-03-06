@@ -10,17 +10,15 @@ import { MediaIcon } from './MediaIcon';
 import { useThrowSync } from '../common/error/useThrowSync';
 
 export function MediaIndex() {
-  const [showForm, setShowForm] = React.useState(false);
   const [media, setMedia] = useState<ResultMedia[]>();
+  const [showForm, setShowForm] = React.useState(false);
   const [mediaToEdit, setMediaToEdit] = React.useState<ResultMedia>(null);
 
   const throwSync = useThrowSync();
 
   useEffect(() => {
     // TODO: support multiple media types
-    getMedia(image)
-      .then(media => setMedia(media))
-      .catch(throwSync);
+    getMedia(image).then(setMedia).catch(throwSync);
   }, []);
 
   async function handleDelete(media: ResultMedia) {
@@ -54,6 +52,9 @@ export function MediaIndex() {
     setShowForm(false);
   }
 
+  if (!media) {
+    return null;
+  }
   return (
     <>
       <div>

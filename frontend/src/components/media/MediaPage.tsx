@@ -11,25 +11,19 @@ import { Grid } from '@mui/material';
 import { Title } from './Title';
 
 import { ExternalLink } from '../common/ExternalLink';
+import { useThrowSync } from '../common/error/useThrowSync';
 
 export function MediaPage() {
+  const mediaId = useParams().mediaId;
+
   const [media, setMedia] = useState<ResultMedia>();
   const [showForm, setShowForm] = useState<boolean>(false);
-  const [isInit, setInit] = useState(false);
-  const params = useParams();
 
-  const mediaId = params.mediaId;
-
-  async function init(id: string) {
-    setMedia(await getMediaEntry(id));
-    setInit(true);
-  }
+  const throwSync = useThrowSync();
 
   useEffect(() => {
-    if (!isInit) {
-      init(mediaId);
-    }
-  }, [mediaId]);
+    getMediaEntry(mediaId).then(setMedia).catch(throwSync);
+  }, []);
 
   function handleSaveMedia(media: ResultMedia) {
     setMedia(media);
@@ -40,7 +34,7 @@ export function MediaPage() {
     setShowForm(false);
   }
 
-  if (!isInit) {
+  if (!media) {
     return null;
   }
   return (

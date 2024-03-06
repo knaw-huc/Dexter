@@ -14,10 +14,9 @@ export function MetadataKeyIndex() {
   const [isFormOpen, setFormOpen] = useState(false);
   const [toEdit, setToEdit] = useState<ResultMetadataKey>();
   const throwSync = useThrowSync();
+
   useEffect(() => {
-    getMetadataKeys()
-      .then(k => setKeys(k))
-      .catch(throwSync);
+    getMetadataKeys().then(setKeys).catch(throwSync);
   }, []);
 
   function handleEditClick(toEdit: ResultMetadataKey) {
@@ -40,6 +39,9 @@ export function MetadataKeyIndex() {
     setFormOpen(false);
   }
 
+  if (!keys) {
+    return null;
+  }
   return (
     <>
       <div>

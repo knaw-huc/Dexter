@@ -14,23 +14,14 @@ import { SourceIcon } from './SourceIcon';
 import { useThrowSync } from '../common/error/useThrowSync';
 
 export function SourceIndex() {
-  const [showForm, setShowForm] = useState(false);
   const [sources, setSources] = useState<Source[]>();
+  const [showForm, setShowForm] = useState(false);
   const [sourceToEdit, setSourceToEdit] = useState<Source>(null);
 
   const throwSync = useThrowSync();
 
   useEffect(() => {
-    init();
-
-    async function init() {
-      try {
-        const sources = await getSourcesWithResources();
-        setSources(sources);
-      } catch (e) {
-        throwSync(e);
-      }
-    }
+    getSourcesWithResources().then(setSources).catch(throwSync);
   }, []);
 
   const handleDelete = async (source: Source) => {
@@ -77,6 +68,9 @@ export function SourceIndex() {
     return s1.updatedAt < s2.updatedAt ? 1 : -1;
   }
 
+  if (sources) {
+    return null;
+  }
   return (
     <>
       <div>
