@@ -1,5 +1,5 @@
 import { Alert, AlertProps, Theme } from '@mui/material';
-import { ERROR_MESSAGE_CLASS } from './ErrorP';
+import { ERROR_MESSAGE_CLASS } from './FieldError';
 import React from 'react';
 import { SxProps } from '@mui/system';
 import { CloseInlineIcon } from '../CloseInlineIcon';

@@ -5,7 +5,7 @@ import { Button, CircularProgress, Tooltip } from '@mui/material';
 import { HelpIconStyled } from '../common/HelpIconStyled';
 import { InputButtonGrid } from '../common/InputButtonGrid';
 import { TextFormFieldProps } from './TextFieldWithError';
-import { ErrorP } from '../common/error/ErrorP';
+import { FieldError } from '../common/error/FieldError';
 
 type ImportFieldProps = TextFormFieldProps & {
   onImport: () => void;
@@ -51,7 +51,7 @@ export function ImportField(props: ImportFieldProps) {
           </Button>
         }
       />
-      {error && <ErrorP error={error} />}
+      {error && <FieldError error={error} />}
     </div>
   );
 }

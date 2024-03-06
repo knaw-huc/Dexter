@@ -11,7 +11,7 @@ import * as yup from 'yup';
 import { onSubmit } from '../../utils/onSubmit';
 import { useFormErrors } from '../common/error/useFormErrors';
 import { FormErrorMessage } from '../common/error/FormError';
-import { ErrorP } from '../common/error/ErrorP';
+import { FieldError } from '../common/error/FieldError';
 
 type MetadataKeyFormProps = {
   inEdit?: ResultMetadataKey;
@@ -80,7 +80,7 @@ export function MetadataKeyForm(props: MetadataKeyFormProps) {
           <FormErrorMessage error={errors.generic} />
 
           <Label>Metadata field</Label>
-          <ErrorP error={errors.key} />
+          <FieldError error={errors.key} />
           <TextField
             fullWidth
             value={keyField}

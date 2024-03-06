@@ -10,7 +10,7 @@ export const ErrorMsgStyled = styled.p`
   margin-top: 0.5em;
   margin-bottom: 0;
 `;
-export function ErrorP(props: { error: ErrorWithMessage }) {
+export function FieldError(props: { error: ErrorWithMessage }) {
   if (!props.error) {
     return null;
   }

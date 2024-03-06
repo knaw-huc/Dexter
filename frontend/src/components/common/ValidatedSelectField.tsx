@@ -3,7 +3,7 @@ import { FormControl, MenuItem, Select, SelectProps } from '@mui/material';
 import { Label } from './Label';
 import { Access } from '../../model/DexterModel';
 import { ErrorWithMessage } from './error/ErrorWithMessage';
-import { ErrorP } from './error/ErrorP';
+import { FieldError } from './error/FieldError';
 
 export type SelectFieldProps = Omit<SelectProps, 'error' | 'variant'> & {
   error?: ErrorWithMessage;
@@ -35,7 +35,7 @@ export function ValidatedSelectField(props: SelectFieldProps) {
           ))}
         </Select>
       </FormControl>
-      <ErrorP error={error} />
+      <FieldError error={error} />
     </>
   );
 }

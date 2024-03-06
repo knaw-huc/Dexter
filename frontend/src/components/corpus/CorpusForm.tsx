@@ -24,7 +24,7 @@ import { onSubmit } from '../../utils/onSubmit';
 import { SelectCorpusField } from './SelectCorpusField';
 import { useFormErrors } from '../common/error/useFormErrors';
 import { FormErrorMessage } from '../common/error/FormError';
-import { ErrorP } from '../common/error/ErrorP';
+import { FieldError } from '../common/error/FieldError';
 
 type CorpusFormProps = {
   /**
@@ -131,7 +131,6 @@ export function CorpusForm(props: CorpusFormProps) {
             onSelectOption={access => setForm(f => ({ ...f, access }))}
             options={AccessOptions}
           />
-          <ErrorP error={errors.access} />
 
           {renderTextField('location')}
           {renderTextField('earliest')}
@@ -148,7 +147,7 @@ export function CorpusForm(props: CorpusFormProps) {
             useAutocomplete
             allowCreatingNew
           />
-          <ErrorP error={errors.tags} />
+          <FieldError error={errors.tags} />
 
           <Label>Languages</Label>
           <LanguagesField
@@ -157,7 +156,7 @@ export function CorpusForm(props: CorpusFormProps) {
               setForm(f => ({ ...f, languages }));
             }}
           />
-          <ErrorP error={errors.languages} />
+          <FieldError error={errors.languages} />
 
           <Label>Add sources to corpus</Label>
           <SelectSourcesField
@@ -166,7 +165,7 @@ export function CorpusForm(props: CorpusFormProps) {
             onSelectSource={handleLinkSource}
             onDeselectSource={handleUnlinkSource}
           />
-          <ErrorP error={errors.sources} />
+          <FieldError error={errors.sources} />
 
           {props.parentOptions && (
             <>
@@ -177,7 +176,7 @@ export function CorpusForm(props: CorpusFormProps) {
                 onSelectCorpus={handleSelectParentCorpus}
                 onDeselectCorpus={handleDeleteParentCorpus}
               />
-              <ErrorP error={errors.parent} />
+              <FieldError error={errors.parent} />
             </>
           )}
 
@@ -186,7 +185,7 @@ export function CorpusForm(props: CorpusFormProps) {
             values={values}
             onChange={setValues}
           />
-          <ErrorP error={errors.metadataValues} />
+          <FieldError error={errors.metadataValues} />
 
           <SubmitButton onClick={handleSubmit} />
         </form>

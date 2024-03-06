@@ -1,4 +1,4 @@
-import { ERROR_MESSAGE_CLASS } from './ErrorP';
+import { ERROR_MESSAGE_CLASS } from './FieldError';
 
 export function scrollToError() {
   document

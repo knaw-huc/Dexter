@@ -15,7 +15,7 @@ import { onSubmit } from '../../utils/onSubmit';
 import { validUrl } from '../../utils/validateFields';
 import { useFormErrors } from '../common/error/useFormErrors';
 import { FormErrorMessage } from '../common/error/FormError';
-import { ErrorP } from '../common/error/ErrorP';
+import { FieldError } from '../common/error/FieldError';
 
 type MediaFormProps = {
   inEdit?: ResultMedia;
@@ -82,7 +82,7 @@ export function MediaForm(props: MediaFormProps) {
         <h1>{props.inEdit ? 'Edit media' : 'Add media'}</h1>
         <form onSubmit={onSubmit(handleSubmit)}>
           <FormErrorMessage error={errors.generic} />
-          <ErrorP error={errors.title} />
+          <FieldError error={errors.title} />
           <TextField
             fullWidth
             placeholder={`Title`}
@@ -93,7 +93,7 @@ export function MediaForm(props: MediaFormProps) {
             }}
           />
 
-          <ErrorP error={errors.url} />
+          <FieldError error={errors.url} />
           <TextField
             fullWidth
             placeholder={`Url (${supportedMediaTypes.join(', ')})`}

@@ -24,7 +24,7 @@ import { onSubmit } from '../../utils/onSubmit';
 import { SelectMediaField } from '../media/SelectMediaField';
 import { useFormErrors } from '../common/error/useFormErrors';
 import { FormErrorMessage } from '../common/error/FormError';
-import { ErrorP } from '../common/error/ErrorP';
+import { FieldError } from '../common/error/FieldError';
 
 type SourceFormProps = {
   sourceToEdit?: Source;
@@ -133,21 +133,21 @@ export function SourceForm(props: SourceFormProps) {
           useAutocomplete
           allowCreatingNew
         />
-        <ErrorP error={errors.tags} />
+        <FieldError error={errors.tags} />
 
         <Label>Languages</Label>
         <LanguagesField
           selected={form.languages}
           onChangeSelected={languages => setForm(f => ({ ...f, languages }))}
         />
-        <ErrorP error={errors.languages} />
+        <FieldError error={errors.languages} />
 
         <MetadataValueFormFields
           keys={keys}
           values={form.metadataValues}
           onChange={metadataValues => setForm(f => ({ ...f, metadataValues }))}
         />
-        <ErrorP error={errors.metadataValues} />
+        <FieldError error={errors.metadataValues} />
 
         <Label>Media</Label>
         <SelectMediaField
@@ -155,7 +155,7 @@ export function SourceForm(props: SourceFormProps) {
           onChangeSelected={media => setForm(f => ({ ...f, media }))}
           allowCreatingNew
         />
-        <ErrorP error={errors.media} />
+        <FieldError error={errors.media} />
 
         <SubmitButton onClick={handleSubmit} />
       </form>
