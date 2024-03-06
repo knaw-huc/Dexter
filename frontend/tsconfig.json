@@ -15,6 +15,7 @@
     "removeComments": true,
     "resolveJsonModule": true,
     "target": "esnext",
+    "allowSyntheticDefaultImports": true
   },
   "exclude": ["./build", "./dist", "./node_modules"],
   "files": ["src/index.tsx", "src/index.d.ts"]

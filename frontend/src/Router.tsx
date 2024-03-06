@@ -10,7 +10,7 @@ import React from 'react';
 import { MediaIndex } from './components/media/MediaIndex';
 import { corpora, media, metadata, sources, tags } from './model/Resources';
 import { MediaPage } from './components/media/MediaPage';
-import { CitationField } from './components/source/CitationField';
+import { Citation } from './components/source/Citation';
 
 export function Router() {
   return (
@@ -25,7 +25,7 @@ export function Router() {
         <Route path={`/${metadata}`} element={<MetadataKeyIndex />} />
         <Route path={`/${media}`} element={<MediaIndex />} />
         <Route path={`/${media}/:mediaId`} element={<MediaPage />} />
-        <Route path={`/citation`} element={<CitationField />} />
+        <Route path={`/citation`} element={<Citation />} />
         <Route
           path="*"
           element={

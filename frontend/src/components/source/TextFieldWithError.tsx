@@ -4,13 +4,16 @@ import { FieldError } from '../common/error/FieldError';
 import { TextFieldStyled } from './TextFieldStyled';
 import { TextareaFieldProps } from '../common/TextareaFieldProps';
 import { ErrorWithMessage } from '../common/error/ErrorWithMessage';
+import { SxProps } from '@mui/system';
+import { Theme } from '@mui/material/styles';
 
 export type TextFormFieldProps = TextareaFieldProps & {
   label: string;
   error?: ErrorWithMessage;
-  value?: string;
+  value: string | undefined;
   onChange: (change?: string) => void;
   variant?: 'standard';
+  sx?: SxProps<Theme>;
 };
 
 /**
@@ -30,6 +33,7 @@ export function TextFieldWithError(props: TextFormFieldProps) {
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
           onChange(event.target.value || undefined);
         }}
+        sx={props.sx}
       />
     </>
   );

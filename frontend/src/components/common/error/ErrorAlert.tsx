@@ -8,6 +8,7 @@ export function ErrorAlert(props: {
   message: string;
   onClose?: () => void;
   sx?: SxProps<Theme>;
+  severity?: 'error' | 'warning';
 }) {
   const optionalCloseButton: Partial<AlertProps> = {};
   if (props.onClose) {
@@ -16,11 +17,11 @@ export function ErrorAlert(props: {
   return (
     <Alert
       className={ERROR_MESSAGE_CLASS}
-      severity="error"
+      severity={props.severity || 'error'}
       sx={props.sx}
       {...optionalCloseButton}
     >
-      An error occurred: {props.message}
+      {props.message}
     </Alert>
   );
 }

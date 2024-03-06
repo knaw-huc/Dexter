@@ -1,12 +1,13 @@
 import React from 'react';
 import { Label } from '../common/Label';
 import { TextFieldStyled } from './TextFieldStyled';
-import { Button, CircularProgress, Tooltip } from '@mui/material';
+import { Button, Tooltip } from '@mui/material';
 import { HelpIconStyled } from '../common/HelpIconStyled';
 import { InputButtonGrid } from '../common/InputButtonGrid';
 import { TextFormFieldProps } from './TextFieldWithError';
 import { FieldError } from '../common/error/FieldError';
 import { FormFieldprops } from '../common/FormFieldProps';
+import { Spinner } from '../common/Spinner';
 
 type ImportFieldProps = FormFieldprops &
   Omit<TextFormFieldProps, 'label'> & {
@@ -56,24 +57,6 @@ export function ImportField(props: ImportFieldProps) {
         }
       />
       <FieldError error={error} />
-    </div>
-  );
-}
-
-/**
- * Add div to prevent wobbling of spinner icon
- */
-function Spinner() {
-  return (
-    <div>
-      <CircularProgress
-        style={{
-          width: '17px',
-          height: '17px',
-          marginLeft: '0.25em',
-          marginTop: '0.5em',
-        }}
-      />
     </div>
   );
 }
