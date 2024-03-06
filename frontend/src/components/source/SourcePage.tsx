@@ -16,17 +16,12 @@ import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
 import { SourcesBreadCrumbLink } from './SourcesBreadCrumbLink';
 import { MetadataValuePageFields } from '../metadata/MetadataValuePageFields';
 import { Title } from '../media/Title';
-import { Grid } from '@mui/material';
-import { NoResults } from '../common/NoResults';
-import { MediaPreview } from '../media/MediaPreview';
 import { MediaForm } from '../media/MediaForm';
-import { AddNewResourceButton } from '../common/AddNewResourceButton';
-import { SelectExistingResourceButton } from './SelectExistingResourceButton';
 import { SelectMediaForm } from './SelectMediaForm';
-import { MediaIcon } from '../media/MediaIcon';
 import { H2Styled } from '../common/H2Styled';
 import { ExternalLink } from '../common/ExternalLink';
 import { useThrowSync } from '../common/error/useThrowSync';
+import { SourceMedia } from './SourceMedia';
 
 export const SourcePage = () => {
   const sourceId = useParams().sourceId;
@@ -150,37 +145,14 @@ export const SourcePage = () => {
         <MetadataValuePageFields values={source.metadataValues} />
       )}
 
-      <H2Styled>
-        <MediaIcon />
-        Media
-      </H2Styled>
-      <Grid container spacing={2}>
-        <Grid item xs={6} md={4}>
-          <AddNewResourceButton
-            title="New media"
-            onClick={() => setMediaShowForm(true)}
-          />
-          <SelectExistingResourceButton
-            title="Existing media"
-            onClick={() => setShowSelectMediaForm(true)}
-          />
-        </Grid>
-        <Grid item xs={6} md={8}></Grid>
-      </Grid>
-      {!_.isEmpty(source.media) ? (
-        <Grid container spacing={2} sx={{ pl: 0.1, mt: 2, mb: 2 }}>
-          {source.media.map(media => (
-            <Grid item xs={2} key={media.id}>
-              <MediaPreview
-                media={media}
-                onDelete={() => handleUnlinkMedia(media)}
-                onEdit={() => handleEditMedia(media)}
-              />
-            </Grid>
-          ))}
-        </Grid>
-      ) : (
-        <NoResults message="No media" />
+      {!_.isEmpty(source.media) && (
+        <SourceMedia
+          media={source.media}
+          onAddNew={() => setMediaShowForm(true)}
+          onAddExisting={() => setShowSelectMediaForm(true)}
+          onUnlink={handleUnlinkMedia}
+          onEdit={handleEditMedia}
+        />
       )}
 
       {showForm && (
