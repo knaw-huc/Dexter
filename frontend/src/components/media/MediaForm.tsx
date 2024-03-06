@@ -16,6 +16,7 @@ import { validUrl } from '../../utils/validateFields';
 import { useFormErrors } from '../common/error/useFormErrors';
 import { FormErrorMessage } from '../common/error/FormError';
 import { FieldError } from '../common/error/FieldError';
+import { TextFieldWithError } from '../source/TextFieldWithError';
 
 type MediaFormProps = {
   inEdit?: ResultMedia;
@@ -83,23 +84,21 @@ export function MediaForm(props: MediaFormProps) {
         <form onSubmit={onSubmit(handleSubmit)}>
           <FormErrorMessage error={errors.generic} />
           <FieldError error={errors.title} />
-          <TextField
-            fullWidth
-            placeholder={`Title`}
+          <TextFieldWithError
+            label="Title"
+            error={errors.title}
             value={form.title}
-            style={{ marginBottom: '0.5em' }}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setForm(f => ({ ...f, title: event.target.value }));
+            onChange={change => {
+              setForm(f => ({ ...f, title: change }));
             }}
           />
 
-          <FieldError error={errors.url} />
-          <TextField
-            fullWidth
-            placeholder={`Url (${supportedMediaTypes.join(', ')})`}
+          <TextFieldWithError
+            label={`Url (${supportedMediaTypes.join(', ')})`}
+            error={errors.url}
             value={form.url}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setForm(f => ({ ...f, url: event.target.value }));
+            onChange={change => {
+              setForm(f => ({ ...f, url: change }));
             }}
           />
 

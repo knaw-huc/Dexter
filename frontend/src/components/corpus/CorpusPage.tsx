@@ -347,6 +347,7 @@ export const CorpusPage = () => {
       )}
       {showSelectSubcorpusForm && (
         <SelectCorpusForm
+          label="Add subcorpora"
           options={corpusOptions.filter(c => !c.parent)}
           onSelectCorpus={handleSelectSubcorpus}
           onDeselectCorpus={handleDeselectSubcorpus}

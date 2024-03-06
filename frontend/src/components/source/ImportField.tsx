@@ -6,12 +6,14 @@ import { HelpIconStyled } from '../common/HelpIconStyled';
 import { InputButtonGrid } from '../common/InputButtonGrid';
 import { TextFormFieldProps } from './TextFieldWithError';
 import { FieldError } from '../common/error/FieldError';
+import { FormFieldprops } from '../common/FormFieldProps';
 
-type ImportFieldProps = TextFormFieldProps & {
-  onImport: () => void;
-  isRefImportable: boolean;
-  isImporting: boolean;
-};
+type ImportFieldProps = FormFieldprops &
+  Omit<TextFormFieldProps, 'label'> & {
+    onImport: () => void;
+    isRefImportable: boolean;
+    isImporting: boolean;
+  };
 
 export function ImportField(props: ImportFieldProps) {
   const {
@@ -27,7 +29,9 @@ export function ImportField(props: ImportFieldProps) {
 
   return (
     <div>
-      <Label style={{ textTransform: 'capitalize' }}>{label}</Label>
+      <Label style={{ textTransform: 'capitalize' }}>
+        {label || 'External reference'}
+      </Label>
 
       <InputButtonGrid
         input={
@@ -51,7 +55,7 @@ export function ImportField(props: ImportFieldProps) {
           </Button>
         }
       />
-      {error && <FieldError error={error} />}
+      <FieldError error={error} />
     </div>
   );
 }

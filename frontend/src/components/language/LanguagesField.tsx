@@ -2,8 +2,11 @@ import React from 'react';
 import { ResultLanguage } from '../../model/DexterModel';
 import { getLanguagesAutocomplete } from '../../utils/API';
 import { MultiAutocomplete } from '../common/MultiAutocomplete';
+import { FormFieldprops } from '../common/FormFieldProps';
+import { Label } from '../common/Label';
+import { FieldError } from '../common/error/FieldError';
 
-export type LanguagesFieldProps = {
+export type LanguagesFieldProps = FormFieldprops & {
   selected: ResultLanguage[];
   onChangeSelected: (selected: ResultLanguage[]) => void;
 };
@@ -22,15 +25,19 @@ export function LanguagesField(props: LanguagesFieldProps) {
   }
 
   return (
-    <MultiAutocomplete<ResultLanguage>
-      placeholder="Search and select languages"
-      selected={props.selected}
-      onAutocompleteOptions={handleAutocompleteOptions}
-      toStringLabel={o => o.refName}
-      isOptionEqualToValue={(option, value) => option.id === value.id}
-      onAddSelected={handleAddSelected}
-      onRemoveSelected={handleRemoveSelected}
-      allowCreatingNew={false}
-    />
+    <>
+      <Label>{props.label || 'Languages'}</Label>
+      <MultiAutocomplete<ResultLanguage>
+        placeholder="Search and select languages"
+        selected={props.selected}
+        onAutocompleteOptions={handleAutocompleteOptions}
+        toStringLabel={o => o.refName}
+        isOptionEqualToValue={(option, value) => option.id === value.id}
+        onAddSelected={handleAddSelected}
+        onRemoveSelected={handleRemoveSelected}
+        allowCreatingNew={false}
+      />
+      <FieldError error={props.error} />
+    </>
   );
 }

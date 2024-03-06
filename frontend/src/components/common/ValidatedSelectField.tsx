@@ -4,13 +4,15 @@ import { Label } from './Label';
 import { Access } from '../../model/DexterModel';
 import { ErrorWithMessage } from './error/ErrorWithMessage';
 import { FieldError } from './error/FieldError';
+import { FormFieldprops } from './FormFieldProps';
 
-export type SelectFieldProps = Omit<SelectProps, 'error' | 'variant'> & {
-  error?: ErrorWithMessage;
-  onSelectOption: (selected: Access) => void;
-  selectedOption: string;
-  options: string[];
-};
+export type SelectFieldProps = FormFieldprops &
+  Omit<SelectProps, 'error' | 'variant'> & {
+    error?: ErrorWithMessage;
+    onSelectOption: (selected: Access) => void;
+    selectedOption: string;
+    options: string[];
+  };
 
 export function ValidatedSelectField(props: SelectFieldProps) {
   const { options, label, error, selectedOption, onSelectOption } = props;

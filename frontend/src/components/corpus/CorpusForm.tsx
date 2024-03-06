@@ -16,7 +16,6 @@ import _ from 'lodash';
 import { CloseInlineIcon } from '../common/CloseInlineIcon';
 import { SubmitButton } from '../common/SubmitButton';
 import { MetadataValueFormFields } from '../metadata/MetadataValueFormFields';
-import { Label } from '../common/Label';
 import { TextareaFieldProps } from '../common/TextareaFieldProps';
 import { useInitCorpusForm } from './useInitCorpusForm';
 import { useSubmitCorpusForm } from './useSubmitCorpusForm';
@@ -24,7 +23,6 @@ import { onSubmit } from '../../utils/onSubmit';
 import { SelectCorpusField } from './SelectCorpusField';
 import { useFormErrors } from '../common/error/useFormErrors';
 import { FormErrorMessage } from '../common/error/FormError';
-import { FieldError } from '../common/error/FieldError';
 
 type CorpusFormProps = {
   /**
@@ -126,8 +124,8 @@ export function CorpusForm(props: CorpusFormProps) {
 
           <ValidatedSelectField
             label="Access"
-            selectedOption={form.access}
             error={errors.access}
+            selectedOption={form.access}
             onSelectOption={access => setForm(f => ({ ...f, access }))}
             options={AccessOptions}
           />
@@ -138,8 +136,8 @@ export function CorpusForm(props: CorpusFormProps) {
           {renderTextField('contributor')}
           {renderTextField('notes', { rows: 6, multiline: true })}
 
-          <Label>Tags</Label>
           <SelectTagField
+            error={errors.tags}
             selected={form.tags}
             onChangeSelected={tags => {
               setForm(f => ({ ...f, tags }));
@@ -147,45 +145,41 @@ export function CorpusForm(props: CorpusFormProps) {
             useAutocomplete
             allowCreatingNew
           />
-          <FieldError error={errors.tags} />
 
-          <Label>Languages</Label>
           <LanguagesField
+            error={errors.languages}
             selected={form.languages}
             onChangeSelected={languages => {
               setForm(f => ({ ...f, languages }));
             }}
           />
-          <FieldError error={errors.languages} />
 
-          <Label>Add sources to corpus</Label>
           <SelectSourcesField
+            label="Add sources to corpus"
+            error={errors.sources}
             options={props.sourceOptions}
             selected={form.sources}
             onSelectSource={handleLinkSource}
             onDeselectSource={handleUnlinkSource}
           />
-          <FieldError error={errors.sources} />
 
           {props.parentOptions && (
-            <>
-              <Label>Add to main corpus</Label>
-              <SelectCorpusField
-                selected={form.parent}
-                options={props.parentOptions}
-                onSelectCorpus={handleSelectParentCorpus}
-                onDeselectCorpus={handleDeleteParentCorpus}
-              />
-              <FieldError error={errors.parent} />
-            </>
+            <SelectCorpusField
+              label="Add to main corpus"
+              error={errors.parent}
+              selected={form.parent}
+              options={props.parentOptions}
+              onSelectCorpus={handleSelectParentCorpus}
+              onDeselectCorpus={handleDeleteParentCorpus}
+            />
           )}
 
           <MetadataValueFormFields
+            error={errors.metadataValues}
             keys={keys}
             values={values}
             onChange={setValues}
           />
-          <FieldError error={errors.metadataValues} />
 
           <SubmitButton onClick={handleSubmit} />
         </form>

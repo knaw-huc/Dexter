@@ -10,8 +10,11 @@ import {
   CREATE_NEW_OPTION,
   MultiAutocomplete,
 } from '../common/MultiAutocomplete';
+import { FormFieldprops } from '../common/FormFieldProps';
+import { Label } from '../common/Label';
+import { FieldError } from '../common/error/FieldError';
 
-export interface SelectMediaFieldProps {
+export type SelectMediaFieldProps = FormFieldprops & {
   selected: ResultMedia[];
   onChangeSelected: (selected: ResultMedia[]) => void;
 
@@ -21,7 +24,7 @@ export interface SelectMediaFieldProps {
   allowCreatingNew?: boolean;
 
   size?: 'small' | 'medium';
-}
+};
 
 const MIN_AUTOCOMPLETE_LENGTH = 1;
 
@@ -90,17 +93,21 @@ export const SelectMediaField = (props: SelectMediaFieldProps) => {
   }
 
   return (
-    <MultiAutocomplete<ResultMedia>
-      placeholder="Find media by url or title"
-      selected={props.selected}
-      onAutocompleteOptions={handleAutocompleteOptions}
-      toStringLabel={toStringLabel}
-      toSelectedLabel={toSelectedLabel}
-      isOptionEqualToValue={(option, value) => option.url === value.url}
-      onAddSelected={handleAddSelected}
-      onRemoveSelected={handleRemoveSelected}
-      allowCreatingNew={props.allowCreatingNew}
-      onCreateSelected={handleCreateNew}
-    />
+    <>
+      <Label>{props.label || 'Media'}</Label>
+      <MultiAutocomplete<ResultMedia>
+        placeholder="Find media by url or title"
+        selected={props.selected}
+        onAutocompleteOptions={handleAutocompleteOptions}
+        toStringLabel={toStringLabel}
+        toSelectedLabel={toSelectedLabel}
+        isOptionEqualToValue={(option, value) => option.url === value.url}
+        onAddSelected={handleAddSelected}
+        onRemoveSelected={handleRemoveSelected}
+        allowCreatingNew={props.allowCreatingNew}
+        onCreateSelected={handleCreateNew}
+      />
+      <FieldError error={props.error} />
+    </>
   );
 };

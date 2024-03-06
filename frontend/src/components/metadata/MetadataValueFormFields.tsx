@@ -8,8 +8,10 @@ import TextField from '@mui/material/TextField';
 import { DeleteIconStyled } from '../common/DeleteIconStyled';
 import { compareFormMetadataValues } from '../../utils/compareMetadataValues';
 import _ from 'lodash';
+import { FormFieldprops } from '../common/FormFieldProps';
+import { FieldError } from '../common/error/FieldError';
 
-type MetadataValueFormFieldsProps = {
+type MetadataValueFormFieldsProps = FormFieldprops & {
   keys: ResultMetadataKey[];
   values: FormMetadataValue[];
   onChange: (values: FormMetadataValue[]) => void;
@@ -62,7 +64,8 @@ export function MetadataValueFormFields(props: MetadataValueFormFieldsProps) {
   return (
     <>
       <FormControl fullWidth>
-        <Label>Metadata</Label>
+        <Label>{props.label || 'Metadata'}</Label>
+        <FieldError error={props.error} />
         <InputButtonGrid
           input={
             <Select

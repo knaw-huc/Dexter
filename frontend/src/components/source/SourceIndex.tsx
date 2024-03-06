@@ -68,7 +68,7 @@ export function SourceIndex() {
     return s1.updatedAt < s2.updatedAt ? 1 : -1;
   }
 
-  if (sources) {
+  if (!sources) {
     return null;
   }
   return (

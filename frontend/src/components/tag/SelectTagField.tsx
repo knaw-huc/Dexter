@@ -5,8 +5,11 @@ import {
   CREATE_NEW_OPTION,
   MultiAutocomplete,
 } from '../common/MultiAutocomplete';
+import { FormFieldprops } from '../common/FormFieldProps';
+import { FieldError } from '../common/error/FieldError';
+import { Label } from '../common/Label';
 
-interface TagsFieldProps {
+type TagsFieldProps = FormFieldprops & {
   selected: ResultTag[];
   onChangeSelected: (selected: ResultTag[]) => void;
 
@@ -28,7 +31,7 @@ interface TagsFieldProps {
   size?: 'small' | 'medium';
 
   placeholder?: string;
-}
+};
 
 const MIN_AUTOCOMPLETE_LENGTH = 1;
 
@@ -73,16 +76,20 @@ export const SelectTagField = (props: TagsFieldProps) => {
   }
 
   return (
-    <MultiAutocomplete<ResultTag>
-      placeholder="Add and create tags"
-      selected={props.selected}
-      onAutocompleteOptions={handleAutocompleteOptions}
-      toStringLabel={o => o.val}
-      isOptionEqualToValue={(option, value) => option.val === value.val}
-      onAddSelected={handleAddSelected}
-      onRemoveSelected={handleDeleteTag}
-      allowCreatingNew={props.allowCreatingNew}
-      onCreateSelected={handleCreateSelected}
-    />
+    <>
+      <Label>{props.label || 'Tags'}</Label>
+      <MultiAutocomplete<ResultTag>
+        placeholder="Add and create tags"
+        selected={props.selected}
+        onAutocompleteOptions={handleAutocompleteOptions}
+        toStringLabel={o => o.val}
+        isOptionEqualToValue={(option, value) => option.val === value.val}
+        onAddSelected={handleAddSelected}
+        onRemoveSelected={handleDeleteTag}
+        allowCreatingNew={props.allowCreatingNew}
+        onCreateSelected={handleCreateSelected}
+      />
+      <FieldError error={props.error} />
+    </>
   );
 };

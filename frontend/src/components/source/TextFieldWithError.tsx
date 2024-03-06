@@ -20,7 +20,7 @@ export function TextFieldWithError(props: TextFormFieldProps) {
   const { label, error, onChange, value, ...textFieldProps } = props;
   return (
     <>
-      <Label style={{ textTransform: 'capitalize' }}>{label}</Label>
+      <Label>{label}</Label>
       {error && <FieldError error={error} />}
       <TextFieldStyled
         {...textFieldProps}

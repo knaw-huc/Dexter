@@ -8,7 +8,6 @@ import {
 import ScrollableModal from '../common/ScrollableModal';
 import { SelectTagField } from '../tag/SelectTagField';
 import { LanguagesField } from '../language/LanguagesField';
-import { Label } from '../common/Label';
 import { ValidatedSelectField } from '../common/ValidatedSelectField';
 import { TextFieldWithError } from './TextFieldWithError';
 import { CloseInlineIcon } from '../common/CloseInlineIcon';
@@ -24,7 +23,6 @@ import { onSubmit } from '../../utils/onSubmit';
 import { SelectMediaField } from '../media/SelectMediaField';
 import { useFormErrors } from '../common/error/useFormErrors';
 import { FormErrorMessage } from '../common/error/FormError';
-import { FieldError } from '../common/error/FieldError';
 
 type SourceFormProps = {
   sourceToEdit?: Source;
@@ -72,6 +70,7 @@ export function SourceForm(props: SourceFormProps) {
     return (
       <TextFieldWithError
         label={_.capitalize(fieldName)}
+        error={errors[fieldName]}
         value={form[fieldName] as string}
         onChange={v =>
           setForm(f => {
@@ -81,7 +80,6 @@ export function SourceForm(props: SourceFormProps) {
             return update;
           })
         }
-        error={errors[fieldName]}
         {...props}
       />
     );
@@ -98,10 +96,9 @@ export function SourceForm(props: SourceFormProps) {
       <FormErrorMessage error={errors.generic} />
       <form onSubmit={onSubmit(handleSubmit)}>
         <ImportField
-          label="External Reference"
+          error={errors.externalRef}
           value={form.externalRef}
           onChange={externalRef => setForm(f => ({ ...f, externalRef }))}
-          error={errors.externalRef}
           onImport={handleImportMetadata}
           isImporting={isImportLoading}
           isRefImportable={isImportableUrl(form.externalRef)}
@@ -126,36 +123,33 @@ export function SourceForm(props: SourceFormProps) {
         {renderFormField('latest')}
         {renderFormField('notes', { rows: 6, multiline: true })}
 
-        <Label>Tags</Label>
         <SelectTagField
+          error={errors.tags}
           selected={form.tags}
           onChangeSelected={tags => setForm(f => ({ ...f, tags }))}
           useAutocomplete
           allowCreatingNew
         />
-        <FieldError error={errors.tags} />
 
-        <Label>Languages</Label>
         <LanguagesField
+          error={errors.languages}
           selected={form.languages}
           onChangeSelected={languages => setForm(f => ({ ...f, languages }))}
         />
-        <FieldError error={errors.languages} />
 
         <MetadataValueFormFields
+          error={errors.metadataValues}
           keys={keys}
           values={form.metadataValues}
           onChange={metadataValues => setForm(f => ({ ...f, metadataValues }))}
         />
-        <FieldError error={errors.metadataValues} />
 
-        <Label>Media</Label>
         <SelectMediaField
+          error={errors.media}
           selected={form.media}
           onChangeSelected={media => setForm(f => ({ ...f, media }))}
           allowCreatingNew
         />
-        <FieldError error={errors.media} />
 
         <SubmitButton onClick={handleSubmit} />
       </form>
