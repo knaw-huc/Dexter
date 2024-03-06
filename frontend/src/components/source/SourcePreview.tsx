@@ -12,7 +12,6 @@ import { CardHeaderImage } from '../common/CardHeaderImage';
 
 interface SourceItemDropdownProps {
   source: Source;
-  corpusId: string;
   onUnlinkSource: () => void;
 }
 
