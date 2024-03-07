@@ -1,10 +1,14 @@
 import Cite from 'citation-js';
+import { CitationStyle } from './CitationStyle';
 
-export async function formatCitation(data: string): Promise<string> {
+export async function formatCitation(
+  data: string,
+  style: CitationStyle,
+): Promise<string> {
   const cite = await Cite.async(data);
   return cite.format('bibliography', {
     format: 'html',
-    template: 'citation-apa',
+    template: style,
     lang: 'en-US',
   });
 }

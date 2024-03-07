@@ -2,7 +2,7 @@ import React, { ChangeEvent, useState } from 'react';
 import { FormMetadataValue, ResultMetadataKey } from '../../model/DexterModel';
 import { Button, FormControl, Select } from '@mui/material';
 import { Label } from '../common/Label';
-import { InputButtonGrid } from '../common/InputButtonGrid';
+import { LeftRightGrid } from '../common/LeftRightGrid';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import { DeleteIconStyled } from '../common/DeleteIconStyled';
@@ -66,8 +66,8 @@ export function MetadataValueFormFields(props: MetadataValueFormFieldsProps) {
       <FormControl fullWidth>
         <Label>{props.label || 'Metadata'}</Label>
         <FieldError error={props.error} />
-        <InputButtonGrid
-          input={
+        <LeftRightGrid
+          left={
             <Select
               labelId="metadata-field-select-label"
               fullWidth
@@ -88,7 +88,7 @@ export function MetadataValueFormFields(props: MetadataValueFormFieldsProps) {
                 ))}
             </Select>
           }
-          button={
+          right={
             <Button
               disabled={selectedKeyId === NONE_SELECTED}
               fullWidth

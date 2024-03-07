@@ -7,6 +7,7 @@ import { ErrorWithMessage } from '../common/error/ErrorWithMessage';
 import { SxProps } from '@mui/system';
 import { Theme } from '@mui/material/styles';
 import { InputBaseProps } from '@mui/material/InputBase';
+import { InputProps as StandardInputProps } from '@mui/material/Input/Input';
 
 export type TextFormFieldProps = TextareaFieldProps & {
   label: string;
@@ -15,7 +16,10 @@ export type TextFormFieldProps = TextareaFieldProps & {
   onChange: (change?: string) => void;
   variant?: 'standard';
   sx?: SxProps<Theme>;
+
+  // Difference between inputProps and InputProps: https://stackoverflow.com/a/69872110/2938059
   inputProps?: InputBaseProps['inputProps'];
+  InputProps?: Partial<StandardInputProps>;
 };
 
 /**
@@ -25,7 +29,7 @@ export function TextFieldWithError(props: TextFormFieldProps) {
   const { label, error, onChange, value, ...textFieldProps } = props;
   return (
     <>
-      <Label>{label}</Label>
+      {props.label && <Label>{label}</Label>}
       {error && <FieldError error={error} />}
       <TextFieldStyled
         {...textFieldProps}
@@ -35,7 +39,6 @@ export function TextFieldWithError(props: TextFormFieldProps) {
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
           onChange(event.target.value || undefined);
         }}
-        inputProps={props.inputProps}
         sx={props.sx}
       />
     </>

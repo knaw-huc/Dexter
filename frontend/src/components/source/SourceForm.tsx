@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
+  Access,
   AccessOptions,
   ResultMetadataKey,
   Source,
@@ -110,7 +111,7 @@ export function SourceForm(props: SourceFormProps) {
         {renderFormField('rights')}
         {renderFormField('ethics')}
 
-        <ValidatedSelectField
+        <ValidatedSelectField<Access>
           label="Access"
           error={errors.access}
           selectedOption={form.access}

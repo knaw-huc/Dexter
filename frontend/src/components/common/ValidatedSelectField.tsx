@@ -1,20 +1,19 @@
 import React from 'react';
 import { FormControl, MenuItem, Select, SelectProps } from '@mui/material';
 import { Label } from './Label';
-import { Access } from '../../model/DexterModel';
 import { ErrorWithMessage } from './error/ErrorWithMessage';
 import { FieldError } from './error/FieldError';
 import { FormFieldprops } from './FormFieldProps';
 
-export type SelectFieldProps = FormFieldprops &
+export type SelectFieldProps<T> = FormFieldprops &
   Omit<SelectProps, 'error' | 'variant'> & {
     error?: ErrorWithMessage;
-    onSelectOption: (selected: Access) => void;
+    onSelectOption: (selected: T) => void;
     selectedOption: string;
     options: string[];
   };
 
-export function ValidatedSelectField(props: SelectFieldProps) {
+export function ValidatedSelectField<T>(props: SelectFieldProps<T>) {
   const { options, label, error, selectedOption, onSelectOption } = props;
 
   return (
@@ -24,7 +23,7 @@ export function ValidatedSelectField(props: SelectFieldProps) {
         <Select
           value={selectedOption || 'placeholder'}
           onChange={e => {
-            return onSelectOption(e.target.value as Access);
+            return onSelectOption(e.target.value as T);
           }}
         >
           <MenuItem value="placeholder" disabled={true}>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
+  Access,
   AccessOptions,
   Corpus,
   FormMetadataValue,
@@ -122,7 +123,7 @@ export function CorpusForm(props: CorpusFormProps) {
           {renderTextField('rights')}
           {renderTextField('ethics')}
 
-          <ValidatedSelectField
+          <ValidatedSelectField<Access>
             label="Access"
             error={errors.access}
             selectedOption={form.access}

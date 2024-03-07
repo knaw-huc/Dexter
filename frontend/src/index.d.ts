@@ -5,10 +5,10 @@ declare module 'citation-js' {
     constructor(date: string);
 
     format(
-      type: 'bibliography',
+      type: 'bibliography' | 'citation',
       config: {
         format: 'html';
-        template: 'citation-apa';
+        template: string;
         lang: 'en-US';
       },
     ): string;

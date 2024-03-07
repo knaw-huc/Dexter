@@ -4,15 +4,21 @@ import { Spinner } from '../common/Spinner';
 import React, { useEffect, useState } from 'react';
 import { useDebounce } from '../../utils/useDebounce';
 import { formatCitation } from './formatCitation';
+import { InputAdornment, Tooltip } from '@mui/material';
+import { HelpIconStyled } from '../common/HelpIconStyled';
+import { CheckIconStyled } from '../common/CheckIconStyled';
+import { LeftRightGrid } from '../common/LeftRightGrid';
+import { ValidatedSelectField } from '../common/ValidatedSelectField';
+import { CitationStyle } from './CitationStyle';
 
 type CitationFieldProps = FormFieldprops;
-
 export function CitationField(props: CitationFieldProps) {
   const [citation, setCitation] = useState<string>();
   const [inputValue, setInputValue] = useState('');
   const debouncedInputValue = useDebounce(inputValue, 250);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error>();
+  const [citationStyle, setCitationStyle] = useState(CitationStyle.apa);
 
   useEffect(() => {
     setError(null);
@@ -27,37 +33,55 @@ export function CitationField(props: CitationFieldProps) {
       }
       setLoading(true);
       try {
-        const formatted = await formatCitation(inputValue);
+        const formatted = await formatCitation(inputValue, citationStyle);
         setCitation(formatted);
       } catch (e) {
         setError(e);
       }
       setLoading(false);
     }
-  }, [debouncedInputValue]);
+  }, [debouncedInputValue, citationStyle]);
 
   return (
     <>
       <TextFieldWithError
-        label={
-          props.label ||
-          'Enter citation (doi, bibtex or other format supported by citation.js)'
-        }
+        label={props.label || 'Citation'}
         onChange={setInputValue}
         value={inputValue}
         multiline={true}
         rows={countNewlines(inputValue)}
-        inputProps={{ wrap: 'off' }}
+        inputProps={{
+          wrap: 'off',
+        }}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <CitationToolTipHelp isManaged={!!citation} />
+            </InputAdornment>
+          ),
+        }}
         error={error || props.error}
       />
-      {citation && <p dangerouslySetInnerHTML={{ __html: citation }}></p>}
+      {citation && (
+        <LeftRightGrid
+          left={<p dangerouslySetInnerHTML={{ __html: citation }}></p>}
+          right={
+            <ValidatedSelectField<CitationStyle>
+              label=""
+              selectedOption={citationStyle}
+              onSelectOption={o => setCitationStyle(o)}
+              options={Object.values(CitationStyle)}
+            />
+          }
+        />
+      )}
 
       {loading && (
         <p>
           <span>
             <Spinner />
           </span>{' '}
-          Loading
+          Importing
         </p>
       )}
       <hr style={{ marginTop: '2em' }} />
@@ -65,10 +89,24 @@ export function CitationField(props: CitationFieldProps) {
   );
 }
 
+export function CitationToolTipHelp(props: { isManaged: boolean }) {
+  const title = props.isManaged
+    ? 'Current citation format is recognized and can be exported to the various citation styles supported by citation.js'
+    : 'Current citation style is not recognized. To export citations in various citation styles, please enter a doi, bibtex or one of the other citation.js supported input formats';
+  return (
+    <Tooltip title={title}>
+      {props.isManaged ? <CheckIconStyled /> : <HelpIconStyled />}
+    </Tooltip>
+  );
+}
+
 function countNewlines(content: string): number {
   if (!content) {
     return 1;
   }
-  // return /[\r\n]/.exec(pasted);
-  return content.match(/\n/g).length + 1;
+  const matches = content.match(/\n/g);
+  if (!matches) {
+    return 1;
+  }
+  return matches.length + 1;
 }

@@ -3,7 +3,7 @@ import { Label } from '../common/Label';
 import { TextFieldStyled } from './TextFieldStyled';
 import { Button, Tooltip } from '@mui/material';
 import { HelpIconStyled } from '../common/HelpIconStyled';
-import { InputButtonGrid } from '../common/InputButtonGrid';
+import { LeftRightGrid } from '../common/LeftRightGrid';
 import { TextFormFieldProps } from './TextFieldWithError';
 import { FieldError } from '../common/error/FieldError';
 import { FormFieldprops } from '../common/FormFieldProps';
@@ -34,8 +34,8 @@ export function ImportField(props: ImportFieldProps) {
         {label || 'External reference'}
       </Label>
 
-      <InputButtonGrid
-        input={
+      <LeftRightGrid
+        left={
           <TextFieldStyled
             {...textFieldProps}
             error={!!error}
@@ -44,7 +44,7 @@ export function ImportField(props: ImportFieldProps) {
             onChange={e => onChange(e.target.value || undefined)}
           />
         }
-        button={
+        right={
           <Button
             disabled={!isRefImportable || isImporting}
             fullWidth

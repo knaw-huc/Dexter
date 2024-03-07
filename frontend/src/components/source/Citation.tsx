@@ -4,6 +4,7 @@ import { Spinner } from '../common/Spinner';
 import { useThrowSync } from '../common/error/useThrowSync';
 import { formatCitation } from './formatCitation';
 import { CitationField } from './CitationField';
+import { CitationStyle } from './CitationStyle';
 
 type CitationExample = { format: string; content: string };
 type CitationExampleParsed = CitationExample & { formatted: string };
@@ -18,7 +19,7 @@ export function Citation() {
     Promise.all(
       citations.map(async c => ({
         ...c,
-        formatted: await formatCitation(c.content),
+        formatted: await formatCitation(c.content, CitationStyle.apa),
       })),
     )
       .then(result => {
