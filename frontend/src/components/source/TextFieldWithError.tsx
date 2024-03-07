@@ -15,6 +15,7 @@ export type TextFormFieldProps = TextareaFieldProps & {
   value: string | undefined;
   onChange: (change?: string) => void;
   onFocus?: () => void;
+  onBlur?: () => void;
   variant?: 'standard';
   sx?: SxProps<Theme>;
 
@@ -42,6 +43,7 @@ export function TextFieldWithError(props: TextFormFieldProps) {
         }}
         sx={props.sx}
         onFocus={props.onFocus}
+        onBlur={props.onBlur}
       />
     </>
   );

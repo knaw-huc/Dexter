@@ -5,6 +5,7 @@ import ResultMetadataValue
 import UnauthorizedException
 import io.dropwizard.auth.Auth
 import nl.knaw.huc.dexter.api.*
+import nl.knaw.huc.dexter.api.ResourcePaths.CITATIONS
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PARAM
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PATH
 import nl.knaw.huc.dexter.api.ResourcePaths.TAGS
@@ -147,6 +148,46 @@ class SourcesResource(private val jdbi: Jdbi) {
         log.info("deleteTag: sourceId=${src.id}, tagId=$tagId")
         dao.deleteTag(src.id, tagId)
         dao.getTags(src.id)
+    }
+    
+    @GET
+    @Path("$ID_PATH/$CITATIONS")
+    fun getCitations(
+        @PathParam(ID_PARAM) id: UUID, @Auth user: DexterUser
+    ) = onAccessibleSource(id, user.id) { dao, src ->
+        dao.getCitations(src.id)
+    }
+
+    @POST
+    @Consumes(TEXT_PLAIN)
+    @Path("$ID_PATH/$CITATIONS")
+    fun addCitation(
+        @PathParam(ID_PARAM) id: UUID, citationId: String, @Auth user: DexterUser
+    ): List<ResultCitation> = onAccessibleSource(id, user.id) { dao, src ->
+        log.info("addCitation: sourceId=${src.id}, citationId=$citationId")
+        dao.addCitation(src.id, citationId.toInt())
+        dao.getCitations(src.id)
+    }
+
+    @POST
+    @Consumes(APPLICATION_JSON)
+    @Path("$ID_PATH/$CITATIONS")
+    fun addCitations(
+        @PathParam(ID_PARAM) id: UUID, citationIds: List<Int>, @Auth user: DexterUser
+    ): List<ResultCitation> = onAccessibleSource(id, user.id) { dao, src ->
+        log.info("addCitations: sourceId=${src.id}, citations=$citationIds")
+        citationIds.forEach { citationId -> dao.addCitation(src.id, citationId) }
+        dao.getCitations(src.id)
+    }
+
+    @DELETE
+    @Path("$ID_PATH/$CITATIONS/{citationId}")
+    fun deleteCitation(
+        @PathParam(ID_PARAM) id: UUID, @PathParam("citationId") citationId: Int, @Auth user: DexterUser
+    ): List<ResultCitation> = onAccessibleSource(id, user.id) { dao, src ->
+        log.info("deleteCitation: sourceId=${src.id}, citationId=$citationId")
+        dao.deleteCitation(src.id, citationId)
+        dao.getCitations(src.id)
     }
 
     @GET

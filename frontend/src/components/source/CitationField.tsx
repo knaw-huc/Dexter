@@ -24,6 +24,7 @@ export function CitationField(props: CitationFieldProps) {
 
   useEffect(() => {
     setError(null);
+    setCitation(null);
   }, [inputValue]);
 
   useEffect(() => {
@@ -50,6 +51,7 @@ export function CitationField(props: CitationFieldProps) {
         label={props.label || 'Citation'}
         onChange={setInputValue}
         onFocus={() => setCollapsed(false)}
+        onBlur={() => setCollapsed(true)}
         value={inputValue}
         multiline={true}
         rows={isCollapsed ? 1 : countNewlines(inputValue)}
