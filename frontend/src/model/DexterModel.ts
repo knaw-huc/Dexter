@@ -95,6 +95,12 @@ export type FormTag = {
 
 export type ResultTag = FormTag & WithId;
 
+export type FormCitation = {
+  input: string;
+};
+
+export type ResultCitation = FormCitation & WithId;
+
 export enum Access {
   CLOSED = 'Closed',
   RESTRICTED = 'Restricted',

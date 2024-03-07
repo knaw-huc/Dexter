@@ -1,11 +1,13 @@
 import {
   Corpus,
+  FormCitation,
   FormCorpus,
   FormMedia,
   FormMetadataKey,
   FormMetadataValue,
   FormSource,
   FormTag,
+  ResultCitation,
   ResultImport,
   ResultLanguage,
   ResultMedia,
@@ -21,6 +23,7 @@ import { validateResponse } from './validateResponse';
 import _ from 'lodash';
 import {
   api,
+  citations,
   corpora,
   keys,
   media,
@@ -246,6 +249,49 @@ export const deleteTagFromSource = async (
   tagId: string,
 ): Promise<void> =>
   deleteValidated(`/${api}/${sources}/${sourceId}/${tags}/${tagId}`);
+
+/**
+ * Citations:
+ */
+
+export const getCitations = async () => getValidated(`/${api}/${citations}`);
+
+export const createCitation = async (
+  newCitation: FormCitation,
+): Promise<ResultCitation> =>
+  postValidated(`/${api}/${citations}`, newCitation);
+
+export const addCitationsToCorpus = async (
+  corpusId: string,
+  citationId: string[],
+): Promise<ResultCitation[]> =>
+  postValidated(`/${api}/${corpora}/${corpusId}/${citations}`, citationId);
+
+export const addCitationsToSource = async (
+  sourceId: string,
+  citationId: string[],
+): Promise<ResultCitation[]> =>
+  postValidated(`/${api}/${sources}/${sourceId}/${citations}`, citationId);
+
+export const deleteCitation = async (id: string): Promise<void> =>
+  deleteValidated(`/${api}/${citations}/${id}`);
+
+export const getCitationsAutocomplete = async (
+  input: string,
+): Promise<ResultCitation[]> =>
+  postValidated(`/${api}/${citations}/autocomplete`, input);
+
+export const deleteCitationFromCorpus = async (
+  corpusId: string,
+  citationId: string,
+): Promise<void> =>
+  deleteValidated(`/${api}/${corpora}/${corpusId}/${citations}/${citationId}`);
+
+export const deleteCitationFromSource = async (
+  sourceId: string,
+  citationId: string,
+): Promise<void> =>
+  deleteValidated(`/${api}/${sources}/${sourceId}/${citations}/${citationId}`);
 
 /**
  * Import:
