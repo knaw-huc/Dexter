@@ -45,8 +45,9 @@ export function CitationField(props: CitationFieldProps) {
         }
         onChange={setInputValue}
         value={inputValue}
-        multiline
-        rows={6}
+        multiline={true}
+        rows={countNewlines(inputValue)}
+        inputProps={{ wrap: 'off' }}
         error={error || props.error}
       />
       {citation && <p dangerouslySetInnerHTML={{ __html: citation }}></p>}
@@ -62,4 +63,12 @@ export function CitationField(props: CitationFieldProps) {
       <hr style={{ marginTop: '2em' }} />
     </>
   );
+}
+
+function countNewlines(content: string): number {
+  if (!content) {
+    return 1;
+  }
+  // return /[\r\n]/.exec(pasted);
+  return content.match(/\n/g).length + 1;
 }
