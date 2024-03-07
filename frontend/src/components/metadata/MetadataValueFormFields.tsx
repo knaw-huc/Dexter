@@ -2,7 +2,7 @@ import React, { ChangeEvent, useState } from 'react';
 import { FormMetadataValue, ResultMetadataKey } from '../../model/DexterModel';
 import { Button, FormControl, Select } from '@mui/material';
 import { Label } from '../common/Label';
-import { LeftRightGrid } from '../common/LeftRightGrid';
+import { SplitRow } from '../common/SplitRow';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import { DeleteIconStyled } from '../common/DeleteIconStyled';
@@ -66,7 +66,7 @@ export function MetadataValueFormFields(props: MetadataValueFormFieldsProps) {
       <FormControl fullWidth>
         <Label>{props.label || 'Metadata'}</Label>
         <FieldError error={props.error} />
-        <LeftRightGrid
+        <SplitRow
           left={
             <Select
               labelId="metadata-field-select-label"

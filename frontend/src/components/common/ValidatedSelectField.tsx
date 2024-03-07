@@ -18,8 +18,8 @@ export function ValidatedSelectField<T>(props: SelectFieldProps<T>) {
 
   return (
     <>
-      <FormControl fullWidth>
-        <Label>{label}</Label>
+      <FormControl fullWidth disabled={props.disabled}>
+        {label && <Label>{label}</Label>}
         <Select
           value={selectedOption || 'placeholder'}
           onChange={e => {

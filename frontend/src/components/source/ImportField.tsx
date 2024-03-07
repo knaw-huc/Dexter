@@ -3,7 +3,7 @@ import { Label } from '../common/Label';
 import { TextFieldStyled } from '../common/TextFieldStyled';
 import { Button, Tooltip } from '@mui/material';
 import { HelpIconStyled } from '../common/HelpIconStyled';
-import { LeftRightGrid } from '../common/LeftRightGrid';
+import { SplitRow } from '../common/SplitRow';
 import { TextFormFieldProps } from '../common/TextFieldWithError';
 import { FieldError } from '../common/error/FieldError';
 import { FormFieldprops } from '../common/FormFieldProps';
@@ -34,7 +34,7 @@ export function ImportField(props: ImportFieldProps) {
         {label || 'External reference'}
       </Label>
 
-      <LeftRightGrid
+      <SplitRow
         left={
           <TextFieldStyled
             {...textFieldProps}

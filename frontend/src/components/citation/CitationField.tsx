@@ -1,5 +1,4 @@
 import { FormFieldprops } from '../common/FormFieldProps';
-import { TextFieldWithError } from '../common/TextFieldWithError';
 import { Spinner } from '../common/Spinner';
 import React, { useEffect, useState } from 'react';
 import { useDebounce } from '../../utils/useDebounce';
@@ -7,9 +6,11 @@ import { formatCitation } from './formatCitation';
 import { InputAdornment, Tooltip } from '@mui/material';
 import { HelpIconStyled } from '../common/HelpIconStyled';
 import { CheckIconStyled } from '../common/CheckIconStyled';
-import { LeftRightGrid } from '../common/LeftRightGrid';
+import { SplitRow } from '../common/SplitRow';
 import { ValidatedSelectField } from '../common/ValidatedSelectField';
 import { CitationStyle } from './CitationStyle';
+import { TextFieldStyled } from '../common/TextFieldStyled';
+import { Label } from '../common/Label';
 
 type CitationFieldProps = FormFieldprops;
 
@@ -18,14 +19,12 @@ export function CitationField(props: CitationFieldProps) {
   const [inputValue, setInputValue] = useState('');
   const debouncedInputValue = useDebounce(inputValue, 250);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error>();
   const [citationStyle, setCitationStyle] = useState(CitationStyle.apa);
   const [isCollapsed, setCollapsed] = useState(true);
 
   useEffect(() => {
-    setError(null);
     setCitation(null);
-  }, [inputValue]);
+  }, [inputValue, citationStyle]);
 
   useEffect(() => {
     createCitation();
@@ -45,44 +44,45 @@ export function CitationField(props: CitationFieldProps) {
     }
   }, [debouncedInputValue, citationStyle]);
 
+  console.log('label?', props.label);
   return (
     <>
-      <TextFieldWithError
-        label={props.label || 'Citation'}
-        onChange={setInputValue}
-        onFocus={() => setCollapsed(false)}
-        onBlur={() => setCollapsed(true)}
-        value={inputValue}
-        multiline={true}
-        rows={isCollapsed ? 1 : countNewlines(inputValue)}
-        inputProps={{
-          wrap: 'off',
-        }}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <CitationToolTipHelp
-                isManaged={!!citation}
-                isEmpty={!inputValue}
-              />
-            </InputAdornment>
-          ),
-        }}
-        error={error || props.error}
+      <Label>{props.label || 'Citation'}</Label>
+      <SplitRow
+        left={
+          <TextFieldStyled
+            fullWidth
+            onChange={e => setInputValue(e.target.value)}
+            onFocus={() => setCollapsed(false)}
+            onBlur={() => setCollapsed(true)}
+            value={inputValue}
+            multiline={true}
+            rows={isCollapsed ? 1 : countNewlines(inputValue)}
+            inputProps={{
+              wrap: 'off',
+            }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <CitationToolTipHelp
+                    isManaged={!!citation}
+                    isEmpty={!inputValue}
+                  />
+                </InputAdornment>
+              ),
+            }}
+          />
+        }
+        right={
+          <ValidatedSelectField<CitationStyle>
+            disabled={!citation}
+            selectedOption={citationStyle}
+            onSelectOption={o => setCitationStyle(o)}
+            options={Object.values(CitationStyle)}
+          />
+        }
       />
-      {citation && (
-        <LeftRightGrid
-          left={<p dangerouslySetInnerHTML={{ __html: citation }}></p>}
-          right={
-            <ValidatedSelectField<CitationStyle>
-              label=""
-              selectedOption={citationStyle}
-              onSelectOption={o => setCitationStyle(o)}
-              options={Object.values(CitationStyle)}
-            />
-          }
-        />
-      )}
+      {citation && <p dangerouslySetInnerHTML={{ __html: citation }}></p>}
 
       {loading && (
         <p>

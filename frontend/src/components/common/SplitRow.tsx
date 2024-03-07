@@ -4,7 +4,7 @@ import { Grid } from '@mui/material';
 /**
  * Align button next to an input field
  */
-export function LeftRightGrid(props: {
+export function SplitRow(props: {
   left: ReactNode;
   right: ReactNode;
   leftWidth?: number;

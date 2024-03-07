@@ -6,8 +6,6 @@ import { TextareaFieldProps } from '../common/TextareaFieldProps';
 import { ErrorWithMessage } from '../common/error/ErrorWithMessage';
 import { SxProps } from '@mui/system';
 import { Theme } from '@mui/material/styles';
-import { InputBaseProps } from '@mui/material/InputBase';
-import { InputProps as StandardInputProps } from '@mui/material/Input/Input';
 
 export type TextFormFieldProps = TextareaFieldProps & {
   label: string;
@@ -18,10 +16,6 @@ export type TextFormFieldProps = TextareaFieldProps & {
   onBlur?: () => void;
   variant?: 'standard';
   sx?: SxProps<Theme>;
-
-  // Difference between inputProps and InputProps: https://stackoverflow.com/a/69872110/2938059
-  inputProps?: InputBaseProps['inputProps'];
-  InputProps?: Partial<StandardInputProps>;
 };
 
 /**
@@ -42,8 +36,6 @@ export function TextFieldWithError(props: TextFormFieldProps) {
           onChange(event.target.value || undefined);
         }}
         sx={props.sx}
-        onFocus={props.onFocus}
-        onBlur={props.onBlur}
       />
     </>
   );
