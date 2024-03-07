@@ -10,7 +10,7 @@ import ScrollableModal from '../common/ScrollableModal';
 import { SelectTagField } from '../tag/SelectTagField';
 import { LanguagesField } from '../language/LanguagesField';
 import { ValidatedSelectField } from '../common/ValidatedSelectField';
-import { TextFieldWithError } from './TextFieldWithError';
+import { TextFieldWithError } from '../common/TextFieldWithError';
 import { CloseInlineIcon } from '../common/CloseInlineIcon';
 import { SubmitButton } from '../common/SubmitButton';
 import { ImportField } from './ImportField';

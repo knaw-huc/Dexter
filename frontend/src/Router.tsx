@@ -10,7 +10,7 @@ import React from 'react';
 import { MediaIndex } from './components/media/MediaIndex';
 import { corpora, media, metadata, sources, tags } from './model/Resources';
 import { MediaPage } from './components/media/MediaPage';
-import { Citation } from './components/source/Citation';
+import { Citation } from './components/citation/Citation';
 
 export function Router() {
   return (

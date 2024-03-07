@@ -12,7 +12,7 @@ import { LanguagesField } from '../language/LanguagesField';
 import ScrollableModal from '../common/ScrollableModal';
 import { ValidatedSelectField } from '../common/ValidatedSelectField';
 import { SelectSourcesField } from './SelectSourcesField';
-import { TextFieldWithError } from '../source/TextFieldWithError';
+import { TextFieldWithError } from '../common/TextFieldWithError';
 import _ from 'lodash';
 import { CloseInlineIcon } from '../common/CloseInlineIcon';
 import { SubmitButton } from '../common/SubmitButton';

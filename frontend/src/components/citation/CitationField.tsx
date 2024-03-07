@@ -1,5 +1,5 @@
 import { FormFieldprops } from '../common/FormFieldProps';
-import { TextFieldWithError } from './TextFieldWithError';
+import { TextFieldWithError } from '../common/TextFieldWithError';
 import { Spinner } from '../common/Spinner';
 import React, { useEffect, useState } from 'react';
 import { useDebounce } from '../../utils/useDebounce';

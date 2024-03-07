@@ -16,7 +16,7 @@ import { validUrl } from '../../utils/validateFields';
 import { useFormErrors } from '../common/error/useFormErrors';
 import { FormErrorMessage } from '../common/error/FormError';
 import { FieldError } from '../common/error/FieldError';
-import { TextFieldWithError } from '../source/TextFieldWithError';
+import { TextFieldWithError } from '../common/TextFieldWithError';
 
 type MediaFormProps = {
   inEdit?: ResultMedia;

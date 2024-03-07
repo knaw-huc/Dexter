@@ -1,10 +1,10 @@
 import React from 'react';
 import { Label } from '../common/Label';
-import { TextFieldStyled } from './TextFieldStyled';
+import { TextFieldStyled } from '../common/TextFieldStyled';
 import { Button, Tooltip } from '@mui/material';
 import { HelpIconStyled } from '../common/HelpIconStyled';
 import { LeftRightGrid } from '../common/LeftRightGrid';
-import { TextFormFieldProps } from './TextFieldWithError';
+import { TextFormFieldProps } from '../common/TextFieldWithError';
 import { FieldError } from '../common/error/FieldError';
 import { FormFieldprops } from '../common/FormFieldProps';
 import { Spinner } from '../common/Spinner';
