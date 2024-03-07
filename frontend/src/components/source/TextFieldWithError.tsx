@@ -14,6 +14,7 @@ export type TextFormFieldProps = TextareaFieldProps & {
   error?: ErrorWithMessage;
   value: string | undefined;
   onChange: (change?: string) => void;
+  onFocus?: () => void;
   variant?: 'standard';
   sx?: SxProps<Theme>;
 
@@ -40,6 +41,7 @@ export function TextFieldWithError(props: TextFormFieldProps) {
           onChange(event.target.value || undefined);
         }}
         sx={props.sx}
+        onFocus={props.onFocus}
       />
     </>
   );

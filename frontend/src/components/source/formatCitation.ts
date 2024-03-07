@@ -6,6 +6,7 @@ export async function formatCitation(
   style: CitationStyle,
 ): Promise<string> {
   const cite = await Cite.async(data);
+  console.log('formatCitation', { cite });
   return cite.format('bibliography', {
     format: 'html',
     template: style,

@@ -12,6 +12,7 @@ import { ValidatedSelectField } from '../common/ValidatedSelectField';
 import { CitationStyle } from './CitationStyle';
 
 type CitationFieldProps = FormFieldprops;
+
 export function CitationField(props: CitationFieldProps) {
   const [citation, setCitation] = useState<string>();
   const [inputValue, setInputValue] = useState('');
@@ -19,15 +20,16 @@ export function CitationField(props: CitationFieldProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error>();
   const [citationStyle, setCitationStyle] = useState(CitationStyle.apa);
+  const [isCollapsed, setCollapsed] = useState(true);
 
   useEffect(() => {
     setError(null);
   }, [inputValue]);
 
   useEffect(() => {
-    convertInputIntoCitation();
+    createCitation();
 
-    async function convertInputIntoCitation() {
+    async function createCitation() {
       if (!debouncedInputValue) {
         return;
       }
@@ -36,7 +38,7 @@ export function CitationField(props: CitationFieldProps) {
         const formatted = await formatCitation(inputValue, citationStyle);
         setCitation(formatted);
       } catch (e) {
-        setError(e);
+        setCitation(null);
       }
       setLoading(false);
     }
@@ -47,16 +49,20 @@ export function CitationField(props: CitationFieldProps) {
       <TextFieldWithError
         label={props.label || 'Citation'}
         onChange={setInputValue}
+        onFocus={() => setCollapsed(false)}
         value={inputValue}
         multiline={true}
-        rows={countNewlines(inputValue)}
+        rows={isCollapsed ? 1 : countNewlines(inputValue)}
         inputProps={{
           wrap: 'off',
         }}
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
-              <CitationToolTipHelp isManaged={!!citation} />
+              <CitationToolTipHelp
+                isManaged={!!citation}
+                isEmpty={!inputValue}
+              />
             </InputAdornment>
           ),
         }}
@@ -89,10 +95,19 @@ export function CitationField(props: CitationFieldProps) {
   );
 }
 
-export function CitationToolTipHelp(props: { isManaged: boolean }) {
-  const title = props.isManaged
-    ? 'Current citation format is recognized and can be exported to the various citation styles supported by citation.js'
-    : 'Current citation style is not recognized. To export citations in various citation styles, please enter a doi, bibtex or one of the other citation.js supported input formats';
+export function CitationToolTipHelp(props: {
+  isManaged: boolean;
+  isEmpty: boolean;
+}) {
+  const notRecognized = 'Current citation style is not recognized.';
+  const explainFormat =
+    'To export citations in various citation styles, please enter a doi, bibtex or one of the other citation.js supported input formats';
+  const formatIsRecognized =
+    'Current citation format is recognized and can be exported to the various citation styles supported by citation.js';
+  const formatIsNotRecognized = props.isEmpty
+    ? explainFormat
+    : `${notRecognized} ${explainFormat}`;
+  const title = props.isManaged ? formatIsRecognized : formatIsNotRecognized;
   return (
     <Tooltip title={title}>
       {props.isManaged ? <CheckIconStyled /> : <HelpIconStyled />}
