@@ -25,8 +25,13 @@ export function useFormatCitation(
   const { onFormatted, onError } = params;
 
   async function format(toFormat: Citation, style: CitationStyle) {
+    if (!toFormat.input) {
+      onFormatted({ ...toFormat, formatted: '' });
+      return;
+    }
     const loading = { ...toFormat, isLoading: true, formatted: '' };
     onFormatted(loading);
+
     const formatted = { ...loading };
     try {
       formatted.formatted = await formatCitation(toFormat.input, style);

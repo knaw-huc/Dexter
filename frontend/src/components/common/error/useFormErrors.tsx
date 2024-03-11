@@ -47,23 +47,21 @@ export function useFormErrors<T>(): UseFormErrorsResult<T> {
 
   async function setFormError<T>(error: Error): Promise<void> {
     if (!error) {
-      return clearErrors();
-    }
-    if (isResponseError(error)) {
+      clearErrors();
+    } else if (isResponseError(error)) {
       const responseError = error.json;
       const constraints = _.entries(constraintToError);
       for (const [constraint, { field, error }] of constraints) {
         if (responseError.message.includes(constraint)) {
-          return setErrors(prev => _.set({ ...prev }, field as keyof T, error));
+          setErrors(prev => _.set({ ...prev }, field as keyof T, error));
+          return;
         }
       }
       if (responseError.message) {
-        return setErrors(f => ({ ...f, generic: responseError }));
+        setErrors(f => ({ ...f, generic: responseError }));
       }
     } else if (isValidationError(error)) {
-      return setErrors(prev =>
-        _.set({ ...prev }, error.path as keyof T, error),
-      );
+      setErrors(prev => _.set({ ...prev }, error.path as keyof T, error));
     } else {
       setErrors(prev => ({ ...prev, generic: error }));
     }
