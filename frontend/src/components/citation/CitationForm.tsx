@@ -16,12 +16,15 @@ import { onSubmit } from '../../utils/onSubmit';
 import { SubmitButton } from '../common/SubmitButton';
 import { CitationField } from './CitationField';
 import { useDebounce } from '../../utils/useDebounce';
-import { defaultCitationStyle } from './CitationStyle';
 import { useFormatCitation } from './useFormatCitation';
 import _ from 'lodash';
+import { CitationStyle } from './CitationStyle';
 
 const citationSchema = yup.object({
   input: yup.string().required('Citation input cannot be empty'),
+  formatted: yup
+    .string()
+    .required('Save after styled citation has been loaded'),
 });
 
 const defaults: SubmitFormCitation = {
@@ -34,6 +37,7 @@ type CitationFormProps = {
   toEdit?: Citation;
   onSaved: (update: ResultCitation) => void;
   onClose: () => void;
+  citationStyle: CitationStyle;
 };
 
 export function CitationForm(props: CitationFormProps) {
@@ -44,7 +48,6 @@ export function CitationForm(props: CitationFormProps) {
   });
   const debouncedInput = useDebounce(form.input);
   const { errors, setError } = useFormErrors<FormCitation>();
-  const [citationStyle, setCitationStyle] = useState(defaultCitationStyle);
   const { format } = useFormatCitation({
     onFormatted: setForm,
     onError: _.noop,
@@ -52,8 +55,8 @@ export function CitationForm(props: CitationFormProps) {
 
   useEffect(() => {
     console.log('useEffect', { debouncedInput });
-    format(form, citationStyle);
-  }, [debouncedInput, citationStyle]);
+    format(form, props.citationStyle);
+  }, [debouncedInput, props.citationStyle]);
 
   async function handleSubmit() {
     try {
@@ -75,8 +78,7 @@ export function CitationForm(props: CitationFormProps) {
           <CitationField
             toEdit={form}
             onChange={input => setForm(f => ({ ...f, input }))}
-            style={citationStyle}
-            onChangeStyle={setCitationStyle}
+            citationStyle={props.citationStyle}
           />
           <SubmitButton onClick={handleSubmit} />
         </form>

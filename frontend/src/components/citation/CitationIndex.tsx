@@ -17,6 +17,7 @@ export function CitationIndex() {
   const [citations, setCitations] = useState<Citation[]>();
   const [showForm, setShowForm] = useState(false);
   const [citationToEdit, setCitationToEdit] = useState<Citation>(null);
+  const citationStyle = defaultCitationStyle;
 
   const throwSync = useThrowSync();
 
@@ -44,7 +45,7 @@ export function CitationIndex() {
         setCitations(citations);
 
         for (const c of citations) {
-          format(c, defaultCitationStyle);
+          format(c, citationStyle);
         }
       } catch (e) {
         throwSync(e);
@@ -79,7 +80,7 @@ export function CitationIndex() {
     } else {
       setCitations(citations => [...citations, citation]);
     }
-    format(citation, defaultCitationStyle);
+    format(citation, citationStyle);
     setShowForm(false);
   }
 
@@ -113,6 +114,7 @@ export function CitationIndex() {
           toEdit={citationToEdit}
           onClose={handleCloseCitation}
           onSaved={handleSavedCitation}
+          citationStyle={citationStyle}
         />
       )}
       {citations && (
