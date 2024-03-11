@@ -10,7 +10,8 @@ assignees: ''
 
 **Describe the bug**
 
-Please describe your problem as clear and short as posible.
+Describe your problem as clear and short as posible. 
+When available, please also include the original error message.
 
 1. Go to '...'
 2. Click on '....'
