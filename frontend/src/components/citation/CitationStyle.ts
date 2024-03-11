@@ -3,3 +3,5 @@ export enum CitationStyle {
   vancouver = 'vancouver',
   hardvard1 = 'hardvard1',
 }
+
+export const defaultCitationStyle = CitationStyle.apa;

@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  FormattedCitation,
-  isFormatted,
-  ResultCitation,
-} from '../../model/DexterModel';
+import { Citation, ResultCitation } from '../../model/DexterModel';
 import { CitationListItem } from './CitationListItem';
 import { deleteCitation, getCitations } from '../../utils/API';
 import { AddNewResourceButton } from '../common/AddNewResourceButton';
@@ -13,44 +9,48 @@ import { CitationIcon } from './CitationIcon';
 import { useThrowSync } from '../common/error/useThrowSync';
 import { CitationForm } from './CitationForm';
 import ErrorBoundary from '../common/error/ErrorBoundary';
+import { defaultCitationStyle } from './CitationStyle';
+import { useFormatCitation } from './useFormatCitation';
 import _ from 'lodash';
-import { formatCitation } from './formatCitation';
-import { CitationStyle } from './CitationStyle';
 
 export function CitationIndex() {
-  const citationStyle = CitationStyle.apa;
-  const [citations, setCitations] =
-    useState<(ResultCitation | FormattedCitation)[]>();
+  const [citations, setCitations] = useState<Citation[]>();
   const [showForm, setShowForm] = useState(false);
-  const [citationToEdit, setCitationToEdit] = useState<ResultCitation>(null);
+  const [citationToEdit, setCitationToEdit] = useState<Citation>(null);
 
   const throwSync = useThrowSync();
 
-  useEffect(() => {
-    getCitations().then(setCitations).catch(throwSync);
-  }, []);
+  const { format } = useFormatCitation({
+    onFormatted: setCitation,
+    onError: _.noop,
+  });
+
+  function setCitation(citation: Citation) {
+    setCitations(citations =>
+      citations.map(c => (c.id === citation.id ? citation : c)),
+    );
+  }
 
   useEffect(() => {
-    formatCitations();
+    init();
+    async function init() {
+      try {
+        const unformatted = await getCitations();
+        const citations = unformatted.map(citation => ({
+          ...citation,
+          formatted: '',
+          isLoading: true,
+        }));
+        setCitations(citations);
 
-    async function formatCitations() {
-      if (_.isEmpty(citations)) {
-        return;
-      }
-      citations.forEach((c, i) => {
-        if (isFormatted(c)) {
-          return;
+        for (const c of citations) {
+          format(c, defaultCitationStyle);
         }
-        formatCitation(c.input, citationStyle).then(formatted => {
-          const update = { ...c, formatted };
-          setCitations(citations => {
-            citations[i] = update;
-            return citations;
-          });
-        });
-      });
+      } catch (e) {
+        throwSync(e);
+      }
     }
-  }, [citations]);
+  }, []);
 
   const handleDelete = async (citation: ResultCitation) => {
     const warning = window.confirm(
@@ -67,20 +67,19 @@ export function CitationIndex() {
     setCitations(citations => citations.filter(s => s.id !== citation.id));
   };
 
-  const handleEdit = (citation: ResultCitation) => {
+  const handleEdit = (citation: Citation) => {
     setCitationToEdit(citation);
     setShowForm(true);
   };
 
-  function handleSaveCitation(citation: ResultCitation) {
+  function handleSavedCitation(citation: Citation) {
     if (citationToEdit) {
-      setCitations(citations =>
-        citations.map(s => (s.id === citation.id ? citation : s)),
-      );
+      setCitation(citation);
       setCitationToEdit(null);
     } else {
       setCitations(citations => [...citations, citation]);
     }
+    format(citation, defaultCitationStyle);
     setShowForm(false);
   }
 
@@ -111,9 +110,9 @@ export function CitationIndex() {
       </div>
       {showForm && (
         <CitationForm
+          toEdit={citationToEdit}
           onClose={handleCloseCitation}
-          onSaved={handleSaveCitation}
-          inEdit={citationToEdit}
+          onSaved={handleSavedCitation}
         />
       )}
       {citations && (

@@ -4,7 +4,7 @@ import {
   AccessOptions,
   ResultMetadataKey,
   Source,
-  SourceFormSubmit,
+  SubmitFormSource,
 } from '../../model/DexterModel';
 import ScrollableModal from '../common/ScrollableModal';
 import { SelectTagField } from '../tag/SelectTagField';
@@ -36,7 +36,7 @@ type SourceFormProps = {
 export function SourceForm(props: SourceFormProps) {
   const sourceToEdit = props.sourceToEdit;
 
-  const [form, setForm] = useState<SourceFormSubmit>();
+  const [form, setForm] = useState<SubmitFormSource>();
   const { errors, setError, setFieldError } = useFormErrors<Source>();
   const [keys, setKeys] = useState<ResultMetadataKey[]>([]);
 
@@ -50,7 +50,7 @@ export function SourceForm(props: SourceFormProps) {
     setError,
     onSubmitted: props.onSaved,
   });
-  const { isImportLoading, loadImport } = useImportMetadata<SourceFormSubmit>({
+  const { isImportLoading, loadImport } = useImportMetadata<SubmitFormSource>({
     setError,
     setFieldError,
   });
@@ -66,7 +66,7 @@ export function SourceForm(props: SourceFormProps) {
   }
 
   function renderFormField(
-    fieldName: keyof SourceFormSubmit,
+    fieldName: keyof SubmitFormSource,
     props?: TextareaFieldProps,
   ) {
     return (

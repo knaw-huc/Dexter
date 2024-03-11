@@ -41,10 +41,7 @@ export type Corpus = Omit<ResultCorpus, 'parentId'> & {
   subcorpora: Corpus[];
 };
 
-/**
- * Source update
- */
-export type CorpusFormSubmit = Omit<Corpus, 'id'>;
+export type SubmitFormCorpus = Omit<Corpus, 'id'>;
 
 export type FormSource = {
   title: string;
@@ -81,11 +78,7 @@ export type Source = ResultSource & {
   corpora: ResultCorpus[];
 };
 
-/**
- * Source update:
- * - ID can be undefined
- */
-export type SourceFormSubmit = Omit<Source, 'id' | 'metadataValues'> & {
+export type SubmitFormSource = Omit<Source, 'id' | 'metadataValues'> & {
   metadataValues: FormMetadataValue[];
 };
 
@@ -100,14 +93,18 @@ export type FormCitation = {
 };
 
 export type ResultCitation = FormCitation & WithId;
-export type FormattedCitation = ResultCitation & {
+
+export type Citation = ResultCitation & {
+  isLoading: boolean;
   formatted: string;
 };
 
+export type SubmitFormCitation = Omit<Citation, 'id'>;
+
 export function isFormatted(
-  citation?: ResultCitation | FormattedCitation,
-): citation is FormattedCitation {
-  return !!(citation as FormattedCitation)?.formatted;
+  citation?: ResultCitation | Citation,
+): citation is Citation {
+  return !!(citation as Citation)?.formatted;
 }
 
 export enum Access {

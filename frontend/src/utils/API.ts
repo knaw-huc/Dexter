@@ -254,7 +254,8 @@ export const deleteTagFromSource = async (
  * Citations:
  */
 
-export const getCitations = async () => getValidated(`/${api}/${citations}`);
+export const getCitations = async (): Promise<ResultCitation[]> =>
+  getValidated(`/${api}/${citations}`);
 
 export const createCitation = async (
   newCitation: FormCitation,

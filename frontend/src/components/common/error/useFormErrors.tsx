@@ -8,7 +8,14 @@ import { isResponseError } from '../isResponseError';
 
 type UseFormErrorsResult<T> = {
   errors: FormErrors<T>;
-  setError: (error: Error) => Promise<void>;
+
+  /**
+   * Set error
+   * When passing null, errors will be cleared
+   * @param error
+   */
+  setError: (error: Error | null) => Promise<void>;
+
   setFieldError: (field: keyof T, error: ErrorWithMessage) => void;
   clearErrors: () => void;
 };
@@ -39,6 +46,9 @@ export function useFormErrors<T>(): UseFormErrorsResult<T> {
   useEffect(scrollToError, [errors]);
 
   async function setFormError<T>(error: Error): Promise<void> {
+    if (!error) {
+      return clearErrors();
+    }
     if (isResponseError(error)) {
       const responseError = error.json;
       const constraints = _.entries(constraintToError);

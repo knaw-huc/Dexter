@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  FormattedCitation,
+  Citation,
   FormCitation,
-  isFormatted,
   ResultCitation,
+  SubmitFormCitation,
 } from '../../model/DexterModel';
 import { createCitation } from '../../utils/API';
 import * as yup from 'yup';
@@ -15,30 +15,50 @@ import { CloseInlineIcon } from '../common/CloseInlineIcon';
 import { onSubmit } from '../../utils/onSubmit';
 import { SubmitButton } from '../common/SubmitButton';
 import { CitationField } from './CitationField';
-
-type CitationFormProps = {
-  inEdit?: FormattedCitation | ResultCitation;
-  onSaved: (edited: ResultCitation) => void;
-  onClose: () => void;
-};
+import { useDebounce } from '../../utils/useDebounce';
+import { defaultCitationStyle } from './CitationStyle';
+import { useFormatCitation } from './useFormatCitation';
+import _ from 'lodash';
 
 const citationSchema = yup.object({
   input: yup.string().required('Citation input cannot be empty'),
 });
 
+const defaults: SubmitFormCitation = {
+  input: '',
+  isLoading: false,
+  formatted: '',
+};
+
+type CitationFormProps = {
+  toEdit?: Citation;
+  onSaved: (update: ResultCitation) => void;
+  onClose: () => void;
+};
+
 export function CitationForm(props: CitationFormProps) {
-  const citation = props.inEdit;
-  const [form, setForm] = useState<FormCitation>({
-    input: citation?.input || '',
+  const toEdit = props.toEdit;
+
+  const [form, setForm] = useState<SubmitFormCitation>({
+    ...(toEdit || defaults),
   });
+  const debouncedInput = useDebounce(form.input);
   const { errors, setError } = useFormErrors<FormCitation>();
+  const [citationStyle, setCitationStyle] = useState(defaultCitationStyle);
+  const { format } = useFormatCitation({
+    onFormatted: setForm,
+    onError: _.noop,
+  });
+
+  useEffect(() => {
+    console.log('useEffect', { debouncedInput });
+    format(form, citationStyle);
+  }, [debouncedInput, citationStyle]);
 
   async function handleSubmit() {
     try {
       await citationSchema.validate(form);
-      const newCitation = await createCitation(form);
-      setForm(f => ({ ...f, input: '' }));
-      props.onSaved(newCitation);
+      props.onSaved(await createCitation(form));
     } catch (error) {
       await setError(error);
     }
@@ -49,13 +69,14 @@ export function CitationForm(props: CitationFormProps) {
       <ScrollableModal handleClose={props.onClose} fullHeight={false}>
         <CloseInlineIcon onClick={props.onClose} />
         <form onSubmit={onSubmit(handleSubmit)}>
-          <h1>{citation ? 'Edit citation' : 'Create new citation'}</h1>
+          <h1>{toEdit ? 'Edit citation' : 'Create new citation'}</h1>
           <FormErrorMessage error={errors.generic} />
           <FieldError error={errors.input} />
           <CitationField
-            input={form.input}
-            formatted={isFormatted(citation) ? citation.formatted : null}
+            toEdit={form}
             onChange={input => setForm(f => ({ ...f, input }))}
+            style={citationStyle}
+            onChangeStyle={setCitationStyle}
           />
           <SubmitButton onClick={handleSubmit} />
         </form>

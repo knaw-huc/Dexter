@@ -1,5 +1,5 @@
 import { grey } from '@mui/material/colors';
-import { FormattedCitation, ResultCitation } from '../../model/DexterModel';
+import { Citation, ResultCitation } from '../../model/DexterModel';
 import React, { useEffect, useState } from 'react';
 import { Avatar, ListItemAvatar, ListItemText } from '@mui/material';
 import { DeleteIconStyled } from '../common/DeleteIconStyled';
@@ -11,7 +11,7 @@ import { SpinnerIcon } from '../common/SpinnerIcon';
 import _ from 'lodash';
 
 type SourceListItemProps = {
-  citation: ResultCitation | FormattedCitation;
+  citation: Citation;
   onDelete: () => void;
   onEdit: () => void;
 };

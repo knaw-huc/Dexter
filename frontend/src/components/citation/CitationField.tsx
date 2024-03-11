@@ -1,8 +1,6 @@
 import { FormFieldprops } from '../common/FormFieldProps';
 import { SpinnerIcon } from '../common/SpinnerIcon';
-import React, { useEffect, useState } from 'react';
-import { useDebounce } from '../../utils/useDebounce';
-import { formatCitation } from './formatCitation';
+import React, { useState } from 'react';
 import { InputAdornment } from '@mui/material';
 import { SplitRow } from '../common/SplitRow';
 import { ValidatedSelectField } from '../common/ValidatedSelectField';
@@ -10,43 +8,22 @@ import { CitationStyle } from './CitationStyle';
 import { TextFieldStyled } from '../common/TextFieldStyled';
 import { Label } from '../common/Label';
 import { CitationToolTipHelp } from './CitationToolTipHelp';
+import { SubmitFormCitation } from '../../model/DexterModel';
 
 type CitationFieldProps = FormFieldprops & {
-  input: string;
-  formatted?: string;
+  toEdit: SubmitFormCitation;
   onChange: (input: string) => void;
+  style: CitationStyle;
+  onChangeStyle: (style: CitationStyle) => void;
 };
 
 export function CitationField(props: CitationFieldProps) {
-  const [inputValue, setInputValue] = useState(props.input);
-  const debouncedInputValue = useDebounce(inputValue, 250);
-  const [formatted, setFormatted] = useState<string>(props.formatted);
-  const [isLoading, setLoading] = useState(false);
-  const [citationStyle, setCitationStyle] = useState(CitationStyle.apa);
+  const toEdit = props.toEdit;
   const [isCollapsed, setCollapsed] = useState(true);
 
-  useEffect(() => {
-    setFormatted(props.formatted);
-  }, [inputValue, citationStyle]);
-
-  useEffect(() => {
-    createCitation();
-
-    async function createCitation() {
-      if (!debouncedInputValue) {
-        return;
-      }
-      setLoading(true);
-      try {
-        const formatted = await formatCitation(inputValue, citationStyle);
-        setFormatted(formatted);
-      } catch (e) {
-        setFormatted(null);
-      }
-      props.onChange(inputValue);
-      setLoading(false);
-    }
-  }, [debouncedInputValue, citationStyle]);
+  const formatted = toEdit?.formatted || '';
+  const isLoading = toEdit?.isLoading || false;
+  const inputValue = toEdit?.input || '';
 
   return (
     <>
@@ -55,7 +32,7 @@ export function CitationField(props: CitationFieldProps) {
         left={
           <TextFieldStyled
             fullWidth
-            onChange={e => setInputValue(e.target.value)}
+            onChange={e => props.onChange(e.target.value)}
             onFocus={() => setCollapsed(false)}
             value={inputValue}
             multiline={true}
@@ -79,8 +56,8 @@ export function CitationField(props: CitationFieldProps) {
         right={
           <ValidatedSelectField<CitationStyle>
             disabled={!formatted}
-            selectedOption={citationStyle}
-            onSelectOption={o => setCitationStyle(o)}
+            selectedOption={props.style}
+            onSelectOption={o => props.onChangeStyle(o)}
             options={Object.values(CitationStyle)}
           />
         }
