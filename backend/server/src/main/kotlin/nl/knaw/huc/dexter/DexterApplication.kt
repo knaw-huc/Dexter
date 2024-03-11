@@ -92,6 +92,7 @@ class DexterApplication : Application<DexterConfiguration>() {
             register(AuthValueFactoryProvider.Binder(DexterUser::class.java))
             register(AboutResource(configuration, name, appVersion))
             register(AdminResource(jdbi))
+            register(CitationsResource(jdbi))
             register(CorporaResource(jdbi))
             register(ImportResource(wereldCulturenDublinCoreMapper))
             register(LanguagesResource(jdbi))

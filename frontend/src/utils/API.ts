@@ -35,6 +35,7 @@ import {
   withResources,
 } from '../model/Resources';
 import { ErrorWithMessage } from '../components/common/error/ErrorWithMessage';
+import { Any } from '../components/common/Any';
 
 // Update methods:
 const POST = 'POST';
@@ -83,8 +84,7 @@ async function getValidated(path: string, params?: Record<string, string>) {
   return response.json();
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type BodyToStringify = string | any;
+type BodyToStringify = string | Any;
 
 const postValidated = (url: string, content?: BodyToStringify) =>
   fetchValidatedWith(url, POST, content);
@@ -292,6 +292,9 @@ export const deleteCitationFromSource = async (
   citationId: string,
 ): Promise<void> =>
   deleteValidated(`/${api}/${sources}/${sourceId}/${citations}/${citationId}`);
+
+export const getCitationById = async (id: string): Promise<ResultCitation> =>
+  getValidated(`/${api}/${citations}/${id}`);
 
 /**
  * Import:

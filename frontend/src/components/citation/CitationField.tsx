@@ -1,29 +1,32 @@
 import { FormFieldprops } from '../common/FormFieldProps';
-import { Spinner } from '../common/Spinner';
+import { SpinnerIcon } from '../common/SpinnerIcon';
 import React, { useEffect, useState } from 'react';
 import { useDebounce } from '../../utils/useDebounce';
 import { formatCitation } from './formatCitation';
-import { InputAdornment, Tooltip } from '@mui/material';
-import { HelpIconStyled } from '../common/HelpIconStyled';
-import { CheckIconStyled } from '../common/CheckIconStyled';
+import { InputAdornment } from '@mui/material';
 import { SplitRow } from '../common/SplitRow';
 import { ValidatedSelectField } from '../common/ValidatedSelectField';
 import { CitationStyle } from './CitationStyle';
 import { TextFieldStyled } from '../common/TextFieldStyled';
 import { Label } from '../common/Label';
+import { CitationToolTipHelp } from './CitationToolTipHelp';
 
-type CitationFieldProps = FormFieldprops;
+type CitationFieldProps = FormFieldprops & {
+  input: string;
+  formatted?: string;
+  onChange: (input: string) => void;
+};
 
 export function CitationField(props: CitationFieldProps) {
-  const [citation, setCitation] = useState<string>();
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState(props.input);
   const debouncedInputValue = useDebounce(inputValue, 250);
-  const [loading, setLoading] = useState(false);
+  const [formatted, setFormatted] = useState<string>(props.formatted);
+  const [isLoading, setLoading] = useState(false);
   const [citationStyle, setCitationStyle] = useState(CitationStyle.apa);
   const [isCollapsed, setCollapsed] = useState(true);
 
   useEffect(() => {
-    setCitation(null);
+    setFormatted(props.formatted);
   }, [inputValue, citationStyle]);
 
   useEffect(() => {
@@ -36,15 +39,15 @@ export function CitationField(props: CitationFieldProps) {
       setLoading(true);
       try {
         const formatted = await formatCitation(inputValue, citationStyle);
-        setCitation(formatted);
+        setFormatted(formatted);
       } catch (e) {
-        setCitation(null);
+        setFormatted(null);
       }
+      props.onChange(inputValue);
       setLoading(false);
     }
   }, [debouncedInputValue, citationStyle]);
 
-  console.log('label?', props.label);
   return (
     <>
       <Label>{props.label || 'Citation'}</Label>
@@ -54,7 +57,6 @@ export function CitationField(props: CitationFieldProps) {
             fullWidth
             onChange={e => setInputValue(e.target.value)}
             onFocus={() => setCollapsed(false)}
-            onBlur={() => setCollapsed(true)}
             value={inputValue}
             multiline={true}
             rows={isCollapsed ? 1 : countNewlines(inputValue)}
@@ -65,8 +67,9 @@ export function CitationField(props: CitationFieldProps) {
               endAdornment: (
                 <InputAdornment position="end">
                   <CitationToolTipHelp
-                    isManaged={!!citation}
+                    isManaged={!!formatted}
                     isEmpty={!inputValue}
+                    isLoading={isLoading}
                   />
                 </InputAdornment>
               ),
@@ -75,45 +78,24 @@ export function CitationField(props: CitationFieldProps) {
         }
         right={
           <ValidatedSelectField<CitationStyle>
-            disabled={!citation}
+            disabled={!formatted}
             selectedOption={citationStyle}
             onSelectOption={o => setCitationStyle(o)}
             options={Object.values(CitationStyle)}
           />
         }
       />
-      {citation && <p dangerouslySetInnerHTML={{ __html: citation }}></p>}
+      {formatted && <p dangerouslySetInnerHTML={{ __html: formatted }}></p>}
 
-      {loading && (
+      {isLoading && (
         <p>
           <span>
-            <Spinner />
+            <SpinnerIcon />
           </span>{' '}
           Importing
         </p>
       )}
-      <hr style={{ marginTop: '2em' }} />
     </>
-  );
-}
-
-export function CitationToolTipHelp(props: {
-  isManaged: boolean;
-  isEmpty: boolean;
-}) {
-  const notRecognized = 'Current citation style is not recognized.';
-  const explainFormat =
-    'To export citations in various citation styles, please enter a doi, bibtex or one of the other citation.js supported input formats';
-  const formatIsRecognized =
-    'Current citation format is recognized and can be exported to the various citation styles supported by citation.js';
-  const formatIsNotRecognized = props.isEmpty
-    ? explainFormat
-    : `${notRecognized} ${explainFormat}`;
-  const title = props.isManaged ? formatIsRecognized : formatIsNotRecognized;
-  return (
-    <Tooltip title={title}>
-      {props.isManaged ? <CheckIconStyled /> : <HelpIconStyled />}
-    </Tooltip>
   );
 }
 

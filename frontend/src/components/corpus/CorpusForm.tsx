@@ -24,6 +24,7 @@ import { onSubmit } from '../../utils/onSubmit';
 import { SelectCorpusField } from './SelectCorpusField';
 import { useFormErrors } from '../common/error/useFormErrors';
 import { FormErrorMessage } from '../common/error/FormError';
+import { Any } from '../common/Any';
 
 type CorpusFormProps = {
   /**
@@ -98,8 +99,7 @@ export function CorpusForm(props: CorpusFormProps) {
         onChange={value =>
           setForm(f => {
             const update = { ...f };
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (update as any)[fieldName] = value;
+            (update as Any)[fieldName] = value;
             return update;
           })
         }

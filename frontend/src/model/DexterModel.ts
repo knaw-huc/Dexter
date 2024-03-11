@@ -100,12 +100,22 @@ export type FormCitation = {
 };
 
 export type ResultCitation = FormCitation & WithId;
+export type FormattedCitation = ResultCitation & {
+  formatted: string;
+};
+
+export function isFormatted(
+  citation?: ResultCitation | FormattedCitation,
+): citation is FormattedCitation {
+  return !!(citation as FormattedCitation)?.formatted;
+}
 
 export enum Access {
   CLOSED = 'Closed',
   RESTRICTED = 'Restricted',
   OPEN = 'Open',
 }
+
 export const AccessOptions = ['Open', 'Restricted', 'Closed'];
 
 // Metadata
@@ -153,9 +163,11 @@ export function toMetadataValue(
 
 export type SupportedMediaType = 'image/jpeg' | 'image/png';
 export const supportedMediaTypes = ['image/jpeg', 'image/png'];
+
 export function isImage(mediaType: string): boolean {
   return mediaType.split('/')[0] === 'image';
 }
+
 export type SupportedMediaTypeType = 'image';
 
 export const image = 'image';

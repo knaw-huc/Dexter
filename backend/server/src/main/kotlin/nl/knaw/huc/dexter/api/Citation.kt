@@ -7,7 +7,7 @@ data class  FormCitation(
 )
 
 data class ResultCitation(
-    val id: Int,
+    val id: UUID,
     val input: String,
     val createdBy: UUID
 )

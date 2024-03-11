@@ -12,15 +12,15 @@ interface CitationsDao {
     fun listByUser(userId: UUID): List<ResultCitation>
 
     @SqlQuery("select * from citations where id = :id")
-    fun find(id: Int): ResultCitation?
+    fun find(id: UUID): ResultCitation?
 
-    @SqlQuery("insert into citations (val, created_by) values (:val, :userId) returning *")
+    @SqlQuery("insert into citations (input, created_by) values (:input, :userId) returning *")
     fun insert(@BindKotlin citation: FormCitation, userId: UUID): ResultCitation
 
-    @SqlQuery("update citations set val = :val where id = :id returning *")
-    fun update(id: Int, @BindKotlin citation: FormCitation): ResultCitation
+    @SqlQuery("update citations set input = :input where id = :id returning *")
+    fun update(id: UUID, @BindKotlin citation: FormCitation): ResultCitation
 
     @SqlUpdate("delete from citations where id = :id")
-    fun delete(id: Int)
+    fun delete(id: UUID)
 
 }

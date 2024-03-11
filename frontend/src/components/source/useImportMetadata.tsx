@@ -3,6 +3,7 @@ import isUrl from '../../utils/isUrl';
 import { ResultImport, Source } from '../../model/DexterModel';
 import { postImport } from '../../utils/API';
 import { ErrorWithMessage } from '../common/error/ErrorWithMessage';
+import { Any } from '../common/Any';
 
 type WithExternalRef = {
   externalRef?: string;
@@ -59,8 +60,7 @@ export function useImportMetadata<T extends WithExternalRef>(
 
     const update: T = { ...form };
     Object.keys(tmsImport.imported).forEach((key: keyof Source) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (update as any)[key] = tmsImport.imported[key];
+      (update as Any)[key] = tmsImport.imported[key];
     });
 
     setImportLoading(false);

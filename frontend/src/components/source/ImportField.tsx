@@ -2,12 +2,12 @@ import React from 'react';
 import { Label } from '../common/Label';
 import { TextFieldStyled } from '../common/TextFieldStyled';
 import { Button, Tooltip } from '@mui/material';
-import { HelpIconStyled } from '../common/HelpIconStyled';
+import { HelpIcon } from '../common/HelpIcon';
 import { SplitRow } from '../common/SplitRow';
 import { TextFormFieldProps } from '../common/TextFieldWithError';
 import { FieldError } from '../common/error/FieldError';
 import { FormFieldprops } from '../common/FormFieldProps';
-import { Spinner } from '../common/Spinner';
+import { SpinnerIcon } from '../common/SpinnerIcon';
 
 type ImportFieldProps = FormFieldprops &
   Omit<TextFormFieldProps, 'label'> & {
@@ -52,7 +52,7 @@ export function ImportField(props: ImportFieldProps) {
             onClick={onImport}
           >
             Import
-            {isImporting ? <Spinner /> : <ImportToolTipHelp />}
+            {isImporting ? <SpinnerIcon /> : <ImportToolTipHelp />}
           </Button>
         }
       />
@@ -64,7 +64,7 @@ export function ImportField(props: ImportFieldProps) {
 function ImportToolTipHelp() {
   return (
     <Tooltip title="Import and fill out found form fields with metadata from external reference">
-      <HelpIconStyled />
+      <HelpIcon />
     </Tooltip>
   );
 }

@@ -4,7 +4,7 @@ import React from 'react';
 /**
  * Show as inline-block to prevent wobbling of spinner icon
  */
-export function Spinner() {
+export function SpinnerIcon() {
   return (
     <span style={{ display: 'inline-block' }}>
       <CircularProgress

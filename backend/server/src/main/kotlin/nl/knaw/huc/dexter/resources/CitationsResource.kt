@@ -34,7 +34,7 @@ class CitationsResource(private val jdbi: Jdbi) {
     @GET
     @Path(ID_PATH)
     fun getCitation(
-        @PathParam(ID_PARAM) citationId: Int,
+        @PathParam(ID_PARAM) citationId: UUID,
         @Auth user: DexterUser
     ) = onAccessibleCitation(citationId, user.id) { _, t -> t }
 
@@ -52,7 +52,7 @@ class CitationsResource(private val jdbi: Jdbi) {
     @PUT
     @Path(ID_PATH)
     fun updateCitation(
-        @PathParam(ID_PARAM) id: Int,
+        @PathParam(ID_PARAM) id: UUID,
         formCitation: FormCitation,
         @Auth user: DexterUser
     ): ResultCitation =
@@ -65,7 +65,7 @@ class CitationsResource(private val jdbi: Jdbi) {
     @DELETE
     @Path(ID_PATH)
     fun deleteCitation(
-        @PathParam(ID_PARAM) id: Int,
+        @PathParam(ID_PARAM) id: UUID,
         @Auth user: DexterUser
     ): Response =
         onAccessibleCitation(id, user.id) { dao, t ->
@@ -75,7 +75,7 @@ class CitationsResource(private val jdbi: Jdbi) {
         }
 
     private fun <R> onAccessibleCitation(
-        citationId: Int,
+        citationId: UUID,
         userId: UUID,
         block: DaoBlock<CitationsDao, ResultCitation, R>
     ): R =
@@ -92,5 +92,5 @@ class CitationsResource(private val jdbi: Jdbi) {
 
     private fun citations() = jdbi.onDemand(CitationsDao::class.java)
 
-    private fun citationNotFound(citationId: Int): Nothing = throw NotFoundException("Citation not found: $citationId")
+    private fun citationNotFound(citationId: UUID): Nothing = throw NotFoundException("Citation not found: $citationId")
 }

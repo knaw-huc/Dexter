@@ -24,6 +24,7 @@ import { onSubmit } from '../../utils/onSubmit';
 import { SelectMediaField } from '../media/SelectMediaField';
 import { useFormErrors } from '../common/error/useFormErrors';
 import { FormErrorMessage } from '../common/error/FormError';
+import { Any } from '../common/Any';
 
 type SourceFormProps = {
   sourceToEdit?: Source;
@@ -76,8 +77,7 @@ export function SourceForm(props: SourceFormProps) {
         onChange={v =>
           setForm(f => {
             const update = { ...f };
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (update as any)[fieldName] = v;
+            (update as Any)[fieldName] = v;
             return update;
           })
         }
