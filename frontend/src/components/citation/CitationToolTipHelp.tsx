@@ -11,20 +11,26 @@ type CitationToolTipHelpProps = {
   isLoading: boolean;
 };
 
+const helpInputEmpty =
+  'To export citations in various citation styles, please enter a doi, bibtex or one of the other input formats supported by citation.js';
+const helpInputNotRecognized = `Current citation format is not recognized. ${helpInputEmpty}`;
+const helpInputRecognized =
+  'Current citation format is recognized and can be exported to the various citation styles supported by citation.js';
+
 export function CitationToolTipHelp(props: CitationToolTipHelpProps) {
-  const notRecognized = 'Current citation format is not recognized.';
-  const explainFormat =
-    'To export citations in various citation styles, please enter a doi, bibtex or one of the other input formats supported by citation.js';
-  const formatIsRecognized =
-    'Current citation format is recognized and can be exported to the various citation styles supported by citation.js';
-  const formatIsNotRecognized =
-    props.isEmpty || props.isLoading
-      ? explainFormat
-      : `${notRecognized} ${explainFormat}`;
-  const title = props.isManaged ? formatIsRecognized : formatIsNotRecognized;
+  let help: string;
+  if (props.isEmpty) {
+    help = helpInputEmpty;
+  } else if (props.isLoading) {
+    help = helpInputEmpty;
+  } else if (props.isManaged) {
+    help = helpInputRecognized;
+  } else {
+    help = helpInputNotRecognized;
+  }
   return (
     <span>
-      <Tooltip title={title}>
+      <Tooltip title={help}>
         {props.isLoading ? (
           <>
             <SpinnerIcon />
