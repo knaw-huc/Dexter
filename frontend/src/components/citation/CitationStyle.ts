@@ -1,7 +1,8 @@
 export enum CitationStyle {
   apa = 'apa',
   vancouver = 'vancouver',
-  hardvard1 = 'hardvard1',
+  harvard1 = 'harvard1',
+  chicago = 'chicago',
 }
 
 export const defaultCitationStyle = CitationStyle.apa;
