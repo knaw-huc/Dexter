@@ -90,6 +90,7 @@ export type ResultTag = FormTag & WithId;
 
 export type FormCitation = {
   input: string;
+  terms: string;
 };
 
 export type ResultCitation = FormCitation & WithId;

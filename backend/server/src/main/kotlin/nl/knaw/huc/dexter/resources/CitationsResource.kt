@@ -8,6 +8,7 @@ import nl.knaw.huc.dexter.api.ResourcePaths.AUTOCOMPLETE
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PARAM
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PATH
 import nl.knaw.huc.dexter.api.ResultCitation
+import nl.knaw.huc.dexter.api.ResultTag
 import nl.knaw.huc.dexter.auth.DexterUser
 import nl.knaw.huc.dexter.auth.RoleNames
 import nl.knaw.huc.dexter.db.DaoBlock
@@ -27,6 +28,7 @@ import javax.ws.rs.core.Response
 @Produces(APPLICATION_JSON)
 class CitationsResource(private val jdbi: Jdbi) {
     private val log = LoggerFactory.getLogger(javaClass)
+    private val onlyLowercaseAndNumbers = Regex("[a-z0-9 ]*")
 
     @GET
     fun list(@Auth user: DexterUser) = citations().listByUser(user.id)
@@ -61,7 +63,6 @@ class CitationsResource(private val jdbi: Jdbi) {
             dao.update(t.id, formCitation)
         }
 
-
     @DELETE
     @Path(ID_PATH)
     fun deleteCitation(
@@ -73,6 +74,24 @@ class CitationsResource(private val jdbi: Jdbi) {
             dao.delete(t.id)
             Response.noContent().build()
         }
+
+    @POST
+    @Path(AUTOCOMPLETE)
+    fun getCitationsLike(
+        terms: String,
+        @Auth user: DexterUser
+    ): List<ResultCitation> {
+        if(terms.isEmpty()) {
+            throw BadRequestException("terms length MUST be > 0 (but was ${terms.length}: '$terms')")
+        }
+        if(!onlyLowercaseAndNumbers.matches(terms)) {
+            throw BadRequestException("No special characters or punctuation allowed")
+        }
+        val termsToMatch = terms.split(" ").map { t -> "%$t%" }
+        println("terms: $terms; termsToMatch: $termsToMatch")
+        return citations().like(termsToMatch, user.id)
+    }
+
 
     private fun <R> onAccessibleCitation(
         citationId: UUID,

@@ -10,14 +10,14 @@ declare module 'citation-js' {
 
     constructor(date: string);
 
-    format(
-      type: 'bibliography' | 'citation' | 'bibtex',
+    format: (
+      type: 'bibliography' | 'citation' | 'bibtex' | 'data',
       config?: {
         format: 'html' | 'object';
-        template: 'apa' | 'vancouver' | 'harvard1' | 'chicago';
-        lang: 'en-US';
+        template?: 'apa' | 'vancouver' | 'harvard1' | 'chicago';
+        lang?: 'en-US';
       },
-    ): string;
+    ) => string | import('./components/citation/CslJson').CslJson;
 
     static plugins: {
       config: {

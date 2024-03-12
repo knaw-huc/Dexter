@@ -14,7 +14,7 @@ export async function formatCitation(
     format: 'html',
     template: style,
     lang: 'en-US',
-  });
+  }) as string;
 }
 
 /**
@@ -22,9 +22,6 @@ export async function formatCitation(
  */
 function initCitationStyle(styleName: string, zoteroStyleName: string) {
   const styleConfig = Cite.plugins.config.get('@csl');
-
-  const styleData = Cite.util.fetchFile(
-    'https://zotero.org/styles/' + zoteroStyleName,
-  );
+  const styleData = Cite.util.fetchFile('/assets/' + zoteroStyleName);
   styleConfig.templates.add(styleName, styleData);
 }

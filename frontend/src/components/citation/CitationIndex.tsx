@@ -10,7 +10,7 @@ import { useThrowSync } from '../common/error/useThrowSync';
 import { CitationForm } from './CitationForm';
 import ErrorBoundary from '../common/error/ErrorBoundary';
 import { defaultCitationStyle } from './CitationStyle';
-import { useFormatCitation } from './useFormatCitation';
+import { useLoadCitation } from './useLoadCitation';
 import _ from 'lodash';
 
 export function CitationIndex() {
@@ -21,8 +21,8 @@ export function CitationIndex() {
 
   const throwSync = useThrowSync();
 
-  const { format } = useFormatCitation({
-    onFormatted: setCitation,
+  const { load } = useLoadCitation({
+    onLoaded: setCitation,
     onError: _.noop,
   });
 
@@ -45,7 +45,7 @@ export function CitationIndex() {
         setCitations(citations);
 
         for (const c of citations) {
-          format(c, citationStyle);
+          load(c, citationStyle);
         }
       } catch (e) {
         throwSync(e);
@@ -80,7 +80,7 @@ export function CitationIndex() {
     } else {
       setCitations(citations => [...citations, citation]);
     }
-    format(citation, citationStyle);
+    load(citation, citationStyle);
     setShowForm(false);
   }
 

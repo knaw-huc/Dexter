@@ -11,6 +11,7 @@ import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import `in`.vectorpro.dropwizard.swagger.SwaggerBundle
 import `in`.vectorpro.dropwizard.swagger.SwaggerBundleConfiguration
 import io.dropwizard.Application
+import io.dropwizard.assets.AssetsBundle
 import io.dropwizard.auth.AuthDynamicFeature
 import io.dropwizard.auth.AuthValueFactoryProvider
 import io.dropwizard.auth.basic.BasicCredentialAuthFilter
@@ -41,6 +42,7 @@ import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.util.*
 
+
 class DexterApplication : Application<DexterConfiguration>() {
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -52,6 +54,7 @@ class DexterApplication : Application<DexterConfiguration>() {
         )
         bootstrap.addBundle(getSwaggerBundle())
         bootstrap.addBundle(JdbiExceptionsBundle())
+        bootstrap.addBundle(AssetsBundle("/assets/", "/assets"))
     }
 
     private fun getSwaggerBundle() = object : SwaggerBundle<DexterConfiguration>() {
