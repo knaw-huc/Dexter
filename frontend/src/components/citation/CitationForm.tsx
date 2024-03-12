@@ -16,8 +16,7 @@ import { onSubmit } from '../../utils/onSubmit';
 import { SubmitButton } from '../common/SubmitButton';
 import { CitationField } from './CitationField';
 import { useDebounce } from '../../utils/useDebounce';
-import { useLoadCitation } from './useLoadCitation';
-import _ from 'lodash';
+import { useFormattedCitation } from './useFormattedCitation';
 import { CitationStyle } from './CitationStyle';
 
 const citationSchema = yup.object({
@@ -32,23 +31,22 @@ const defaults: SubmitFormCitation = {
 };
 
 type CitationFormProps = {
-  toEdit?: Citation;
+  inEdit?: Citation;
   onSaved: (update: ResultCitation) => void;
   onClose: () => void;
   citationStyle: CitationStyle;
 };
 
 export function CitationForm(props: CitationFormProps) {
-  const toEdit = props.toEdit;
+  const toEdit = props.inEdit;
 
   const [form, setForm] = useState<SubmitFormCitation>({
     ...(toEdit || defaults),
   });
   const debouncedInput = useDebounce(form.input);
   const { errors, setError } = useFormErrors<FormCitation>();
-  const { load } = useLoadCitation({
-    onLoaded: setForm,
-    onError: _.noop,
+  const { load } = useFormattedCitation({
+    setCitation: setForm,
   });
 
   useEffect(() => {

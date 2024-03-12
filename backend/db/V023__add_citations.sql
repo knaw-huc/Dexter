@@ -7,16 +7,16 @@ create table citations
 );
 create index on citations(terms);
 
-create table citations_sources
+create table sources_citations
 (
-    citations_id uuid references metadata_values (id) on delete cascade,
+    citation_id uuid references metadata_values (id) on delete cascade,
     source_id uuid references sources (id)
 );
-create index on citations_sources(citations_id, source_id);
+create index on sources_citations(citation_id, source_id);
 
-create table citations_corpora
+create table corpora_citations
 (
-    citations_id uuid references metadata_values (id) on delete cascade,
-    corpora_id uuid references corpora (id)
+    citation_id uuid references metadata_values (id) on delete cascade,
+    corpus_id uuid references corpora (id)
 );
-create index on citations_corpora(citations_id, corpora_id);
+create index on corpora_citations(citation_id, corpus_id);

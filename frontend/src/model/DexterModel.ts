@@ -71,11 +71,12 @@ export type ResultSource = FormSource &
  * Source including all child resources
  */
 export type Source = ResultSource & {
-  tags: ResultTag[];
-  languages: ResultLanguage[];
-  metadataValues: MetadataValue[];
-  media: ResultMedia[];
+  citations: ResultCitation[];
   corpora: ResultCorpus[];
+  languages: ResultLanguage[];
+  media: ResultMedia[];
+  metadataValues: MetadataValue[];
+  tags: ResultTag[];
 };
 
 export type SubmitFormSource = Omit<Source, 'id' | 'metadataValues'> & {

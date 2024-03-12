@@ -10,26 +10,23 @@ import { useThrowSync } from '../common/error/useThrowSync';
 import { CitationForm } from './CitationForm';
 import ErrorBoundary from '../common/error/ErrorBoundary';
 import { defaultCitationStyle } from './CitationStyle';
-import { useLoadCitation } from './useLoadCitation';
-import _ from 'lodash';
+import { useFormattedCitation } from './useFormattedCitation';
+import { upsert } from '../../utils/upsert';
 
 export function CitationIndex() {
-  const [citations, setCitations] = useState<Citation[]>();
+  const [citations, setCitations] = useState<Citation[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [citationToEdit, setCitationToEdit] = useState<Citation>(null);
   const citationStyle = defaultCitationStyle;
 
   const throwSync = useThrowSync();
 
-  const { load } = useLoadCitation({
-    onLoaded: setCitation,
-    onError: _.noop,
+  const { load } = useFormattedCitation({
+    setCitation: setCitation,
   });
 
   function setCitation(citation: Citation) {
-    setCitations(citations =>
-      citations.map(c => (c.id === citation.id ? citation : c)),
-    );
+    setCitations(prev => upsert(prev, citation, c => c.id === citation.id));
   }
 
   useEffect(() => {
@@ -37,14 +34,7 @@ export function CitationIndex() {
     async function init() {
       try {
         const unformatted = await getCitations();
-        const citations = unformatted.map(citation => ({
-          ...citation,
-          formatted: '',
-          isLoading: true,
-        }));
-        setCitations(citations);
-
-        for (const c of citations) {
+        for (const c of unformatted) {
           load(c, citationStyle);
         }
       } catch (e) {
@@ -111,7 +101,7 @@ export function CitationIndex() {
       </div>
       {showForm && (
         <CitationForm
-          toEdit={citationToEdit}
+          inEdit={citationToEdit}
           onClose={handleCloseCitation}
           onSaved={handleSavedCitation}
           citationStyle={citationStyle}

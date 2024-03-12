@@ -9,10 +9,10 @@ import { ResultMedia } from '../../model/DexterModel';
 
 type SourceMediaProps = {
   media: ResultMedia[];
-  onAddNew: () => void;
-  onAddExisting: () => void;
+  onClickAddNew: () => void;
+  onClickAddExisting: () => void;
   onUnlink: (media: ResultMedia) => void;
-  onEdit: (media: ResultMedia) => void;
+  onClickEdit: (media: ResultMedia) => void;
 };
 
 export function SourceMedia(props: SourceMediaProps) {
@@ -24,10 +24,13 @@ export function SourceMedia(props: SourceMediaProps) {
       </H2Styled>
       <Grid container spacing={2}>
         <Grid item xs={6} md={4}>
-          <AddNewResourceButton title="New media" onClick={props.onAddNew} />
+          <AddNewResourceButton
+            title="New media"
+            onClick={props.onClickAddNew}
+          />
           <SelectExistingResourceButton
             title="Existing media"
-            onClick={props.onAddExisting}
+            onClick={props.onClickAddExisting}
           />
         </Grid>
         <Grid item xs={6} md={8}></Grid>
@@ -38,7 +41,7 @@ export function SourceMedia(props: SourceMediaProps) {
             <MediaPreview
               media={media}
               onDelete={() => props.onUnlink(media)}
-              onEdit={() => props.onEdit(media)}
+              onEdit={() => props.onClickEdit(media)}
             />
           </Grid>
         ))}

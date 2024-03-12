@@ -1,4 +1,4 @@
-import { Citation, SubmitFormCitation } from '../../model/DexterModel';
+import { Citation, ResultCitation } from '../../model/DexterModel';
 import { formatCitation } from './formatCitation';
 import { CitationStyle } from './CitationStyle';
 import { ErrorWithMessage } from '../common/error/ErrorWithMessage';
@@ -8,44 +8,52 @@ type Params = {
   /**
    * Update citation with new formatted citation
    */
-  onLoaded: (unformatted: Citation) => void;
+  setCitation: (formatted: Citation) => void;
 
   /**
    * Error status of last formatting
    */
-  onError: (e: ErrorWithMessage | null) => void;
+  onError?: (e: ErrorWithMessage | null) => void;
 };
 
 type Result = {
-  load: (toFormat: SubmitFormCitation, style: CitationStyle) => void;
+  load: (toFormat: Omit<ResultCitation, 'id'>, style: CitationStyle) => void;
 };
 
 /**
  * Generate formatted citation and search terms
  */
-export function useLoadCitation(params: Params): Result {
-  const { onLoaded, onError } = params;
+export function useFormattedCitation(params: Params): Result {
+  const { setCitation, onError } = params;
+
+  function handleError(e: Error) {
+    if (onError) {
+      onError(e);
+    } else {
+      console.debug(`Could not format citation: ${e.message}`);
+    }
+  }
 
   async function load(toLoad: Citation, style: CitationStyle) {
     if (!toLoad.input) {
-      onLoaded({ ...toLoad, formatted: '' });
+      setCitation({ ...toLoad, isLoading: false, formatted: '' });
       return;
     }
     const loading = { ...toLoad, isLoading: true, formatted: '' };
-    onLoaded(loading);
+    setCitation(loading);
 
     const formatted = { ...loading };
     try {
       formatted.formatted = await formatCitation(toLoad.input, style);
       formatted.terms = await createTerms(toLoad.input);
-      onError(null);
+      handleError(null);
     } catch (e) {
       formatted.formatted = '';
       formatted.terms = '';
-      onError(new Error('Could not format citation input', e));
+      handleError(new Error(`Could not format citation input: ${e.message}`));
     }
     formatted.isLoading = false;
-    onLoaded(formatted);
+    setCitation(formatted);
   }
 
   return { load };

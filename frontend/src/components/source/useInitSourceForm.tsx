@@ -27,11 +27,13 @@ const defaults: Source = {
   earliest: undefined,
   latest: undefined,
   notes: undefined,
-  tags: [],
-  languages: [],
-  metadataValues: [],
-  media: [],
+
+  citations: [],
   corpora: [],
+  languages: [],
+  media: [],
+  metadataValues: [],
+  tags: [],
 
   // Not created or modified by form:
   id: undefined,
