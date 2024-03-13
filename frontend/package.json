@@ -11,7 +11,8 @@
     "docker:push": "./docker-push.sh",
     "docker:all": "./docker-all.sh",
     "prepare": "cd .. && husky install frontend/.husky",
-    "test": "npx jest"
+    "test": "npx jest",
+    "test-verbose": "npm test --  --verbose=false"
   },
   "license": "GPL-3.0-or-later",
   "engines": {

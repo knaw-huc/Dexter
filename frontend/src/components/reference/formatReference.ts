@@ -19,6 +19,19 @@ export async function formatReference(
   }) as string;
 }
 
+export function formatReferenceSync(
+  citationJsData: string,
+  style: ReferenceStyle,
+  format: ReferenceFormat = ReferenceFormat.bibliography,
+): string {
+  const cite = new Cite(citationJsData);
+  return cite.format(format, {
+    format: 'html',
+    template: style,
+    lang: 'en-US',
+  }) as string;
+}
+
 /**
  * Source: https://github.com/larsgw/reference.js/issues/204#issuecomment-699048488
  */
