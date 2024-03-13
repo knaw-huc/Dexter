@@ -12,7 +12,6 @@ export async function formatReferenceAsync(
   type: ReferenceType = ReferenceType.bibliography,
   format: ReferenceFormat = ReferenceFormat.html,
 ): Promise<string> {
-  // TODO: remove init:
   await init;
   const cite = await Cite.async(citationJsData);
   return cite.format(type, {

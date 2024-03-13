@@ -99,9 +99,7 @@ export type ResultReference = FormReference & WithId;
 
 export type Reference = ResultReference;
 
-export type SubmitFormReference = Omit<Reference, 'id'> & {
-  isLoading: boolean;
-};
+export type SubmitFormReference = FormReference;
 
 export enum Access {
   CLOSED = 'Closed',

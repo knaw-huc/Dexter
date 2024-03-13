@@ -16,34 +16,22 @@ type ReferenceFieldProps = FormFieldprops & {
   toEdit: SubmitFormReference;
   onChange: (input: string) => void;
   referenceStyle: ReferenceStyle;
+  isLoading: boolean;
 };
 
 /**
- * TODO: Hoe moet het citeren eruit zien?
- *  v1:
- *  - altijd default style gebruiken
- *  - toevoegen nieuwe reference: sla ook op reference.formatted, in default style
- *  - als reference al bestaat: geen foutmelding, maar info met disabled submit knop
- *  - sources page:
- *    - 'add new' > reference form
- *      - create new resource and link to source
- *    - 'add existing' > autocomplete
- *      - search full text in reference.formatted
- *      - display as options
- *      - select and link to source
- *  v2:
- *  - store styling in user config
- *  - add restyle component on index page
- *    - it updates all references
- *    - it shows progress indicator
- *
+ *  TODO: v2:
+ *   - create user config
+ *   - use styling stored in user config
+ *   - add style selector on index page that modifies styling in user config
  **/
 export function ReferenceField(props: ReferenceFieldProps) {
   const toEdit = props.toEdit;
+  const isLoading = props.isLoading;
+
   const [isCollapsed, setCollapsed] = useState(true);
 
   const csl = toEdit?.csl || '';
-  const isLoading = toEdit?.isLoading || false;
   const inputValue = toEdit?.input || '';
 
   return (

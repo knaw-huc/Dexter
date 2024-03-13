@@ -25,7 +25,6 @@ const referenceSchema = yup.object({
 const defaults: SubmitFormReference = {
   input: '',
   terms: '',
-  isLoading: false,
   csl: '',
 };
 
@@ -43,14 +42,22 @@ export function ReferenceForm(props: ReferenceFormProps) {
   const debouncedInput = useDebounce(form.input);
   const { errors, setError } = useFormErrors<FormReference>();
   const { load } = useLoadReference({ onLoaded: setForm });
+  const [isLoading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (form.input) {
+      setLoading(true);
+    }
+  }, [form.input]);
 
   useEffect(() => {
     loadReference();
-    function loadReference() {
+    async function loadReference() {
       if (initialInput === debouncedInput) {
         setForm(toForm(props.inEdit));
       } else {
-        load(form, props.referenceStyle);
+        await load(form, props.referenceStyle);
+        setLoading(false);
       }
     }
   }, [debouncedInput, props.referenceStyle, initialInput]);
@@ -77,6 +84,7 @@ export function ReferenceForm(props: ReferenceFormProps) {
             toEdit={form}
             onChange={input => setForm(f => ({ ...f, input }))}
             referenceStyle={props.referenceStyle}
+            isLoading={isLoading}
           />
           <SubmitButton onClick={handleSubmit} />
         </form>
@@ -85,9 +93,8 @@ export function ReferenceForm(props: ReferenceFormProps) {
   );
 }
 
-function toForm(toEdit: FormReference) {
+function toForm(toEdit: ResultReference): FormReference {
   return {
     ...(toEdit || defaults),
-    isLoading: false,
   };
 }
