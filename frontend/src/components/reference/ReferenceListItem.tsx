@@ -1,31 +1,31 @@
 import { grey } from '@mui/material/colors';
-import { Citation } from '../../model/DexterModel';
+import { Reference } from '../../model/DexterModel';
 import React from 'react';
 import { Avatar, ListItemAvatar } from '@mui/material';
 import { DeleteIconStyled } from '../common/DeleteIconStyled';
-import { CitationIcon } from './CitationIcon';
+import { ReferenceIcon } from './ReferenceIcon';
 import { ListItemButtonStyled } from '../common/ListItemButtonStyled';
-import { FormattedCitation } from './FormattedCitation';
+import { FormattedReference } from './FormattedReference';
 
 type SourceListItemProps = {
-  citation: Citation;
+  reference: Reference;
   onDelete: () => void;
   onEdit: () => void;
 };
 
-export const CitationListItem = (props: SourceListItemProps) => {
+export const ReferenceListItem = (props: SourceListItemProps) => {
   function handleDeleted(e: React.MouseEvent) {
     e.stopPropagation();
     props.onDelete();
   }
 
-  function handleClickCitationItem() {
+  function handleClickReferenceItem() {
     props.onEdit();
   }
 
   return (
     <ListItemButtonStyled
-      onClick={handleClickCitationItem}
+      onClick={handleClickReferenceItem}
       secondaryAction={
         <div style={{ color: grey[500] }}>
           <DeleteIconStyled onClick={handleDeleted} />
@@ -35,10 +35,10 @@ export const CitationListItem = (props: SourceListItemProps) => {
     >
       <ListItemAvatar sx={{ ml: '1em' }}>
         <Avatar>
-          <CitationIcon iconColor="white" isInline={false} fontSize="small" />
+          <ReferenceIcon iconColor="white" isInline={false} fontSize="small" />
         </Avatar>
       </ListItemAvatar>
-      <FormattedCitation citation={props.citation} />
+      <FormattedReference reference={props.reference} />
     </ListItemButtonStyled>
   );
 };

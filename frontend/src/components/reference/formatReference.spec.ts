@@ -1,30 +1,30 @@
 import { describe, expect, it } from '@jest/globals';
-import { formatCitation } from './formatCitation';
-import { CitationStyle } from './CitationStyle';
-import { CitationFormat } from './CitationFormat';
+import { formatReference } from './formatReference';
+import { ReferenceStyle } from './ReferenceStyle';
+import { ReferenceFormat } from './ReferenceFormat';
 
-describe('formatCitation', () => {
-  const citationStyle = CitationStyle.apa;
+describe('formatReference', () => {
+  const referenceStyle = ReferenceStyle.apa;
   const doi = 'https://doi.org/10.1145/3343413.3377969';
 
   it('creates bibliography from doi in apa style', async () => {
-    const actual = await formatCitation(doi, citationStyle);
+    const actual = await formatReference(doi, referenceStyle);
     const expected =
       'Koolen, M., Kumpulainen, S., &#38; Melgar-Estrada, L. (2020, March 14). A Workflow Analysis Perspective to Scholarly Research Tasks. <i>Proceedings of the 2020 Conference on Human Information Interaction and Retrieval</i>. CHIIR ’20: Conference on Human Information Interaction and Retrieval. https://doi.org/10.1145/3343413.3377969';
     expect(actual).toContain(expected);
   });
 
   it('creates bibliography from doi in vancouver style', async () => {
-    const actual = await formatCitation(doi, CitationStyle.vancouver);
+    const actual = await formatReference(doi, ReferenceStyle.vancouver);
     const expected =
       'Koolen M, Kumpulainen S, Melgar-Estrada L. A Workflow Analysis Perspective to Scholarly Research Tasks. In: Proceedings of the 2020 Conference on Human Information Interaction and Retrieval [Internet]. ACM; 2020. Available from: http://dx.doi.org/10.1145/3343413.3377969';
     expect(actual).toContain(expected);
   });
 
   it('creates bibliography from doi in chicago style', async () => {
-    const actual = await formatCitation(
+    const actual = await formatReference(
       'https://doi.org/10.1111/acel.12050',
-      CitationStyle.vancouver,
+      ReferenceStyle.chicago,
     );
     const expected =
       'Boonekamp, Jelle J., Mirre J. P. Simons, Lia Hemerik, and Simon Verhulst. “Telomere Length Behaves as Biomarker of Somatic Redundancy Rather than Biological Age.” <i>Aging Cell</i> 12, no. 2 (February 22, 2013): 330–32. https://doi.org/10.1111/acel.12050.';
@@ -43,11 +43,11 @@ describe('formatCitation', () => {
     '  publisher={Wiley Online Library}\n' +
     '}\n';
 
-  it('creates citation from bibtex in apa style', async () => {
-    const actual = await formatCitation(
+  it('creates reference from bibtex in apa style', async () => {
+    const actual = await formatReference(
       bibtex,
-      citationStyle,
-      CitationFormat.citation,
+      referenceStyle,
+      ReferenceFormat.citation,
     );
     const expected = '(Boonekamp et al., 2013)';
     expect(actual).toContain(expected);

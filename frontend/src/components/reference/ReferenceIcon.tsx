@@ -7,6 +7,6 @@ import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
 
 const FormatQuoteIconStyled = styleResourceIcon(FormatQuoteIcon);
 
-export function CitationIcon(props: ResourceIconProps) {
+export function ReferenceIcon(props: ResourceIconProps) {
   return <FormatQuoteIconStyled fontSize="large" {...props} />;
 }

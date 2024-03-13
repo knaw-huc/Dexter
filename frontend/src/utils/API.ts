@@ -1,13 +1,13 @@
 import {
   Corpus,
-  FormCitation,
+  FormReference,
   FormCorpus,
   FormMedia,
   FormMetadataKey,
   FormMetadataValue,
   FormSource,
   FormTag,
-  ResultCitation,
+  ResultReference,
   ResultImport,
   ResultLanguage,
   ResultMedia,
@@ -23,7 +23,7 @@ import { validateResponse } from './validateResponse';
 import _ from 'lodash';
 import {
   api,
-  citations,
+  references,
   corpora,
   keys,
   media,
@@ -251,51 +251,55 @@ export const deleteTagFromSource = async (
   deleteValidated(`/${api}/${sources}/${sourceId}/${tags}/${tagId}`);
 
 /**
- * Citations:
+ * References:
  */
 
-export const getCitations = async (): Promise<ResultCitation[]> =>
-  getValidated(`/${api}/${citations}`);
+export const getReferences = async (): Promise<ResultReference[]> =>
+  getValidated(`/${api}/${references}`);
 
-export const createCitation = async (
-  newCitation: FormCitation,
-): Promise<ResultCitation> =>
-  postValidated(`/${api}/${citations}`, newCitation);
+export const createReference = async (
+  newReference: FormReference,
+): Promise<ResultReference> =>
+  postValidated(`/${api}/${references}`, newReference);
 
-export const addCitationsToCorpus = async (
+export const addReferencesToCorpus = async (
   corpusId: string,
-  citationId: string[],
-): Promise<ResultCitation[]> =>
-  postValidated(`/${api}/${corpora}/${corpusId}/${citations}`, citationId);
+  referenceId: string[],
+): Promise<ResultReference[]> =>
+  postValidated(`/${api}/${corpora}/${corpusId}/${references}`, referenceId);
 
-export const addCitationsToSource = async (
+export const addReferencesToSource = async (
   sourceId: string,
-  citationId: string[],
-): Promise<ResultCitation[]> =>
-  postValidated(`/${api}/${sources}/${sourceId}/${citations}`, citationId);
+  referenceId: string[],
+): Promise<ResultReference[]> =>
+  postValidated(`/${api}/${sources}/${sourceId}/${references}`, referenceId);
 
-export const deleteCitation = async (id: string): Promise<void> =>
-  deleteValidated(`/${api}/${citations}/${id}`);
+export const deleteReference = async (id: string): Promise<void> =>
+  deleteValidated(`/${api}/${references}/${id}`);
 
-export const getCitationAutocomplete = async (
+export const getReferenceAutocomplete = async (
   input: string,
-): Promise<ResultCitation[]> =>
-  postValidated(`/${api}/${citations}/autocomplete`, input);
+): Promise<ResultReference[]> =>
+  postValidated(`/${api}/${references}/autocomplete`, input);
 
-export const deleteCitationFromCorpus = async (
+export const deleteReferenceFromCorpus = async (
   corpusId: string,
-  citationId: string,
+  referenceId: string,
 ): Promise<void> =>
-  deleteValidated(`/${api}/${corpora}/${corpusId}/${citations}/${citationId}`);
+  deleteValidated(
+    `/${api}/${corpora}/${corpusId}/${references}/${referenceId}`,
+  );
 
-export const deleteCitationFromSource = async (
+export const deleteReferenceFromSource = async (
   sourceId: string,
-  citationId: string,
+  referenceId: string,
 ): Promise<void> =>
-  deleteValidated(`/${api}/${sources}/${sourceId}/${citations}/${citationId}`);
+  deleteValidated(
+    `/${api}/${sources}/${sourceId}/${references}/${referenceId}`,
+  );
 
-export const getCitationById = async (id: string): Promise<ResultCitation> =>
-  getValidated(`/${api}/${citations}/${id}`);
+export const getReferenceById = async (id: string): Promise<ResultReference> =>
+  getValidated(`/${api}/${references}/${id}`);
 
 /**
  * Import:

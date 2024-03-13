@@ -71,7 +71,7 @@ export type ResultSource = FormSource &
  * Source including all child resources
  */
 export type Source = ResultSource & {
-  citations: ResultCitation[];
+  references: ResultReference[];
   corpora: ResultCorpus[];
   languages: ResultLanguage[];
   media: ResultMedia[];
@@ -89,24 +89,24 @@ export type FormTag = {
 
 export type ResultTag = FormTag & WithId;
 
-export type FormCitation = {
+export type FormReference = {
   input: string;
   terms: string;
   formatted: string;
 };
 
-export type ResultCitation = FormCitation & WithId;
+export type ResultReference = FormReference & WithId;
 
-export type Citation = ResultCitation;
+export type Reference = ResultReference;
 
-export type SubmitFormCitation = Omit<Citation, 'id'> & {
+export type SubmitFormReference = Omit<Reference, 'id'> & {
   isLoading: boolean;
 };
 
 export function isFormatted(
-  citation?: ResultCitation | Citation,
-): citation is Citation {
-  return !!(citation as Citation)?.formatted;
+  reference?: ResultReference | Reference,
+): reference is Reference {
+  return !!(reference as Reference)?.formatted;
 }
 
 export enum Access {

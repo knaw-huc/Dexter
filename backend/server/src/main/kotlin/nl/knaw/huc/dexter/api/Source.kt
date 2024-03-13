@@ -59,7 +59,7 @@ data class ResultSourceWithResources (
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime,
 
-    val citations: List<ResultCitation>,
+    val references: List<ResultReference>,
     val corpora: List<ResultCorpus>,
     val languages: List<ResultLanguage>,
     val media: List<ResultMedia>,
@@ -68,7 +68,7 @@ data class ResultSourceWithResources (
 )
 
 fun ResultSource.toResultSourceWithResources(
-    citations: List<ResultCitation>,
+    references: List<ResultReference>,
     corpora: List<ResultCorpus>,
     languages: List<ResultLanguage>,
     media: List<ResultMedia>,
@@ -91,7 +91,7 @@ fun ResultSource.toResultSourceWithResources(
     createdAt = createdAt,
     updatedAt = updatedAt,
 
-    citations = citations,
+    references = references,
     corpora = corpora,
     languages = languages,
     media = media,

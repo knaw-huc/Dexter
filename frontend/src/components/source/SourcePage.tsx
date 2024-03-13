@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
-  Citation,
-  ResultCitation,
+  Reference,
+  ResultReference,
   ResultMedia,
   Source,
 } from '../../model/DexterModel';
 import {
-  addCitationsToSource,
+  addReferencesToSource,
   addMediaToSource,
-  deleteCitationFromSource,
+  deleteReferenceFromSource,
   deleteMediaFromSource,
   getSourceWithResourcesById,
 } from '../../utils/API';
@@ -29,13 +29,13 @@ import { H2Styled } from '../common/H2Styled';
 import { ExternalLink } from '../common/ExternalLink';
 import { useThrowSync } from '../common/error/useThrowSync';
 import { SourceMedia } from './SourceMedia';
-import { SourceCitations } from './SourceCitations';
+import { SourceReferences } from './SourceReferences';
 import { replaceById } from '../../utils/replaceById';
-import { defaultCitationStyle } from '../citation/CitationStyle';
-import { CitationForm } from '../citation/CitationForm';
-import { SelectCitationForm } from '../citation/SelectCitationForm';
+import { defaultReferenceStyle } from '../reference/ReferenceStyle';
+import { ReferenceForm } from '../reference/ReferenceForm';
+import { SelectReferenceForm } from '../reference/SelectReferenceForm';
 import {
-  updateSourceCitations,
+  updateSourceReferences,
   updateSourceMedia,
 } from '../../utils/updateRemoteIds';
 
@@ -45,14 +45,14 @@ export const SourcePage = () => {
   const [source, setSource] = useState<Source>();
   const [showForm, setShowForm] = useState(false);
   const [showMediaForm, setShowMediaForm] = useState(false);
-  const [showCitationForm, setShowCitationForm] = useState(false);
+  const [showReferenceForm, setShowReferenceForm] = useState(false);
   const [mediaToEdit, setMediaToEdit] = useState(null);
-  const [citationToEdit, setCitationToEdit] = useState<Citation>(null);
+  const [referenceToEdit, setReferenceToEdit] = useState<Reference>(null);
   const [showSelectMediaForm, setShowSelectMediaForm] = useState(null);
-  const [showSelectCitationForm, setShowSelectCitationForm] = useState(null);
+  const [showSelectReferenceForm, setShowSelectReferenceForm] = useState(null);
   const throwSync = useThrowSync();
 
-  const citationStyle = defaultCitationStyle;
+  const referenceStyle = defaultReferenceStyle;
 
   useEffect(() => {
     init();
@@ -72,11 +72,11 @@ export const SourcePage = () => {
     setSource(s => ({ ...s, media: s.media.filter(m => m.id !== media.id) }));
   }
 
-  async function handleUnlinkCitation(citation: ResultCitation) {
-    await deleteCitationFromSource(sourceId, citation.id);
+  async function handleUnlinkReference(reference: ResultReference) {
+    await deleteReferenceFromSource(sourceId, reference.id);
     setSource(s => ({
       ...s,
-      citations: s.citations.filter(c => c.id !== citation.id),
+      references: s.references.filter(c => c.id !== reference.id),
     }));
   }
 
@@ -108,37 +108,37 @@ export const SourcePage = () => {
     setShowMediaForm(false);
   }
 
-  function handleClickEditCitation(citation: Citation) {
-    setCitationToEdit(citation);
-    setShowCitationForm(true);
+  function handleClickEditReference(reference: Reference) {
+    setReferenceToEdit(reference);
+    setShowReferenceForm(true);
   }
 
-  async function handleSavedCitation(citation: ResultCitation) {
-    if (citationToEdit) {
-      handleEditCitation(citation);
+  async function handleSavedReference(reference: ResultReference) {
+    if (referenceToEdit) {
+      handleEditReference(reference);
     } else {
-      await addCreatedCitation(citation);
+      await addCreatedReference(reference);
     }
   }
 
-  function handleEditCitation(citation: ResultCitation) {
+  function handleEditReference(reference: ResultReference) {
     setSource(s => ({
       ...s,
-      citations: replaceById(citation, s.citations),
+      references: replaceById(reference, s.references),
     }));
-    setCitationToEdit(null);
-    setShowCitationForm(false);
+    setReferenceToEdit(null);
+    setShowReferenceForm(false);
   }
 
-  async function addCreatedCitation(citation: ResultCitation) {
-    await addCitationsToSource(sourceId, [citation.id]);
-    setSource(s => ({ ...s, citations: [...s.citations, citation] }));
-    setShowCitationForm(false);
+  async function addCreatedReference(reference: ResultReference) {
+    await addReferencesToSource(sourceId, [reference.id]);
+    setSource(s => ({ ...s, references: [...s.references, reference] }));
+    setShowReferenceForm(false);
   }
 
-  function handleCloseCitation() {
-    setCitationToEdit(null);
-    setShowCitationForm(false);
+  function handleCloseReference() {
+    setReferenceToEdit(null);
+    setShowReferenceForm(false);
   }
 
   function handleCloseMedia() {
@@ -151,9 +151,9 @@ export const SourcePage = () => {
     setSource(s => ({ ...s, media }));
   }
 
-  async function handleChangeSelectedCitations(citations: Citation[]) {
-    await updateSourceCitations(sourceId, citations);
-    setSource(s => ({ ...s, citations }));
+  async function handleChangeSelectedReferences(references: Reference[]) {
+    await updateSourceReferences(sourceId, references);
+    setSource(s => ({ ...s, references }));
   }
 
   const shortSourceFields: (keyof Source)[] = [
@@ -224,13 +224,13 @@ export const SourcePage = () => {
       )}
 
       {!_.isEmpty(source.media) && (
-        <SourceCitations
-          citations={source.citations}
-          onUnlink={handleUnlinkCitation}
-          onClickAddNew={() => setShowCitationForm(true)}
-          onClickEdit={handleClickEditCitation}
-          citationStyle={citationStyle}
-          onClickAddExisting={() => setShowSelectCitationForm(true)}
+        <SourceReferences
+          references={source.references}
+          onUnlink={handleUnlinkReference}
+          onClickAddNew={() => setShowReferenceForm(true)}
+          onClickEdit={handleClickEditReference}
+          referenceStyle={referenceStyle}
+          onClickAddExisting={() => setShowSelectReferenceForm(true)}
         />
       )}
 
@@ -257,20 +257,20 @@ export const SourcePage = () => {
           onClose={() => setShowSelectMediaForm(false)}
         />
       )}
-      {showCitationForm && (
-        <CitationForm
-          onClose={handleCloseCitation}
-          onSaved={handleSavedCitation}
-          inEdit={citationToEdit}
-          citationStyle={citationStyle}
+      {showReferenceForm && (
+        <ReferenceForm
+          onClose={handleCloseReference}
+          onSaved={handleSavedReference}
+          inEdit={referenceToEdit}
+          referenceStyle={referenceStyle}
         />
       )}
-      {showSelectCitationForm && (
-        <SelectCitationForm
-          selected={source.citations}
-          onChangeSelected={handleChangeSelectedCitations}
-          onClose={() => setShowSelectCitationForm(false)}
-          citationStyle={citationStyle}
+      {showSelectReferenceForm && (
+        <SelectReferenceForm
+          selected={source.references}
+          onChangeSelected={handleChangeSelectedReferences}
+          onClose={() => setShowSelectReferenceForm(false)}
+          referenceStyle={referenceStyle}
         />
       )}
     </div>

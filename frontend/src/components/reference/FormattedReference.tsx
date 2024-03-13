@@ -1,23 +1,25 @@
-import { Citation } from '../../model/DexterModel';
+import { Reference } from '../../model/DexterModel';
 import { ListItemText } from '@mui/material';
 import { displayInput } from './displayInput';
 import { SpinnerIcon } from '../common/SpinnerIcon';
 import React from 'react';
 
 type Props = {
-  citation: Citation;
+  reference: Reference;
 };
 
-export function FormattedCitation(props: Props) {
+export function FormattedReference(props: Props) {
   return (
     <>
-      {props.citation.formatted ? (
+      {props.reference.formatted ? (
         <ListItemText>
-          <p dangerouslySetInnerHTML={{ __html: props.citation.formatted }}></p>
+          <p
+            dangerouslySetInnerHTML={{ __html: props.reference.formatted }}
+          ></p>
         </ListItemText>
       ) : (
         <ListItemText>
-          {displayInput(props.citation)}
+          {displayInput(props.reference)}
           &nbsp;
           <SpinnerIcon />
         </ListItemText>

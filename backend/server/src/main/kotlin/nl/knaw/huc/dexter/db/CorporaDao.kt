@@ -52,15 +52,15 @@ interface CorporaDao {
     @SqlUpdate("delete from corpora_tags where corpus_id = :corpusId and tag_id = :tagId")
     fun deleteTag(corpusId: UUID, tagId: Int)
     
-    @SqlQuery("select c.* from corpora_citations cc join citations c on cc.citation_id = c.id where corpus_id = :corpusId")
-    @RegisterKotlinMapper(ResultCitation::class)
-    fun getCitations(corpusId: UUID): List<ResultCitation>
+    @SqlQuery("select r.* from corpora_references cc join \"references\" r on cc.reference_id = r.id where corpus_id = :corpusId")
+    @RegisterKotlinMapper(ResultReference::class)
+    fun getReferences(corpusId: UUID): List<ResultReference>
 
-    @SqlUpdate("insert into corpora_citations (corpus_id,citation_id) values (:corpusId,:citationId) on conflict do nothing")
-    fun addCitation(corpusId: UUID, citationId: Int)
+    @SqlUpdate("insert into corpora_references (corpus_id,reference_id) values (:corpusId,:referenceId) on conflict do nothing")
+    fun addReference(corpusId: UUID, referenceId: UUID)
 
-    @SqlUpdate("delete from corpora_citations where corpus_id = :corpusId and citation_id = :citationId")
-    fun deleteCitation(corpusId: UUID, citationId: Int)
+    @SqlUpdate("delete from corpora_references where corpus_id = :corpusId and reference_id = :referenceId")
+    fun deleteReference(corpusId: UUID, referenceId: UUID)
 
     @SqlQuery("select l.* from corpora_languages cl join iso_639_3 l on cl.lang_id = l.id where corpus_id = :corpusId")
     fun getLanguages(corpusId: UUID): List<ResultLanguage>

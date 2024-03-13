@@ -1,6 +1,6 @@
 import { ButtonWithIcon } from '../common/ButtonWithIcon';
 import React from 'react';
-import { AddIconStyled } from '../common/AddIconStyled';
+import { LinkIconStyled } from '../common/LinkIconStyled';
 
 export function SelectExistingResourceButton(props: {
   title: string;
@@ -8,7 +8,7 @@ export function SelectExistingResourceButton(props: {
 }) {
   return (
     <ButtonWithIcon variant="contained" onClick={props.onClick}>
-      <AddIconStyled />
+      <LinkIconStyled />
       {props.title}
     </ButtonWithIcon>
   );

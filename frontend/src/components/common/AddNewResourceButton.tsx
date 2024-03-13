@@ -1,6 +1,6 @@
 import { ButtonWithIcon } from './ButtonWithIcon';
 import React from 'react';
-import { AddIconStyled } from './AddIconStyled';
+import { CreateIconStyled } from './CreateIconStyled';
 
 export function AddNewResourceButton(props: {
   title: string;
@@ -12,7 +12,7 @@ export function AddNewResourceButton(props: {
       style={{ marginRight: '10px' }}
       onClick={props.onClick}
     >
-      <AddIconStyled />
+      <CreateIconStyled />
       {props.title}
     </ButtonWithIcon>
   );

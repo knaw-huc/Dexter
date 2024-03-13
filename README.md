@@ -16,6 +16,7 @@ You can create new issues at [Dexter/issues](https://github.com/knaw-huc/Dexter/
 
 ## Development
 
+### First time
 - Checkout the [development](https://github.com/knaw-huc/Dexter/tree/development) branch.
 
 - Start database:
@@ -50,9 +51,13 @@ curl -X 'POST' 'http://localhost:8080/admin/users' \
 - Open http://localhost:3001
 - Login with dexter:dexter
 
-- Further steps:
+- Next steps:
   - Explore [backend API](http://localhost:8080/swagger#/default)
   - Add languages as documented at [PUT /languages](http://localhost:8080/swagger#/default/seed)
+
+### Tests
+Run: `npm test`
+Requires node 20 for fetch
 
 ## Model
 

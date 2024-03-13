@@ -20,10 +20,10 @@ import {
   tags,
   media,
   sources,
-  citations,
+  references,
 } from '../model/Resources';
 
-const pages = [corpora, sources, tags, metadata, media, citations];
+const pages = [corpora, sources, tags, metadata, media, references];
 const settings: string[] = [];
 
 export default function Header() {

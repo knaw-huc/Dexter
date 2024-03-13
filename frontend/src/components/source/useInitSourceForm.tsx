@@ -28,7 +28,7 @@ const defaults: Source = {
   latest: undefined,
   notes: undefined,
 
-  citations: [],
+  references: [],
   corpora: [],
   languages: [],
   media: [],

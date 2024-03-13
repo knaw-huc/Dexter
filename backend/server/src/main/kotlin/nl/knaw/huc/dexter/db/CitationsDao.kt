@@ -1,32 +1,32 @@
 package nl.knaw.huc.dexter.db
 
-import nl.knaw.huc.dexter.api.FormCitation
-import nl.knaw.huc.dexter.api.ResultCitation
+import nl.knaw.huc.dexter.api.FormReference
+import nl.knaw.huc.dexter.api.ResultReference
 import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.kotlin.BindKotlin
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
 import java.util.*
 
-interface CitationsDao {
-    @SqlQuery("select * from citations where created_by = :userId")
-    fun listByUser(userId: UUID): List<ResultCitation>
+interface ReferencesDao {
+    @SqlQuery("select * from \"references\" where created_by = :userId")
+    fun listByUser(userId: UUID): List<ResultReference>
 
-    @SqlQuery("select * from citations where id = :id")
-    fun find(id: UUID): ResultCitation?
+    @SqlQuery("select * from \"references\" where id = :id")
+    fun find(id: UUID): ResultReference?
 
-    @SqlQuery("insert into citations (input, terms, formatted, created_by) values (:input, :terms, :formatted, :userId) returning *")
-    fun insert(@BindKotlin citation: FormCitation, userId: UUID): ResultCitation
+    @SqlQuery("insert into \"references\" (input, terms, formatted, created_by) values (:input, :terms, :formatted, :userId) returning *")
+    fun insert(@BindKotlin reference: FormReference, userId: UUID): ResultReference
 
-    @SqlQuery("update citations set input = :input, terms = :terms, formatted = :formatted where id = :id returning *")
-    fun update(id: UUID, @BindKotlin citation: FormCitation): ResultCitation
+    @SqlQuery("update \"references\" set input = :input, terms = :terms, formatted = :formatted where id = :id returning *")
+    fun update(id: UUID, @BindKotlin reference: FormReference): ResultReference
 
     @SqlQuery(
-        "select * from citations where terms like all (array[ <terms> ])"
+        "select * from \"references\" where terms like all (array[ <terms> ])"
     )
-    fun like(@BindList("terms") terms: List<String>, userId: UUID): List<ResultCitation>
+    fun like(@BindList("terms") terms: List<String>, userId: UUID): List<ResultReference>
 
-    @SqlUpdate("delete from citations where id = :id")
+    @SqlUpdate("delete from \"references\" where id = :id")
     fun delete(id: UUID)
 
 }

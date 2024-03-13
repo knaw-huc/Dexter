@@ -1,6 +1,7 @@
 // Resources:
 export const api = 'api';
-export const citations = 'citations';
+export const assets = 'assets';
+export const references = 'references';
 export const corpora = 'corpora';
 export const keys = 'keys';
 export const media = 'media';

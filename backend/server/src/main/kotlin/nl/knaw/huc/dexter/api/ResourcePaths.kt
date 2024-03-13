@@ -5,7 +5,7 @@ object ResourcePaths {
     // main paths
     const val ABOUT = "about"
     const val ADMIN = "admin"
-    const val CITATIONS = "citations"
+    const val REFERENCES = "references"
     const val CORPORA = "corpora"
     const val LANGUAGES = "languages"
     const val METADATA = "metadata"

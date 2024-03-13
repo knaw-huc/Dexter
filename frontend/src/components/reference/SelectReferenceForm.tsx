@@ -1,17 +1,17 @@
 import Button from '@mui/material/Button';
 import React from 'react';
 import ScrollableModal from '../common/ScrollableModal';
-import { SelectCitationField } from './SelectCitationField';
-import { SelectCitationFieldProps } from './SelectCitationField';
+import { SelectReferenceField } from './SelectReferenceField';
+import { SelectReferenceFieldProps } from './SelectReferenceField';
 
-type Props = SelectCitationFieldProps & {
+type Props = SelectReferenceFieldProps & {
   onClose: () => void;
 };
 
-export function SelectCitationForm(props: Props) {
+export function SelectReferenceForm(props: Props) {
   return (
     <ScrollableModal handleClose={props.onClose} fullHeight={false}>
-      <SelectCitationField {...props} />
+      <SelectReferenceField {...props} />
       <Button
         variant="contained"
         onClick={props.onClose}

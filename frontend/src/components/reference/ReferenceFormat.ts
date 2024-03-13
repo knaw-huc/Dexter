@@ -1,4 +1,4 @@
-export enum CitationFormat {
+export enum ReferenceFormat {
   bibliography = 'bibliography',
   citation = 'citation',
 }

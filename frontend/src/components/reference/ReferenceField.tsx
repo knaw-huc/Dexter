@@ -4,40 +4,40 @@ import React, { useState } from 'react';
 import { InputAdornment } from '@mui/material';
 import { SplitRow } from '../common/SplitRow';
 import { ValidatedSelectField } from '../common/ValidatedSelectField';
-import { CitationStyle } from './CitationStyle';
+import { ReferenceStyle } from './ReferenceStyle';
 import { TextFieldStyled } from '../common/TextFieldStyled';
 import { Label } from '../common/Label';
-import { CitationToolTipHelp } from './CitationToolTipHelp';
-import { SubmitFormCitation } from '../../model/DexterModel';
+import { ReferenceToolTipHelp } from './ReferenceToolTipHelp';
+import { SubmitFormReference } from '../../model/DexterModel';
 import _ from 'lodash';
 
-type CitationFieldProps = FormFieldprops & {
-  toEdit: SubmitFormCitation;
+type ReferenceFieldProps = FormFieldprops & {
+  toEdit: SubmitFormReference;
   onChange: (input: string) => void;
-  citationStyle: CitationStyle;
+  referenceStyle: ReferenceStyle;
 };
 
 /**
  * TODO: Hoe moet het citeren eruit zien?
  *  v1:
  *  - altijd default style gebruiken
- *  - toevoegen nieuwe citation: sla ook op citation.formatted, in default style
- *  - als citation al bestaat: geen foutmelding, maar info met disabled submit knop
+ *  - toevoegen nieuwe reference: sla ook op reference.formatted, in default style
+ *  - als reference al bestaat: geen foutmelding, maar info met disabled submit knop
  *  - sources page:
- *    - 'add new' > citation form
+ *    - 'add new' > reference form
  *      - create new resource and link to source
  *    - 'add existing' > autocomplete
- *      - search full text in citation.formatted
+ *      - search full text in reference.formatted
  *      - display as options
  *      - select and link to source
  *  v2:
  *  - store styling in user config
  *  - add restyle component on index page
- *    - it updates all citations
+ *    - it updates all references
  *    - it shows progress indicator
  *
  **/
-export function CitationField(props: CitationFieldProps) {
+export function ReferenceField(props: ReferenceFieldProps) {
   const toEdit = props.toEdit;
   const [isCollapsed, setCollapsed] = useState(true);
 
@@ -47,7 +47,7 @@ export function CitationField(props: CitationFieldProps) {
 
   return (
     <>
-      <Label>{props.label || 'Citation'}</Label>
+      <Label>{props.label || 'Reference'}</Label>
       <SplitRow
         left={
           <TextFieldStyled
@@ -63,7 +63,7 @@ export function CitationField(props: CitationFieldProps) {
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <CitationToolTipHelp
+                  <ReferenceToolTipHelp
                     isManaged={!!formatted}
                     isEmpty={!inputValue}
                     isLoading={isLoading}
@@ -74,11 +74,11 @@ export function CitationField(props: CitationFieldProps) {
           />
         }
         right={
-          <ValidatedSelectField<CitationStyle>
+          <ValidatedSelectField<ReferenceStyle>
             disabled={true}
-            selectedOption={props.citationStyle}
+            selectedOption={props.referenceStyle}
             onSelectOption={_.noop}
-            options={Object.values(CitationStyle)}
+            options={Object.values(ReferenceStyle)}
           />
         }
       />

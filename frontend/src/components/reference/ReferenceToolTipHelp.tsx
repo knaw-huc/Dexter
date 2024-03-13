@@ -5,19 +5,19 @@ import { WarningIcon } from '../common/WarningIcon';
 import React from 'react';
 import { SpinnerIcon } from '../common/SpinnerIcon';
 
-type CitationToolTipHelpProps = {
+type ReferenceToolTipHelpProps = {
   isManaged: boolean;
   isEmpty: boolean;
   isLoading: boolean;
 };
 
 const helpInputEmpty =
-  'To export citations in various citation styles, please enter a doi, bibtex or one of the other input formats supported by citation.js';
-const helpInputNotRecognized = `Current citation format is not recognized. ${helpInputEmpty}`;
+  'To export references in various reference styles, please enter a doi, bibtex or one of the other input formats supported by reference.js';
+const helpInputNotRecognized = `Current reference format is not recognized. ${helpInputEmpty}`;
 const helpInputRecognized =
-  'Current citation format is recognized and can be exported to the various citation styles supported by citation.js';
+  'Current reference format is recognized and can be exported to the various reference styles supported by reference.js';
 
-export function CitationToolTipHelp(props: CitationToolTipHelpProps) {
+export function ReferenceToolTipHelp(props: ReferenceToolTipHelpProps) {
   let help: string;
   if (props.isEmpty) {
     help = helpInputEmpty;
