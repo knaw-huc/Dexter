@@ -3,7 +3,7 @@
 ## [Development](https://github.com/knaw-huc/Dexter/tree/development)
 🧪 Features / ✨ Enhancements / 🔧 Technical / 🐛 Bug Fixes
 
-## [v0.13](https://github.com/knaw-huc/Dexter/tree/development)
+## [v0.13](https://github.com/knaw-huc/Dexter/releases/tag/v0.13.0)
 ### 🧪 Features
 - Add references that can be imported using doi of bibtex and can be linked to multiple sources
 
