@@ -38,22 +38,22 @@ type CitationFormProps = {
 
 export function CitationForm(props: CitationFormProps) {
   const toEdit = props.inEdit;
-
-  const [form, setForm] = useState<SubmitFormCitation>({
-    ...(toEdit || defaults),
-    isLoading: false,
-  });
+  const [initialInput] = useState<string>(props.inEdit?.input);
+  const [form, setForm] = useState<SubmitFormCitation>(toForm(toEdit));
   const debouncedInput = useDebounce(form.input);
   const { errors, setError } = useFormErrors<FormCitation>();
-  const { load } = useFormattedCitation({
-    setCitation: setForm,
-  });
+  const { load } = useFormattedCitation({ setCitation: setForm });
 
   useEffect(() => {
-    // Waarom lukt doi https://doi.org/10.1145/3343413.3377969 niet?
-    console.log('useEffect', form.input);
-    load(form, props.citationStyle);
-  }, [debouncedInput, props.citationStyle]);
+    loadCitation();
+    function loadCitation() {
+      if (initialInput === debouncedInput) {
+        setForm(toForm(props.inEdit));
+      } else {
+        load(form, props.citationStyle);
+      }
+    }
+  }, [debouncedInput, props.citationStyle, initialInput]);
 
   async function handleSubmit() {
     try {
@@ -83,4 +83,11 @@ export function CitationForm(props: CitationFormProps) {
       </ScrollableModal>
     </>
   );
+}
+
+function toForm(toEdit: FormCitation) {
+  return {
+    ...(toEdit || defaults),
+    isLoading: false,
+  };
 }
