@@ -18,10 +18,16 @@ const A = styled.a`
   }
 `;
 
-export function ExternalLink(props: { fieldName: string; url: string }) {
+export function ExternalLink(props: {
+  fieldName: string;
+  url: string;
+  fieldLabel?: string;
+}) {
   return (
     <SummaryP>
-      <span style={{ color: grey[600] }}>{props.fieldName}: </span>
+      <span style={{ color: grey[600] }}>
+        {props.fieldLabel || props.fieldName}:{' '}
+      </span>
       {isUrl(props.url) ? (
         <>
           <A href={props.url} target="_blank" rel="noreferrer">

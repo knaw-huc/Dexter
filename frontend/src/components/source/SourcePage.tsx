@@ -205,7 +205,11 @@ export const SourcePage = () => {
         }
       />
       {source.externalRef && (
-        <ExternalLink url={source.externalRef} fieldName="externalRef" />
+        <ExternalLink
+          url={source.externalRef}
+          fieldName="externalRef"
+          fieldLabel="External reference"
+        />
       )}
       {source.notes && (
         <>
