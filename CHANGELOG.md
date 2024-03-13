@@ -3,6 +3,17 @@
 ## [Development](https://github.com/knaw-huc/Dexter/tree/development)
 🧪 Features / ✨ Enhancements / 🔧 Technical / 🐛 Bug Fixes
 
+## [v0.13](https://github.com/knaw-huc/Dexter/tree/development)
+### 🧪 Features
+- Add references that can be imported using doi of bibtex and can be linked to multiple sources
+
+### 🔧 Technical 
+- Add jest testing framework to frontend
+- Structure error handling across app
+- Create single, shared autocomplete component to select and remove multiple options
+
+### 🐛 Bug Fixes
+
 ## [v0.12](https://github.com/knaw-huc/Dexter/releases/tag/v0.12.2)
 ### 🧪 Features 
 - Add 'media' (only images now) with an url and title
