@@ -1,28 +1,30 @@
 import { Reference } from '../../model/DexterModel';
 import { ListItemText } from '@mui/material';
-import { displayInput } from './displayInput';
-import { SpinnerIcon } from '../common/SpinnerIcon';
 import React from 'react';
+import { formatReference } from './formatReference';
+import { ReferenceStyle } from './ReferenceStyle';
 
 type Props = {
   reference: Reference;
+  referenceStyle: ReferenceStyle;
 };
 
 export function FormattedReference(props: Props) {
   return (
     <>
-      {props.reference.formatted ? (
+      {props.reference.csl ? (
         <ListItemText>
           <p
-            dangerouslySetInnerHTML={{ __html: props.reference.formatted }}
+            dangerouslySetInnerHTML={{
+              __html: formatReference(
+                props.reference.csl,
+                props.referenceStyle,
+              ),
+            }}
           ></p>
         </ListItemText>
       ) : (
-        <ListItemText>
-          {displayInput(props.reference)}
-          &nbsp;
-          <SpinnerIcon />
-        </ListItemText>
+        <ListItemText>{props.reference.input}</ListItemText>
       )}
     </>
   );

@@ -6,8 +6,10 @@ import { DeleteIconStyled } from '../common/DeleteIconStyled';
 import { ReferenceIcon } from './ReferenceIcon';
 import { ListItemButtonStyled } from '../common/ListItemButtonStyled';
 import { FormattedReference } from './FormattedReference';
+import { ReferenceStyle } from './ReferenceStyle';
 
 type SourceListItemProps = {
+  referenceStyle: ReferenceStyle;
   reference: Reference;
   onDelete: () => void;
   onEdit: () => void;
@@ -38,7 +40,10 @@ export const ReferenceListItem = (props: SourceListItemProps) => {
           <ReferenceIcon iconColor="white" isInline={false} fontSize="small" />
         </Avatar>
       </ListItemAvatar>
-      <FormattedReference reference={props.reference} />
+      <FormattedReference
+        reference={props.reference}
+        referenceStyle={props.referenceStyle}
+      />
     </ListItemButtonStyled>
   );
 };

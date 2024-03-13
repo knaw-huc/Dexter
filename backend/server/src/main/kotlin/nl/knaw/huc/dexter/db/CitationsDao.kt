@@ -15,10 +15,10 @@ interface ReferencesDao {
     @SqlQuery("select * from \"references\" where id = :id")
     fun find(id: UUID): ResultReference?
 
-    @SqlQuery("insert into \"references\" (input, terms, formatted, created_by) values (:input, :terms, :formatted, :userId) returning *")
+    @SqlQuery("insert into \"references\" (input, terms, csl, created_by) values (:input, :terms, :csl, :userId) returning *")
     fun insert(@BindKotlin reference: FormReference, userId: UUID): ResultReference
 
-    @SqlQuery("update \"references\" set input = :input, terms = :terms, formatted = :formatted where id = :id returning *")
+    @SqlQuery("update \"references\" set input = :input, terms = :terms, csl = :csl where id = :id returning *")
     fun update(id: UUID, @BindKotlin reference: FormReference): ResultReference
 
     @SqlQuery(

@@ -1,4 +1,4 @@
 export enum ReferenceFormat {
-  bibliography = 'bibliography',
-  citation = 'citation',
+  html = 'html',
+  text = 'text',
 }

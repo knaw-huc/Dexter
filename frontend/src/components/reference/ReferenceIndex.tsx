@@ -97,6 +97,7 @@ export function ReferenceIndex() {
                 reference={reference}
                 onDelete={() => handleDelete(reference)}
                 onEdit={() => handleEdit(reference)}
+                referenceStyle={referenceStyle}
               />
             </ErrorBoundary>
           ))}

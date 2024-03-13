@@ -13,7 +13,7 @@ declare module 'citation-js' {
     format: (
       type: 'bibliography' | 'citation' | 'bibtex' | 'data',
       config?: {
-        format: 'html' | 'object';
+        format: 'html' | 'text' | 'object';
         template?: 'apa' | 'vancouver' | 'harvard1' | 'chicago';
         lang?: 'en-US';
       },

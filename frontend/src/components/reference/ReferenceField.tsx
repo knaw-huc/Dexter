@@ -10,6 +10,7 @@ import { Label } from '../common/Label';
 import { ReferenceToolTipHelp } from './ReferenceToolTipHelp';
 import { SubmitFormReference } from '../../model/DexterModel';
 import _ from 'lodash';
+import { formatReference } from './formatReference';
 
 type ReferenceFieldProps = FormFieldprops & {
   toEdit: SubmitFormReference;
@@ -41,7 +42,7 @@ export function ReferenceField(props: ReferenceFieldProps) {
   const toEdit = props.toEdit;
   const [isCollapsed, setCollapsed] = useState(true);
 
-  const formatted = toEdit?.formatted || '';
+  const csl = toEdit?.csl || '';
   const isLoading = toEdit?.isLoading || false;
   const inputValue = toEdit?.input || '';
 
@@ -64,7 +65,7 @@ export function ReferenceField(props: ReferenceFieldProps) {
               endAdornment: (
                 <InputAdornment position="end">
                   <ReferenceToolTipHelp
-                    isManaged={!!formatted}
+                    isManaged={!!csl}
                     isEmpty={!inputValue}
                     isLoading={isLoading}
                   />
@@ -82,7 +83,13 @@ export function ReferenceField(props: ReferenceFieldProps) {
           />
         }
       />
-      {formatted && <p dangerouslySetInnerHTML={{ __html: formatted }}></p>}
+      {csl && (
+        <p
+          dangerouslySetInnerHTML={{
+            __html: formatReference(csl, props.referenceStyle),
+          }}
+        ></p>
+      )}
 
       {isLoading && (
         <p>

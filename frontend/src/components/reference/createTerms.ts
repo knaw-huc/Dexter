@@ -1,17 +1,18 @@
-import Cite from 'citation-js';
-import { CslJson } from './CslJson';
 import { normalize } from '../../utils/normalize';
+import { CslJson } from './CslJson';
 
-export async function createTerms(referenceJsData: string) {
-  let csl: CslJson;
+export function createTerms(csl: string): string | undefined {
+  let parsed: CslJson;
   try {
-    const cite = await Cite.async(referenceJsData);
-    csl = cite.format('data', { format: 'object' }) as CslJson;
+    parsed = JSON.parse(csl);
   } catch (e) {
-    return normalize(referenceJsData.substring(0, 100));
+    console.log('Could not parse csl: ' + csl);
+    return;
   }
-  const authors = csl[0].author.map(a => a.family).join(' ');
-  const year = csl[0].issued['date-parts'][0][0];
-  const title = csl[0].title;
+  const authors = parsed[0].author
+    .map((a: { family: string }) => a.family)
+    .join(' ');
+  const year = parsed[0].issued['date-parts'][0][0];
+  const title = parsed[0].title;
   return normalize(`${authors} ${year} ${title}`);
 }

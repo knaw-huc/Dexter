@@ -15,7 +15,7 @@ import { onSubmit } from '../../utils/onSubmit';
 import { SubmitButton } from '../common/SubmitButton';
 import { ReferenceField } from './ReferenceField';
 import { useDebounce } from '../../utils/useDebounce';
-import { useFormattedReference } from './useFormattedReference';
+import { useLoadReference } from './useLoadReference';
 import { ReferenceStyle } from './ReferenceStyle';
 
 const referenceSchema = yup.object({
@@ -26,7 +26,7 @@ const defaults: SubmitFormReference = {
   input: '',
   terms: '',
   isLoading: false,
-  formatted: '',
+  csl: '',
 };
 
 type ReferenceFormProps = {
@@ -42,7 +42,7 @@ export function ReferenceForm(props: ReferenceFormProps) {
   const [form, setForm] = useState<SubmitFormReference>(toForm(toEdit));
   const debouncedInput = useDebounce(form.input);
   const { errors, setError } = useFormErrors<FormReference>();
-  const { load } = useFormattedReference({ setReference: setForm });
+  const { load } = useLoadReference({ onLoaded: setForm });
 
   useEffect(() => {
     loadReference();

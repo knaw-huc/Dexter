@@ -92,7 +92,7 @@ export type ResultTag = FormTag & WithId;
 export type FormReference = {
   input: string;
   terms: string;
-  formatted: string;
+  csl: string;
 };
 
 export type ResultReference = FormReference & WithId;
@@ -102,12 +102,6 @@ export type Reference = ResultReference;
 export type SubmitFormReference = Omit<Reference, 'id'> & {
   isLoading: boolean;
 };
-
-export function isFormatted(
-  reference?: ResultReference | Reference,
-): reference is Reference {
-  return !!(reference as Reference)?.formatted;
-}
 
 export enum Access {
   CLOSED = 'Closed',

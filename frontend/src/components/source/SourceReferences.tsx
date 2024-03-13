@@ -35,7 +35,11 @@ export function SourceReferences(props: SourceReferencesProps) {
         <Grid item xs={6} md={8}></Grid>
       </Grid>
       {props.references.map(reference => (
-        <FormattedReference key={reference.id} reference={reference} />
+        <FormattedReference
+          key={reference.id}
+          reference={reference}
+          referenceStyle={props.referenceStyle}
+        />
       ))}
     </>
   );
