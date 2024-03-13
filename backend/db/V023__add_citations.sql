@@ -3,6 +3,7 @@ create table citations
     id uuid primary key default gen_random_uuid(),
     input text not null unique,
     terms text not null unique,
+    formatted text not null unique,
     created_by uuid not null references users (id)
 );
 create index on citations(terms);

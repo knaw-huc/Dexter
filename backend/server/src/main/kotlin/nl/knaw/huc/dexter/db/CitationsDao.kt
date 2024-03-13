@@ -15,14 +15,14 @@ interface CitationsDao {
     @SqlQuery("select * from citations where id = :id")
     fun find(id: UUID): ResultCitation?
 
-    @SqlQuery("insert into citations (input, terms, created_by) values (:input, :terms, :userId) returning *")
+    @SqlQuery("insert into citations (input, terms, formatted, created_by) values (:input, :terms, :formatted, :userId) returning *")
     fun insert(@BindKotlin citation: FormCitation, userId: UUID): ResultCitation
 
-    @SqlQuery("update citations set input = :input, terms = :terms where id = :id returning *")
+    @SqlQuery("update citations set input = :input, terms = :terms, formatted = :formatted where id = :id returning *")
     fun update(id: UUID, @BindKotlin citation: FormCitation): ResultCitation
 
     @SqlQuery(
-        "select * from citations where terms  like all (array[ <terms> ])"
+        "select * from citations where terms like all (array[ <terms> ])"
     )
     fun like(@BindList("terms") terms: List<String>, userId: UUID): List<ResultCitation>
 

@@ -277,7 +277,7 @@ export const addCitationsToSource = async (
 export const deleteCitation = async (id: string): Promise<void> =>
   deleteValidated(`/${api}/${citations}/${id}`);
 
-export const getCitationsAutocomplete = async (
+export const getCitationAutocomplete = async (
   input: string,
 ): Promise<ResultCitation[]> =>
   postValidated(`/${api}/${citations}/autocomplete`, input);

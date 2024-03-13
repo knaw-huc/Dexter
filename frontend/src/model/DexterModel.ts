@@ -92,16 +92,16 @@ export type ResultTag = FormTag & WithId;
 export type FormCitation = {
   input: string;
   terms: string;
+  formatted: string;
 };
 
 export type ResultCitation = FormCitation & WithId;
 
-export type Citation = ResultCitation & {
-  isLoading: boolean;
-  formatted: string;
-};
+export type Citation = ResultCitation;
 
-export type SubmitFormCitation = Omit<Citation, 'id'>;
+export type SubmitFormCitation = Omit<Citation, 'id'> & {
+  isLoading: boolean;
+};
 
 export function isFormatted(
   citation?: ResultCitation | Citation,

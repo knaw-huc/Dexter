@@ -1,14 +1,11 @@
 import { grey } from '@mui/material/colors';
-import { Citation, ResultCitation } from '../../model/DexterModel';
-import React, { useEffect, useState } from 'react';
-import { Avatar, ListItemAvatar, ListItemText } from '@mui/material';
+import { Citation } from '../../model/DexterModel';
+import React from 'react';
+import { Avatar, ListItemAvatar } from '@mui/material';
 import { DeleteIconStyled } from '../common/DeleteIconStyled';
 import { CitationIcon } from './CitationIcon';
 import { ListItemButtonStyled } from '../common/ListItemButtonStyled';
-import { formatCitation } from './formatCitation';
-import { CitationStyle } from './CitationStyle';
-import { SpinnerIcon } from '../common/SpinnerIcon';
-import _ from 'lodash';
+import { FormattedCitation } from './FormattedCitation';
 
 type SourceListItemProps = {
   citation: Citation;
@@ -17,14 +14,6 @@ type SourceListItemProps = {
 };
 
 export const CitationListItem = (props: SourceListItemProps) => {
-  const [formatted, setFormatted] = useState<string>();
-
-  useEffect(() => {
-    formatCitation(props.citation.input, CitationStyle.apa)
-      .then(setFormatted)
-      .catch(() => setFormatted(displayInput(props.citation)));
-  }, []);
-
   function handleDeleted(e: React.MouseEvent) {
     e.stopPropagation();
     props.onDelete();
@@ -49,24 +38,7 @@ export const CitationListItem = (props: SourceListItemProps) => {
           <CitationIcon iconColor="white" isInline={false} fontSize="small" />
         </Avatar>
       </ListItemAvatar>
-      {formatted ? (
-        <ListItemText>
-          <p dangerouslySetInnerHTML={{ __html: formatted }}></p>
-        </ListItemText>
-      ) : (
-        <ListItemText>
-          {displayInput(props.citation)}
-          &nbsp;
-          <SpinnerIcon />
-        </ListItemText>
-      )}
+      <FormattedCitation citation={props.citation} />
     </ListItemButtonStyled>
   );
 };
-
-function displayInput(citation: ResultCitation) {
-  if (!citation?.input) {
-    return '';
-  }
-  return _.truncate(citation.input, { length: 70 });
-}

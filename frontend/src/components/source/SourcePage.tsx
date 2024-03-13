@@ -32,9 +32,12 @@ import { SourceMedia } from './SourceMedia';
 import { SourceCitations } from './SourceCitations';
 import { replaceById } from '../../utils/replaceById';
 import { defaultCitationStyle } from '../citation/CitationStyle';
-import { useFormattedCitation } from '../citation/useFormattedCitation';
-import { upsert } from '../../utils/upsert';
 import { CitationForm } from '../citation/CitationForm';
+import { SelectCitationForm } from '../citation/SelectCitationForm';
+import {
+  updateSourceCitations,
+  updateSourceMedia,
+} from '../../utils/updateRemoteIds';
 
 export const SourcePage = () => {
   const sourceId = useParams().sourceId;
@@ -46,30 +49,16 @@ export const SourcePage = () => {
   const [mediaToEdit, setMediaToEdit] = useState(null);
   const [citationToEdit, setCitationToEdit] = useState<Citation>(null);
   const [showSelectMediaForm, setShowSelectMediaForm] = useState(null);
+  const [showSelectCitationForm, setShowSelectCitationForm] = useState(null);
   const throwSync = useThrowSync();
 
-  const [citations, setCitations] = useState<Citation[]>([]);
   const citationStyle = defaultCitationStyle;
-
-  const { load } = useFormattedCitation({ setCitation });
-
-  function setCitation(citation: Citation) {
-    setCitations(prev => upsert(prev, citation, c => c.id === citation.id));
-  }
 
   useEffect(() => {
     init();
 
     async function init() {
-      try {
-        const source = await getSourceWithResourcesById(sourceId);
-        setSource(source);
-        for (const c of source.citations) {
-          load(c, citationStyle);
-        }
-      } catch (e) {
-        throwSync(e);
-      }
+      getSourceWithResourcesById(sourceId).then(setSource).catch(throwSync);
     }
   }, []);
 
@@ -158,11 +147,13 @@ export const SourcePage = () => {
   }
 
   async function handleChangeSelectedMedia(media: ResultMedia[]) {
-    await addMediaToSource(
-      sourceId,
-      media.map(m => m.id),
-    );
+    await updateSourceMedia(sourceId, media);
     setSource(s => ({ ...s, media }));
+  }
+
+  async function handleChangeSelectedCitations(citations: Citation[]) {
+    await updateSourceCitations(sourceId, citations);
+    setSource(s => ({ ...s, citations }));
   }
 
   const shortSourceFields: (keyof Source)[] = [
@@ -234,13 +225,12 @@ export const SourcePage = () => {
 
       {!_.isEmpty(source.media) && (
         <SourceCitations
-          citations={citations}
+          citations={source.citations}
           onUnlink={handleUnlinkCitation}
           onClickAddNew={() => setShowCitationForm(true)}
           onClickEdit={handleClickEditCitation}
           citationStyle={citationStyle}
-          // TODO:
-          onClickAddExisting={() => alert('add existing citations')}
+          onClickAddExisting={() => setShowSelectCitationForm(true)}
         />
       )}
 
@@ -275,11 +265,12 @@ export const SourcePage = () => {
           citationStyle={citationStyle}
         />
       )}
-      {showSelectMediaForm && (
-        <SelectMediaForm
-          selected={source.media}
-          onChangeSelected={handleChangeSelectedMedia}
-          onClose={() => setShowSelectMediaForm(false)}
+      {showSelectCitationForm && (
+        <SelectCitationForm
+          selected={source.citations}
+          onChangeSelected={handleChangeSelectedCitations}
+          onClose={() => setShowSelectCitationForm(false)}
+          citationStyle={citationStyle}
         />
       )}
     </div>

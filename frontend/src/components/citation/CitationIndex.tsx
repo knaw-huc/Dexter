@@ -10,37 +10,17 @@ import { useThrowSync } from '../common/error/useThrowSync';
 import { CitationForm } from './CitationForm';
 import ErrorBoundary from '../common/error/ErrorBoundary';
 import { defaultCitationStyle } from './CitationStyle';
-import { useFormattedCitation } from './useFormattedCitation';
-import { upsert } from '../../utils/upsert';
 
 export function CitationIndex() {
-  const [citations, setCitations] = useState<Citation[]>([]);
+  const [citations, setCitations] = useState<ResultCitation[]>([]);
   const [showForm, setShowForm] = useState(false);
-  const [citationToEdit, setCitationToEdit] = useState<Citation>(null);
+  const [citationToEdit, setCitationToEdit] = useState<ResultCitation>(null);
   const citationStyle = defaultCitationStyle;
 
   const throwSync = useThrowSync();
 
-  const { load } = useFormattedCitation({
-    setCitation: setCitation,
-  });
-
-  function setCitation(citation: Citation) {
-    setCitations(prev => upsert(prev, citation, c => c.id === citation.id));
-  }
-
   useEffect(() => {
-    init();
-    async function init() {
-      try {
-        const unformatted = await getCitations();
-        for (const c of unformatted) {
-          load(c, citationStyle);
-        }
-      } catch (e) {
-        throwSync(e);
-      }
-    }
+    getCitations().then(setCitations).catch(throwSync);
   }, []);
 
   const handleDelete = async (citation: ResultCitation) => {
@@ -65,12 +45,13 @@ export function CitationIndex() {
 
   function handleSavedCitation(citation: Citation) {
     if (citationToEdit) {
-      setCitation(citation);
+      setCitations(prev =>
+        prev.map(c => (c.id === citation.id ? citation : c)),
+      );
       setCitationToEdit(null);
     } else {
       setCitations(citations => [...citations, citation]);
     }
-    load(citation, citationStyle);
     setShowForm(false);
   }
 

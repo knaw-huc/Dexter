@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Citation,
   FormCitation,
   ResultCitation,
   SubmitFormCitation,
@@ -31,7 +30,7 @@ const defaults: SubmitFormCitation = {
 };
 
 type CitationFormProps = {
-  inEdit?: Citation;
+  inEdit?: ResultCitation;
   onSaved: (update: ResultCitation) => void;
   onClose: () => void;
   citationStyle: CitationStyle;
@@ -42,6 +41,7 @@ export function CitationForm(props: CitationFormProps) {
 
   const [form, setForm] = useState<SubmitFormCitation>({
     ...(toEdit || defaults),
+    isLoading: false,
   });
   const debouncedInput = useDebounce(form.input);
   const { errors, setError } = useFormErrors<FormCitation>();
@@ -50,13 +50,14 @@ export function CitationForm(props: CitationFormProps) {
   });
 
   useEffect(() => {
+    // Waarom lukt doi https://doi.org/10.1145/3343413.3377969 niet?
+    console.log('useEffect', form.input);
     load(form, props.citationStyle);
   }, [debouncedInput, props.citationStyle]);
 
   async function handleSubmit() {
     try {
       const toSubmit = { ...form };
-      delete toSubmit.formatted;
       await citationSchema.validate(toSubmit);
       props.onSaved(await createCitation(toSubmit));
     } catch (error) {

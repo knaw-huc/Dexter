@@ -1,4 +1,4 @@
-import { Citation, ResultCitation } from '../../model/DexterModel';
+import { ResultCitation, SubmitFormCitation } from '../../model/DexterModel';
 import { formatCitation } from './formatCitation';
 import { CitationStyle } from './CitationStyle';
 import { ErrorWithMessage } from '../common/error/ErrorWithMessage';
@@ -8,7 +8,7 @@ type Params = {
   /**
    * Update citation with new formatted citation
    */
-  setCitation: (formatted: Citation) => void;
+  setCitation: (formatted: SubmitFormCitation) => void;
 
   /**
    * Error status of last formatting
@@ -29,12 +29,12 @@ export function useFormattedCitation(params: Params): Result {
   function handleError(e: Error) {
     if (onError) {
       onError(e);
-    } else {
-      console.debug(`Could not format citation: ${e.message}`);
+    } else if (e?.message) {
+      console.debug(`Could not format citation: ${e?.message}`, e);
     }
   }
 
-  async function load(toLoad: Citation, style: CitationStyle) {
+  async function load(toLoad: SubmitFormCitation, style: CitationStyle) {
     if (!toLoad.input) {
       setCitation({ ...toLoad, isLoading: false, formatted: '' });
       return;

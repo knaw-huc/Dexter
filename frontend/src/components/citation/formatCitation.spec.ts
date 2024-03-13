@@ -1,4 +1,4 @@
-import { describe, expect, test } from '@jest/globals';
+import { describe, expect, it } from '@jest/globals';
 import { formatCitation } from './formatCitation';
 import { CitationStyle } from './CitationStyle';
 import { CitationFormat } from './CitationFormat';
@@ -7,21 +7,21 @@ describe('formatCitation', () => {
   const citationStyle = CitationStyle.apa;
   const doi = 'https://doi.org/10.1145/3343413.3377969';
 
-  test('creates bibliography from doi in apa style', async () => {
+  it('creates bibliography from doi in apa style', async () => {
     const actual = await formatCitation(doi, citationStyle);
     const expected =
       'Koolen, M., Kumpulainen, S., &#38; Melgar-Estrada, L. (2020, March 14). A Workflow Analysis Perspective to Scholarly Research Tasks. <i>Proceedings of the 2020 Conference on Human Information Interaction and Retrieval</i>. CHIIR ’20: Conference on Human Information Interaction and Retrieval. https://doi.org/10.1145/3343413.3377969';
     expect(actual).toContain(expected);
   });
 
-  test('creates bibliography from doi in vancouver style', async () => {
+  it('creates bibliography from doi in vancouver style', async () => {
     const actual = await formatCitation(doi, CitationStyle.vancouver);
     const expected =
       'Koolen M, Kumpulainen S, Melgar-Estrada L. A Workflow Analysis Perspective to Scholarly Research Tasks. In: Proceedings of the 2020 Conference on Human Information Interaction and Retrieval [Internet]. ACM; 2020. Available from: http://dx.doi.org/10.1145/3343413.3377969';
     expect(actual).toContain(expected);
   });
 
-  test('creates bibliography from doi in chicago style', async () => {
+  it('creates bibliography from doi in chicago style', async () => {
     const actual = await formatCitation(
       'https://doi.org/10.1111/acel.12050',
       CitationStyle.vancouver,
@@ -43,7 +43,7 @@ describe('formatCitation', () => {
     '  publisher={Wiley Online Library}\n' +
     '}\n';
 
-  test('creates citation from bibtex in apa style', async () => {
+  it('creates citation from bibtex in apa style', async () => {
     const actual = await formatCitation(
       bibtex,
       citationStyle,
