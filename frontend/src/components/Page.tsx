@@ -3,6 +3,7 @@ import React from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Header from './/Header';
 import ErrorBoundary from './common/error/ErrorBoundary';
+import { Version } from './Version';
 
 export const Page = () => {
   const location = useLocation();
@@ -23,6 +24,7 @@ export const Page = () => {
           <Outlet />
         </ErrorBoundary>
       </Container>
+      <Version />
     </div>
   );
 };
