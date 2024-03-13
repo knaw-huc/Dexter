@@ -13,6 +13,7 @@ type SourceListItemProps = {
   reference: Reference;
   onDelete: () => void;
   onEdit: () => void;
+  hideIcon?: boolean;
 };
 
 export const ReferenceListItem = (props: SourceListItemProps) => {
@@ -25,6 +26,8 @@ export const ReferenceListItem = (props: SourceListItemProps) => {
     props.onEdit();
   }
 
+  const withIcon = !props.hideIcon;
+
   return (
     <ListItemButtonStyled
       onClick={handleClickReferenceItem}
@@ -35,15 +38,23 @@ export const ReferenceListItem = (props: SourceListItemProps) => {
       }
       sx={{ ml: 0, pl: 0 }}
     >
-      <ListItemAvatar sx={{ ml: '1em' }}>
-        <Avatar>
-          <ReferenceIcon iconColor="white" isInline={false} fontSize="small" />
-        </Avatar>
-      </ListItemAvatar>
-      <FormattedReference
-        reference={props.reference}
-        referenceStyle={props.referenceStyle}
-      />
+      {withIcon && (
+        <ListItemAvatar sx={{ ml: '1em' }}>
+          <Avatar>
+            <ReferenceIcon
+              iconColor="white"
+              isInline={false}
+              fontSize="small"
+            />
+          </Avatar>
+        </ListItemAvatar>
+      )}
+      <div style={{ paddingLeft: withIcon ? 0 : '2em' }}>
+        <FormattedReference
+          reference={props.reference}
+          referenceStyle={props.referenceStyle}
+        />
+      </div>
     </ListItemButtonStyled>
   );
 };

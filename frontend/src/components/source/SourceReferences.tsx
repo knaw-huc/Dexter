@@ -6,7 +6,7 @@ import { SelectExistingResourceButton } from './SelectExistingResourceButton';
 import React from 'react';
 import { Reference } from '../../model/DexterModel';
 import { ReferenceStyle } from '../reference/ReferenceStyle';
-import { FormattedReference } from '../reference/FormattedReference';
+import { ReferenceListItem } from '../reference/ReferenceListItem';
 
 type SourceReferencesProps = {
   references: Reference[];
@@ -34,13 +34,18 @@ export function SourceReferences(props: SourceReferencesProps) {
         </Grid>
         <Grid item xs={6} md={8}></Grid>
       </Grid>
-      {props.references.map(reference => (
-        <FormattedReference
-          key={reference.id}
-          reference={reference}
-          referenceStyle={props.referenceStyle}
-        />
-      ))}
+      <ul style={{ paddingLeft: 0 }}>
+        {props.references.map(reference => (
+          <ReferenceListItem
+            key={reference.id}
+            reference={reference}
+            onDelete={() => props.onUnlink(reference)}
+            onEdit={() => props.onClickEdit(reference)}
+            referenceStyle={props.referenceStyle}
+            hideIcon={true}
+          />
+        ))}
+      </ul>
     </>
   );
 }

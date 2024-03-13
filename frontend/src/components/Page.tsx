@@ -8,7 +8,11 @@ export const Page = () => {
   const location = useLocation();
   const refreshOnPathChange = location.pathname;
   return (
-    <div>
+    <div
+      style={{
+        marginBottom: '4em',
+      }}
+    >
       <Header />
       <Container
         style={{

@@ -73,6 +73,11 @@ export const SourcePage = () => {
   }
 
   async function handleUnlinkReference(reference: ResultReference) {
+    const warning = window.confirm(
+      'Are you sure you wish to remove this reference?',
+    );
+    if (warning === false) return;
+
     await deleteReferenceFromSource(sourceId, reference.id);
     setSource(s => ({
       ...s,
