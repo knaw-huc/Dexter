@@ -11,13 +11,15 @@ create index on "references"(terms);
 create table sources_references
 (
     reference_id uuid references "references" (id) on delete cascade,
-    source_id uuid references sources (id)
+    source_id uuid references sources (id),
+    unique (reference_id, source_id)
 );
 create index on sources_references(reference_id, source_id);
 
 create table corpora_references
 (
     reference_id uuid references "references" (id) on delete cascade,
-    corpus_id uuid references corpora (id)
+    corpus_id uuid references corpora (id),
+    unique (reference_id, corpus_id)
 );
 create index on corpora_references(reference_id, corpus_id);
