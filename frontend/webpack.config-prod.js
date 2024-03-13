@@ -2,8 +2,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const webpack = require('webpack');
 
-const packageVersion = JSON.stringify(require('./package.json').version);
-
 module.exports = {
   devServer: {
     headers: { 'Access-Control-Allow-Origin': '*' },
