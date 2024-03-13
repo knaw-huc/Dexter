@@ -45,7 +45,7 @@ export function ReferenceForm(props: ReferenceFormProps) {
   const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (form.input) {
+    if (debouncedInput !== initialInput) {
       setLoading(true);
     }
   }, [form.input]);
@@ -53,8 +53,9 @@ export function ReferenceForm(props: ReferenceFormProps) {
   useEffect(() => {
     loadReference();
     async function loadReference() {
-      if (initialInput === debouncedInput) {
+      if (debouncedInput === initialInput) {
         setForm(toForm(props.inEdit));
+        setLoading(false);
       } else {
         await load(form, props.referenceStyle);
         setLoading(false);
