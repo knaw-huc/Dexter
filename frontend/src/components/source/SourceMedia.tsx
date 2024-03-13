@@ -37,7 +37,7 @@ export function SourceMedia(props: SourceMediaProps) {
       </Grid>
       <Grid container spacing={2} sx={{ pl: 0.1, mt: 2, mb: 2 }}>
         {props.media.map(media => (
-          <Grid item xs={2} key={media.id}>
+          <Grid item xs={4} key={media.id}>
             <MediaPreview
               media={media}
               onDelete={() => props.onUnlink(media)}
