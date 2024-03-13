@@ -9,7 +9,7 @@ type MetadataValuePageFieldsProps = {
   values: MetadataValue[];
 };
 
-const MetadataValue = styled.p`
+const MetadataValueStyled = styled.p`
   margin-top: 0;
 `;
 
@@ -20,7 +20,7 @@ export function MetadataValuePageFields(props: MetadataValuePageFieldsProps) {
       {props.values.sort(compareMetadataValues).map((value, i) => (
         <div key={i}>
           <Label>{value.key.key}</Label>
-          <MetadataValue>{value.value}</MetadataValue>
+          <MetadataValueStyled>{value.value}</MetadataValueStyled>
         </div>
       ))}
     </>
