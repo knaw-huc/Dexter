@@ -16,15 +16,16 @@ import { useNavigate } from 'react-router-dom';
 import { LoginAvatar } from './LoginAvatar';
 import {
   corpora,
-  metadata,
-  tags,
   media,
-  sources,
+  metadata,
   references,
+  sources,
+  tags,
 } from '../model/Resources';
+import { Version } from './Version';
 
 const pages = [corpora, sources, tags, metadata, media, references];
-const settings: string[] = [];
+const settings: JSX.Element[] = [<Version key={1} />];
 
 export default function Header() {
   const navigate = useNavigate();
@@ -68,14 +69,14 @@ export default function Header() {
                 </Button>
               ))}
           </Box>
-          {user.userState.username ? <UserAvatar /> : <LoginAvatar />}
+          {user.userState.username ? <UserMenu /> : <LoginAvatar />}
         </Toolbar>
       </Container>
     </AppBar>
   );
 }
 
-function UserAvatar() {
+function UserMenu() {
   const username = useContext(userContext).userState.username;
 
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
@@ -110,11 +111,11 @@ function UserAvatar() {
         open={Boolean(anchorElUser)}
         onClose={handleCloseUserMenu}
       >
-        <MenuItem style={{ cursor: 'default' }}>
+        <MenuItem style={{ cursor: 'default', borderBottom: '1px solid #ccc' }}>
           <Typography textAlign="center">{username}</Typography>
         </MenuItem>
-        {settings.map(setting => (
-          <MenuItem key={setting} onClick={handleCloseUserMenu}>
+        {settings.map((setting, i) => (
+          <MenuItem key={i} onClick={handleCloseUserMenu}>
             <Typography textAlign="center">{setting}</Typography>
           </MenuItem>
         ))}

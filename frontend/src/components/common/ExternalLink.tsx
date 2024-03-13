@@ -3,12 +3,9 @@ import { blue, grey } from '@mui/material/colors';
 import isUrl from '../../utils/isUrl';
 import { truncateMiddle } from '../../utils/truncateMiddle';
 import React from 'react';
-import OpenInNewOutlinedIcon from '@mui/icons-material/OpenInNewOutlined';
 import styled from '@emotion/styled';
+import { ExternalIconStyled } from './ExternalIconStyled';
 
-const OpenInNewOutlinedIconStyled = styled(OpenInNewOutlinedIcon)`
-  margin-left: 0.4em;
-`;
 const A = styled.a`
   color: ${blue[600]};
   text-decoration: none;
@@ -33,7 +30,7 @@ export function ExternalLink(props: {
           <A href={props.url} target="_blank" rel="noreferrer">
             {truncateMiddle(props.url, 100)}
           </A>
-          <OpenInNewOutlinedIconStyled fontSize="inherit" />
+          <ExternalIconStyled />
         </>
       ) : (
         <>{props.url}</>
