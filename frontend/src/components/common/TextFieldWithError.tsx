@@ -1,16 +1,21 @@
 import React from 'react';
 import { Label } from '../common/Label';
-import { ErrorMessage } from '../common/ErrorMessage';
+import { FieldError } from '../common/error/FieldError';
 import { TextFieldStyled } from './TextFieldStyled';
 import { TextareaFieldProps } from '../common/TextareaFieldProps';
-import { ErrorWithMessage } from '../ErrorHandler';
+import { ErrorWithMessage } from '../common/error/ErrorWithMessage';
+import { SxProps } from '@mui/system';
+import { Theme } from '@mui/material/styles';
 
 export type TextFormFieldProps = TextareaFieldProps & {
   label: string;
   error?: ErrorWithMessage;
-  value?: string;
+  value: string | undefined;
   onChange: (change?: string) => void;
+  onFocus?: () => void;
+  onBlur?: () => void;
   variant?: 'standard';
+  sx?: SxProps<Theme>;
 };
 
 /**
@@ -20,8 +25,8 @@ export function TextFieldWithError(props: TextFormFieldProps) {
   const { label, error, onChange, value, ...textFieldProps } = props;
   return (
     <>
-      <Label style={{ textTransform: 'capitalize' }}>{label}</Label>
-      {error && <ErrorMessage error={error} />}
+      {props.label && <Label>{label}</Label>}
+      {error && <FieldError error={error} />}
       <TextFieldStyled
         {...textFieldProps}
         fullWidth={true}
@@ -30,6 +35,7 @@ export function TextFieldWithError(props: TextFormFieldProps) {
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
           onChange(event.target.value || undefined);
         }}
+        sx={props.sx}
       />
     </>
   );

@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import {
+  Access,
   AccessOptions,
   ResultMetadataKey,
   Source,
-  SourceFormSubmit,
+  SubmitFormSource,
 } from '../../model/DexterModel';
 import ScrollableModal from '../common/ScrollableModal';
 import { SelectTagField } from '../tag/SelectTagField';
 import { LanguagesField } from '../language/LanguagesField';
-import { Label } from '../common/Label';
 import { ValidatedSelectField } from '../common/ValidatedSelectField';
-import { ErrorMessage } from '../common/ErrorMessage';
-import { TextFieldWithError } from './TextFieldWithError';
-import { FormErrorMessage } from '../common/FormError';
+import { TextFieldWithError } from '../common/TextFieldWithError';
 import { CloseInlineIcon } from '../common/CloseInlineIcon';
 import { SubmitButton } from '../common/SubmitButton';
 import { ImportField } from './ImportField';
@@ -23,8 +21,10 @@ import { useSubmitSourceForm } from './useSubmitSourceForm';
 import { useInitSourceForm } from './useInitSourceForm';
 import { TextareaFieldProps } from '../common/TextareaFieldProps';
 import { onSubmit } from '../../utils/onSubmit';
-import { useFormErrors } from '../common/useFormErrors';
 import { SelectMediaField } from '../media/SelectMediaField';
+import { useFormErrors } from '../common/error/useFormErrors';
+import { FormErrorMessage } from '../common/error/FormError';
+import { Any } from '../common/Any';
 
 type SourceFormProps = {
   sourceToEdit?: Source;
@@ -36,7 +36,7 @@ type SourceFormProps = {
 export function SourceForm(props: SourceFormProps) {
   const sourceToEdit = props.sourceToEdit;
 
-  const [form, setForm] = useState<SourceFormSubmit>();
+  const [form, setForm] = useState<SubmitFormSource>();
   const { errors, setError, setFieldError } = useFormErrors<Source>();
   const [keys, setKeys] = useState<ResultMetadataKey[]>([]);
 
@@ -50,7 +50,7 @@ export function SourceForm(props: SourceFormProps) {
     setError,
     onSubmitted: props.onSaved,
   });
-  const { isImportLoading, loadImport } = useImportMetadata<SourceFormSubmit>({
+  const { isImportLoading, loadImport } = useImportMetadata<SubmitFormSource>({
     setError,
     setFieldError,
   });
@@ -66,22 +66,21 @@ export function SourceForm(props: SourceFormProps) {
   }
 
   function renderFormField(
-    fieldName: keyof SourceFormSubmit,
+    fieldName: keyof SubmitFormSource,
     props?: TextareaFieldProps,
   ) {
     return (
       <TextFieldWithError
         label={_.capitalize(fieldName)}
+        error={errors[fieldName]}
         value={form[fieldName] as string}
         onChange={v =>
           setForm(f => {
             const update = { ...f };
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (update as any)[fieldName] = v;
+            (update as Any)[fieldName] = v;
             return update;
           })
         }
-        error={errors[fieldName]}
         {...props}
       />
     );
@@ -98,10 +97,9 @@ export function SourceForm(props: SourceFormProps) {
       <FormErrorMessage error={errors.generic} />
       <form onSubmit={onSubmit(handleSubmit)}>
         <ImportField
-          label="External Reference"
+          error={errors.externalRef}
           value={form.externalRef}
           onChange={externalRef => setForm(f => ({ ...f, externalRef }))}
-          error={errors.externalRef}
           onImport={handleImportMetadata}
           isImporting={isImportLoading}
           isRefImportable={isImportableUrl(form.externalRef)}
@@ -113,7 +111,7 @@ export function SourceForm(props: SourceFormProps) {
         {renderFormField('rights')}
         {renderFormField('ethics')}
 
-        <ValidatedSelectField
+        <ValidatedSelectField<Access>
           label="Access"
           error={errors.access}
           selectedOption={form.access}
@@ -126,37 +124,33 @@ export function SourceForm(props: SourceFormProps) {
         {renderFormField('latest')}
         {renderFormField('notes', { rows: 6, multiline: true })}
 
-        <Label>Tags</Label>
         <SelectTagField
+          error={errors.tags}
           selected={form.tags}
           onChangeSelected={tags => setForm(f => ({ ...f, tags }))}
           useAutocomplete
           allowCreatingNew
         />
-        <ErrorMessage error={errors.tags} />
 
-        <Label>Languages</Label>
         <LanguagesField
+          error={errors.languages}
           selected={form.languages}
           onChangeSelected={languages => setForm(f => ({ ...f, languages }))}
         />
-        <ErrorMessage error={errors.languages} />
 
         <MetadataValueFormFields
+          error={errors.metadataValues}
           keys={keys}
           values={form.metadataValues}
           onChange={metadataValues => setForm(f => ({ ...f, metadataValues }))}
         />
-        <ErrorMessage error={errors.metadataValues} />
 
-        <Label>Media</Label>
         <SelectMediaField
+          error={errors.media}
           selected={form.media}
           onChangeSelected={media => setForm(f => ({ ...f, media }))}
-          useAutocomplete
           allowCreatingNew
         />
-        <ErrorMessage error={errors.media} />
 
         <SubmitButton onClick={handleSubmit} />
       </form>

@@ -18,6 +18,8 @@ import {
   addMediaToCorpus,
   deleteMediaFromSource,
   deleteMediaFromCorpus,
+  addReferencesToSource,
+  deleteReferenceFromSource,
 } from './API';
 
 type WithId = {
@@ -90,4 +92,9 @@ export const updateSourceTags = updateLinkedResourcesWith(
 export const updateSourceMedia = updateLinkedResourcesWith(
   addMediaToSource,
   deleteMediaFromSource,
+);
+
+export const updateSourceReferences = updateLinkedResourcesWith(
+  addReferencesToSource,
+  deleteReferenceFromSource,
 );

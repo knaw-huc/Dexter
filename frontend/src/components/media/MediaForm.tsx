@@ -8,14 +8,15 @@ import {
 } from '../../model/DexterModel';
 import { createMedia, updateMedia } from '../../utils/API';
 import ScrollableModal from '../common/ScrollableModal';
-import { FormErrorMessage } from '../common/FormError';
 import { CloseInlineIcon } from '../common/CloseInlineIcon';
 import { SubmitButton } from '../common/SubmitButton';
-import { ErrorMessage } from '../common/ErrorMessage';
 import * as yup from 'yup';
 import { onSubmit } from '../../utils/onSubmit';
 import { validUrl } from '../../utils/validateFields';
-import { useFormErrors } from '../common/useFormErrors';
+import { useFormErrors } from '../common/error/useFormErrors';
+import { FormErrorMessage } from '../common/error/FormError';
+import { FieldError } from '../common/error/FieldError';
+import { TextFieldWithError } from '../common/TextFieldWithError';
 
 type MediaFormProps = {
   inEdit?: ResultMedia;
@@ -82,24 +83,22 @@ export function MediaForm(props: MediaFormProps) {
         <h1>{props.inEdit ? 'Edit media' : 'Add media'}</h1>
         <form onSubmit={onSubmit(handleSubmit)}>
           <FormErrorMessage error={errors.generic} />
-          <ErrorMessage error={errors.title} />
-          <TextField
-            fullWidth
-            placeholder={`Title`}
+          <FieldError error={errors.title} />
+          <TextFieldWithError
+            label="Title"
+            error={errors.title}
             value={form.title}
-            style={{ marginBottom: '0.5em' }}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setForm(f => ({ ...f, title: event.target.value }));
+            onChange={change => {
+              setForm(f => ({ ...f, title: change }));
             }}
           />
 
-          <ErrorMessage error={errors.url} />
-          <TextField
-            fullWidth
-            placeholder={`Url (${supportedMediaTypes.join(', ')})`}
+          <TextFieldWithError
+            label={`Url (${supportedMediaTypes.join(', ')})`}
+            error={errors.url}
             value={form.url}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setForm(f => ({ ...f, url: event.target.value }));
+            onChange={change => {
+              setForm(f => ({ ...f, url: change }));
             }}
           />
 

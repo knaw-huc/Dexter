@@ -51,6 +51,16 @@ interface CorporaDao {
 
     @SqlUpdate("delete from corpora_tags where corpus_id = :corpusId and tag_id = :tagId")
     fun deleteTag(corpusId: UUID, tagId: Int)
+    
+    @SqlQuery("select r.* from corpora_references cc join \"references\" r on cc.reference_id = r.id where corpus_id = :corpusId")
+    @RegisterKotlinMapper(ResultReference::class)
+    fun getReferences(corpusId: UUID): List<ResultReference>
+
+    @SqlUpdate("insert into corpora_references (corpus_id,reference_id) values (:corpusId,:referenceId) on conflict do nothing")
+    fun addReference(corpusId: UUID, referenceId: UUID)
+
+    @SqlUpdate("delete from corpora_references where corpus_id = :corpusId and reference_id = :referenceId")
+    fun deleteReference(corpusId: UUID, referenceId: UUID)
 
     @SqlQuery("select l.* from corpora_languages cl join iso_639_3 l on cl.lang_id = l.id where corpus_id = :corpusId")
     fun getLanguages(corpusId: UUID): List<ResultLanguage>

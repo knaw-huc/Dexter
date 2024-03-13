@@ -5,12 +5,13 @@ object ResourcePaths {
     // main paths
     const val ABOUT = "about"
     const val ADMIN = "admin"
+    const val REFERENCES = "references"
     const val CORPORA = "corpora"
-    const val TAGS = "tags"
     const val LANGUAGES = "languages"
     const val METADATA = "metadata"
     const val MEDIA = "media"
     const val SOURCES = "sources"
+    const val TAGS = "tags"
     const val USER = "user"
     const val WERELDCULTUREN = "wereldculturen"
     // sub paths

@@ -1,36 +1,25 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { image, ResultMedia } from '../../model/DexterModel';
 import { MediaPreview } from './MediaPreview';
 import { MediaForm } from './MediaForm';
 import { AddNewResourceButton } from '../common/AddNewResourceButton';
 import { Grid } from '@mui/material';
-import { errorContext } from '../../state/error/errorContext';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
 import { deleteMedia, getMedia } from '../../utils/API';
 import { MediaIcon } from './MediaIcon';
+import { useThrowSync } from '../common/error/useThrowSync';
 
 export function MediaIndex() {
-  const [showForm, setShowForm] = React.useState(false);
   const [media, setMedia] = useState<ResultMedia[]>();
-  const [isInit, setInit] = useState(false);
-  const { dispatchError } = useContext(errorContext);
+  const [showForm, setShowForm] = React.useState(false);
   const [mediaToEdit, setMediaToEdit] = React.useState<ResultMedia>(null);
 
-  useEffect(() => {
-    async function init() {
-      try {
-        // TODO: support multiple media types
-        setMedia(await getMedia(image));
-      } catch (e) {
-        dispatchError(e);
-      }
-    }
+  const throwSync = useThrowSync();
 
-    if (!isInit) {
-      setInit(true);
-      init();
-    }
-  }, [isInit]);
+  useEffect(() => {
+    // TODO: support multiple media types
+    getMedia(image).then(setMedia).catch(throwSync);
+  }, []);
 
   async function handleDelete(media: ResultMedia) {
     const warning = window.confirm(
@@ -63,6 +52,9 @@ export function MediaIndex() {
     setShowForm(false);
   }
 
+  if (!media) {
+    return null;
+  }
   return (
     <>
       <div>

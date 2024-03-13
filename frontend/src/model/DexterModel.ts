@@ -22,12 +22,12 @@ export type FormCorpus = {
 /**
  * Corpus result as sent by server
  */
-export type ResultCorpus = FormCorpus & {
-  id: UUID;
-  createdBy: UUID;
-  createdAt: LocalDateTime;
-  updatedAt: LocalDateTime;
-};
+export type ResultCorpus = FormCorpus &
+  WithId & {
+    createdBy: UUID;
+    createdAt: LocalDateTime;
+    updatedAt: LocalDateTime;
+  };
 
 /**
  * Corpus including child resources
@@ -41,10 +41,7 @@ export type Corpus = Omit<ResultCorpus, 'parentId'> & {
   subcorpora: Corpus[];
 };
 
-/**
- * Source update
- */
-export type CorpusFormSubmit = Omit<Corpus, 'id'>;
+export type SubmitFormCorpus = Omit<Corpus, 'id'>;
 
 export type FormSource = {
   title: string;
@@ -63,42 +60,53 @@ export type FormSource = {
 /**
  * Source result as send by server
  */
-export type ResultSource = FormSource & {
-  id: UUID;
-  createdBy: UUID;
-  createdAt: LocalDateTime;
-  updatedAt: LocalDateTime;
-};
+export type ResultSource = FormSource &
+  WithId & {
+    createdBy: UUID;
+    createdAt: LocalDateTime;
+    updatedAt: LocalDateTime;
+  };
 
 /**
  * Source including all child resources
  */
 export type Source = ResultSource & {
-  tags: ResultTag[];
-  languages: ResultLanguage[];
-  metadataValues: MetadataValue[];
-  media: ResultMedia[];
+  references: ResultReference[];
   corpora: ResultCorpus[];
+  languages: ResultLanguage[];
+  media: ResultMedia[];
+  metadataValues: MetadataValue[];
+  tags: ResultTag[];
 };
 
-/**
- * Source update:
- * - ID can be undefined
- */
-export type SourceFormSubmit = Omit<Source, 'id' | 'metadataValues'> & {
+export type SubmitFormSource = Omit<Source, 'id' | 'metadataValues'> & {
   metadataValues: FormMetadataValue[];
 };
 
-export interface ResultTag {
-  id: string;
+export type FormTag = {
   val: string;
-}
+};
+
+export type ResultTag = FormTag & WithId;
+
+export type FormReference = {
+  input: string;
+  terms: string;
+  csl: string;
+};
+
+export type ResultReference = FormReference & WithId;
+
+export type Reference = ResultReference;
+
+export type SubmitFormReference = FormReference;
 
 export enum Access {
   CLOSED = 'Closed',
   RESTRICTED = 'Restricted',
   OPEN = 'Open',
 }
+
 export const AccessOptions = ['Open', 'Restricted', 'Closed'];
 
 // Metadata
@@ -106,29 +114,18 @@ export type WithMetadata = {
   metadataValues: MetadataValue[];
 };
 
-export type FormTag = {
-  val: string;
-};
-
 export type FormMetadataKey = {
   key: string;
 };
 
-export type ResultMetadataKey = {
-  id: UUID;
-  key: string;
-};
+export type ResultMetadataKey = FormMetadataKey & WithId;
 
 export type FormMetadataValue = {
   keyId: UUID;
   value: string;
 };
 
-export type ResultMetadataValue = {
-  id: UUID;
-  keyId: UUID;
-  value: string;
-};
+export type ResultMetadataValue = FormMetadataValue & WithId;
 
 export type MetadataValue = Omit<ResultMetadataValue, 'keyId'> & {
   key: ResultMetadataKey;
@@ -157,9 +154,11 @@ export function toMetadataValue(
 
 export type SupportedMediaType = 'image/jpeg' | 'image/png';
 export const supportedMediaTypes = ['image/jpeg', 'image/png'];
+
 export function isImage(mediaType: string): boolean {
   return mediaType.split('/')[0] === 'image';
 }
+
 export type SupportedMediaTypeType = 'image';
 
 export const image = 'image';
@@ -169,13 +168,11 @@ export type FormMedia = {
   url: string;
 };
 
-export type ResultMedia = {
-  id: UUID;
-  title: string;
-  url: string;
-  mediaType: SupportedMediaType;
-  createdBy: UUID;
-};
+export type ResultMedia = FormMedia &
+  WithId & {
+    mediaType: SupportedMediaType;
+    createdBy: UUID;
+  };
 
 export type ResultDublinCoreMetadata = Record<string, string>;
 
@@ -194,3 +191,7 @@ export interface ResultLanguage {
   refName: string;
   comment: string;
 }
+
+export type WithId = {
+  id: string;
+};

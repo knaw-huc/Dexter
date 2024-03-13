@@ -54,6 +54,17 @@ interface SourcesDao {
     @SqlUpdate("delete from sources_tags where source_id = :sourceId and tag_id = :tagId")
     fun deleteTag(sourceId: UUID, tagId: Int)
 
+
+    @SqlQuery("select r.* from sources_references sc join \"references\" r on sc.reference_id = r.id where source_id = :sourceId")
+    @RegisterKotlinMapper(ResultReference::class)
+    fun getReferences(sourceId: UUID): List<ResultReference>
+
+    @SqlUpdate("insert into sources_references (source_id,reference_id) values (:sourceId,:referenceId) on conflict do nothing")
+    fun addReference(sourceId: UUID, referenceId: UUID)
+
+    @SqlUpdate("delete from sources_references where source_id = :sourceId and reference_id = :referenceId")
+    fun deleteReference(sourceId: UUID, referenceId: UUID)
+
     @SqlQuery("select l.* from sources_languages sl join iso_639_3 l on sl.lang_id = l.id where source_id = :sourceId")
     fun getLanguages(sourceId: UUID): List<ResultLanguage>
 

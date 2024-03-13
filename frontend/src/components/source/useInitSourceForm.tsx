@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction, useState } from 'react';
 import {
   ResultMetadataKey,
   Source,
-  SourceFormSubmit,
+  SubmitFormSource,
   toFormMetadataValue,
 } from '../../model/DexterModel';
 import { getMetadataKeys } from '../../utils/API';
@@ -14,7 +14,7 @@ type UseInitSourceFormResult = {
 
 type UseInitSourceFormParams = {
   sourceToEdit?: Source;
-  setForm: Dispatch<SetStateAction<SourceFormSubmit>>;
+  setForm: Dispatch<SetStateAction<SubmitFormSource>>;
   setKeys: Dispatch<ResultMetadataKey[]>;
 };
 
@@ -27,11 +27,13 @@ const defaults: Source = {
   earliest: undefined,
   latest: undefined,
   notes: undefined,
-  tags: [],
-  languages: [],
-  metadataValues: [],
-  media: [],
+
+  references: [],
   corpora: [],
+  languages: [],
+  media: [],
+  metadataValues: [],
+  tags: [],
 
   // Not created or modified by form:
   id: undefined,
@@ -40,7 +42,7 @@ const defaults: Source = {
   updatedAt: undefined,
 };
 
-function toSourceForm(toEdit?: Source): SourceFormSubmit {
+function toSourceForm(toEdit?: Source): SubmitFormSource {
   return {
     ...(toEdit || defaults),
     metadataValues: toEdit?.metadataValues.map(toFormMetadataValue) || [],

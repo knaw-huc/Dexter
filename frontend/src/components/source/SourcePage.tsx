@@ -1,8 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { ResultMedia, Source } from '../../model/DexterModel';
 import {
+  Reference,
+  ResultReference,
+  ResultMedia,
+  Source,
+} from '../../model/DexterModel';
+import {
+  addReferencesToSource,
   addMediaToSource,
+  deleteReferenceFromSource,
   deleteMediaFromSource,
   getSourceWithResourcesById,
 } from '../../utils/API';
@@ -10,58 +17,50 @@ import { SourceForm } from './SourceForm';
 import { EditButton } from '../common/EditButton';
 import { TagList } from '../tag/TagList';
 import _ from 'lodash';
-import {
-  FieldLabel,
-  ShortFieldsSummary,
-  SummaryP,
-} from '../common/ShortFieldsSummary';
+import { FieldLabel, ShortFieldsSummary } from '../common/ShortFieldsSummary';
 import { SourceIcon } from './SourceIcon';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
 import { SourcesBreadCrumbLink } from './SourcesBreadCrumbLink';
-import { blue, grey } from '@mui/material/colors';
-import isUrl from '../../utils/isUrl';
-import OpenInNewOutlinedIcon from '@mui/icons-material/OpenInNewOutlined';
-import styled from '@emotion/styled';
 import { MetadataValuePageFields } from '../metadata/MetadataValuePageFields';
 import { Title } from '../media/Title';
-import { Grid } from '@mui/material';
-import { NoResults } from '../common/NoResults';
-import { MediaPreview } from '../media/MediaPreview';
 import { MediaForm } from '../media/MediaForm';
-import { AddNewResourceButton } from '../common/AddNewResourceButton';
-import { SelectExistingResourceButton } from './SelectExistingResourceButton';
 import { SelectMediaForm } from './SelectMediaForm';
-import { MediaIcon } from '../media/MediaIcon';
 import { H2Styled } from '../common/H2Styled';
+import { ExternalLink } from '../common/ExternalLink';
+import { useThrowSync } from '../common/error/useThrowSync';
+import { SourceMedia } from './SourceMedia';
+import { SourceReferences } from './SourceReferences';
+import { replaceById } from '../../utils/replaceById';
+import { defaultReferenceStyle } from '../reference/ReferenceStyle';
+import { ReferenceForm } from '../reference/ReferenceForm';
+import { SelectReferenceForm } from '../reference/SelectReferenceForm';
+import {
+  updateSourceReferences,
+  updateSourceMedia,
+} from '../../utils/updateRemoteIds';
 
-const OpenInNewOutlinedIconStyled = styled(OpenInNewOutlinedIcon)`
-  margin-left: 0.4em;
-`;
-const A = styled.a`
-  color: ${blue[600]};
-  text-decoration: none;
-
-  &:hover {
-    text-decoration: underline;
-  }
-`;
 export const SourcePage = () => {
-  const params = useParams();
-  const sourceId = params.sourceId;
+  const sourceId = useParams().sourceId;
 
-  const [source, setSource] = useState<Source>(null);
+  const [source, setSource] = useState<Source>();
   const [showForm, setShowForm] = useState(false);
-  const [showMediaForm, setMediaShowForm] = useState(false);
+  const [showMediaForm, setShowMediaForm] = useState(false);
+  const [showReferenceForm, setShowReferenceForm] = useState(false);
   const [mediaToEdit, setMediaToEdit] = useState(null);
+  const [referenceToEdit, setReferenceToEdit] = useState<Reference>(null);
   const [showSelectMediaForm, setShowSelectMediaForm] = useState(null);
+  const [showSelectReferenceForm, setShowSelectReferenceForm] = useState(null);
+  const throwSync = useThrowSync();
+
+  const referenceStyle = defaultReferenceStyle;
 
   useEffect(() => {
     init();
-  }, []);
 
-  const init = async () => {
-    setSource(await getSourceWithResourcesById(sourceId));
-  };
+    async function init() {
+      getSourceWithResourcesById(sourceId).then(setSource).catch(throwSync);
+    }
+  }, []);
 
   const handleSavedForm = (update: Source) => {
     setSource(update);
@@ -73,9 +72,22 @@ export const SourcePage = () => {
     setSource(s => ({ ...s, media: s.media.filter(m => m.id !== media.id) }));
   }
 
-  function handleEditMedia(media: ResultMedia) {
+  async function handleUnlinkReference(reference: ResultReference) {
+    const warning = window.confirm(
+      'Are you sure you wish to remove this reference?',
+    );
+    if (warning === false) return;
+
+    await deleteReferenceFromSource(sourceId, reference.id);
+    setSource(s => ({
+      ...s,
+      references: s.references.filter(c => c.id !== reference.id),
+    }));
+  }
+
+  function handleClickEditMedia(media: ResultMedia) {
     setMediaToEdit(media);
-    setMediaShowForm(true);
+    setShowMediaForm(true);
   }
 
   async function handleSavedMedia(media: ResultMedia) {
@@ -92,26 +104,61 @@ export const SourcePage = () => {
       media: s.media.map(s => (s.id === media.id ? media : s)),
     }));
     setMediaToEdit(null);
-    setMediaShowForm(false);
+    setShowMediaForm(false);
   }
 
   async function addCreatedMedia(media: ResultMedia) {
     await addMediaToSource(sourceId, [media.id]);
     setSource(s => ({ ...s, media: [...s.media, media] }));
-    setMediaShowForm(false);
+    setShowMediaForm(false);
+  }
+
+  function handleClickEditReference(reference: Reference) {
+    setReferenceToEdit(reference);
+    setShowReferenceForm(true);
+  }
+
+  async function handleSavedReference(reference: ResultReference) {
+    if (referenceToEdit) {
+      handleEditReference(reference);
+    } else {
+      await addCreatedReference(reference);
+    }
+  }
+
+  function handleEditReference(reference: ResultReference) {
+    setSource(s => ({
+      ...s,
+      references: replaceById(reference, s.references),
+    }));
+    setReferenceToEdit(null);
+    setShowReferenceForm(false);
+  }
+
+  async function addCreatedReference(reference: ResultReference) {
+    await addReferencesToSource(sourceId, [reference.id]);
+    setSource(s => ({ ...s, references: [...s.references, reference] }));
+    setShowReferenceForm(false);
+  }
+
+  function handleCloseReference() {
+    setReferenceToEdit(null);
+    setShowReferenceForm(false);
   }
 
   function handleCloseMedia() {
     setMediaToEdit(null);
-    setMediaShowForm(false);
+    setShowMediaForm(false);
   }
 
   async function handleChangeSelectedMedia(media: ResultMedia[]) {
-    await addMediaToSource(
-      sourceId,
-      media.map(m => m.id),
-    );
+    await updateSourceMedia(sourceId, media);
     setSource(s => ({ ...s, media }));
+  }
+
+  async function handleChangeSelectedReferences(references: Reference[]) {
+    await updateSourceReferences(sourceId, references);
+    setSource(s => ({ ...s, references }));
   }
 
   const shortSourceFields: (keyof Source)[] = [
@@ -158,19 +205,11 @@ export const SourcePage = () => {
         }
       />
       {source.externalRef && (
-        <SummaryP>
-          <span style={{ color: grey[600] }}>External reference: </span>
-          {isUrl(source.externalRef) ? (
-            <>
-              <A href={source.externalRef} target="_blank" rel="noreferrer">
-                {source.externalRef}
-              </A>
-              <OpenInNewOutlinedIconStyled fontSize="inherit" />
-            </>
-          ) : (
-            <>{source.externalRef}</>
-          )}
-        </SummaryP>
+        <ExternalLink
+          url={source.externalRef}
+          fieldName="externalRef"
+          fieldLabel="External reference"
+        />
       )}
       {source.notes && (
         <>
@@ -183,37 +222,25 @@ export const SourcePage = () => {
         <MetadataValuePageFields values={source.metadataValues} />
       )}
 
-      <H2Styled>
-        <MediaIcon />
-        Media
-      </H2Styled>
-      <Grid container spacing={2}>
-        <Grid item xs={6} md={4}>
-          <AddNewResourceButton
-            title="New media"
-            onClick={() => setMediaShowForm(true)}
-          />
-          <SelectExistingResourceButton
-            title="Existing media"
-            onClick={() => setShowSelectMediaForm(true)}
-          />
-        </Grid>
-        <Grid item xs={6} md={8}></Grid>
-      </Grid>
-      {!_.isEmpty(source.media) ? (
-        <Grid container spacing={2} sx={{ pl: 0.1, mt: 2, mb: 2 }}>
-          {source.media.map(media => (
-            <Grid item xs={2} key={media.id}>
-              <MediaPreview
-                media={media}
-                onDelete={() => handleUnlinkMedia(media)}
-                onEdit={() => handleEditMedia(media)}
-              />
-            </Grid>
-          ))}
-        </Grid>
-      ) : (
-        <NoResults message="No media" />
+      {!_.isEmpty(source.media) && (
+        <SourceMedia
+          media={source.media}
+          onUnlink={handleUnlinkMedia}
+          onClickAddNew={() => setShowMediaForm(true)}
+          onClickAddExisting={() => setShowSelectMediaForm(true)}
+          onClickEdit={handleClickEditMedia}
+        />
+      )}
+
+      {!_.isEmpty(source.media) && (
+        <SourceReferences
+          references={source.references}
+          onUnlink={handleUnlinkReference}
+          onClickAddNew={() => setShowReferenceForm(true)}
+          onClickEdit={handleClickEditReference}
+          referenceStyle={referenceStyle}
+          onClickAddExisting={() => setShowSelectReferenceForm(true)}
+        />
       )}
 
       {showForm && (
@@ -237,7 +264,22 @@ export const SourcePage = () => {
           selected={source.media}
           onChangeSelected={handleChangeSelectedMedia}
           onClose={() => setShowSelectMediaForm(false)}
-          useAutocomplete
+        />
+      )}
+      {showReferenceForm && (
+        <ReferenceForm
+          onClose={handleCloseReference}
+          onSaved={handleSavedReference}
+          inEdit={referenceToEdit}
+          referenceStyle={referenceStyle}
+        />
+      )}
+      {showSelectReferenceForm && (
+        <SelectReferenceForm
+          selected={source.references}
+          onChangeSelected={handleChangeSelectedReferences}
+          onClose={() => setShowSelectReferenceForm(false)}
+          referenceStyle={referenceStyle}
         />
       )}
     </div>

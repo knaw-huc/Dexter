@@ -5,7 +5,7 @@ import { ButtonWithIcon } from '../common/ButtonWithIcon';
 import { FilterIconStyled } from '../common/FilterIconStyled';
 
 export function TagsFilter(props: {
-  all: ResultTag[];
+  options: ResultTag[];
   selected: ResultTag[];
   onChangeSelected: (keys: ResultTag[]) => void;
   placeholder?: string;
@@ -20,7 +20,7 @@ export function TagsFilter(props: {
     <SelectTagField
       selected={props.selected}
       onChangeSelected={props.onChangeSelected}
-      options={props.all}
+      options={props.options}
       size="small"
       placeholder={props.placeholder}
     />

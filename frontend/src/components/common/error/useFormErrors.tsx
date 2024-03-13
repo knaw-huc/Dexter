@@ -1,13 +1,21 @@
 import { useEffect, useState } from 'react';
-import { ResponseError } from '../../utils/API';
-import { FormErrors, scrollToError } from './FormError';
-import { ErrorWithMessage } from '../ErrorHandler';
 import _ from 'lodash';
 import { ValidationError } from 'yup';
+import { FormErrors } from './FormError';
+import { ErrorWithMessage } from './ErrorWithMessage';
+import { scrollToError } from './scrollToError';
+import { isResponseError } from '../isResponseError';
 
 type UseFormErrorsResult<T> = {
   errors: FormErrors<T>;
-  setError: (error: Error) => Promise<void>;
+
+  /**
+   * Set error
+   * When passing null, errors will be cleared
+   * @param error
+   */
+  setError: (error: Error | null) => Promise<void>;
+
   setFieldError: (field: keyof T, error: ErrorWithMessage) => void;
   clearErrors: () => void;
 };
@@ -38,32 +46,29 @@ export function useFormErrors<T>(): UseFormErrorsResult<T> {
   useEffect(scrollToError, [errors]);
 
   async function setFormError<T>(error: Error): Promise<void> {
-    if (isResponseError(error)) {
-      const responseError = await error.response.json();
-      for (const [constraint, { field, error }] of _.entries(
-        constraintToError,
-      )) {
+    if (!error) {
+      clearErrors();
+    } else if (isResponseError(error)) {
+      const responseError = error.json;
+      const constraints = _.entries(constraintToError);
+      for (const [constraint, { field, error }] of constraints) {
         if (responseError.message.includes(constraint)) {
-          return setErrors(prev => _.set({ ...prev }, field as keyof T, error));
+          setErrors(prev => _.set({ ...prev }, field as keyof T, error));
+          return;
         }
       }
       if (responseError.message) {
-        return setErrors(f => ({ ...f, generic: responseError }));
+        setErrors(f => ({ ...f, generic: responseError }));
       }
     } else if (isValidationError(error)) {
-      return setErrors(prev =>
-        _.set({ ...prev }, error.path as keyof T, error),
-      );
+      setErrors(prev => _.set({ ...prev }, error.path as keyof T, error));
+    } else {
+      setErrors(prev => ({ ...prev, generic: error }));
     }
-    setErrors(prev => ({ ...prev, generic: error }));
   }
 
   function clearErrors() {
     setErrors({} as FormErrors<T>);
-  }
-
-  function isResponseError(error: Error): error is ResponseError {
-    return !!(error as ResponseError).response;
   }
 
   function isValidationError(error: Error): error is ValidationError {

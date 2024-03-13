@@ -2,14 +2,16 @@ import React, { ChangeEvent, useState } from 'react';
 import { FormMetadataValue, ResultMetadataKey } from '../../model/DexterModel';
 import { Button, FormControl, Select } from '@mui/material';
 import { Label } from '../common/Label';
-import { InputButtonGrid } from '../common/InputButtonGrid';
+import { SplitRow } from '../common/SplitRow';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import { DeleteIconStyled } from '../common/DeleteIconStyled';
 import { compareFormMetadataValues } from '../../utils/compareMetadataValues';
 import _ from 'lodash';
+import { FormFieldprops } from '../common/FormFieldProps';
+import { FieldError } from '../common/error/FieldError';
 
-type MetadataValueFormFieldsProps = {
+type MetadataValueFormFieldsProps = FormFieldprops & {
   keys: ResultMetadataKey[];
   values: FormMetadataValue[];
   onChange: (values: FormMetadataValue[]) => void;
@@ -62,9 +64,10 @@ export function MetadataValueFormFields(props: MetadataValueFormFieldsProps) {
   return (
     <>
       <FormControl fullWidth>
-        <Label>Metadata</Label>
-        <InputButtonGrid
-          input={
+        <Label>{props.label || 'Metadata'}</Label>
+        <FieldError error={props.error} />
+        <SplitRow
+          left={
             <Select
               labelId="metadata-field-select-label"
               fullWidth
@@ -85,7 +88,7 @@ export function MetadataValueFormFields(props: MetadataValueFormFieldsProps) {
                 ))}
             </Select>
           }
-          button={
+          right={
             <Button
               disabled={selectedKeyId === NONE_SELECTED}
               fullWidth

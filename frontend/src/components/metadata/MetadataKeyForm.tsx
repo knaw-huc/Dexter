@@ -4,14 +4,14 @@ import React, { ChangeEvent, useEffect, useState } from 'react';
 import { FormMetadataKey, ResultMetadataKey } from '../../model/DexterModel';
 import { createMetadataKey, updateMetadataKey } from '../../utils/API';
 import ScrollableModal from '../common/ScrollableModal';
-import { FormErrorMessage } from '../common/FormError';
 import { CloseInlineIcon } from '../common/CloseInlineIcon';
 import { SubmitButton } from '../common/SubmitButton';
-import { ErrorMessage } from '../common/ErrorMessage';
 import { Label } from '../common/Label';
 import * as yup from 'yup';
 import { onSubmit } from '../../utils/onSubmit';
-import { useFormErrors } from '../common/useFormErrors';
+import { useFormErrors } from '../common/error/useFormErrors';
+import { FormErrorMessage } from '../common/error/FormError';
+import { FieldError } from '../common/error/FieldError';
 
 type MetadataKeyFormProps = {
   inEdit?: ResultMetadataKey;
@@ -80,7 +80,7 @@ export function MetadataKeyForm(props: MetadataKeyFormProps) {
           <FormErrorMessage error={errors.generic} />
 
           <Label>Metadata field</Label>
-          <ErrorMessage error={errors.key} />
+          <FieldError error={errors.key} />
           <TextField
             fullWidth
             value={keyField}

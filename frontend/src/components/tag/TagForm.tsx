@@ -3,10 +3,10 @@ import React, { useState } from 'react';
 import { FormTag, ResultTag } from '../../model/DexterModel';
 import { createTag } from '../../utils/API';
 import { Button, Grid } from '@mui/material';
-import { useFormErrors } from '../common/useFormErrors';
 import * as yup from 'yup';
-import { FormErrorMessage } from '../common/FormError';
-import { ErrorMessage } from '../common/ErrorMessage';
+import { useFormErrors } from '../common/error/useFormErrors';
+import { FormErrorMessage } from '../common/error/FormError';
+import { FieldError } from '../common/error/FieldError';
 
 type NewTagsProps = {
   onSaved: (newTag: ResultTag) => void;
@@ -33,7 +33,7 @@ export function TagForm(props: NewTagsProps) {
   return (
     <div>
       <FormErrorMessage error={errors.generic} />
-      <ErrorMessage error={errors.val} />
+      <FieldError error={errors.val} />
       <Grid container>
         <Grid item>
           <TextField

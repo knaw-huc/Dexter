@@ -11,7 +11,6 @@ export type ResourceIconProps = {
 
 const propsToForward = ['fontSize'];
 
-export const BLUE = '#1976d2';
 export const styleResourceIcon = (component: FC<ResourceIconProps>) => styled(
   component,
   {

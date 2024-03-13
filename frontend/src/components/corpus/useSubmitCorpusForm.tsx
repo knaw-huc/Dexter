@@ -1,6 +1,6 @@
 import {
   Corpus,
-  CorpusFormSubmit,
+  SubmitFormCorpus,
   FormCorpus,
   FormMetadataValue,
   ResultMetadataKey,
@@ -39,7 +39,7 @@ export function useSubmitCorpusForm(
   const { corpusToEdit, onSubmitted, setError } = params;
 
   async function submitCorpusForm(
-    toSubmit: CorpusFormSubmit,
+    toSubmit: SubmitFormCorpus,
     keys: ResultMetadataKey[],
     values: ResultMetadataValue[],
   ): Promise<void> {
@@ -66,7 +66,7 @@ export function useSubmitCorpusForm(
     }
   }
 
-  function toServerForm(data: CorpusFormSubmit): FormCorpus {
+  function toServerForm(data: SubmitFormCorpus): FormCorpus {
     const parentId = data.parent?.id;
     return { ...data, parentId };
   }

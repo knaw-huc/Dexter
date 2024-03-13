@@ -8,8 +8,16 @@ import { TagIndex } from './components/tag/TagIndex';
 import { MetadataKeyIndex } from './components/metadata/MetadataKeyIndex';
 import React from 'react';
 import { MediaIndex } from './components/media/MediaIndex';
-import { corpora, media, metadata, sources, tags } from './model/Resources';
+import {
+  references,
+  corpora,
+  media,
+  metadata,
+  sources,
+  tags,
+} from './model/Resources';
 import { MediaPage } from './components/media/MediaPage';
+import { ReferenceIndex } from './components/reference/ReferenceIndex';
 
 export function Router() {
   return (
@@ -24,6 +32,7 @@ export function Router() {
         <Route path={`/${metadata}`} element={<MetadataKeyIndex />} />
         <Route path={`/${media}`} element={<MediaIndex />} />
         <Route path={`/${media}/:mediaId`} element={<MediaPage />} />
+        <Route path={`/${references}`} element={<ReferenceIndex />} />
         <Route
           path="*"
           element={

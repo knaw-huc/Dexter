@@ -1,13 +1,12 @@
-import { ResultSource, Source } from '../../model/DexterModel';
-import React, { useState } from 'react';
-import Autocomplete from '@mui/material/Autocomplete';
-import TextField from '@mui/material/TextField';
-import Chip from '@mui/material/Chip';
-import match from 'autosuggest-highlight/match';
-import parse from 'autosuggest-highlight/parse';
-import { normalizeInput } from '../../utils/normalizeInput';
+import { ResultSource } from '../../model/DexterModel';
+import React from 'react';
+import { normalize } from '../../utils/normalize';
+import { MultiAutocomplete } from '../common/MultiAutocomplete';
+import { FieldError } from '../common/error/FieldError';
+import { Label } from '../common/Label';
+import { FormFieldprops } from '../common/FormFieldProps';
 
-export type SelectSourcesFieldProps = {
+export type SelectSourcesFieldProps = FormFieldprops & {
   options: ResultSource[];
   selected: ResultSource[];
   onSelectSource: (sourceId: string) => void;
@@ -15,77 +14,31 @@ export type SelectSourcesFieldProps = {
 };
 
 export function SelectSourcesField(props: SelectSourcesFieldProps) {
-  const [inputValue, setInputValue] = useState<string>('');
-  const normalizedInput = normalizeInput(inputValue);
+  function isOptionEqualToValue(option: ResultSource, value: ResultSource) {
+    return normalize(option.title) === normalize(value.title);
+  }
+
+  function handleAutocompleteOptions(inputValue: string) {
+    const options = props.options.filter(o =>
+      normalize(o.title).includes(normalize(inputValue)),
+    );
+    return Promise.resolve(options);
+  }
 
   return (
-    <Autocomplete
-      inputValue={inputValue}
-      onInputChange={async (_, value) => {
-        setInputValue(value);
-      }}
-      multiple={true}
-      id="link-source-autocomplete"
-      options={props.options}
-      getOptionLabel={(source: Source) => source.title}
-      filterOptions={all =>
-        all.filter(source =>
-          normalizeInput(source.title).includes(normalizedInput),
-        )
-      }
-      isOptionEqualToValue={(option, value) => option.title === value?.title}
-      filterSelectedOptions
-      value={props.selected}
-      renderInput={params => (
-        <TextField
-          {...params}
-          margin="dense"
-          label="Search and select sources"
-          value={inputValue}
-        />
-      )}
-      renderTags={(tagValue, getTagProps) =>
-        tagValue.map((source, index) => (
-          <Chip
-            label={source.title}
-            key={index}
-            {...getTagProps({ index })}
-            onDelete={() => {
-              props.onDeselectSource(source.id);
-            }}
-          />
-        ))
-      }
-      onChange={(_, selected) => {
-        const selectedSource = selected.at(-1) as ResultSource;
-        if (!selectedSource) {
-          return;
-        }
-        props.onSelectSource(selectedSource.id);
-      }}
-      renderOption={(props, option, { inputValue }) => {
-        const matches = match(option.title, inputValue, {
-          insideWords: true,
-        });
-        const parts = parse(option.title, matches);
-
-        return (
-          <li {...props}>
-            <div>
-              {parts.map((part, index) => (
-                <span
-                  key={index}
-                  style={{
-                    fontWeight: part.highlight ? 700 : 400,
-                  }}
-                >
-                  {part.text}
-                </span>
-              ))}
-            </div>
-          </li>
-        );
-      }}
-    />
+    <>
+      <Label>{props.label || 'Select sources'}</Label>
+      <MultiAutocomplete<ResultSource>
+        placeholder="Search and select sources"
+        selected={props.selected}
+        onAutocompleteOptions={handleAutocompleteOptions}
+        toStringLabel={o => o.title}
+        isOptionEqualToValue={isOptionEqualToValue}
+        onAddSelected={o => props.onSelectSource(o.id)}
+        onRemoveSelected={o => props.onDeselectSource(o.id)}
+        allowCreatingNew={false}
+      />
+      <FieldError error={props.error} />
+    </>
   );
 }

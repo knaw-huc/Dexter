@@ -1,24 +1,22 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { getMetadataKeys } from '../../utils/API';
-import { errorContext } from '../../state/error/errorContext';
 import { ResultMetadataKey } from '../../model/DexterModel';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
 import { AddNewResourceButton } from '../common/AddNewResourceButton';
 import { MetadataKeyListItem } from './MetadataKeyListItem';
 import { MetadataKeyForm } from './MetadataKeyForm';
-import { ErrorBoundary } from '../common/ErrorBoundary';
 import { MetadataKeyIcon } from './MetadataKeyIcon';
+import { useThrowSync } from '../common/error/useThrowSync';
+import ErrorBoundary from '../common/error/ErrorBoundary';
 
 export function MetadataKeyIndex() {
   const [keys, setKeys] = useState<ResultMetadataKey[]>();
-  const { dispatchError } = useContext(errorContext);
   const [isFormOpen, setFormOpen] = useState(false);
   const [toEdit, setToEdit] = useState<ResultMetadataKey>();
+  const throwSync = useThrowSync();
 
   useEffect(() => {
-    getMetadataKeys()
-      .then(k => setKeys(k))
-      .catch(dispatchError);
+    getMetadataKeys().then(setKeys).catch(throwSync);
   }, []);
 
   function handleEditClick(toEdit: ResultMetadataKey) {
@@ -41,6 +39,9 @@ export function MetadataKeyIndex() {
     setFormOpen(false);
   }
 
+  if (!keys) {
+    return null;
+  }
   return (
     <>
       <div>

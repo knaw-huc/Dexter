@@ -1,23 +1,28 @@
-import {Container} from "@mui/material"
-import React, {useContext} from "react"
-import {Outlet} from "react-router-dom"
-import Header from ".//Header"
-import ErrorHandler from "./ErrorHandler"
-import {useErrorState} from "../state/error/errorReducer"
-import {errorContext} from "../state/error/errorContext"
+import { Container } from '@mui/material';
+import React from 'react';
+import { Outlet, useLocation } from 'react-router-dom';
+import Header from './/Header';
+import ErrorBoundary from './common/error/ErrorBoundary';
 
 export const Page = () => {
-    const {errorState} = useContext(errorContext)
-    return (
-        <div>
-            <Header/>
-            <Container style={{
-                marginTop: "2em"
-            }}>
-                <ErrorHandler error={errorState.error}>
-                    <Outlet/>
-                </ErrorHandler>
-            </Container>
-        </div>
-    )
-}
+  const location = useLocation();
+  const refreshOnPathChange = location.pathname;
+  return (
+    <div
+      style={{
+        marginBottom: '4em',
+      }}
+    >
+      <Header />
+      <Container
+        style={{
+          marginTop: '2em',
+        }}
+      >
+        <ErrorBoundary key={refreshOnPathChange}>
+          <Outlet />
+        </ErrorBoundary>
+      </Container>
+    </div>
+  );
+};

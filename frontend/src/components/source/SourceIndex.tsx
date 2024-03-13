@@ -1,37 +1,44 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Source } from '../../model/DexterModel';
 import { SourceListItem } from './SourceListItem';
-import { getSourcesWithResources } from '../../utils/API';
+import {
+  deleteMetadataValue,
+  deleteSource,
+  getSourcesWithResources,
+} from '../../utils/API';
 import { SourceForm } from './SourceForm';
 import { AddNewResourceButton } from '../common/AddNewResourceButton';
 import { List } from '@mui/material';
-import { errorContext } from '../../state/error/errorContext';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
 import { SourceIcon } from './SourceIcon';
+import { useThrowSync } from '../common/error/useThrowSync';
 
 export function SourceIndex() {
-  const [showForm, setShowForm] = React.useState(false);
   const [sources, setSources] = useState<Source[]>();
-  const [isInit, setInit] = useState(false);
-  const { dispatchError } = useContext(errorContext);
-  const [sourceToEdit, setSourceToEdit] = React.useState<Source>(null);
+  const [showForm, setShowForm] = useState(false);
+  const [sourceToEdit, setSourceToEdit] = useState<Source>(null);
+
+  const throwSync = useThrowSync();
 
   useEffect(() => {
-    async function initResources() {
-      try {
-        setSources(await getSourcesWithResources());
-      } catch (e) {
-        dispatchError(e);
+    getSourcesWithResources().then(setSources).catch(throwSync);
+  }, []);
+
+  const handleDelete = async (source: Source) => {
+    const warning = window.confirm(
+      'Are you sure you wish to delete this source?',
+    );
+
+    if (warning === false) return;
+
+    try {
+      for (const mv of source.metadataValues) {
+        await deleteMetadataValue(mv.id);
       }
+      await deleteSource(source.id);
+    } catch (e) {
+      throwSync(e);
     }
-
-    if (!isInit) {
-      setInit(true);
-      initResources();
-    }
-  }, [isInit]);
-
-  const handleDelete = (source: Source) => {
     setSources(sources => sources.filter(s => s.id !== source.id));
   };
 
@@ -61,6 +68,9 @@ export function SourceIndex() {
     return s1.updatedAt < s2.updatedAt ? 1 : -1;
   }
 
+  if (!sources) {
+    return null;
+  }
   return (
     <>
       <div>

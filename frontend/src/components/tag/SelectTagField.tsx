@@ -1,13 +1,15 @@
-import { Autocomplete, Chip, TextField, TextFieldProps } from '@mui/material';
-import match from 'autosuggest-highlight/match';
-import parse from 'autosuggest-highlight/parse';
-import React, { useState } from 'react';
+import React from 'react';
 import { ResultTag } from '../../model/DexterModel';
-import { useDebounce } from '../../utils/useDebounce';
 import { createTag, getTagsAutocomplete } from '../../utils/API';
-import _ from 'lodash';
+import {
+  CREATE_NEW_OPTION,
+  MultiAutocomplete,
+} from '../common/MultiAutocomplete';
+import { FormFieldprops } from '../common/FormFieldProps';
+import { FieldError } from '../common/error/FieldError';
+import { Label } from '../common/Label';
 
-interface TagsFieldProps {
+type TagsFieldProps = FormFieldprops & {
   selected: ResultTag[];
   onChangeSelected: (selected: ResultTag[]) => void;
 
@@ -29,134 +31,65 @@ interface TagsFieldProps {
   size?: 'small' | 'medium';
 
   placeholder?: string;
-}
+};
 
 const MIN_AUTOCOMPLETE_LENGTH = 1;
-const CREATE_NEW_TAG = 'create-new-tag';
 
 /**
  * Create, link and unlink tags
  */
 export const SelectTagField = (props: TagsFieldProps) => {
-  const [inputValue, setInputValue] = React.useState('');
-  const debouncedInput = useDebounce<string>(inputValue, 250);
-  const [autocomplete, setAutocomplete] = useState([]);
-  const [loading, setLoading] = React.useState(false);
-
-  function getOptions() {
-    const options = [
-      ...autocomplete,
-      ...props.selected,
-      ...(props.options ?? []),
-    ];
-    const inputIsOption = options.find(o => o.val === inputValue);
-    if (props.allowCreatingNew && !inputIsOption) {
-      const createCurrentValue = {
-        id: CREATE_NEW_TAG,
-        val: `Create new tag: ${inputValue}`,
-      };
-      options.push(createCurrentValue);
-    }
-    const uniqueOptions = _.uniqBy(options, 'val');
-    return uniqueOptions.sort(sortAlphanumeric);
-  }
-
   const handleDeleteTag = (tag: ResultTag) => {
     const newSelected = props.selected.filter(t => t.id !== tag.id);
     props.onChangeSelected(newSelected);
   };
 
-  React.useEffect(() => {
-    if (
-      !props.useAutocomplete ||
-      debouncedInput.length < MIN_AUTOCOMPLETE_LENGTH
-    ) {
-      return;
+  async function handleAutocompleteOptions(
+    inputValue: string,
+  ): Promise<ResultTag[]> {
+    if (inputValue.length < MIN_AUTOCOMPLETE_LENGTH) {
+      return [];
     }
-    setLoading(true);
-    getTagsAutocomplete(debouncedInput).then(t => {
-      setAutocomplete(t);
-      setLoading(false);
-    });
-  }, [debouncedInput]);
-
-  function renderInputField(params: TextFieldProps): JSX.Element {
-    return (
-      <TextField
-        {...params}
-        placeholder={props.placeholder ?? 'Filter by tags'}
-        value={inputValue}
-        size={props.size ? props.size : 'medium'}
-      />
-    );
+    const options = !props.useAutocomplete
+      ? props.options.filter(o => o.val.includes(inputValue))
+      : await getTagsAutocomplete(inputValue);
+    const inputIsOption = options.find(o => o.val === inputValue);
+    if (props.allowCreatingNew && !inputIsOption) {
+      options.push({
+        id: CREATE_NEW_OPTION,
+        val: `Create new tag: ${inputValue}`,
+      });
+    }
+    return options.sort(sortAlphanumeric);
   }
 
-  async function handleChangeSelected(data: ResultTag[]) {
-    const selectedIsNewTag = data.findIndex(t => t.id === CREATE_NEW_TAG);
-    if (selectedIsNewTag !== -1) {
-      data[selectedIsNewTag] = await createTag({ val: inputValue });
-    }
-    props.onChangeSelected(data);
+  async function handleAddSelected(toAdd: ResultTag) {
+    props.onChangeSelected([...props.selected, toAdd]);
   }
 
-  const options = getOptions();
+  async function handleCreateSelected(_: ResultTag, inputValue: string) {
+    return await createTag({ val: inputValue });
+  }
+
+  function sortAlphanumeric(s1: ResultTag, s2: ResultTag) {
+    return s1.val > s2.val ? 1 : -1;
+  }
 
   return (
-    <Autocomplete
-      inputValue={inputValue}
-      onInputChange={async (_, value) => {
-        setInputValue(value);
-      }}
-      multiple={true}
-      loading={loading}
-      id="tags-autocomplete"
-      options={options}
-      getOptionLabel={(tag: ResultTag) => tag.val}
-      isOptionEqualToValue={(option, value) => option.val === value.val}
-      value={props.selected}
-      renderInput={renderInputField}
-      forcePopupIcon={false}
-      renderTags={(tagValue, getTagProps) =>
-        tagValue.map((tag, index) => (
-          <Chip
-            key={index}
-            label={tag.val}
-            {...getTagProps({ index })}
-            onDelete={() => {
-              handleDeleteTag(tag);
-            }}
-            size={props.size ? props.size : 'medium'}
-          />
-        ))
-      }
-      onChange={(_, data) => handleChangeSelected(data as ResultTag[])}
-      renderOption={(props, option, { inputValue }) => {
-        const matches = match(option.val, inputValue, {
-          insideWords: true,
-        });
-        const parts = parse(option.val, matches);
-
-        return (
-          <li {...props}>
-            <div>
-              {parts.map((part, index) => (
-                <span
-                  key={index}
-                  style={{
-                    fontWeight: part.highlight ? 700 : 400,
-                  }}
-                >
-                  {part.text}
-                </span>
-              ))}
-            </div>
-          </li>
-        );
-      }}
-    />
+    <>
+      <Label>{props.label || 'Tags'}</Label>
+      <MultiAutocomplete<ResultTag>
+        placeholder="Add and create tags"
+        selected={props.selected}
+        onAutocompleteOptions={handleAutocompleteOptions}
+        toStringLabel={o => o.val}
+        isOptionEqualToValue={(option, value) => option.val === value.val}
+        onAddSelected={handleAddSelected}
+        onRemoveSelected={handleDeleteTag}
+        allowCreatingNew={props.allowCreatingNew}
+        onCreateSelected={handleCreateSelected}
+      />
+      <FieldError error={props.error} />
+    </>
   );
 };
-
-function sortAlphanumeric(s1: ResultTag, s2: ResultTag) {
-  return s1.val > s2.val ? 1 : -1;
-}

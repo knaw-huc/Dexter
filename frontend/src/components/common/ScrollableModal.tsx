@@ -7,14 +7,25 @@ const modalStyle = {
   boxShadow: 24,
   p: 4,
   position: 'absolute',
-  top: '50%',
   left: '50%',
-  transform: 'translate(-50%, -50%)',
   width: '800px',
   overflow: 'scroll',
-  height: '100%',
   display: 'block',
   overflowX: 'hidden',
+};
+
+const fullHeightModalStyle = {
+  ...modalStyle,
+  height: '100%',
+  top: '50%',
+  transform: 'translate(-50%, -50%)',
+};
+
+const partialHeightModalStyle = {
+  ...modalStyle,
+  top: '0',
+  transform: 'translate(-50%, 0)',
+  marginTop: '4em',
 };
 
 type ScrollModalProps = PropsWithChildren & {
@@ -23,10 +34,8 @@ type ScrollModalProps = PropsWithChildren & {
 };
 
 export default function ScrollableModal(props: ScrollModalProps) {
-  const newModalStyle = { ...modalStyle };
-  if (props.fullHeight === false) {
-    delete newModalStyle.height;
-  }
+  const newModalStyle =
+    props.fullHeight === false ? partialHeightModalStyle : fullHeightModalStyle;
   return (
     <Modal open={true} onClose={props.handleClose}>
       <Box sx={newModalStyle}>{props.children}</Box>

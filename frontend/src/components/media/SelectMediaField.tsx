@@ -1,28 +1,22 @@
-import { Autocomplete, Chip, TextField, TextFieldProps } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { ResultMedia, SupportedMediaType } from '../../model/DexterModel';
-import { useDebounce } from '../../utils/useDebounce';
 import { createMedia, getMediaAutocomplete } from '../../utils/API';
 import _ from 'lodash';
 import { grey } from '@mui/material/colors';
 import { truncateMiddle } from '../../utils/truncateMiddle';
 import isUrl from '../../utils/isUrl';
 import { UNTITLED } from './Title';
-import { HighlightedLabel } from '../common/HighlightedLabel';
+import {
+  CREATE_NEW_OPTION,
+  MultiAutocomplete,
+} from '../common/MultiAutocomplete';
+import { FormFieldprops } from '../common/FormFieldProps';
+import { Label } from '../common/Label';
+import { FieldError } from '../common/error/FieldError';
 
-export interface SelectMediaFieldProps {
+export type SelectMediaFieldProps = FormFieldprops & {
   selected: ResultMedia[];
   onChangeSelected: (selected: ResultMedia[]) => void;
-
-  /**
-   * Options to select from
-   */
-  options?: ResultMedia[];
-
-  /**
-   * Should additional options be fetched from autocomplete endpoint?
-   */
-  useAutocomplete?: boolean;
 
   /**
    * Should option be shown to create new media when not existing?
@@ -30,13 +24,12 @@ export interface SelectMediaFieldProps {
   allowCreatingNew?: boolean;
 
   size?: 'small' | 'medium';
-}
+};
 
 const MIN_AUTOCOMPLETE_LENGTH = 1;
-const CREATE_NEW_MEDIA = 'create-new-media';
 
 const createNewMediaOption: Omit<ResultMedia, 'url'> = {
-  id: CREATE_NEW_MEDIA,
+  id: CREATE_NEW_OPTION,
   title: `Create new media from current url`,
   // backend determines media type and createdBy:
   mediaType: 'unknown' as SupportedMediaType,
@@ -47,17 +40,8 @@ const createNewMediaOption: Omit<ResultMedia, 'url'> = {
  * Create, link and unlink media
  */
 export const SelectMediaField = (props: SelectMediaFieldProps) => {
-  const [inputValue, setInputValue] = React.useState('');
-  const debouncedInput = useDebounce<string>(inputValue, 250);
-  const [autocomplete, setAutocomplete] = useState([]);
-  const [loading, setLoading] = React.useState(false);
-
-  function getOptions() {
-    const options: ResultMedia[] = [
-      ...autocomplete,
-      ...props.selected,
-      ...(props.options ?? []),
-    ];
+  function toOptions(inputValue: string, autocomplete: ResultMedia[]) {
+    const options = [...autocomplete];
     const inputIsOption = options.find(o => o.url === inputValue);
     if (props.allowCreatingNew && !inputIsOption && isUrl(inputValue)) {
       options.push({
@@ -65,113 +49,65 @@ export const SelectMediaField = (props: SelectMediaFieldProps) => {
         url: inputValue,
       });
     }
-    const uniqueOptions = _.uniqBy(options, 'url');
-    return uniqueOptions.sort(sortAlphanumeric);
+    return options.sort(sortAlphanumeric);
   }
 
-  const handleDeleteMedia = (media: ResultMedia) => {
-    const newSelected = props.selected.filter(t => t.id !== media.id);
-    props.onChangeSelected(newSelected);
-  };
+  async function handleCreateNew(toCreate: ResultMedia) {
+    return createMedia({ url: toCreate.url, title: '' });
+  }
 
-  useEffect(() => {
-    if (
-      !props.useAutocomplete ||
-      debouncedInput.length < MIN_AUTOCOMPLETE_LENGTH
-    ) {
-      return;
-    }
-    setLoading(true);
-    getMediaAutocomplete(debouncedInput).then(t => {
-      setAutocomplete(t);
-      setLoading(false);
-    });
-  }, [debouncedInput]);
+  async function handleAutocompleteOptions(inputValue: string) {
+    const canAutocomplete = inputValue.length >= MIN_AUTOCOMPLETE_LENGTH;
+    const autocompleteOptions = canAutocomplete
+      ? await getMediaAutocomplete(inputValue)
+      : [];
+    return toOptions(inputValue, autocompleteOptions);
+  }
 
-  function renderInputField(params: TextFieldProps): JSX.Element {
+  function toSelectedLabel(media: ResultMedia): JSX.Element {
+    const title = _.truncate(media?.title || UNTITLED, { length: 40 });
+    const url = truncateMiddle(media?.url || '', 20);
     return (
-      <TextField
-        {...params}
-        placeholder="Find media by url or title"
-        value={inputValue}
-        size={props.size ? props.size : 'medium'}
-      />
+      <>
+        {title} <span style={{ color: grey[700] }}>({url})</span>
+      </>
     );
   }
 
-  async function handleChangeSelected(data: ResultMedia[]) {
-    const selectedIsNewMedia = data.findIndex(t => t.id === CREATE_NEW_MEDIA);
-    if (selectedIsNewMedia !== -1) {
-      data[selectedIsNewMedia] = await createMedia({
-        url: inputValue,
-        title: '',
-      });
-    }
-    props.onChangeSelected(data);
+  function toStringLabel(media: ResultMedia): string {
+    return media.title ? `${media.title} (${media.url})` : media.url;
+  }
+
+  function sortAlphanumeric(s1: ResultMedia, s2: ResultMedia) {
+    return s1.title > s2.title ? 1 : -1;
+  }
+
+  function handleRemoveSelected(option: ResultMedia) {
+    return props.onChangeSelected(
+      props.selected.filter(s => s.id !== option.id),
+    );
+  }
+
+  function handleAddSelected(option: ResultMedia) {
+    return props.onChangeSelected([...props.selected, option]);
   }
 
   return (
-    <Autocomplete
-      inputValue={inputValue}
-      open={debouncedInput.length >= MIN_AUTOCOMPLETE_LENGTH}
-      onInputChange={async (_, value) => {
-        setInputValue(value);
-      }}
-      multiple={true}
-      loading={loading}
-      options={getOptions()}
-      isOptionEqualToValue={(option, value) => option.url === value.url}
-      value={props.selected}
-      renderInput={renderInputField}
-      forcePopupIcon={false}
-      renderTags={(mediaValue, getMediaProps) => (
-        <div style={{ width: '100%' }}>
-          {mediaValue.map((media: ResultMedia, index) => (
-            <Chip
-              key={index}
-              label={toSelectedLabel(media)}
-              {...getMediaProps({ index })}
-              onDelete={() => {
-                handleDeleteMedia(media);
-              }}
-              size={props.size ? props.size : 'medium'}
-            />
-          ))}
-        </div>
-      )}
-      onChange={(_, data) => handleChangeSelected(data as ResultMedia[])}
-      renderOption={(props, option: ResultMedia) => {
-        const label = toOptionLabel(option, inputValue);
-        return (
-          <li {...props} style={{ display: 'block' }}>
-            {label}
-          </li>
-        );
-      }}
-      getOptionLabel={(option: ResultMedia) => toStringLabel(option)}
-    />
-  );
-};
-
-function toSelectedLabel(media: ResultMedia): JSX.Element {
-  const title = _.truncate(media?.title || UNTITLED, { length: 40 });
-  const url = truncateMiddle(media?.url || '', 20);
-  return (
     <>
-      {title} <span style={{ color: grey[700] }}>({url})</span>
+      <Label>{props.label || 'Media'}</Label>
+      <MultiAutocomplete<ResultMedia>
+        placeholder="Find media by url or title"
+        selected={props.selected}
+        onAutocompleteOptions={handleAutocompleteOptions}
+        toStringLabel={toStringLabel}
+        toSelectedLabel={toSelectedLabel}
+        isOptionEqualToValue={(option, value) => option.url === value.url}
+        onAddSelected={handleAddSelected}
+        onRemoveSelected={handleRemoveSelected}
+        allowCreatingNew={props.allowCreatingNew}
+        onCreateSelected={handleCreateNew}
+      />
+      <FieldError error={props.error} />
     </>
   );
-}
-
-function toOptionLabel(media: ResultMedia, inputValue: string): JSX.Element {
-  const label = toStringLabel(media);
-  return HighlightedLabel({ toMatch: inputValue, text: label });
-}
-
-function toStringLabel(media: ResultMedia): string {
-  return media.title ? `${media.title} (${media.url})` : media.url;
-}
-
-function sortAlphanumeric(s1: ResultMedia, s2: ResultMedia) {
-  return s1.title > s2.title ? 1 : -1;
-}
+};

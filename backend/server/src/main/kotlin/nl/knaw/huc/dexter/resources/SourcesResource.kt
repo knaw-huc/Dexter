@@ -5,6 +5,7 @@ import ResultMetadataValue
 import UnauthorizedException
 import io.dropwizard.auth.Auth
 import nl.knaw.huc.dexter.api.*
+import nl.knaw.huc.dexter.api.ResourcePaths.REFERENCES
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PARAM
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PATH
 import nl.knaw.huc.dexter.api.ResourcePaths.TAGS
@@ -147,6 +148,35 @@ class SourcesResource(private val jdbi: Jdbi) {
         log.info("deleteTag: sourceId=${src.id}, tagId=$tagId")
         dao.deleteTag(src.id, tagId)
         dao.getTags(src.id)
+    }
+    
+    @GET
+    @Path("$ID_PATH/$REFERENCES")
+    fun getReferences(
+        @PathParam(ID_PARAM) id: UUID, @Auth user: DexterUser
+    ) = onAccessibleSource(id, user.id) { dao, src ->
+        dao.getReferences(src.id)
+    }
+
+    @POST
+    @Consumes(APPLICATION_JSON)
+    @Path("$ID_PATH/$REFERENCES")
+    fun addReferences(
+        @PathParam(ID_PARAM) id: UUID, referenceIds: List<UUID>, @Auth user: DexterUser
+    ): List<ResultReference> = onAccessibleSource(id, user.id) { dao, src ->
+        log.info("addReferences: sourceId=${src.id}, references=$referenceIds")
+        referenceIds.forEach { referenceId -> dao.addReference(src.id, referenceId) }
+        dao.getReferences(src.id)
+    }
+
+    @DELETE
+    @Path("$ID_PATH/$REFERENCES/{referenceId}")
+    fun deleteReference(
+        @PathParam(ID_PARAM) id: UUID, @PathParam("referenceId") referenceId: UUID, @Auth user: DexterUser
+    ): List<ResultReference> = onAccessibleSource(id, user.id) { dao, src ->
+        log.info("deleteReference: sourceId=${src.id}, referenceId=$referenceId")
+        dao.deleteReference(src.id, referenceId)
+        dao.getReferences(src.id)
     }
 
     @GET

@@ -1,20 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ResultTag } from '../../model/DexterModel';
 import { deleteTag, getTags } from '../../utils/API';
 import { TagForm } from './TagForm';
 import { TagList } from './TagList';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
 import { TagIcon } from './tagIcon';
+import { useThrowSync } from '../common/error/useThrowSync';
 
 export const TagIndex = () => {
-  const [tags, setTags] = useState<ResultTag[]>([]);
+  const [tags, setTags] = useState<ResultTag[]>();
+  const throwSync = useThrowSync();
 
-  React.useEffect(() => {
-    init();
-
-    async function init() {
-      setTags(await getTags());
-    }
+  useEffect(() => {
+    getTags().then(setTags).catch(throwSync);
   }, []);
 
   async function handleDelete(toDelete: ResultTag) {
@@ -22,10 +20,13 @@ export const TagIndex = () => {
 
     if (warning === false) return;
 
-    await deleteTag(toDelete.id);
+    await deleteTag(toDelete.id).catch(e => throwSync(e));
     setTags(prev => prev.filter(t => t.id !== toDelete.id));
   }
 
+  if (!tags) {
+    return null;
+  }
   return (
     <>
       <HeaderBreadCrumb />

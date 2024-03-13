@@ -1,7 +1,7 @@
 import {
   ResultMetadataKey,
   Source,
-  SourceFormSubmit,
+  SubmitFormSource,
   UUID,
 } from '../../model/DexterModel';
 import {
@@ -20,7 +20,7 @@ import { sourceFormValidator } from './sourceFormValidator';
 
 type UseSubmitSourceFormResult = {
   submitSourceForm: (
-    form: SourceFormSubmit,
+    form: SubmitFormSource,
     keys: ResultMetadataKey[],
   ) => Promise<void>;
 };
@@ -38,7 +38,7 @@ export function useSubmitSourceForm(
   const { setError, sourceToEdit, corpusId, onSubmitted } = params;
 
   async function submitSourceForm(
-    toSubmit: SourceFormSubmit,
+    toSubmit: SubmitFormSource,
     keys: ResultMetadataKey[],
   ): Promise<void> {
     try {
@@ -76,13 +76,13 @@ export function useSubmitSourceForm(
     await updateSourceMedia(id, source.media);
   }
 
-  async function updateExistingSource(data: SourceFormSubmit): Promise<UUID> {
+  async function updateExistingSource(data: SubmitFormSource): Promise<UUID> {
     const sourceId = sourceToEdit.id;
     await updateSource(sourceId, data);
     return sourceId;
   }
 
-  async function createNewSource(data: SourceFormSubmit): Promise<UUID> {
+  async function createNewSource(data: SubmitFormSource): Promise<UUID> {
     const newSource = await createSource(data);
     const sourceId = newSource.id;
     if (corpusId) {
