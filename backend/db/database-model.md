@@ -33,6 +33,13 @@ erDiagram
         media_id uuid FK "null"
     }
 
+    corpora_references {
+        corpus_id uuid FK "null"
+        reference_id uuid FK "null"
+        corpus_id uuid "null"
+        reference_id uuid "null"
+    }
+
     corpora_sources {
         corpus_id uuid FK "null"
         source_id uuid FK "null"
@@ -85,6 +92,14 @@ erDiagram
         metadata_value_id uuid "null"
     }
 
+    references {
+        id uuid PK "not null"
+        created_by uuid FK "not null"
+        csl text "not null"
+        input text "not null"
+        terms text "not null"
+    }
+
     sources {
         id uuid PK "not null"
         created_by uuid FK "not null"
@@ -115,6 +130,13 @@ erDiagram
         source_id uuid FK "null"
     }
 
+    sources_references {
+        reference_id uuid FK "null"
+        source_id uuid FK "null"
+        reference_id uuid "null"
+        source_id uuid "null"
+    }
+
     sources_tags {
         tag_id integer FK "not null"
         source_id uuid FK "null"
@@ -136,6 +158,7 @@ erDiagram
     corpora ||--o{ corpora : parent_id
     corpora ||--o{ corpora_languages : corpus_id
     corpora ||--o{ corpora_media : corpus_id
+    corpora ||--o{ corpora_references : corpus_id
     corpora ||--o{ corpora_sources : corpus_id
     corpora ||--o{ corpora_tags : corpus_id
     corpora ||--o{ metadata_values_sources_corpora : corpus_id
@@ -145,10 +168,13 @@ erDiagram
     media ||--o{ sources_media : media_id
     metadata_keys ||--o{ metadata_values : key_id
     metadata_values ||--o{ metadata_values_sources_corpora : metadata_value_id
+    references ||--o{ corpora_references : reference_id
+    references ||--o{ sources_references : reference_id
     sources ||--o{ corpora_sources : source_id
     sources ||--o{ metadata_values_sources_corpora : source_id
     sources ||--o{ sources_languages : source_id
     sources ||--o{ sources_media : source_id
+    sources ||--o{ sources_references : source_id
     sources ||--o{ sources_tags : source_id
     tags ||--o{ corpora_tags : tag_id
     tags ||--o{ sources_tags : tag_id
@@ -156,6 +182,7 @@ erDiagram
     users ||--o{ media : created_by
     users ||--o{ metadata_keys : created_by
     users ||--o{ metadata_values : created_by
+    users ||--o{ references : created_by
     users ||--o{ sources : created_by
     users ||--o{ tags : created_by
 ```
