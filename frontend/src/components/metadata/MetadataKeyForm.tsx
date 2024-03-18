@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import TextField from '@mui/material/TextField';
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect } from 'react';
 import { FormMetadataKey, ResultMetadataKey } from '../../model/DexterModel';
 import { createMetadataKey, updateMetadataKey } from '../../utils/API';
 import ScrollableModal from '../common/ScrollableModal';
@@ -12,6 +12,7 @@ import { onSubmit } from '../../utils/onSubmit';
 import { useFormErrors } from '../common/error/useFormErrors';
 import { FormErrorMessage } from '../common/error/FormError';
 import { FieldError } from '../common/error/FieldError';
+import { useImmer } from 'use-immer';
 
 type MetadataKeyFormProps = {
   inEdit?: ResultMetadataKey;
@@ -28,8 +29,8 @@ const metadataKeySchema = yup.object({
 
 export function MetadataKeyForm(props: MetadataKeyFormProps) {
   const { errors, setError } = useFormErrors<FormMetadataKey>();
-  const [keyField, setKeyField] = useState('');
-  const [isInit, setInit] = useState(false);
+  const [keyField, setKeyField] = useImmer('');
+  const [isInit, setInit] = useImmer(false);
 
   useEffect(() => {
     const init = async () => {
@@ -40,17 +41,6 @@ export function MetadataKeyForm(props: MetadataKeyFormProps) {
       init();
     }
   }, [isInit]);
-
-  async function createNewMetadataKey(data: FormMetadataKey) {
-    const newMetadataKey = await createMetadataKey(data);
-    return newMetadataKey.id;
-  }
-
-  async function updateExistingMetadataKey(data: FormMetadataKey) {
-    const metadataKeyId = props.inEdit.id;
-    await updateMetadataKey(metadataKeyId, data);
-    return metadataKeyId;
-  }
 
   async function handleSubmit() {
     const data: FormMetadataKey = { key: keyField };
@@ -63,6 +53,17 @@ export function MetadataKeyForm(props: MetadataKeyFormProps) {
     } catch (error) {
       await setError(error);
     }
+  }
+
+  async function createNewMetadataKey(data: FormMetadataKey) {
+    const newMetadataKey = await createMetadataKey(data);
+    return newMetadataKey.id;
+  }
+
+  async function updateExistingMetadataKey(data: FormMetadataKey) {
+    const metadataKeyId = props.inEdit.id;
+    await updateMetadataKey(metadataKeyId, data);
+    return metadataKeyId;
   }
 
   if (!isInit) {

@@ -1,8 +1,9 @@
 import { ResultTag } from '../../model/DexterModel';
-import React, { useState } from 'react';
+import React from 'react';
 import { SelectTagField } from './SelectTagField';
 import { ButtonWithIcon } from '../common/ButtonWithIcon';
 import { FilterIconStyled } from '../common/FilterIconStyled';
+import { useImmer } from 'use-immer';
 
 export function TagsFilter(props: {
   options: ResultTag[];
@@ -10,7 +11,7 @@ export function TagsFilter(props: {
   onChangeSelected: (keys: ResultTag[]) => void;
   placeholder?: string;
 }) {
-  const [isOpen, setOpen] = useState(!!props.selected.length);
+  const [isOpen, setOpen] = useImmer(!!props.selected.length);
 
   if (!isOpen) {
     return <FilterButton onClick={() => setOpen(true)} />;

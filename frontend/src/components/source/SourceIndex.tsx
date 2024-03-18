@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Source } from '../../model/DexterModel';
 import { SourceListItem } from './SourceListItem';
 import {
@@ -12,11 +12,16 @@ import { List } from '@mui/material';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
 import { SourceIcon } from './SourceIcon';
 import { useThrowSync } from '../common/error/useThrowSync';
+import { useImmer } from 'use-immer';
+import { remove } from '../../utils/immer/remove';
+import { update } from '../../utils/immer/update';
+import { add } from '../../utils/immer/add';
+import _ from 'lodash';
 
 export function SourceIndex() {
-  const [sources, setSources] = useState<Source[]>();
-  const [showForm, setShowForm] = useState(false);
-  const [sourceToEdit, setSourceToEdit] = useState<Source>(null);
+  const [sources, setSources] = useImmer<Source[]>([]);
+  const [showForm, setShowForm] = useImmer(false);
+  const [sourceToEdit, setSourceToEdit] = useImmer<Source>(null);
 
   const throwSync = useThrowSync();
 
@@ -39,7 +44,7 @@ export function SourceIndex() {
     } catch (e) {
       throwSync(e);
     }
-    setSources(sources => sources.filter(s => s.id !== source.id));
+    setSources(sources => remove(source.id, sources));
   };
 
   const handleEdit = (source: Source) => {
@@ -49,12 +54,10 @@ export function SourceIndex() {
 
   function handleSaveSource(source: Source) {
     if (sourceToEdit) {
-      setSources(sources =>
-        sources.map(s => (s.id === source.id ? source : s)),
-      );
+      setSources(sources => update(source, sources));
       setSourceToEdit(null);
     } else {
-      setSources(sources => [...sources, source]);
+      setSources(sources => add(source, sources));
     }
     setShowForm(false);
   }
@@ -62,10 +65,6 @@ export function SourceIndex() {
   function handleCloseSource() {
     setSourceToEdit(null);
     setShowForm(false);
-  }
-
-  function byUpdatedAtDesc(s1: Source, s2: Source) {
-    return s1.updatedAt < s2.updatedAt ? 1 : -1;
   }
 
   if (!sources) {
@@ -97,7 +96,7 @@ export function SourceIndex() {
       )}
       {sources && (
         <List sx={{ mt: '1em' }}>
-          {sources.sort(byUpdatedAtDesc).map(source => (
+          {_.sortBy(sources, ['updatedAt']).map(source => (
             <SourceListItem
               key={source.id}
               source={source}

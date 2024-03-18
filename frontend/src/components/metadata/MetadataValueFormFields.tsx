@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent } from 'react';
 import { FormMetadataValue, ResultMetadataKey } from '../../model/DexterModel';
 import { Button, FormControl, Select } from '@mui/material';
 import { Label } from '../common/Label';
@@ -6,10 +6,10 @@ import { SplitRow } from '../common/SplitRow';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import { DeleteIconStyled } from '../common/DeleteIconStyled';
-import { compareFormMetadataValues } from '../../utils/compareMetadataValues';
 import _ from 'lodash';
 import { FormFieldprops } from '../common/FormFieldProps';
 import { FieldError } from '../common/error/FieldError';
+import { useImmer } from 'use-immer';
 
 type MetadataValueFormFieldsProps = FormFieldprops & {
   keys: ResultMetadataKey[];
@@ -20,7 +20,7 @@ type MetadataValueFormFieldsProps = FormFieldprops & {
 const NONE_SELECTED = 'none-selected';
 
 export function MetadataValueFormFields(props: MetadataValueFormFieldsProps) {
-  const [selectedKeyId, setSelectedKeyId] = useState(NONE_SELECTED);
+  const [selectedKeyId, setSelectedKeyId] = useImmer(NONE_SELECTED);
 
   async function handleCreateField() {
     const newValue = {
@@ -99,7 +99,7 @@ export function MetadataValueFormFields(props: MetadataValueFormFieldsProps) {
             </Button>
           }
         />
-        {props.values.sort(compareFormMetadataValues).map((value, i) => (
+        {_.sortBy(props.values, ['keyId']).map((value, i) => (
           <div key={i}>
             <Label>{props.keys.find(k => k.id === value.keyId).key}</Label>
             <TextField

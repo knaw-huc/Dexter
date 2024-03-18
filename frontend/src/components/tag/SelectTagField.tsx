@@ -8,6 +8,7 @@ import {
 import { FormFieldprops } from '../common/FormFieldProps';
 import { FieldError } from '../common/error/FieldError';
 import { Label } from '../common/Label';
+import _ from 'lodash';
 
 type TagsFieldProps = FormFieldprops & {
   selected: ResultTag[];
@@ -60,7 +61,7 @@ export const SelectTagField = (props: TagsFieldProps) => {
         val: `Create new tag: ${inputValue}`,
       });
     }
-    return options.sort(sortAlphanumeric);
+    return _.sortBy(options, ['val']);
   }
 
   async function handleAddSelected(toAdd: ResultTag) {
@@ -69,10 +70,6 @@ export const SelectTagField = (props: TagsFieldProps) => {
 
   async function handleCreateSelected(_: ResultTag, inputValue: string) {
     return await createTag({ val: inputValue });
-  }
-
-  function sortAlphanumeric(s1: ResultTag, s2: ResultTag) {
-    return s1.val > s2.val ? 1 : -1;
   }
 
   return (

@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 import {
   ResultMetadataKey,
   Source,
@@ -6,6 +6,7 @@ import {
   toFormMetadataValue,
 } from '../../model/DexterModel';
 import { getMetadataKeys } from '../../utils/API';
+import { useImmer } from 'use-immer';
 
 type UseInitSourceFormResult = {
   init: () => void;
@@ -53,7 +54,7 @@ export function useInitSourceForm(
   params: UseInitSourceFormParams,
 ): UseInitSourceFormResult {
   const { sourceToEdit, setForm, setKeys } = params;
-  const [isInit, setInit] = useState(false);
+  const [isInit, setInit] = useImmer(false);
 
   function init() {
     runOnce();

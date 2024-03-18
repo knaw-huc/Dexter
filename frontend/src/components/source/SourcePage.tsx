@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   Reference,
-  ResultReference,
   ResultMedia,
+  ResultReference,
   Source,
 } from '../../model/DexterModel';
 import {
-  addReferencesToSource,
   addMediaToSource,
-  deleteReferenceFromSource,
+  addReferencesToSource,
   deleteMediaFromSource,
+  deleteReferenceFromSource,
   getSourceWithResourcesById,
 } from '../../utils/API';
 import { SourceForm } from './SourceForm';
@@ -30,26 +30,29 @@ import { ExternalLink } from '../common/ExternalLink';
 import { useThrowSync } from '../common/error/useThrowSync';
 import { SourceMedia } from './SourceMedia';
 import { SourceReferences } from './SourceReferences';
-import { replaceById } from '../../utils/replaceById';
 import { defaultReferenceStyle } from '../reference/ReferenceStyle';
 import { ReferenceForm } from '../reference/ReferenceForm';
 import { SelectReferenceForm } from '../reference/SelectReferenceForm';
 import {
-  updateSourceReferences,
   updateSourceMedia,
+  updateSourceReferences,
 } from '../../utils/updateRemoteIds';
+import { useImmer } from 'use-immer';
+import { remove } from '../../utils/immer/remove';
+import { update } from '../../utils/immer/update';
+import { add } from '../../utils/immer/add';
 
 export const SourcePage = () => {
   const sourceId = useParams().sourceId;
 
-  const [source, setSource] = useState<Source>();
-  const [showForm, setShowForm] = useState(false);
-  const [showMediaForm, setShowMediaForm] = useState(false);
-  const [showReferenceForm, setShowReferenceForm] = useState(false);
-  const [mediaToEdit, setMediaToEdit] = useState(null);
-  const [referenceToEdit, setReferenceToEdit] = useState<Reference>(null);
-  const [showSelectMediaForm, setShowSelectMediaForm] = useState(null);
-  const [showSelectReferenceForm, setShowSelectReferenceForm] = useState(null);
+  const [source, setSource] = useImmer<Source>(null);
+  const [showForm, setShowForm] = useImmer(false);
+  const [showMediaForm, setShowMediaForm] = useImmer(false);
+  const [showReferenceForm, setShowReferenceForm] = useImmer(false);
+  const [mediaToEdit, setMediaToEdit] = useImmer(null);
+  const [referenceToEdit, setReferenceToEdit] = useImmer<Reference>(null);
+  const [showSelectMediaForm, setShowSelectMediaForm] = useImmer(null);
+  const [showSelectReferenceForm, setShowSelectReferenceForm] = useImmer(null);
   const throwSync = useThrowSync();
 
   const referenceStyle = defaultReferenceStyle;
@@ -69,7 +72,7 @@ export const SourcePage = () => {
 
   async function handleUnlinkMedia(media: ResultMedia) {
     await deleteMediaFromSource(sourceId, media.id);
-    setSource(s => ({ ...s, media: s.media.filter(m => m.id !== media.id) }));
+    setSource(s => remove(media.id, s.media));
   }
 
   async function handleUnlinkReference(reference: ResultReference) {
@@ -79,10 +82,7 @@ export const SourcePage = () => {
     if (warning === false) return;
 
     await deleteReferenceFromSource(sourceId, reference.id);
-    setSource(s => ({
-      ...s,
-      references: s.references.filter(c => c.id !== reference.id),
-    }));
+    setSource(s => remove(reference.id, s.references));
   }
 
   function handleClickEditMedia(media: ResultMedia) {
@@ -99,17 +99,14 @@ export const SourcePage = () => {
   }
 
   function handleEditedMedia(media: ResultMedia) {
-    setSource(s => ({
-      ...s,
-      media: s.media.map(s => (s.id === media.id ? media : s)),
-    }));
+    setSource(s => update(media, s.media));
     setMediaToEdit(null);
     setShowMediaForm(false);
   }
 
   async function addCreatedMedia(media: ResultMedia) {
     await addMediaToSource(sourceId, [media.id]);
-    setSource(s => ({ ...s, media: [...s.media, media] }));
+    setSource(s => add(media, s.media));
     setShowMediaForm(false);
   }
 
@@ -127,17 +124,14 @@ export const SourcePage = () => {
   }
 
   function handleEditReference(reference: ResultReference) {
-    setSource(s => ({
-      ...s,
-      references: replaceById(reference, s.references),
-    }));
+    setSource(s => update(reference, s.references));
     setReferenceToEdit(null);
     setShowReferenceForm(false);
   }
 
   async function addCreatedReference(reference: ResultReference) {
     await addReferencesToSource(sourceId, [reference.id]);
-    setSource(s => ({ ...s, references: [...s.references, reference] }));
+    setSource(s => add(reference, s.references));
     setShowReferenceForm(false);
   }
 

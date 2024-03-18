@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { image, ResultMedia } from '../../model/DexterModel';
 import { MediaPreview } from './MediaPreview';
 import { MediaForm } from './MediaForm';
@@ -8,11 +8,14 @@ import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
 import { deleteMedia, getMedia } from '../../utils/API';
 import { MediaIcon } from './MediaIcon';
 import { useThrowSync } from '../common/error/useThrowSync';
+import { useImmer } from 'use-immer';
+import { remove } from '../../utils/immer/remove';
+import { update } from '../../utils/immer/update';
 
 export function MediaIndex() {
-  const [media, setMedia] = useState<ResultMedia[]>();
-  const [showForm, setShowForm] = React.useState(false);
-  const [mediaToEdit, setMediaToEdit] = React.useState<ResultMedia>(null);
+  const [media, setMedia] = useImmer<ResultMedia[]>([]);
+  const [showForm, setShowForm] = useImmer(false);
+  const [mediaToEdit, setMediaToEdit] = useImmer<ResultMedia>(null);
 
   const throwSync = useThrowSync();
 
@@ -29,7 +32,7 @@ export function MediaIndex() {
     if (warning === false) return;
 
     await deleteMedia(media.id);
-    setMedia(prev => prev.filter(m => m.id !== media.id));
+    setMedia(prev => remove(media.id, prev));
   }
 
   const handleEdit = (media: ResultMedia) => {
@@ -39,7 +42,7 @@ export function MediaIndex() {
 
   function handleSaveMedia(media: ResultMedia) {
     if (mediaToEdit) {
-      setMedia(prev => prev.map(m => (m.id === media.id ? media : m)));
+      setMedia(prev => update(media, prev));
       setMediaToEdit(null);
     } else {
       setMedia(prev => [...prev, media]);

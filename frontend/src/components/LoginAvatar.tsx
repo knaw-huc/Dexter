@@ -3,13 +3,14 @@ import IconButton from '@mui/material/IconButton';
 import Avatar from '@mui/material/Avatar';
 import LoginIcon from '@mui/icons-material/Login';
 import * as React from 'react';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import { login } from '../utils/API';
 import { userContext } from '../state/user/userContext';
 import { useThrowSync } from './common/error/useThrowSync';
+import { useImmer } from 'use-immer';
 
 export function LoginAvatar() {
-  const [isLoggingIn, setLoggingIn] = useState(false);
+  const [isLoggingIn, setLoggingIn] = useImmer(false);
   const { dispatchUser } = useContext(userContext);
   const throwSync = useThrowSync();
 

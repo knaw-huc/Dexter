@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {
   Access,
   AccessOptions,
@@ -25,6 +25,9 @@ import { SelectCorpusField } from './SelectCorpusField';
 import { useFormErrors } from '../common/error/useFormErrors';
 import { FormErrorMessage } from '../common/error/FormError';
 import { Any } from '../common/Any';
+import { useImmer } from 'use-immer';
+import { add } from '../../utils/immer/add';
+import { remove } from '../../utils/immer/remove';
 
 type CorpusFormProps = {
   /**
@@ -45,10 +48,10 @@ type CorpusFormProps = {
 export function CorpusForm(props: CorpusFormProps) {
   const corpusToEdit = props.corpusToEdit;
 
-  const [form, setForm] = useState<Corpus>();
+  const [form, setForm] = useImmer<Corpus>(null);
   const { errors, setError } = useFormErrors<Corpus>();
-  const [keys, setKeys] = useState<ResultMetadataKey[]>([]);
-  const [values, setValues] = useState<FormMetadataValue[]>([]);
+  const [keys, setKeys] = useImmer<ResultMetadataKey[]>([]);
+  const [values, setValues] = useImmer<FormMetadataValue[]>([]);
 
   const { init, isInit } = useInitCorpusForm({
     corpusToEdit,
@@ -69,13 +72,12 @@ export function CorpusForm(props: CorpusFormProps) {
   }
 
   function handleUnlinkSource(sourceId: string) {
-    const sources = form.sources.filter(s => s.id !== sourceId);
-    setForm(f => ({ ...f, sources }));
+    setForm(f => remove(sourceId, f.sources));
   }
 
   async function handleLinkSource(sourceId: string) {
     const toAdd = props.sourceOptions.find(s => s.id === sourceId);
-    setForm(f => ({ ...f, sources: [...f.sources, toAdd] }));
+    setForm(f => add(toAdd, f.sources));
   }
 
   async function handleSelectParentCorpus(corpusId: string) {
@@ -84,7 +86,7 @@ export function CorpusForm(props: CorpusFormProps) {
   }
 
   async function handleDeleteParentCorpus() {
-    setForm(f => ({ ...f, parent: undefined }));
+    setForm(f => delete f.parent);
   }
 
   function renderTextField(
@@ -96,13 +98,7 @@ export function CorpusForm(props: CorpusFormProps) {
         label={_.capitalize(fieldName)}
         error={errors[fieldName]}
         value={form[fieldName] as string}
-        onChange={value =>
-          setForm(f => {
-            const update = { ...f };
-            (update as Any)[fieldName] = value;
-            return update;
-          })
-        }
+        onChange={value => setForm(f => void ((f as Any)[fieldName] = value))}
         {...props}
       />
     );

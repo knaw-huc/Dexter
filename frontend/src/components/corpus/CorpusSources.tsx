@@ -7,8 +7,9 @@ import { TagsFilter } from '../tag/TagsFilter';
 import _ from 'lodash';
 import { SourcePreview } from '../source/SourcePreview';
 import { NoResults } from '../common/NoResults';
-import React, { useState } from 'react';
+import React from 'react';
 import { ResultTag, Source } from '../../model/DexterModel';
+import { useImmer } from 'use-immer';
 
 type CorpusSourcesProps = {
   onUnlink: (source: Source) => void;
@@ -17,7 +18,7 @@ type CorpusSourcesProps = {
   onAddNew: () => void;
 };
 export function CorpusSources(props: CorpusSourcesProps) {
-  const [filterTags, setFilterTags] = useState<ResultTag[]>([]);
+  const [filterTags, setFilterTags] = useImmer<ResultTag[]>([]);
 
   return (
     <>

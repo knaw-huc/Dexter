@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Reference, ResultReference } from '../../model/DexterModel';
 import { ReferenceListItem } from './ReferenceListItem';
 import { deleteReference, getReferences } from '../../utils/API';
@@ -10,11 +10,12 @@ import { useThrowSync } from '../common/error/useThrowSync';
 import { ReferenceForm } from './ReferenceForm';
 import ErrorBoundary from '../common/error/ErrorBoundary';
 import { defaultReferenceStyle } from './ReferenceStyle';
+import { useImmer } from 'use-immer';
 
 export function ReferenceIndex() {
-  const [references, setReferences] = useState<ResultReference[]>([]);
-  const [showForm, setShowForm] = useState(false);
-  const [referenceToEdit, setReferenceToEdit] = useState<ResultReference>(null);
+  const [references, setReferences] = useImmer<ResultReference[]>([]);
+  const [showForm, setShowForm] = useImmer(false);
+  const [referenceToEdit, setReferenceToEdit] = useImmer<ResultReference>(null);
   const referenceStyle = defaultReferenceStyle;
 
   const throwSync = useThrowSync();

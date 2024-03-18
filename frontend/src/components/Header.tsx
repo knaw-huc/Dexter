@@ -23,6 +23,7 @@ import {
   tags,
 } from '../model/Resources';
 import { Version } from './Version';
+import { useImmer } from 'use-immer';
 
 const pages = [corpora, sources, tags, metadata, media, references];
 const settings: JSX.Element[] = [<Version key={1} />];
@@ -79,9 +80,7 @@ export default function Header() {
 function UserMenu() {
   const username = useContext(userContext).userState.username;
 
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
-    null,
-  );
+  const [anchorElUser, setAnchorElUser] = useImmer<HTMLElement>(null);
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };

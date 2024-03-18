@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import TextField from '@mui/material/TextField';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {
   FormMedia,
   ResultMedia,
@@ -17,6 +17,7 @@ import { useFormErrors } from '../common/error/useFormErrors';
 import { FormErrorMessage } from '../common/error/FormError';
 import { FieldError } from '../common/error/FieldError';
 import { TextFieldWithError } from '../common/TextFieldWithError';
+import { useImmer } from 'use-immer';
 
 type MediaFormProps = {
   inEdit?: ResultMedia;
@@ -33,9 +34,9 @@ const mediaSchema = yup.object({
 });
 
 export function MediaForm(props: MediaFormProps) {
-  const [form, setForm] = useState<FormMedia>();
+  const [form, setForm] = useImmer<FormMedia>(null);
   const { errors, setError } = useFormErrors<FormMedia>();
-  const [isInit, setInit] = useState(false);
+  const [isInit, setInit] = useImmer(false);
 
   useEffect(() => {
     const init = async () => {

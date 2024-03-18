@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { ResultTag } from '../../model/DexterModel';
 import { deleteTag, getTags } from '../../utils/API';
 import { TagForm } from './TagForm';
@@ -6,9 +6,10 @@ import { TagList } from './TagList';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
 import { TagIcon } from './tagIcon';
 import { useThrowSync } from '../common/error/useThrowSync';
+import { useImmer } from 'use-immer';
 
 export const TagIndex = () => {
-  const [tags, setTags] = useState<ResultTag[]>();
+  const [tags, setTags] = useImmer<ResultTag[]>([]);
   const throwSync = useThrowSync();
 
   useEffect(() => {

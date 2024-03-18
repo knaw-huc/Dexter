@@ -5,9 +5,10 @@ import { AddNewResourceButton } from '../common/AddNewResourceButton';
 import { SelectExistingResourceButton } from '../source/SelectExistingResourceButton';
 import { TagsFilter } from '../tag/TagsFilter';
 import { CorpusPreview } from './CorpusPreview';
-import React, { useState } from 'react';
+import React from 'react';
 import { Corpus, ResultTag } from '../../model/DexterModel';
 import _ from 'lodash';
+import { useImmer } from 'use-immer';
 
 type CorpusSubcorporaProps = {
   subcorpora: Corpus[];
@@ -16,7 +17,7 @@ type CorpusSubcorporaProps = {
   onDeleted: (corpus: Corpus) => void;
 };
 export function CorpusSubcorpora(props: CorpusSubcorporaProps) {
-  const [filterTags, setFilterTags] = useState<ResultTag[]>([]);
+  const [filterTags, setFilterTags] = useImmer<ResultTag[]>([]);
 
   return (
     <>

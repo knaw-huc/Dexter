@@ -1,3 +1,5 @@
+import { Any } from '../components/common/Any';
+
 export type UUID = string;
 export type LocalDate = string;
 export type LocalDateTime = string;
@@ -195,3 +197,7 @@ export interface ResultLanguage {
 export type WithId = {
   id: string;
 };
+
+export function isWithId(resource: Any): resource is WithId {
+  return !!(resource as WithId).id;
+}

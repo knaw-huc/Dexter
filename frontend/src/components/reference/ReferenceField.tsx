@@ -1,6 +1,5 @@
 import { FormFieldprops } from '../common/FormFieldProps';
 import { SpinnerIcon } from '../common/SpinnerIcon';
-import React, { useState } from 'react';
 import { InputAdornment } from '@mui/material';
 import { SplitRow } from '../common/SplitRow';
 import { ValidatedSelectField } from '../common/ValidatedSelectField';
@@ -11,6 +10,8 @@ import { ReferenceToolTipHelp } from './ReferenceToolTipHelp';
 import { SubmitFormReference } from '../../model/DexterModel';
 import _ from 'lodash';
 import { formatReference } from './formatReference';
+import { useImmer } from 'use-immer';
+import React from 'react';
 
 type ReferenceFieldProps = FormFieldprops & {
   toEdit: SubmitFormReference;
@@ -29,7 +30,7 @@ export function ReferenceField(props: ReferenceFieldProps) {
   const toEdit = props.toEdit;
   const isLoading = props.isLoading;
 
-  const [isCollapsed, setCollapsed] = useState(true);
+  const [isCollapsed, setCollapsed] = useImmer(true);
 
   const csl = toEdit?.csl || '';
   const inputValue = toEdit?.input || '';

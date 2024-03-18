@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {
   FormReference,
   ResultReference,
@@ -17,6 +17,7 @@ import { ReferenceField } from './ReferenceField';
 import { useDebounce } from '../../utils/useDebounce';
 import { useLoadReference } from './useLoadReference';
 import { ReferenceStyle } from './ReferenceStyle';
+import { useImmer } from 'use-immer';
 
 const referenceSchema = yup.object({
   input: yup.string().required('Reference input cannot be empty'),
@@ -37,12 +38,12 @@ type ReferenceFormProps = {
 
 export function ReferenceForm(props: ReferenceFormProps) {
   const toEdit = props.inEdit;
-  const [initialInput] = useState<string>(props.inEdit?.input);
-  const [form, setForm] = useState<SubmitFormReference>(toForm(toEdit));
+  const [initialInput] = useImmer<string>(props.inEdit?.input);
+  const [form, setForm] = useImmer<SubmitFormReference>(toForm(toEdit));
   const debouncedInput = useDebounce(form.input);
   const { errors, setError } = useFormErrors<FormReference>();
   const { load } = useLoadReference({ onLoaded: setForm });
-  const [isLoading, setLoading] = useState(false);
+  const [isLoading, setLoading] = useImmer(false);
 
   useEffect(() => {
     if (debouncedInput !== initialInput) {

@@ -2,11 +2,12 @@ import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import match from 'autosuggest-highlight/match';
 import parse from 'autosuggest-highlight/parse';
-import React, { useState } from 'react';
+import React from 'react';
 import { ResultCorpus, ResultSource } from '../../model/DexterModel';
 import { Label } from '../common/Label';
 import { FormFieldprops } from '../common/FormFieldProps';
 import { FieldError } from '../common/error/FieldError';
+import { useImmer } from 'use-immer';
 
 export type SelectCorpusFieldProps = FormFieldprops & {
   options: ResultCorpus[];
@@ -16,7 +17,7 @@ export type SelectCorpusFieldProps = FormFieldprops & {
 };
 
 export const SelectCorpusField = (props: SelectCorpusFieldProps) => {
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useImmer('');
 
   return (
     <>

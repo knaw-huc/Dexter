@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { EditButton } from '../common/EditButton';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
@@ -12,12 +12,13 @@ import { Title } from './Title';
 
 import { ExternalLink } from '../common/ExternalLink';
 import { useThrowSync } from '../common/error/useThrowSync';
+import { useImmer } from 'use-immer';
 
 export function MediaPage() {
   const mediaId = useParams().mediaId;
 
-  const [media, setMedia] = useState<ResultMedia>();
-  const [showForm, setShowForm] = useState<boolean>(false);
+  const [media, setMedia] = useImmer<ResultMedia>(null);
+  const [showForm, setShowForm] = useImmer<boolean>(false);
 
   const throwSync = useThrowSync();
 

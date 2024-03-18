@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Corpus, Source } from '../../model/DexterModel';
 import { CorpusPreview } from './CorpusPreview';
 import { CorpusForm } from './CorpusForm';
@@ -12,11 +12,14 @@ import { Grid } from '@mui/material';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
 import { CorpusIcon } from './CorpusIcon';
 import { useThrowSync } from '../common/error/useThrowSync';
+import { useImmer } from 'use-immer';
+import { remove } from '../../utils/immer/remove';
+import { add } from '../../utils/immer/add';
 
 export function CorpusIndex() {
-  const [corpora, setCorpora] = useState<Corpus[]>();
-  const [showForm, setShowForm] = React.useState(false);
-  const [sourceOptions, setSourceOptions] = useState<Source[]>();
+  const [corpora, setCorpora] = useImmer<Corpus[]>([]);
+  const [showForm, setShowForm] = useImmer(false);
+  const [sourceOptions, setSourceOptions] = useImmer<Source[]>([]);
   const throwSync = useThrowSync();
 
   useEffect(() => {
@@ -33,11 +36,11 @@ export function CorpusIndex() {
   }, []);
 
   function handleDelete(corpus: Corpus) {
-    setCorpora(corpora => corpora.filter(c => c.id !== corpus.id));
+    setCorpora(corpora => remove(corpus.id, corpora));
   }
 
   function handleSave(update: Corpus) {
-    setCorpora(corpora => [...corpora, update]);
+    setCorpora(corpora => add(update, corpora));
     setShowForm(false);
   }
 

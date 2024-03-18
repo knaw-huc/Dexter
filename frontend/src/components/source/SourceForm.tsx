@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {
   Access,
   AccessOptions,
@@ -25,6 +25,7 @@ import { SelectMediaField } from '../media/SelectMediaField';
 import { useFormErrors } from '../common/error/useFormErrors';
 import { FormErrorMessage } from '../common/error/FormError';
 import { Any } from '../common/Any';
+import { useImmer } from 'use-immer';
 
 type SourceFormProps = {
   sourceToEdit?: Source;
@@ -36,9 +37,9 @@ type SourceFormProps = {
 export function SourceForm(props: SourceFormProps) {
   const sourceToEdit = props.sourceToEdit;
 
-  const [form, setForm] = useState<SubmitFormSource>();
+  const [form, setForm] = useImmer<SubmitFormSource>(null);
   const { errors, setError, setFieldError } = useFormErrors<Source>();
-  const [keys, setKeys] = useState<ResultMetadataKey[]>([]);
+  const [keys, setKeys] = useImmer<ResultMetadataKey[]>([]);
 
   const { init, isInit } = useInitSourceForm({
     sourceToEdit,

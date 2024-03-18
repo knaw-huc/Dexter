@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 import {
   Corpus,
   FormMetadataValue,
@@ -6,6 +6,7 @@ import {
   toFormMetadataValue,
 } from '../../model/DexterModel';
 import { getMetadataKeys } from '../../utils/API';
+import { useImmer } from 'use-immer';
 
 type UseInitCorpusFormResult = {
   init: () => void;
@@ -47,7 +48,7 @@ export function useInitCorpusForm(
   params: UseInitCorpusFormParams,
 ): UseInitCorpusFormResult {
   const { corpusToEdit, setForm, setKeys, setValues } = params;
-  const [isInit, setInit] = useState(false);
+  const [isInit, setInit] = useImmer(false);
 
   function init() {
     runOnce();

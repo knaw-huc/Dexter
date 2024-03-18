@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { getMetadataKeys } from '../../utils/API';
 import { ResultMetadataKey } from '../../model/DexterModel';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
@@ -8,11 +8,14 @@ import { MetadataKeyForm } from './MetadataKeyForm';
 import { MetadataKeyIcon } from './MetadataKeyIcon';
 import { useThrowSync } from '../common/error/useThrowSync';
 import ErrorBoundary from '../common/error/ErrorBoundary';
+import { useImmer } from 'use-immer';
+import { update } from '../../utils/immer/update';
+import { add } from '../../utils/immer/add';
 
 export function MetadataKeyIndex() {
-  const [keys, setKeys] = useState<ResultMetadataKey[]>();
-  const [isFormOpen, setFormOpen] = useState(false);
-  const [toEdit, setToEdit] = useState<ResultMetadataKey>();
+  const [keys, setKeys] = useImmer<ResultMetadataKey[]>([]);
+  const [isFormOpen, setFormOpen] = useImmer(false);
+  const [toEdit, setToEdit] = useImmer<ResultMetadataKey>(null);
   const throwSync = useThrowSync();
 
   useEffect(() => {
@@ -26,10 +29,10 @@ export function MetadataKeyIndex() {
 
   function handleSavedKey(key: ResultMetadataKey) {
     if (toEdit) {
-      setKeys(keys.map(k => (k.id === key.id ? key : k)));
+      setKeys(keys => update(key, keys));
       setToEdit(null);
     } else {
-      setKeys([...keys, key]);
+      setKeys(keys => add(key, keys));
     }
     setFormOpen(false);
   }

@@ -1,9 +1,9 @@
-import { useState } from 'react';
 import isUrl from '../../utils/isUrl';
 import { ResultImport, Source } from '../../model/DexterModel';
 import { postImport } from '../../utils/API';
 import { ErrorWithMessage } from '../common/error/ErrorWithMessage';
 import { Any } from '../common/Any';
+import { useImmer } from 'use-immer';
 
 type WithExternalRef = {
   externalRef?: string;
@@ -23,7 +23,7 @@ export function useImportMetadata<T extends WithExternalRef>(
   params: UseImportMetadataParams,
 ): UseImportMetadataResult<T> {
   const { setError, setFieldError } = params;
-  const [isImportLoading, setImportLoading] = useState(false);
+  const [isImportLoading, setImportLoading] = useImmer(false);
 
   function checkCanImporting(externalRef: string) {
     const warning = window.confirm(

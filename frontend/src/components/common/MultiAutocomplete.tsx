@@ -1,10 +1,11 @@
 import { Autocomplete, Chip, TextField, TextFieldProps } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useDebounce } from '../../utils/useDebounce';
 import { HighlightedLabel } from './HighlightedLabel';
 import { AutocompleteRenderGetTagProps } from '@mui/material/Autocomplete/Autocomplete';
 import { WithId } from '../../model/DexterModel';
 import _ from 'lodash';
+import { useImmer } from 'use-immer';
 
 export type MultiAutocompleteProps<T> = {
   placeholder: string;
@@ -32,9 +33,9 @@ export const CREATE_NEW_OPTION = 'create-new-option';
 export function MultiAutocomplete<T extends WithId>(
   props: MultiAutocompleteProps<T>,
 ) {
-  const [options, setOptions] = useState<T[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [inputValue, setInputValue] = useState('');
+  const [options, setOptions] = useImmer<T[]>([]);
+  const [loading, setLoading] = useImmer(false);
+  const [inputValue, setInputValue] = useImmer('');
   const debouncedInput = useDebounce<string>(inputValue, 250);
 
   useEffect(() => {

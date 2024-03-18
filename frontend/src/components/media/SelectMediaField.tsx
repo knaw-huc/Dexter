@@ -49,7 +49,7 @@ export const SelectMediaField = (props: SelectMediaFieldProps) => {
         url: inputValue,
       });
     }
-    return options.sort(sortAlphanumeric);
+    return _.sortBy(options, ['title']);
   }
 
   async function handleCreateNew(toCreate: ResultMedia) {
@@ -76,10 +76,6 @@ export const SelectMediaField = (props: SelectMediaFieldProps) => {
 
   function toStringLabel(media: ResultMedia): string {
     return media.title ? `${media.title} (${media.url})` : media.url;
-  }
-
-  function sortAlphanumeric(s1: ResultMedia, s2: ResultMedia) {
-    return s1.title > s2.title ? 1 : -1;
   }
 
   function handleRemoveSelected(option: ResultMedia) {

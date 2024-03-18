@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Corpus, Source } from '../../model/DexterModel';
 import { CorpusForm } from './CorpusForm';
@@ -26,20 +26,23 @@ import { SelectCorpusForm } from './SelectCorpusForm';
 import { useThrowSync } from '../common/error/useThrowSync';
 import { CorpusSources } from './CorpusSources';
 import { CorpusSubcorpora } from './CorpusSubcorpora';
+import { useImmer } from 'use-immer';
+import { add } from '../../utils/immer/add';
+import { remove } from '../../utils/immer/remove';
 
 export const CorpusPage = () => {
   const corpusId = useParams().corpusId;
 
-  const [corpus, setCorpus] = useState<Corpus>();
-  const [sourceOptions, setSourceOptions] = useState<Source[]>();
-  const [corpusOptions, setCorpusOptions] = useState<Corpus[]>();
+  const [corpus, setCorpus] = useImmer<Corpus>(null);
+  const [sourceOptions, setSourceOptions] = useImmer<Source[]>([]);
+  const [corpusOptions, setCorpusOptions] = useImmer<Corpus[]>([]);
 
-  const [showCorpusForm, setShowCorpusForm] = useState(false);
-  const [showSubcorpusForm, setShowSubcorpusForm] = useState(false);
-  const [showSelectSubcorpusForm, setShowSelectSubcorpusForm] = useState(false);
+  const [showCorpusForm, setShowCorpusForm] = useImmer(false);
+  const [showSubcorpusForm, setShowSubcorpusForm] = useImmer(false);
+  const [showSelectSubcorpusForm, setShowSelectSubcorpusForm] = useImmer(false);
 
-  const [showSourceForm, setShowSourceForm] = useState(false);
-  const [showSelectSourceForm, setShowSelectSourceForm] = useState(false);
+  const [showSourceForm, setShowSourceForm] = useImmer(false);
+  const [showSelectSourceForm, setShowSelectSourceForm] = useImmer(false);
 
   const throwSync = useThrowSync();
 
@@ -48,10 +51,7 @@ export const CorpusPage = () => {
 
     async function init() {
       try {
-        const corpusWithResources = await getCorpusWithResourcesById(corpusId);
-        setCorpus({
-          ...corpusWithResources,
-        });
+        setCorpus(await getCorpusWithResourcesById(corpusId));
         setSourceOptions(await getSourcesWithResources());
         setCorpusOptions(
           await getCorporaWithResources().then(all =>
@@ -80,28 +80,20 @@ export const CorpusPage = () => {
   const handleSavedSubcorpus = async (subcorpus: Corpus) => {
     subcorpus.parent = corpus;
     await updateCorpus(subcorpus.id, { ...subcorpus, parentId: corpus.id });
-    setCorpus(corpus => ({
-      ...corpus,
-      subcorpora: [...corpus.subcorpora, subcorpus],
-    }));
+    setCorpus(c => add(subcorpus, c.subcorpora));
     setShowSubcorpusForm(false);
   };
 
-  const handleSaveSource = (update: Source) => {
-    setCorpus(corpus => ({
-      ...corpus,
-      sources: [...corpus.sources, update],
-    }));
+  async function handleSavedSource(update: Source) {
+    await addSourcesToCorpus(corpusId, [update.id]);
+    setCorpus(c => add(update, c.sources));
     setShowSourceForm(false);
-  };
+  }
 
   const handleSelectSource = async (corpusId: string, sourceId: string) => {
     await addSourcesToCorpus(corpusId, [sourceId]);
     const toLink = sourceOptions.find(s => s.id === sourceId);
-    setCorpus(corpus => ({
-      ...corpus,
-      sources: [...corpus.sources, toLink],
-    }));
+    setCorpus(c => add(toLink, c.sources));
   };
 
   const handleDeselectSource = async (corpusId: string, sourceId: string) => {
@@ -112,20 +104,14 @@ export const CorpusPage = () => {
     if (warning === false) return;
 
     await deleteSourceFromCorpus(corpusId, sourceId);
-    setCorpus(corpus => ({
-      ...corpus,
-      sources: corpus.sources.filter(s => s.id !== sourceId),
-    }));
+    setCorpus(c => remove(sourceId, c.sources));
   };
 
   const handleSelectSubcorpus = async (subcorpusId: string) => {
     const subcorpus = corpusOptions.find(c => c.id === subcorpusId);
     subcorpus.parent = corpus;
     await updateCorpus(subcorpusId, { ...subcorpus, parentId: corpus.id });
-    setCorpus(corpus => ({
-      ...corpus,
-      subcorpora: [...corpus.subcorpora, subcorpus],
-    }));
+    setCorpus(c => add(subcorpus, c.subcorpora));
   };
 
   function handleCloseCorpusForm() {
@@ -142,17 +128,11 @@ export const CorpusPage = () => {
 
     const subcorpus = corpusOptions.find(c => c.id === subcorpusId);
     await updateCorpus(subcorpusId, subcorpus);
-    setCorpus(corpus => ({
-      ...corpus,
-      subcorpora: corpus.subcorpora.filter(c => c.id !== subcorpusId),
-    }));
+    handleDeletedSubcorpus(subcorpus);
   };
 
   function handleDeletedSubcorpus(subcorpus: Corpus) {
-    setCorpus(corpus => ({
-      ...corpus,
-      subcorpora: corpus.subcorpora.filter(c => c.id !== subcorpus.id),
-    }));
+    setCorpus(c => remove(subcorpus.id, c.subcorpora));
   }
 
   const shortCorpusFields: (keyof Corpus)[] = [
@@ -229,7 +209,7 @@ export const CorpusPage = () => {
 
       {(showCorpusForm || showSubcorpusForm) && (
         <CorpusForm
-          corpusToEdit={corpus}
+          corpusToEdit={showSubcorpusForm ? null : corpus}
           parentOptions={showSubcorpusForm ? null : corpusOptions}
           sourceOptions={sourceOptions}
           onClose={handleCloseCorpusForm}
@@ -240,7 +220,7 @@ export const CorpusPage = () => {
         <SourceForm
           corpusId={corpusId}
           onClose={() => setShowSourceForm(false)}
-          onSaved={handleSaveSource}
+          onSaved={handleSavedSource}
         />
       )}
       {showSelectSubcorpusForm && (
