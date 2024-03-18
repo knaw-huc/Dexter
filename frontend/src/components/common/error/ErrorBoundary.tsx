@@ -1,6 +1,6 @@
 import React, { Component, ErrorInfo, PropsWithChildren } from 'react';
-import { isResponseError } from '../isResponseError';
 import { ErrorAlert } from './ErrorAlert';
+import { toMessage } from './toMessage';
 
 type ErrorBoundaryProps = PropsWithChildren;
 
@@ -48,17 +48,6 @@ export type ClosableErrorAlertProps = {
 };
 
 export function ErrorBoundaryAlert(props: ClosableErrorAlertProps) {
-  function toMessage(error: Error) {
-    if (!error) {
-      return '';
-    } else if (isResponseError(error)) {
-      const body = error.json;
-      return body.message;
-    } else {
-      return error.message;
-    }
-  }
-
   function handleClose() {
     props.onClose();
   }

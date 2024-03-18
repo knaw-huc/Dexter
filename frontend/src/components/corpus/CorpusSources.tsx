@@ -8,17 +8,53 @@ import _ from 'lodash';
 import { SourcePreview } from '../source/SourcePreview';
 import { NoResults } from '../common/NoResults';
 import React from 'react';
-import { ResultTag, Source } from '../../model/DexterModel';
+import { ResultTag, Source, UUID } from '../../model/DexterModel';
 import { useImmer } from 'use-immer';
+import { SourceForm } from '../source/SourceForm';
+import { addSourcesToCorpus, deleteSourceFromCorpus } from '../../utils/API';
+import { add } from '../../utils/immer/add';
+import { SelectSourcesForm } from './SelectSourcesForm';
+import { remove } from '../../utils/immer/remove';
 
 type CorpusSourcesProps = {
-  onUnlink: (source: Source) => void;
+  corpusId: UUID;
   sources: Source[];
-  onAddExisting: () => void;
-  onAddNew: () => void;
+  options: Source[];
+  onChanged: (sources: Source[]) => void;
 };
+
 export function CorpusSources(props: CorpusSourcesProps) {
+  const { corpusId } = props;
+  const [sources, setSources] = useImmer(props.sources);
   const [filterTags, setFilterTags] = useImmer<ResultTag[]>([]);
+  const [showSourceForm, setShowSourceForm] = useImmer(false);
+  const [showSelectSourceForm, setShowSelectSourceForm] = useImmer(false);
+
+  async function handleSavedSource(update: Source) {
+    await addSourcesToCorpus(corpusId, [update.id]);
+    setShowSourceForm(false);
+    setSources(s => add(update, s));
+    props.onChanged(sources);
+  }
+
+  const handleSelectSource = async (corpusId: string, sourceId: string) => {
+    await addSourcesToCorpus(corpusId, [sourceId]);
+    const toLink = props.options.find(s => s.id === sourceId);
+    setSources(s => add(toLink, s));
+    props.onChanged(sources);
+  };
+
+  const handleDeselectSource = async (corpusId: string, sourceId: string) => {
+    const warning = window.confirm(
+      'Are you sure you wish to remove this source from this corpus?',
+    );
+
+    if (warning === false) return;
+
+    await deleteSourceFromCorpus(corpusId, sourceId);
+    setSources(s => remove(sourceId, s));
+    props.onChanged(sources);
+  };
 
   return (
     <>
@@ -28,10 +64,13 @@ export function CorpusSources(props: CorpusSourcesProps) {
       </H2Styled>
       <Grid container spacing={2}>
         <Grid item xs={6} md={4}>
-          <AddNewResourceButton title="New source" onClick={props.onAddNew} />
+          <AddNewResourceButton
+            title="New source"
+            onClick={() => setShowSourceForm(true)}
+          />
           <SelectExistingResourceButton
             title="Existing source"
-            onClick={props.onAddExisting}
+            onClick={() => setShowSelectSourceForm(true)}
           />
         </Grid>
         <Grid item xs={6} md={8}>
@@ -49,13 +88,31 @@ export function CorpusSources(props: CorpusSourcesProps) {
             <Grid item xs={4} key={source.id}>
               <SourcePreview
                 source={source}
-                onUnlinkSource={() => props.onUnlink(source)}
+                onUnlink={() => handleDeselectSource(corpusId, source.id)}
               />
             </Grid>
           ))}
         </Grid>
       ) : (
         <NoResults message="No sources" />
+      )}
+      {showSourceForm && (
+        <SourceForm
+          corpusId={corpusId}
+          onClose={() => setShowSourceForm(false)}
+          onSaved={handleSavedSource}
+        />
+      )}
+      {showSelectSourceForm && (
+        <SelectSourcesForm
+          options={props.options}
+          selected={sources}
+          onSelectSource={sourceId => handleSelectSource(corpusId, sourceId)}
+          onDeselectSource={sourceId =>
+            handleDeselectSource(corpusId, sourceId)
+          }
+          onClose={() => setShowSelectSourceForm(false)}
+        />
       )}
     </>
   );

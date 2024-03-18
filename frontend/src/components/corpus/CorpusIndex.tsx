@@ -13,7 +13,6 @@ import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
 import { CorpusIcon } from './CorpusIcon';
 import { useThrowSync } from '../common/error/useThrowSync';
 import { useImmer } from 'use-immer';
-import { remove } from '../../utils/immer/remove';
 import { add } from '../../utils/immer/add';
 
 export function CorpusIndex() {
@@ -34,10 +33,6 @@ export function CorpusIndex() {
       }
     }
   }, []);
-
-  function handleDelete(corpus: Corpus) {
-    setCorpora(corpora => remove(corpus.id, corpora));
-  }
 
   function handleSave(update: Corpus) {
     setCorpora(corpora => add(update, corpora));
@@ -75,10 +70,7 @@ export function CorpusIndex() {
         <Grid container spacing={2} sx={{ pl: 0.1, pr: 1, mt: 2, mb: 2 }}>
           {corpora.map((corpus: Corpus, index: number) => (
             <Grid item xs={4} key={index}>
-              <CorpusPreview
-                corpus={corpus}
-                onDeleted={() => handleDelete(corpus)}
-              />
+              <CorpusPreview corpus={corpus} />
             </Grid>
           ))}
         </Grid>

@@ -1,11 +1,7 @@
 import React, { useEffect } from 'react';
 import { Source } from '../../model/DexterModel';
 import { SourceListItem } from './SourceListItem';
-import {
-  deleteMetadataValue,
-  deleteSource,
-  getSourcesWithResources,
-} from '../../utils/API';
+import { getSourcesWithResources } from '../../utils/API';
 import { SourceForm } from './SourceForm';
 import { AddNewResourceButton } from '../common/AddNewResourceButton';
 import { List } from '@mui/material';
@@ -13,37 +9,25 @@ import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
 import { SourceIcon } from './SourceIcon';
 import { useThrowSync } from '../common/error/useThrowSync';
 import { useImmer } from 'use-immer';
-import { remove } from '../../utils/immer/remove';
 import { update } from '../../utils/immer/update';
 import { add } from '../../utils/immer/add';
 import _ from 'lodash';
+import { useDeleteSource } from './useDeleteSource';
+import { remove } from '../../utils/immer/remove';
 
 export function SourceIndex() {
   const [sources, setSources] = useImmer<Source[]>([]);
   const [showForm, setShowForm] = useImmer(false);
   const [sourceToEdit, setSourceToEdit] = useImmer<Source>(null);
-
   const throwSync = useThrowSync();
+  const { deleteSource } = useDeleteSource({ onError: throwSync });
 
   useEffect(() => {
     getSourcesWithResources().then(setSources).catch(throwSync);
   }, []);
 
   const handleDelete = async (source: Source) => {
-    const warning = window.confirm(
-      'Are you sure you wish to delete this source?',
-    );
-
-    if (warning === false) return;
-
-    try {
-      for (const mv of source.metadataValues) {
-        await deleteMetadataValue(mv.id);
-      }
-      await deleteSource(source.id);
-    } catch (e) {
-      throwSync(e);
-    }
+    deleteSource(source);
     setSources(sources => remove(source.id, sources));
   };
 

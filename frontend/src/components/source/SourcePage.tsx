@@ -41,9 +41,12 @@ import { useImmer } from 'use-immer';
 import { remove } from '../../utils/immer/remove';
 import { update } from '../../utils/immer/update';
 import { add } from '../../utils/immer/add';
+import { DeleteButton } from '../common/DeleteButton';
+import { useDeleteSource } from './useDeleteSource';
 
 export const SourcePage = () => {
   const sourceId = useParams().sourceId;
+  const referenceStyle = defaultReferenceStyle;
 
   const [source, setSource] = useImmer<Source>(null);
   const [showForm, setShowForm] = useImmer(false);
@@ -54,8 +57,7 @@ export const SourcePage = () => {
   const [showSelectMediaForm, setShowSelectMediaForm] = useImmer(null);
   const [showSelectReferenceForm, setShowSelectReferenceForm] = useImmer(null);
   const throwSync = useThrowSync();
-
-  const referenceStyle = defaultReferenceStyle;
+  const { deleteSource } = useDeleteSource({ onError: throwSync });
 
   useEffect(() => {
     init();
@@ -175,7 +177,9 @@ export const SourcePage = () => {
         <SourcesBreadCrumbLink />
       </HeaderBreadCrumb>
 
+      <DeleteButton onDelete={() => deleteSource(source)} />
       <EditButton
+        sx={{ marginRight: '1em' }}
         onEdit={() => {
           setShowForm(true);
         }}

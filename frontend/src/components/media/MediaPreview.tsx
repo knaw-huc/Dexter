@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { EditIconStyled } from '../common/EditButton';
 import { DeleteIconStyled } from '../common/DeleteIconStyled';
 import { Title } from './Title';
+import { media } from '../../model/Resources';
 
 type MediaItemProps = {
   media: ResultMedia;
@@ -17,7 +18,7 @@ export const MediaPreview = (props: MediaItemProps) => {
   const navigate = useNavigate();
 
   function handleSelect() {
-    navigate(`/media/${props.media.id}`);
+    navigate(`/${media}/${props.media.id}`);
   }
 
   function handleDelete(e: React.MouseEvent) {

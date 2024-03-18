@@ -9,10 +9,11 @@ import { CloseInlineIcon } from '../common/CloseInlineIcon';
 import { SourceIcon } from './SourceIcon';
 import { Title } from '../media/Title';
 import { CardHeaderImage } from '../common/CardHeaderImage';
+import { sources } from '../../model/Resources';
 
 interface SourceItemDropdownProps {
   source: Source;
-  onUnlinkSource: () => void;
+  onUnlink: () => void;
 }
 
 export const SourcePreview = (props: SourceItemDropdownProps) => {
@@ -21,7 +22,7 @@ export const SourcePreview = (props: SourceItemDropdownProps) => {
   const headerImage = props.source.media.find(m => isImage(m.mediaType))?.url;
 
   function navigateToSource() {
-    return navigate(`/sources/${props.source.id}`);
+    return navigate(`/${sources}/${props.source.id}`);
   }
 
   return (
@@ -33,7 +34,7 @@ export const SourcePreview = (props: SourceItemDropdownProps) => {
             <CloseInlineIcon
               onClick={(e: React.MouseEvent<HTMLInputElement>) => {
                 e.stopPropagation();
-                props.onUnlinkSource();
+                props.onUnlink();
               }}
             />
             <HeaderLinkClamped onClick={navigateToSource}>

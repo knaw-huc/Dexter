@@ -14,11 +14,17 @@ export function ErrorAlert(props: {
   if (props.onClose) {
     optionalCloseButton.action = <CloseInlineIcon onClick={props.onClose} />;
   }
+  if (!props.message) {
+    return;
+  }
   return (
     <Alert
       className={ERROR_MESSAGE_CLASS}
       severity={props.severity || 'error'}
-      sx={props.sx}
+      sx={{
+        marginBottom: '1em',
+        ...props.sx,
+      }}
       {...optionalCloseButton}
     >
       {props.message}

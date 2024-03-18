@@ -37,6 +37,11 @@ enum class PsqlDiagnosticsHelper(
         "media_unique_url_created_by",
         "Media url MUST be unique",
         includeDetail = true
+    ),
+    CORPORA_PARENT_ID_CONSTRAINT(
+        "corpora_parent_id_fkey",
+        "This corpus still contains subcorpora: please remove these first",
+        includeDetail = false
     );
 
     companion object {
