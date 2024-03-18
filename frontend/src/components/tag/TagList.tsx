@@ -9,6 +9,7 @@ export function TagList(props: {
   tags: ResultTag[];
   sx?: SxProps<Theme>;
   onDelete?: (tag: ResultTag) => void;
+  renderLabel?: (tag: ResultTag) => JSX.Element;
 }) {
   return (
     <Stack
@@ -25,11 +26,14 @@ export function TagList(props: {
         props.onDelete ? (
           <ResourceChip
             key={index}
-            text={tag.val}
+            label={tag.val}
             onDelete={() => props.onDelete && props.onDelete(tag)}
           />
         ) : (
-          <ResourceChip key={index} text={tag.val} />
+          <ResourceChip
+            key={index}
+            label={props.renderLabel ? props.renderLabel(tag) : tag.val}
+          />
         ),
       )}
     </Stack>

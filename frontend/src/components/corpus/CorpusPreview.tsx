@@ -1,7 +1,7 @@
 import React from 'react';
 import { Corpus, isImage } from '../../model/DexterModel';
 import { useNavigate } from 'react-router-dom';
-import { Card, CardContent, Grid } from '@mui/material';
+import { Card, CardContent, Grid, Tooltip } from '@mui/material';
 import { HeaderLinkClamped } from '../common/HeaderLinkClamped';
 import { PClamped } from '../common/PClamped';
 import { CorpusIcon } from './CorpusIcon';
@@ -10,12 +10,23 @@ import { CardHeaderImage } from '../common/CardHeaderImage';
 import { TagList } from '../tag/TagList';
 import { CloseInlineIcon } from '../common/CloseInlineIcon';
 import { corpora } from '../../model/Resources';
+import { getCorpusTags } from './getCorpusTags';
+import _ from 'lodash';
+import { hasEqualId } from '../../utils/hasEqualId';
+import styled from '@emotion/styled';
+import ScatterPlotIcon from '@mui/icons-material/ScatterPlot';
 
 type CorpusPreviewProps = {
   corpus: Corpus;
   onUnlink?: () => void;
 };
 
+const NestedIconStyled = styled(ScatterPlotIcon)`
+  font-size: 1em;
+  position: absolute;
+  margin-top: 0.7em;
+  margin-left: 0.35em;
+`;
 export function CorpusPreview(props: CorpusPreviewProps) {
   const navigate = useNavigate();
 
@@ -28,12 +39,16 @@ export function CorpusPreview(props: CorpusPreviewProps) {
     return navigate(`/${corpora}/${corpus.id}`);
   }
 
+  const corpusTags = props.corpus.tags;
+  const childTags = getCorpusTags(props.corpus);
+  const uniqueChildTags = _.differenceWith(childTags, corpusTags, hasEqualId);
+
   return (
     <Card style={{ height: '100%' }}>
       <CardHeaderImage src={headerImage} onClick={navigateToCorpus} />
       <CardContent style={{ height: '100%', paddingBottom: '1em' }}>
         <Grid container>
-          <Grid item sx={{ maxHeight: '110px' }} xs={12}>
+          <Grid item sx={{ maxHeight: '130px', minHeight: '90px' }} xs={12}>
             {props.onUnlink && <CloseInlineIcon onClick={props.onUnlink} />}
             <HeaderLinkClamped onClick={navigateToCorpus}>
               <CorpusIcon />
@@ -42,7 +57,19 @@ export function CorpusPreview(props: CorpusPreviewProps) {
             <PClamped>{corpus.description}</PClamped>
           </Grid>
           <Grid item sx={{ mt: '0.5em' }}>
-            <TagList tags={props.corpus.tags} />
+            <TagList tags={corpusTags} />
+            <TagList
+              tags={uniqueChildTags}
+              sx={{ opacity: '0.5' }}
+              renderLabel={tag => (
+                <span style={{ marginRight: '1.25em' }}>
+                  {tag.val}
+                  <Tooltip title="Tags from subcorpora and sources">
+                    <NestedIconStyled />
+                  </Tooltip>
+                </span>
+              )}
+            />
           </Grid>
         </Grid>
       </CardContent>

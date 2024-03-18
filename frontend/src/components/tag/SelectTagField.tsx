@@ -20,7 +20,8 @@ type TagsFieldProps = FormFieldprops & {
   options?: ResultTag[];
 
   /**
-   * Should additional options be fetched from autocomplete endpoint?
+   * Use autocomplete endpoint to fetch options?
+   * Otherwise, use props.options
    */
   useAutocomplete?: boolean;
 
@@ -48,20 +49,31 @@ export const SelectTagField = (props: TagsFieldProps) => {
   async function handleAutocompleteOptions(
     inputValue: string,
   ): Promise<ResultTag[]> {
-    if (inputValue.length < MIN_AUTOCOMPLETE_LENGTH) {
-      return [];
-    }
-    const options = !props.useAutocomplete
-      ? props.options.filter(o => o.val.includes(inputValue))
-      : await getTagsAutocomplete(inputValue);
+    const options = props.useAutocomplete
+      ? await fromAutocomplete(inputValue)
+      : fromOptions(inputValue);
     const inputIsOption = options.find(o => o.val === inputValue);
-    if (props.allowCreatingNew && !inputIsOption) {
+    if (props.allowCreatingNew && !inputIsOption && inputValue) {
       options.push({
         id: CREATE_NEW_OPTION,
         val: `Create new tag: ${inputValue}`,
       });
     }
     return _.sortBy(options, ['val']);
+  }
+
+  async function fromAutocomplete(inputValue: string) {
+    if (inputValue.length < MIN_AUTOCOMPLETE_LENGTH) {
+      return [];
+    }
+    return getTagsAutocomplete(inputValue);
+  }
+
+  function fromOptions(inputValue: string) {
+    if (inputValue.length < MIN_AUTOCOMPLETE_LENGTH) {
+      return props.options;
+    }
+    return props.options.filter(o => o.val.includes(inputValue));
   }
 
   async function handleAddSelected(toAdd: ResultTag) {
@@ -74,9 +86,10 @@ export const SelectTagField = (props: TagsFieldProps) => {
 
   return (
     <>
-      <Label>{props.label || 'Tags'}</Label>
+      {props.label && <Label>{props.label}</Label>}
       <MultiAutocomplete<ResultTag>
-        placeholder="Add and create tags"
+        size="small"
+        placeholder={props.placeholder ?? 'Add and create tags'}
         selected={props.selected}
         onAutocompleteOptions={handleAutocompleteOptions}
         toStringLabel={o => o.val}
@@ -85,6 +98,7 @@ export const SelectTagField = (props: TagsFieldProps) => {
         onRemoveSelected={handleDeleteTag}
         allowCreatingNew={props.allowCreatingNew}
         onCreateSelected={handleCreateSelected}
+        showSelectedFullWidth={false}
       />
       <FieldError error={props.error} />
     </>

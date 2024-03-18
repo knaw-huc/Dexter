@@ -126,6 +126,7 @@ export function SourceForm(props: SourceFormProps) {
         {renderFormField('notes', { rows: 6, multiline: true })}
 
         <SelectTagField
+          label="Tags"
           error={errors.tags}
           selected={form.tags}
           onChangeSelected={tags => setForm(f => ({ ...f, tags }))}

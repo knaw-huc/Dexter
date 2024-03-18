@@ -7,13 +7,14 @@ import { TagsFilter } from '../tag/TagsFilter';
 import { CorpusPreview } from './CorpusPreview';
 import React, { useEffect } from 'react';
 import { Corpus, ResultTag, Source } from '../../model/DexterModel';
-import _ from 'lodash';
 import { useImmer } from 'use-immer';
 import { CorpusForm } from './CorpusForm';
 import { SelectCorpusForm } from './SelectCorpusForm';
 import { updateCorpus } from '../../utils/API';
 import { remove } from '../../utils/immer/remove';
 import { add } from '../../utils/immer/add';
+import { isRelevantResource } from './getAllRelevantTags';
+import { getCorpusTags } from './getCorpusTags';
 
 type CorpusSubcorporaProps = {
   parent: Corpus;
@@ -22,6 +23,7 @@ type CorpusSubcorporaProps = {
   sourceOptions: Source[];
   onChanged: (subcorpora: Corpus[]) => void;
 };
+
 export function CorpusSubcorpora(props: CorpusSubcorporaProps) {
   const [filterTags, setFilterTags] = useImmer<ResultTag[]>([]);
   const [showSubcorpusForm, setShowSubcorpusForm] = useImmer(false);
@@ -72,6 +74,20 @@ export function CorpusSubcorpora(props: CorpusSubcorporaProps) {
     setSubcorpora(c => remove(subcorpus.id, c));
   }
 
+  /**
+   * Find options that result in a non-empty list of corpora
+   */
+  function getRelevantTags(): ResultTag[] {
+    const corpusNestedTags = props.subcorpora.map(sc => ({
+      id: sc.id,
+      tags: getCorpusTags(sc),
+    }));
+    const relevantCorpora = corpusNestedTags.filter(c =>
+      isRelevantResource(c, filterTags),
+    );
+    return relevantCorpora.flatMap(c => c.tags);
+  }
+
   return (
     <>
       <H2Styled>
@@ -92,7 +108,7 @@ export function CorpusSubcorpora(props: CorpusSubcorporaProps) {
         <Grid item xs={6} md={8}>
           <TagsFilter
             placeholder="Filter corpora by their tags, plus the tags of their subcorpora and sources "
-            options={props.subcorpora.flatMap(getCorpusTags)}
+            options={getRelevantTags()}
             selected={filterTags}
             onChangeSelected={update => setFilterTags(update)}
           />
@@ -131,14 +147,6 @@ export function CorpusSubcorpora(props: CorpusSubcorporaProps) {
   );
 }
 
-function getCorpusTags(subcorpus: Corpus): ResultTag[] {
-  const all = [
-    ...subcorpus.tags,
-    ...subcorpus.sources.flatMap(s => s.tags),
-    ...subcorpus.subcorpora.flatMap(getCorpusTags),
-  ];
-  return _.uniqBy(all, 'id');
-}
 function getFilteredSubcorpora(
   subcorpora: Corpus[],
   tags: ResultTag[],

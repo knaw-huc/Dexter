@@ -8,6 +8,7 @@ import _ from 'lodash';
 import { useImmer } from 'use-immer';
 
 export type MultiAutocompleteProps<T> = {
+  size?: 'medium' | 'small';
   placeholder: string;
   selected: T[];
   onAutocompleteOptions: (inputValue: string) => Promise<T[]>;
@@ -26,6 +27,11 @@ export type MultiAutocompleteProps<T> = {
    * Only needed when allowCreatingNew:
    */
   onCreateSelected?: (selected: T, inputValue: string) => Promise<T>;
+
+  /**
+   * Defaults to true
+   */
+  showSelectedFullWidth?: boolean;
 };
 
 export const CREATE_NEW_OPTION = 'create-new-option';
@@ -88,7 +94,7 @@ export function MultiAutocomplete<T extends WithId>(
         {...params}
         placeholder={props.placeholder}
         value={inputValue}
-        size="medium"
+        size={props.size || 'medium'}
       />
     );
   }
@@ -98,7 +104,11 @@ export function MultiAutocomplete<T extends WithId>(
     getAutocompleteProps: AutocompleteRenderGetTagProps,
   ) {
     return (
-      <div style={{ width: '100%' }}>
+      <div
+        style={{
+          width: props.showSelectedFullWidth === false ? 'initial' : '100%',
+        }}
+      >
         {selected.map((s: T, index) => (
           <Chip
             key={index}
@@ -109,7 +119,7 @@ export function MultiAutocomplete<T extends WithId>(
             }
             {...getAutocompleteProps({ index })}
             onDelete={() => handleRemoveSelected(s)}
-            size="medium"
+            size={props.size || 'medium'}
           />
         ))}
       </div>
@@ -118,6 +128,7 @@ export function MultiAutocomplete<T extends WithId>(
 
   return (
     <Autocomplete
+      size={props.size || 'medium'}
       multiple={true}
       inputValue={inputValue}
       onInputChange={async (_, value) => setInputValue(value)}
@@ -131,6 +142,7 @@ export function MultiAutocomplete<T extends WithId>(
       renderOption={(liProps, option) => renderOption(liProps, option)}
       filterOptions={removeSelected}
       renderTags={renderSelected}
+      noOptionsText={inputValue.length ? 'No options' : 'Start typing...'}
     />
   );
 }

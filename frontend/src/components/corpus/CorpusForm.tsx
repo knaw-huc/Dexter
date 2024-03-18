@@ -134,6 +134,7 @@ export function CorpusForm(props: CorpusFormProps) {
           {renderTextField('notes', { rows: 6, multiline: true })}
 
           <SelectTagField
+            label="Tags"
             error={errors.tags}
             selected={form.tags}
             onChangeSelected={tags => {

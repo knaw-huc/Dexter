@@ -15,6 +15,7 @@ import { addSourcesToCorpus, deleteSourceFromCorpus } from '../../utils/API';
 import { add } from '../../utils/immer/add';
 import { SelectSourcesForm } from './SelectSourcesForm';
 import { remove } from '../../utils/immer/remove';
+import { getAllRelevantTags } from './getAllRelevantTags';
 
 type CorpusSourcesProps = {
   corpusId: UUID;
@@ -76,7 +77,7 @@ export function CorpusSources(props: CorpusSourcesProps) {
         <Grid item xs={6} md={8}>
           <TagsFilter
             placeholder="Filter sources by their tags"
-            options={getAllSourceTags(props.sources)}
+            options={getAllRelevantTags(props.sources, filterTags)}
             selected={filterTags}
             onChangeSelected={update => setFilterTags(update)}
           />
@@ -116,10 +117,6 @@ export function CorpusSources(props: CorpusSourcesProps) {
       )}
     </>
   );
-}
-
-function getAllSourceTags(sources: Source[]) {
-  return _.uniqBy(sources.map(s => s.tags).flat(), 'id');
 }
 
 function getFilteredSources(sources: Source[], tags: ResultTag[]): Source[] {

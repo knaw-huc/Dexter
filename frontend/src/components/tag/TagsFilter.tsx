@@ -22,8 +22,8 @@ export function TagsFilter(props: {
       selected={props.selected}
       onChangeSelected={props.onChangeSelected}
       options={props.options}
-      size="small"
       placeholder={props.placeholder}
+      useAutocomplete={false}
     />
   );
 }
