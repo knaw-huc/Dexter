@@ -7,7 +7,7 @@ import { TagsFilter } from '../tag/TagsFilter';
 import _ from 'lodash';
 import { SourcePreview } from '../source/SourcePreview';
 import { NoResults } from '../common/NoResults';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ResultTag, Source, UUID } from '../../model/DexterModel';
 import { useImmer } from 'use-immer';
 import { SourceForm } from '../source/SourceForm';
@@ -31,11 +31,14 @@ export function CorpusSources(props: CorpusSourcesProps) {
   const [showSourceForm, setShowSourceForm] = useImmer(false);
   const [showSelectSourceForm, setShowSelectSourceForm] = useImmer(false);
 
+  useEffect(() => {
+    props.onChanged(sources);
+  }, [sources]);
+
   async function handleSavedSource(update: Source) {
     await addSourcesToCorpus(corpusId, [update.id]);
     setShowSourceForm(false);
     setSources(s => add(update, s));
-    props.onChanged(sources);
   }
 
   const handleSelectSource = async (corpusId: string, sourceId: string) => {
