@@ -6,16 +6,65 @@ import { SelectExistingResourceButton } from './SelectExistingResourceButton';
 import { MediaPreview } from '../media/MediaPreview';
 import React from 'react';
 import { ResultMedia } from '../../model/DexterModel';
+import { MediaForm } from '../media/MediaForm';
+import { SelectMediaForm } from './SelectMediaForm';
+import { useImmer } from 'use-immer';
+import { addMediaToSource, deleteMediaFromSource } from '../../utils/API';
+import { remove } from '../../utils/immer/remove';
+import { update } from '../../utils/immer/update';
+import { add } from '../../utils/immer/add';
+import { useSourcePageStore } from './SourcePageStore';
+import { updateSourceMedia } from '../../utils/updateRemoteIds';
 
-type SourceMediaProps = {
-  media: ResultMedia[];
-  onClickAddNew: () => void;
-  onClickAddExisting: () => void;
-  onUnlink: (media: ResultMedia) => void;
-  onClickEdit: (media: ResultMedia) => void;
-};
+export function SourceMedia() {
+  const { source, setSource } = useSourcePageStore();
+  const sourceId = source.id;
+  const media = source.media;
 
-export function SourceMedia(props: SourceMediaProps) {
+  const [showMediaForm, setShowMediaForm] = useImmer(false);
+  const [showSelectMediaForm, setShowSelectMediaForm] = useImmer(null);
+  const [mediaToEdit, setMediaToEdit] = useImmer(null);
+
+  async function handleUnlinkMedia(media: ResultMedia) {
+    await deleteMediaFromSource(sourceId, media.id);
+    setSource(s => remove(media.id, s.media));
+  }
+
+  function handleClickEditMedia(media: ResultMedia) {
+    setMediaToEdit(media);
+    setShowMediaForm(true);
+  }
+
+  async function handleSavedMedia(media: ResultMedia) {
+    if (mediaToEdit) {
+      handleEditedMedia(media);
+    } else {
+      await addCreatedMedia(media);
+    }
+  }
+
+  function handleEditedMedia(media: ResultMedia) {
+    setSource(s => update(media, s.media));
+    setMediaToEdit(null);
+    setShowMediaForm(false);
+  }
+
+  async function addCreatedMedia(media: ResultMedia) {
+    await addMediaToSource(sourceId, [media.id]);
+    setSource(s => add(media, s.media));
+    setShowMediaForm(false);
+  }
+
+  function handleCloseMedia() {
+    setMediaToEdit(null);
+    setShowMediaForm(false);
+  }
+
+  async function handleChangeSelectedMedia(media: ResultMedia[]) {
+    await updateSourceMedia(sourceId, media);
+    setSource(s => ({ ...s, media }));
+  }
+
   return (
     <>
       <H2Styled>
@@ -26,26 +75,40 @@ export function SourceMedia(props: SourceMediaProps) {
         <Grid item xs={6} md={4}>
           <AddNewResourceButton
             title="New media"
-            onClick={props.onClickAddNew}
+            onClick={() => setShowMediaForm(true)}
           />
           <SelectExistingResourceButton
             title="Existing media"
-            onClick={props.onClickAddExisting}
+            onClick={() => setShowSelectMediaForm(true)}
           />
         </Grid>
         <Grid item xs={6} md={8}></Grid>
       </Grid>
       <Grid container spacing={2} sx={{ pl: 0.1, mt: 2, mb: 2 }}>
-        {props.media.map(media => (
+        {media.map(media => (
           <Grid item xs={4} key={media.id}>
             <MediaPreview
               media={media}
-              onDelete={() => props.onUnlink(media)}
-              onEdit={() => props.onClickEdit(media)}
+              onDelete={() => handleUnlinkMedia(media)}
+              onEdit={() => handleClickEditMedia(media)}
             />
           </Grid>
         ))}
       </Grid>
+      {showMediaForm && (
+        <MediaForm
+          onClose={handleCloseMedia}
+          onSaved={handleSavedMedia}
+          inEdit={mediaToEdit}
+        />
+      )}
+      {showSelectMediaForm && (
+        <SelectMediaForm
+          selected={source.media}
+          onChangeSelected={handleChangeSelectedMedia}
+          onClose={() => setShowSelectMediaForm(false)}
+        />
+      )}
     </>
   );
 }

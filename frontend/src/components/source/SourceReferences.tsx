@@ -4,20 +4,77 @@ import { Grid } from '@mui/material';
 import { AddNewResourceButton } from '../common/AddNewResourceButton';
 import { SelectExistingResourceButton } from './SelectExistingResourceButton';
 import React from 'react';
-import { Reference } from '../../model/DexterModel';
+import { Reference, ResultReference } from '../../model/DexterModel';
 import { ReferenceStyle } from '../reference/ReferenceStyle';
 import { ReferenceListItem } from '../reference/ReferenceListItem';
+import { ReferenceForm } from '../reference/ReferenceForm';
+import { SelectReferenceForm } from '../reference/SelectReferenceForm';
+import { useImmer } from 'use-immer';
+import {
+  addReferencesToSource,
+  deleteReferenceFromSource,
+} from '../../utils/API';
+import { remove } from '../../utils/immer/remove';
+import { update } from '../../utils/immer/update';
+import { add } from '../../utils/immer/add';
+import { updateSourceReferences } from '../../utils/updateRemoteIds';
+import { useSourcePageStore } from './SourcePageStore';
+import { assign } from '../../utils/immer/assign';
 
-type SourceReferencesProps = {
-  references: Reference[];
-  onClickAddNew: () => void;
-  onClickAddExisting: () => void;
-  onUnlink: (reference: Reference) => void;
-  onClickEdit: (reference: Reference) => void;
-  referenceStyle: ReferenceStyle;
-};
+export function SourceReferences(props: { referenceStyle: ReferenceStyle }) {
+  const { referenceStyle } = props;
+  const { source, setSource } = useSourcePageStore();
+  const sourceId = source.id;
+  const references = source.references;
+  const [showSelectReferenceForm, setShowSelectReferenceForm] = useImmer(null);
+  const [showReferenceForm, setShowReferenceForm] = useImmer(false);
+  const [referenceToEdit, setReferenceToEdit] = useImmer<Reference>(null);
 
-export function SourceReferences(props: SourceReferencesProps) {
+  async function handleUnlinkReference(reference: ResultReference) {
+    const warning = window.confirm(
+      'Are you sure you wish to remove this reference?',
+    );
+    if (warning === false) return;
+
+    await deleteReferenceFromSource(sourceId, reference.id);
+    setSource(s => remove(reference.id, s.references));
+  }
+
+  function handleClickEditReference(reference: Reference) {
+    setReferenceToEdit(reference);
+    setShowReferenceForm(true);
+  }
+
+  async function handleSavedReference(reference: ResultReference) {
+    if (referenceToEdit) {
+      handleEditReference(reference);
+    } else {
+      await addCreatedReference(reference);
+    }
+  }
+
+  function handleEditReference(reference: ResultReference) {
+    setSource(s => update(reference, s.references));
+    setReferenceToEdit(null);
+    setShowReferenceForm(false);
+  }
+
+  async function addCreatedReference(reference: ResultReference) {
+    await addReferencesToSource(sourceId, [reference.id]);
+    setSource(s => add(reference, s.references));
+    setShowReferenceForm(false);
+  }
+
+  function handleCloseReference() {
+    setReferenceToEdit(null);
+    setShowReferenceForm(false);
+  }
+
+  async function handleChangeSelectedReferences(references: Reference[]) {
+    await updateSourceReferences(sourceId, references);
+    setSource(s => assign(s, { references }));
+  }
+
   return (
     <>
       <H2Styled>
@@ -26,26 +83,45 @@ export function SourceReferences(props: SourceReferencesProps) {
       </H2Styled>
       <Grid container spacing={2}>
         <Grid item xs={6} md={4}>
-          <AddNewResourceButton title="New" onClick={props.onClickAddNew} />
+          <AddNewResourceButton
+            title="New"
+            onClick={() => setShowReferenceForm(true)}
+          />
           <SelectExistingResourceButton
             title="Existing"
-            onClick={props.onClickAddExisting}
+            onClick={() => setShowSelectReferenceForm(true)}
           />
         </Grid>
         <Grid item xs={6} md={8}></Grid>
       </Grid>
       <ul style={{ paddingLeft: 0 }}>
-        {props.references.map(reference => (
+        {references.map(reference => (
           <ReferenceListItem
             key={reference.id}
             reference={reference}
-            onDelete={() => props.onUnlink(reference)}
-            onEdit={() => props.onClickEdit(reference)}
+            onDelete={() => handleUnlinkReference(reference)}
+            onEdit={() => handleClickEditReference(reference)}
             referenceStyle={props.referenceStyle}
             hideIcon={true}
           />
         ))}
       </ul>
+      {showReferenceForm && (
+        <ReferenceForm
+          onClose={handleCloseReference}
+          onSaved={handleSavedReference}
+          inEdit={referenceToEdit}
+          referenceStyle={referenceStyle}
+        />
+      )}
+      {showSelectReferenceForm && (
+        <SelectReferenceForm
+          selected={source.references}
+          onChangeSelected={handleChangeSelectedReferences}
+          onClose={() => setShowSelectReferenceForm(false)}
+          referenceStyle={referenceStyle}
+        />
+      )}
     </>
   );
 }

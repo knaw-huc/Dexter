@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { Corpus, Source } from '../../model/DexterModel';
 import { immer } from 'zustand/middleware/immer';
 import { DraftSetter, Setter } from '../../utils/immer/Setter';
+import { assign } from '../../utils/immer/assign';
 
 interface CorpusPageState {
   /**
@@ -28,17 +29,16 @@ interface CorpusPageState {
 export const useCorpusPageStore = create<CorpusPageState>()(
   immer(set => ({
     corpus: null,
-    setCorpus: update => set(state => void (state.corpus = update)),
-    setSubcorpora: updater =>
-      set(state => void updater(state.corpus.subcorpora)),
-    setSources: updater => set(state => void updater(state.corpus.sources)),
+    setCorpus: corpus => set(state => assign(state, { corpus })),
+    setSubcorpora: updater => set(state => updater(state.corpus.subcorpora)),
+    setSources: updater => set(state => updater(state.corpus.sources)),
 
     corpusOptions: [],
-    setCorpusOptions: update =>
-      set(state => void (state.corpusOptions = update)),
+    setCorpusOptions: corpusOptions =>
+      set(state => assign(state, { corpusOptions })),
 
     sourceOptions: [],
-    setSourceOptions: update =>
-      set(state => void (state.sourceOptions = update)),
+    setSourceOptions: sourceOptions =>
+      set(state => assign(state, { sourceOptions })),
   })),
 );

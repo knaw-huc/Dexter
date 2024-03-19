@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { isSource, Source } from '../../model/DexterModel';
 import { immer } from 'zustand/middleware/immer';
 import { MixedSetter, MixedSetterParam } from '../../utils/immer/Setter';
+import { assign } from '../../utils/immer/assign';
 
 interface SourcePageState {
   /**
@@ -16,9 +17,9 @@ export const useSourcePageStore = create<SourcePageState>()(
     source: null,
     setSource: (updater: MixedSetterParam<Source>) => {
       if (isSource(updater)) {
-        set(state => void (state.source = updater));
+        set(state => assign(state, { source: updater }));
       } else {
-        set(state => void updater(state.source));
+        set(state => updater(state.source));
       }
     },
   })),
