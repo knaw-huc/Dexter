@@ -27,7 +27,7 @@ export function ValidatedSelectField<T>(props: SelectFieldProps<T>) {
           }}
         >
           <MenuItem value="placeholder" disabled={true}>
-            Please select an option level
+            Please pick an option
           </MenuItem>
           {options.map(v => (
             <MenuItem key={v} value={v}>
