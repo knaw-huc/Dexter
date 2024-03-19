@@ -37,7 +37,7 @@ export function SourceReferences(props: { referenceStyle: ReferenceStyle }) {
     if (warning === false) return;
 
     await deleteReferenceFromSource(sourceId, reference.id);
-    setSource(s => remove(reference.id, s.references));
+    setSource(s => remove(s.references, reference.id));
   }
 
   function handleClickEditReference(reference: Reference) {
@@ -54,14 +54,14 @@ export function SourceReferences(props: { referenceStyle: ReferenceStyle }) {
   }
 
   function handleEditReference(reference: ResultReference) {
-    setSource(s => update(reference, s.references));
+    setSource(s => update(s.references, reference));
     setReferenceToEdit(null);
     setShowReferenceForm(false);
   }
 
   async function addCreatedReference(reference: ResultReference) {
     await addReferencesToSource(sourceId, [reference.id]);
-    setSource(s => add(reference, s.references));
+    setSource(s => add(s.references, reference));
     setShowReferenceForm(false);
   }
 

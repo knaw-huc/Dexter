@@ -2,10 +2,10 @@ import { WithId } from '../../model/DexterModel';
 
 /**
  * Replace element in array with the update using ID
- * @param toUpdate
  * @param updateIn
+ * @param toUpdate
  */
-export function update(toUpdate: WithId, updateIn: WithId[]): void {
+export function update(updateIn: WithId[], toUpdate: WithId): void {
   const index = updateIn.findIndex(item => item.id === toUpdate.id);
   updateIn[index] = toUpdate;
 }

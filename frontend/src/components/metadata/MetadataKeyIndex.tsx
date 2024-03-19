@@ -29,10 +29,10 @@ export function MetadataKeyIndex() {
 
   function handleSavedKey(key: ResultMetadataKey) {
     if (toEdit) {
-      setKeys(keys => update(key, keys));
+      setKeys(keys => update(keys, key));
       setToEdit(null);
     } else {
-      setKeys(keys => add(key, keys));
+      setKeys(keys => add(keys, key));
     }
     setFormOpen(false);
   }

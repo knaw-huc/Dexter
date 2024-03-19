@@ -27,7 +27,7 @@ export function SourceMedia() {
 
   async function handleUnlinkMedia(media: ResultMedia) {
     await deleteMediaFromSource(sourceId, media.id);
-    setSource(s => remove(media.id, s.media));
+    setSource(s => remove(s.media, media.id));
   }
 
   function handleClickEditMedia(media: ResultMedia) {
@@ -44,14 +44,14 @@ export function SourceMedia() {
   }
 
   function handleEditedMedia(media: ResultMedia) {
-    setSource(s => update(media, s.media));
+    setSource(s => update(s.media, media));
     setMediaToEdit(null);
     setShowMediaForm(false);
   }
 
   async function addCreatedMedia(media: ResultMedia) {
     await addMediaToSource(sourceId, [media.id]);
-    setSource(s => add(media, s.media));
+    setSource(s => add(s.media, media));
     setShowMediaForm(false);
   }
 

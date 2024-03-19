@@ -32,7 +32,7 @@ export function CorpusSubcorpora() {
       ...subcorpus,
       parentId: subcorpus.parent.id,
     });
-    setSubcorpora(sc => add(subcorpus, sc));
+    setSubcorpora(sc => add(sc, subcorpus));
     setShowSubcorpusForm(false);
   };
 
@@ -43,7 +43,7 @@ export function CorpusSubcorpora() {
       ...subcorpus,
       parentId: subcorpus.parent.id,
     });
-    setSubcorpora(sc => add(subcorpus, sc));
+    setSubcorpora(sc => add(sc, subcorpus));
   };
 
   function handleCloseCorpusForm() {
@@ -59,11 +59,11 @@ export function CorpusSubcorpora() {
     const subcorpus = corpusOptions.find(c => c.id === subcorpusId);
     delete subcorpus.parent;
     await updateCorpus(subcorpusId, subcorpus);
-    setSubcorpora(c => remove(subcorpus.id, c));
+    setSubcorpora(c => remove(c, subcorpus.id));
   };
 
   function handleDeletedSubcorpus(subcorpus: Corpus) {
-    setSubcorpora(c => remove(subcorpus.id, c));
+    setSubcorpora(c => remove(c, subcorpus.id));
   }
 
   /**

@@ -3,6 +3,6 @@ import { WithId } from '../../model/DexterModel';
 /**
  * Add element to array
  */
-export function add(toAdd: WithId, addTo: WithId[]): void {
+export function add(addTo: WithId[], toAdd: WithId): void {
   addTo.push(toAdd);
 }

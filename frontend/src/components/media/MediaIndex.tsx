@@ -32,7 +32,7 @@ export function MediaIndex() {
     if (warning === false) return;
 
     await deleteMedia(media.id);
-    setMedia(prev => remove(media.id, prev));
+    setMedia(prev => remove(prev, media.id));
   }
 
   const handleEdit = (media: ResultMedia) => {
@@ -42,7 +42,7 @@ export function MediaIndex() {
 
   function handleSaveMedia(media: ResultMedia) {
     if (mediaToEdit) {
-      setMedia(prev => update(media, prev));
+      setMedia(prev => update(prev, media));
       setMediaToEdit(null);
     } else {
       setMedia(prev => [...prev, media]);

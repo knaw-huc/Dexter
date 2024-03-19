@@ -35,7 +35,7 @@ export function CorpusIndex() {
   }, []);
 
   function handleSave(update: Corpus) {
-    setCorpora(corpora => add(update, corpora));
+    setCorpora(corpora => add(corpora, update));
     setShowForm(false);
   }
 

@@ -29,13 +29,13 @@ export function CorpusSources() {
   async function handleSavedSource(update: Source) {
     await addSourcesToCorpus(corpusId, [update.id]);
     setShowSourceForm(false);
-    setSources(s => add(update, s));
+    setSources(s => add(s, update));
   }
 
   const handleSelectSource = async (corpusId: string, sourceId: string) => {
     await addSourcesToCorpus(corpusId, [sourceId]);
     const toLink = sourceOptions.find(s => s.id === sourceId);
-    setSources(s => add(toLink, s));
+    setSources(s => add(s, toLink));
   };
 
   const handleDeselectSource = async (corpusId: string, sourceId: string) => {
@@ -46,7 +46,7 @@ export function CorpusSources() {
     if (warning === false) return;
 
     await deleteSourceFromCorpus(corpusId, sourceId);
-    setSources(s => remove(sourceId, s));
+    setSources(s => remove(s, sourceId));
   };
 
   return (

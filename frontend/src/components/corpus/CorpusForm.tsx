@@ -72,12 +72,12 @@ export function CorpusForm(props: CorpusFormProps) {
   }
 
   function handleUnlinkSource(sourceId: string) {
-    setForm(f => remove(sourceId, f.sources));
+    setForm(f => remove(f.sources, sourceId));
   }
 
   async function handleLinkSource(sourceId: string) {
     const toAdd = props.sourceOptions.find(s => s.id === sourceId);
-    setForm(f => add(toAdd, f.sources));
+    setForm(f => add(f.sources, toAdd));
   }
 
   async function handleSelectParentCorpus(corpusId: string) {

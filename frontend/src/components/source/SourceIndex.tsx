@@ -28,7 +28,7 @@ export function SourceIndex() {
 
   const handleDelete = async (source: Source) => {
     deleteSource(source);
-    setSources(sources => remove(source.id, sources));
+    setSources(sources => remove(sources, source.id));
   };
 
   const handleEdit = (source: Source) => {
@@ -38,10 +38,10 @@ export function SourceIndex() {
 
   function handleSaveSource(source: Source) {
     if (sourceToEdit) {
-      setSources(sources => update(source, sources));
+      setSources(sources => update(sources, source));
       setSourceToEdit(null);
     } else {
-      setSources(sources => add(source, sources));
+      setSources(sources => add(sources, source));
     }
     setShowForm(false);
   }

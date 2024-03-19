@@ -4,6 +4,6 @@ import _ from 'lodash';
 /**
  * Remove element from array
  */
-export function remove(toRemove: UUID, removeFrom: WithId[]): void {
+export function remove(removeFrom: WithId[], toRemove: UUID): void {
   _.remove(removeFrom, (item: WithId) => item.id === toRemove);
 }
