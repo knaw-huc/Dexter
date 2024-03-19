@@ -7,33 +7,24 @@ import { TagsFilter } from '../tag/TagsFilter';
 import _ from 'lodash';
 import { SourcePreview } from '../source/SourcePreview';
 import { NoResults } from '../common/NoResults';
-import React, { useEffect } from 'react';
-import { ResultTag, Source, UUID } from '../../model/DexterModel';
+import React from 'react';
+import { ResultTag, Source } from '../../model/DexterModel';
 import { useImmer } from 'use-immer';
 import { SourceForm } from '../source/SourceForm';
 import { addSourcesToCorpus, deleteSourceFromCorpus } from '../../utils/API';
-import { add } from '../../utils/immer/add';
 import { SelectSourcesForm } from './SelectSourcesForm';
-import { remove } from '../../utils/immer/remove';
 import { getAllRelevantTags } from './getAllRelevantTags';
+import { useCorpusPageStore } from './CorpusPageStore';
+import { add } from '../../utils/immer/add';
+import { remove } from '../../utils/immer/remove';
 
-type CorpusSourcesProps = {
-  corpusId: UUID;
-  sources: Source[];
-  options: Source[];
-  onChanged: (sources: Source[]) => void;
-};
-
-export function CorpusSources(props: CorpusSourcesProps) {
-  const { corpusId } = props;
-  const [sources, setSources] = useImmer(props.sources);
+export function CorpusSources() {
+  const { corpus, setSources, sourceOptions } = useCorpusPageStore();
+  const corpusId = corpus.id;
+  const sources = corpus.sources;
   const [filterTags, setFilterTags] = useImmer<ResultTag[]>([]);
   const [showSourceForm, setShowSourceForm] = useImmer(false);
   const [showSelectSourceForm, setShowSelectSourceForm] = useImmer(false);
-
-  useEffect(() => {
-    props.onChanged(sources);
-  }, [sources]);
 
   async function handleSavedSource(update: Source) {
     await addSourcesToCorpus(corpusId, [update.id]);
@@ -43,9 +34,8 @@ export function CorpusSources(props: CorpusSourcesProps) {
 
   const handleSelectSource = async (corpusId: string, sourceId: string) => {
     await addSourcesToCorpus(corpusId, [sourceId]);
-    const toLink = props.options.find(s => s.id === sourceId);
+    const toLink = sourceOptions.find(s => s.id === sourceId);
     setSources(s => add(toLink, s));
-    props.onChanged(sources);
   };
 
   const handleDeselectSource = async (corpusId: string, sourceId: string) => {
@@ -57,7 +47,6 @@ export function CorpusSources(props: CorpusSourcesProps) {
 
     await deleteSourceFromCorpus(corpusId, sourceId);
     setSources(s => remove(sourceId, s));
-    props.onChanged(sources);
   };
 
   return (
@@ -80,15 +69,15 @@ export function CorpusSources(props: CorpusSourcesProps) {
         <Grid item xs={6} md={8}>
           <TagsFilter
             placeholder="Filter sources by their tags"
-            options={getAllRelevantTags(props.sources, filterTags)}
+            options={getAllRelevantTags(sources, filterTags)}
             selected={filterTags}
             onChangeSelected={update => setFilterTags(update)}
           />
         </Grid>
       </Grid>
-      {!_.isEmpty(props.sources) ? (
+      {!_.isEmpty(sources) ? (
         <Grid container spacing={2} sx={{ pl: 0.1, pr: 1, mt: 2, mb: 2 }}>
-          {getFilteredSources(props.sources, filterTags).map(source => (
+          {getFilteredSources(sources, filterTags).map(source => (
             <Grid item xs={4} key={source.id}>
               <SourcePreview
                 source={source}
@@ -109,7 +98,7 @@ export function CorpusSources(props: CorpusSourcesProps) {
       )}
       {showSelectSourceForm && (
         <SelectSourcesForm
-          options={props.options}
+          options={sourceOptions}
           selected={sources}
           onSelectSource={sourceId => handleSelectSource(corpusId, sourceId)}
           onDeselectSource={sourceId =>

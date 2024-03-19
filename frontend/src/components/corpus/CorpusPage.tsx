@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Corpus, Source } from '../../model/DexterModel';
+import { Corpus } from '../../model/DexterModel';
 import { CorpusForm } from './CorpusForm';
 import {
   deleteCorpus,
@@ -24,17 +24,21 @@ import { CorpusSubcorpora } from './CorpusSubcorpora';
 import { useImmer } from 'use-immer';
 import { DeleteButton } from '../common/DeleteButton';
 import { corpora } from '../../model/Resources';
-import { ErrorAlert } from '../common/error/ErrorAlert';
-import { toMessage } from '../common/error/toMessage';
+import { useCorpusPageStore } from './CorpusPageStore';
+import { useThrowSync } from '../common/error/useThrowSync';
 
 export const CorpusPage = () => {
   const corpusId = useParams().corpusId;
-
-  const [corpus, setCorpus] = useImmer<Corpus>(null);
-  const [sourceOptions, setSourceOptions] = useImmer<Source[]>([]);
-  const [corpusOptions, setCorpusOptions] = useImmer<Corpus[]>([]);
-  const [error, setError] = useImmer<Error>(null);
+  const {
+    corpus,
+    setCorpus,
+    sourceOptions,
+    setSourceOptions,
+    corpusOptions,
+    setCorpusOptions,
+  } = useCorpusPageStore();
   const [showCorpusForm, setShowCorpusForm] = useImmer(false);
+  const throwSync = useThrowSync();
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -50,7 +54,7 @@ export const CorpusPage = () => {
           ),
         );
       } catch (e) {
-        setError(e);
+        throwSync(e);
       }
     }
   }, []);
@@ -82,7 +86,7 @@ export const CorpusPage = () => {
       await deleteCorpus(corpus.id);
       navigate(`/${corpora}`);
     } catch (e) {
-      setError(e);
+      throwSync(e);
     }
   }
 
@@ -102,7 +106,6 @@ export const CorpusPage = () => {
   }
   return (
     <div>
-      <ErrorAlert message={toMessage(error)} onClose={() => setError(null)} />
       <HeaderBreadCrumb>
         <CorporaBreadCrumbLink />
         {corpus?.parent && (
@@ -145,24 +148,9 @@ export const CorpusPage = () => {
         <MetadataValuePageFields values={corpus.metadataValues} />
       )}
 
-      {!_.isEmpty(corpus.subcorpora) && (
-        <CorpusSubcorpora
-          parent={corpus}
-          subcorpora={corpus.subcorpora}
-          options={corpusOptions}
-          sourceOptions={sourceOptions}
-          onChanged={subcorpora => setCorpus(c => ({ ...c, subcorpora }))}
-        />
-      )}
+      {!_.isEmpty(corpus.subcorpora) && <CorpusSubcorpora />}
 
-      {!_.isEmpty(corpus.sources) && (
-        <CorpusSources
-          corpusId={corpusId}
-          onChanged={sources => setCorpus(c => ({ ...c, sources }))}
-          sources={corpus.sources}
-          options={sourceOptions}
-        />
-      )}
+      {!_.isEmpty(corpus.sources) && <CorpusSources />}
 
       {showCorpusForm && (
         <CorpusForm
