@@ -113,11 +113,10 @@ export type SubmitFormReference = FormReference;
 
 export enum Access {
   CLOSED = 'Closed',
-  RESTRICTED = 'Restricted',
   OPEN = 'Open',
 }
 
-export const AccessOptions = ['Open', 'Restricted', 'Closed'];
+export const AccessOptions = ['Open', 'Closed'];
 
 // Metadata
 export type WithMetadata = {
