@@ -15,11 +15,11 @@ interface SourcePageState {
 export const useSourcePageStore = create<SourcePageState>()(
   immer(set => ({
     source: null,
-    setSource: (updater: MixedSetterParam<Source>) => {
-      if (isSource(updater)) {
-        set(state => assign(state, { source: updater }));
+    setSource: (recipe: MixedSetterParam<Source>) => {
+      if (isSource(recipe)) {
+        set(state => assign(state, { source: recipe }));
       } else {
-        set(state => updater(state.source));
+        set(state => recipe(state.source));
       }
     },
   })),

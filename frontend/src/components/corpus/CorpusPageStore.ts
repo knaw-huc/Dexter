@@ -30,8 +30,8 @@ export const useCorpusPageStore = create<CorpusPageState>()(
   immer(set => ({
     corpus: null,
     setCorpus: corpus => set(state => assign(state, { corpus })),
-    setSubcorpora: updater => set(state => updater(state.corpus.subcorpora)),
-    setSources: updater => set(state => updater(state.corpus.sources)),
+    setSubcorpora: recipe => set(state => recipe(state.corpus.subcorpora)),
+    setSources: recipe => set(state => recipe(state.corpus.sources)),
 
     corpusOptions: [],
     setCorpusOptions: corpusOptions =>
