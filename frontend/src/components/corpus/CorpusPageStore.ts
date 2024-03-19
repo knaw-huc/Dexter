@@ -1,17 +1,11 @@
 import { create } from 'zustand';
 import { Corpus, Source } from '../../model/DexterModel';
 import { immer } from 'zustand/middleware/immer';
-
-/**
- * Update state using immer draft
- */
-export type DraftSetter<T> = (updater: (prev: T) => void) => void;
-
-export type Setter<T> = (update: T) => void;
+import { DraftSetter, Setter } from '../../utils/immer/Setter';
 
 interface CorpusPageState {
   /**
-   * Corpus displayed on index page
+   * Resource displayed on index page
    */
   corpus: Corpus;
   setCorpus: Setter<Corpus>;

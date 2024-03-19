@@ -43,12 +43,13 @@ import { update } from '../../utils/immer/update';
 import { add } from '../../utils/immer/add';
 import { DeleteButton } from '../common/DeleteButton';
 import { useDeleteSource } from './useDeleteSource';
+import { useSourcePageStore } from './SourcePageStore';
 
 export const SourcePage = () => {
   const sourceId = useParams().sourceId;
   const referenceStyle = defaultReferenceStyle;
+  const { source, setSource } = useSourcePageStore();
 
-  const [source, setSource] = useImmer<Source>(null);
   const [showForm, setShowForm] = useImmer(false);
   const [showMediaForm, setShowMediaForm] = useImmer(false);
   const [showReferenceForm, setShowReferenceForm] = useImmer(false);

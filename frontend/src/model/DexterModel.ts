@@ -81,6 +81,14 @@ export type Source = ResultSource & {
   tags: ResultTag[];
 };
 
+export function isSource(toTest: Any): toTest is Source {
+  return !!(
+    (toTest as Source).description &&
+    (toTest as Source).media &&
+    (toTest as Source).references
+  );
+}
+
 export type SubmitFormSource = Omit<Source, 'id' | 'metadataValues'> & {
   metadataValues: FormMetadataValue[];
 };
