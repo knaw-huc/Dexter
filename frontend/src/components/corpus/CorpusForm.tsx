@@ -24,10 +24,10 @@ import { onSubmit } from '../../utils/onSubmit';
 import { SelectCorpusField } from './SelectCorpusField';
 import { useFormErrors } from '../common/error/useFormErrors';
 import { FormErrorMessage } from '../common/error/FormError';
-import { Any } from '../common/Any';
 import { useImmer } from 'use-immer';
 import { add } from '../../utils/immer/add';
 import { remove } from '../../utils/immer/remove';
+import { assign } from '../../utils/immer/assign';
 
 type CorpusFormProps = {
   /**
@@ -82,7 +82,7 @@ export function CorpusForm(props: CorpusFormProps) {
 
   async function handleSelectParentCorpus(corpusId: string) {
     const parent = props.parentOptions.find(o => o.id === corpusId);
-    setForm(f => ({ ...f, parent }));
+    setForm(f => assign(f, { parent }));
   }
 
   async function handleDeleteParentCorpus() {
@@ -98,7 +98,7 @@ export function CorpusForm(props: CorpusFormProps) {
         label={_.capitalize(fieldName)}
         error={errors[fieldName]}
         value={form[fieldName] as string}
-        onChange={value => setForm(f => void ((f as Any)[fieldName] = value))}
+        onChange={value => setForm(f => assign(f, { [fieldName]: value }))}
         {...props}
       />
     );
@@ -137,9 +137,7 @@ export function CorpusForm(props: CorpusFormProps) {
             label="Tags"
             error={errors.tags}
             selected={form.tags}
-            onChangeSelected={tags => {
-              setForm(f => ({ ...f, tags }));
-            }}
+            onChangeSelected={tags => setForm(f => ({ ...f, tags }))}
             useAutocomplete
             allowCreatingNew
           />
@@ -147,9 +145,7 @@ export function CorpusForm(props: CorpusFormProps) {
           <LanguagesField
             error={errors.languages}
             selected={form.languages}
-            onChangeSelected={languages => {
-              setForm(f => ({ ...f, languages }));
-            }}
+            onChangeSelected={languages => setForm(f => ({ ...f, languages }))}
           />
 
           <SelectSourcesField

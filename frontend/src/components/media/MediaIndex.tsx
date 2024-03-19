@@ -11,6 +11,7 @@ import { useThrowSync } from '../common/error/useThrowSync';
 import { useImmer } from 'use-immer';
 import { remove } from '../../utils/immer/remove';
 import { update } from '../../utils/immer/update';
+import { add } from '../../utils/immer/add';
 
 export function MediaIndex() {
   const [media, setMedia] = useImmer<ResultMedia[]>([]);
@@ -45,7 +46,7 @@ export function MediaIndex() {
       setMedia(prev => update(prev, media));
       setMediaToEdit(null);
     } else {
-      setMedia(prev => [...prev, media]);
+      setMedia(prev => add(prev, media));
     }
     setShowForm(false);
   }

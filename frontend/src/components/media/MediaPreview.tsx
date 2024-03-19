@@ -3,7 +3,7 @@ import { ResultMedia } from '../../model/DexterModel';
 import React from 'react';
 import { Card, CardActions, CardMedia, Grid, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { EditIconStyled } from '../common/EditButton';
+import { EditIconStyled } from '../common/EditIconStyled';
 import { DeleteIconStyled } from '../common/DeleteIconStyled';
 import { Title } from './Title';
 import { media } from '../../model/Resources';

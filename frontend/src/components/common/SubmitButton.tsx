@@ -1,8 +1,11 @@
 import Button from '@mui/material/Button';
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { SubmitOnEnter } from './SubmitOnEnter';
 
-export function SubmitButton(props: { onClick?: () => void }) {
+export function SubmitButton(props: {
+  label?: ReactNode;
+  onClick?: () => void;
+}) {
   return (
     <>
       <SubmitOnEnter />
@@ -12,7 +15,7 @@ export function SubmitButton(props: { onClick?: () => void }) {
         style={{ marginTop: '1em' }}
         onClick={props.onClick}
       >
-        Submit
+        {props.label ?? 'Submit'}
       </Button>
     </>
   );
