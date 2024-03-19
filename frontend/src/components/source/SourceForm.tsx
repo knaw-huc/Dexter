@@ -24,8 +24,8 @@ import { onSubmit } from '../../utils/onSubmit';
 import { SelectMediaField } from '../media/SelectMediaField';
 import { useFormErrors } from '../common/error/useFormErrors';
 import { FormErrorMessage } from '../common/error/FormError';
-import { Any } from '../common/Any';
 import { useImmer } from 'use-immer';
+import { assign } from '../../utils/immer/assign';
 
 type SourceFormProps = {
   sourceToEdit?: Source;
@@ -75,13 +75,7 @@ export function SourceForm(props: SourceFormProps) {
         label={_.capitalize(fieldName)}
         error={errors[fieldName]}
         value={form[fieldName] as string}
-        onChange={v =>
-          setForm(f => {
-            const update = { ...f };
-            (update as Any)[fieldName] = v;
-            return update;
-          })
-        }
+        onChange={value => setForm(f => assign(f, { [fieldName]: value }))}
         {...props}
       />
     );

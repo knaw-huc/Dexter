@@ -90,7 +90,7 @@ export function MediaForm(props: MediaFormProps) {
             error={errors.title}
             value={form.title}
             onChange={change => {
-              setForm(f => ({ ...f, title: change }));
+              setForm(f => (f.title = change));
             }}
           />
 
@@ -98,9 +98,7 @@ export function MediaForm(props: MediaFormProps) {
             label={`Url (${supportedMediaTypes.join(', ')})`}
             error={errors.url}
             value={form.url}
-            onChange={change => {
-              setForm(f => ({ ...f, url: change }));
-            }}
+            onChange={change => setForm(f => (f.url = change))}
           />
 
           <SubmitButton onClick={handleSubmit} />
