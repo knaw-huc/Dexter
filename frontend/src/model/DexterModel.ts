@@ -1,6 +1,7 @@
 import { Any } from '../components/common/Any';
 
 export type UUID = string;
+export type ID<T> = T;
 export type LocalDate = string;
 export type LocalDateTime = string;
 
@@ -43,6 +44,10 @@ export type Corpus = Omit<ResultCorpus, 'parentId'> & {
   subcorpora: Corpus[];
 };
 
+export function isCorpus(toTest: Any): toTest is Corpus {
+  return !!((toTest as Corpus)?.description && (toTest as Corpus)?.subcorpora);
+}
+
 export type SubmitFormCorpus = Omit<Corpus, 'id'>;
 
 export type FormSource = {
@@ -83,9 +88,9 @@ export type Source = ResultSource & {
 
 export function isSource(toTest: Any): toTest is Source {
   return !!(
-    (toTest as Source).description &&
-    (toTest as Source).media &&
-    (toTest as Source).references
+    (toTest as Source)?.description &&
+    (toTest as Source)?.media &&
+    (toTest as Source)?.references
   );
 }
 
@@ -97,7 +102,7 @@ export type FormTag = {
   val: string;
 };
 
-export type ResultTag = FormTag & WithId;
+export type ResultTag = FormTag & WithId<number> & WithCreatedBy;
 
 export type FormReference = {
   input: string;
@@ -127,14 +132,18 @@ export type FormMetadataKey = {
   key: string;
 };
 
-export type ResultMetadataKey = FormMetadataKey & WithId;
+export type ResultMetadataKey = FormMetadataKey & WithId & WithCreatedBy;
 
 export type FormMetadataValue = {
   keyId: UUID;
   value: string;
 };
 
-export type ResultMetadataValue = FormMetadataValue & WithId;
+type WithCreatedBy = {
+  createdBy: UUID;
+};
+
+export type ResultMetadataValue = FormMetadataValue & WithId & WithCreatedBy;
 
 export type MetadataValue = Omit<ResultMetadataValue, 'keyId'> & {
   key: ResultMetadataKey;
@@ -147,7 +156,12 @@ export function toFormMetadataValue(value: MetadataValue): FormMetadataValue {
 export function toResultMetadataValue(
   value: MetadataValue,
 ): ResultMetadataValue {
-  return { id: value.id, value: value.value, keyId: value.key.id };
+  return {
+    id: value.id,
+    createdBy: value.createdBy,
+    value: value.value,
+    keyId: value.key.id,
+  };
 }
 
 export function toMetadataValue(
@@ -201,8 +215,8 @@ export interface ResultLanguage {
   comment: string;
 }
 
-export type WithId = {
-  id: string;
+export type WithId<T = UUID> = {
+  id: ID<T>;
 };
 
 export function isWithId(resource: Any): resource is WithId {
