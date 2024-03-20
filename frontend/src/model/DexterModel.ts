@@ -222,6 +222,10 @@ export interface ResultLanguage {
   comment: string;
 }
 
+export function isLanguage(toTest: Any): toTest is ResultLanguage {
+  return !!(toTest as ResultLanguage)?.refName;
+}
+
 export type WithId<T extends ID = UUID> = {
   id: T;
 };

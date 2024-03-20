@@ -393,7 +393,7 @@ function getExpected() {
       '089770f3-b5e4-4b28-bc2b-4419e57f0941',
       'Main corpus2',
       'foo,bar,poi',
-      '[object Object],[object Object]',
+      'English,Latin',
       '[object Object],[object Object]',
       '',
       '',

@@ -3,9 +3,11 @@ import { Corpus, isCorpus } from '../../model/DexterModel';
 import { Any } from '../common/Any';
 import { RowWithChildTables } from './RowWithChildTables';
 import { TagsMapper } from './TagsMapper';
+import { LanguagesMapper } from './LanguagesMapper';
 
 export class CorpusMapper implements TableMapper<Corpus> {
   private tagsMapper = new TagsMapper();
+  private languagesMapper = new LanguagesMapper();
 
   canMap(resource: Any): resource is Corpus {
     return isCorpus(resource);
@@ -27,8 +29,14 @@ export class CorpusMapper implements TableMapper<Corpus> {
           break;
         case 'tags':
           if (this.tagsMapper.canMap(field)) {
-            result.header.push('tags');
+            result.header.push(key);
             result.row.push(this.tagsMapper.map(field));
+          }
+          break;
+        case 'languages':
+          if (this.languagesMapper.canMap(field)) {
+            result.header.push(key);
+            result.row.push(this.languagesMapper.map(field));
           }
           break;
         default:
