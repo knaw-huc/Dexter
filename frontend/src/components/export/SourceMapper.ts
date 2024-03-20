@@ -1,21 +1,21 @@
-import { ResourceMapper } from './ResourceMapper';
+import { TableMapper } from './TableMapper';
 import { isSource, Source } from '../../model/DexterModel';
 import { Any } from '../common/Any';
-import { ResourceResult } from './ResourceResult';
+import { RowWithChildTables } from './RowWithChildTables';
 
-export class SourceMapper implements ResourceMapper<Source> {
-  name: string = 'source';
+export class SourceMapper implements TableMapper<Source> {
+  name: string;
 
-  public mappers: ResourceMapper<Any>[] = [
+  public mappers: TableMapper<Any>[] = [
     // new SourceMapper()
   ];
 
-  canMap(resource: Any): boolean {
+  canMap(resource: Any): resource is Source {
     return isSource(resource);
   }
 
-  map(Source: Source): ResourceResult {
-    const result = new ResourceResult(this.name);
+  map(Source: Source): RowWithChildTables {
+    const result = new RowWithChildTables(this.name);
 
     let key: keyof Source;
     for (key in Source) {

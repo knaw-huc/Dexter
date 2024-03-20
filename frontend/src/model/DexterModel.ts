@@ -1,7 +1,10 @@
 import { Any } from '../components/common/Any';
 
 export type UUID = string;
-export type ID<T> = T;
+/**
+ * ID defaults to UUID
+ */
+export type ID = UUID | number;
 export type LocalDate = string;
 export type LocalDateTime = string;
 
@@ -45,7 +48,7 @@ export type Corpus = Omit<ResultCorpus, 'parentId'> & {
 };
 
 export function isCorpus(toTest: Any): toTest is Corpus {
-  return !!((toTest as Corpus)?.description && (toTest as Corpus)?.subcorpora);
+  return !!((toTest as Corpus)?.title && (toTest as Corpus)?.contributor);
 }
 
 export type SubmitFormCorpus = Omit<Corpus, 'id'>;
@@ -103,6 +106,10 @@ export type FormTag = {
 };
 
 export type ResultTag = FormTag & WithId<number> & WithCreatedBy;
+
+export function isTag(toTest: Any): toTest is ResultTag {
+  return !!(toTest as ResultTag)?.val;
+}
 
 export type FormReference = {
   input: string;
@@ -215,8 +222,8 @@ export interface ResultLanguage {
   comment: string;
 }
 
-export type WithId<T = UUID> = {
-  id: ID<T>;
+export type WithId<T extends ID = UUID> = {
+  id: T;
 };
 
 export function isWithId(resource: Any): resource is WithId {

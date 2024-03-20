@@ -7,54 +7,10 @@ const corpus = getTestCorpus();
 describe('MainCsvMapper', () => {
   it('can map corpus', async () => {
     const toTest = new MainMapper();
-    const actual = toTest.map(corpus);
-    actual.toCsvTable();
-    expect(actual.toCsvTable()).toEqual([
-      [
-        'id',
-        'title',
-        'description',
-        'rights',
-        'access',
-        'location',
-        'earliest',
-        'latest',
-        'contributor',
-        'notes',
-        'ethics',
-        'createdBy',
-        'createdAt',
-        'updatedAt',
-        'parent',
-        'tags',
-        'languages',
-        'sources',
-        'metadataValues',
-        'subcorpora',
-      ],
-      [
-        '29795f78-9fb3-4693-97ab-bf9c4c7ef05c',
-        'Corpus laoreet',
-        'Nulla vitae dolor non urna scelerisque volutpat.',
-        'proin',
-        'Open',
-        'bibendum',
-        '1990-01-30',
-        '1990-01-31',
-        'venenatis',
-        'Aenean rutrum erat venenatis, rhoncus lectus a, rutrum eros.',
-        'vestibulum dictum amet',
-        '9d950d38-8e03-4e90-9f0d-0c397f4e65b9',
-        '2024-03-19T14:15:49',
-        '2024-03-19T14:15:49',
-        '[object Object]',
-        '',
-        '[object Object],[object Object]',
-        '[object Object],[object Object],[object Object]',
-        '',
-        '',
-      ],
-    ]);
+    const result = toTest.map(corpus);
+    const expected = getExpected();
+    const actual = result.toCsvTable();
+    expect(actual).toEqual(expected);
   });
 });
 
@@ -91,7 +47,23 @@ function getTestCorpus(): Corpus {
       createdAt: '2024-03-19T14:15:49',
       updatedAt: '2024-03-19T14:45:10',
     },
-    tags: [],
+    tags: [
+      {
+        id: 1,
+        val: 'foo',
+        createdBy: '9d950d38-8e03-4e90-9f0d-0c397f4e65b9',
+      },
+      {
+        id: 2,
+        val: 'bar',
+        createdBy: '9d950d38-8e03-4e90-9f0d-0c397f4e65b9',
+      },
+      {
+        id: 7,
+        val: 'poi',
+        createdBy: '9d950d38-8e03-4e90-9f0d-0c397f4e65b9',
+      },
+    ],
     languages: [
       {
         id: 'eng',
@@ -372,166 +344,59 @@ function getTestCorpus(): Corpus {
           },
         ],
       },
-      {
-        id: '091532c0-87ff-4c2d-a623-8e19ab32ca1a',
-        externalRef: 'tincidunt faucibus risus tristique',
-        title: 'Shared source',
-        description:
-          'Sed non lacus scelerisque, placerat mauris at, porta eros.',
-        rights: 'venenatis velit sit',
-        access: Access.OPEN,
-        creator: 'nisl rutrum finibus',
-        location: 'id',
-        earliest: '1990-01-30',
-        latest: '1990-01-31',
-        notes:
-          'Ut consectetur massa a arcu elementum, eget dapibus leo euismod.',
-        ethics: 'scelerisque',
-        createdBy: '9d950d38-8e03-4e90-9f0d-0c397f4e65b9',
-        createdAt: '2024-03-19T14:15:49',
-        updatedAt: '2024-03-19T14:15:53',
-        references: [],
-        corpora: [
-          {
-            id: '089770f3-b5e4-4b28-bc2b-4419e57f0941',
-            parentId: null,
-            title: 'Main corpus2',
-            description: 'Donec tempor quam nec commodo iaculis.',
-            rights: 'faucibus',
-            access: Access.CLOSED,
-            location: 'nisl',
-            earliest: '1990-01-30',
-            latest: '1990-01-31',
-            contributor: 'nulla',
-            notes: 'Fusce pretium risus sed porttitor fringilla.',
-            ethics: 'feugiat',
-            createdBy: '9d950d38-8e03-4e90-9f0d-0c397f4e65b9',
-            createdAt: '2024-03-19T14:15:49',
-            updatedAt: '2024-03-19T14:45:10',
-          },
-          {
-            id: '6ae49ba1-ef55-4989-bf30-c00704f4dc4a',
-            parentId: '089770f3-b5e4-4b28-bc2b-4419e57f0941',
-            title: 'Corpus finibus',
-            description:
-              'Nullam ac nibh eget nunc venenatis tristique sed quis metus.',
-            rights: 'ac aliquet',
-            access: Access.CLOSED,
-            location: 'fermentum',
-            earliest: '1990-01-30',
-            latest: '1990-01-31',
-            contributor: 'mauris',
-            notes:
-              'Nam condimentum nibh vel nunc blandit, in eleifend turpis placerat.',
-            ethics: 'id turpis',
-            createdBy: '9d950d38-8e03-4e90-9f0d-0c397f4e65b9',
-            createdAt: '2024-03-19T14:15:49',
-            updatedAt: '2024-03-19T14:17:34',
-          },
-          {
-            id: '29795f78-9fb3-4693-97ab-bf9c4c7ef05c',
-            parentId: '089770f3-b5e4-4b28-bc2b-4419e57f0941',
-            title: 'Corpus laoreet',
-            description: 'Nulla vitae dolor non urna scelerisque volutpat.',
-            rights: 'proin',
-            access: Access.OPEN,
-            location: 'bibendum',
-            earliest: '1990-01-30',
-            latest: '1990-01-31',
-            contributor: 'venenatis',
-            notes:
-              'Aenean rutrum erat venenatis, rhoncus lectus a, rutrum eros.',
-            ethics: 'vestibulum dictum amet',
-            createdBy: '9d950d38-8e03-4e90-9f0d-0c397f4e65b9',
-            createdAt: '2024-03-19T14:15:49',
-            updatedAt: '2024-03-19T14:15:49',
-          },
-          {
-            id: '7c20ec3d-7f4e-40b5-8f96-dc6d5a0dc85c',
-            parentId: '089770f3-b5e4-4b28-bc2b-4419e57f0941',
-            title: 'Corpus maecenas',
-            description:
-              'Duis in turpis elementum, mattis est a, convallis erat.',
-            rights: 'faucibus rutrum augue risus',
-            access: Access.CLOSED,
-            location: 'viverra',
-            earliest: '1990-01-30',
-            latest: '1990-01-31',
-            contributor: 'nisl',
-            notes:
-              'Aenean rutrum erat venenatis, rhoncus lectus a, rutrum eros.',
-            ethics: 'semper',
-            createdBy: '9d950d38-8e03-4e90-9f0d-0c397f4e65b9',
-            createdAt: '2024-03-19T14:15:49',
-            updatedAt: '2024-03-19T14:17:34',
-          },
-        ],
-        languages: [],
-        media: [
-          {
-            id: 'de9075dd-2624-4604-9f59-b008f5bbfdd4',
-            title: 'By Laurice Solomon',
-            url: 'https://fastly.picsum.photos/id/98/3264/2176.jpg?hmac=yRaOwMpmio9mwf43lbPEYI_5-WiPWoghJZyOKldQ43U',
-            mediaType: 'image/jpeg',
-            createdBy: '9d950d38-8e03-4e90-9f0d-0c397f4e65b9',
-          },
-          {
-            id: '31e6423e-e4b1-426f-9096-33069c99aa72',
-            title: 'By Jon Toney',
-            url: 'https://fastly.picsum.photos/id/99/4912/3264.jpg?hmac=jobkGP8_9Sch9BmMGe3xmm8yjCVQ3iSHrbu_4kOOciY',
-            mediaType: 'image/jpeg',
-            createdBy: '9d950d38-8e03-4e90-9f0d-0c397f4e65b9',
-          },
-          {
-            id: '75508007-a32b-45ed-9cf6-d76c67bb550e',
-            title: 'By Tina Rataj',
-            url: 'https://fastly.picsum.photos/id/100/2500/1656.jpg?hmac=gWyN-7ZB32rkAjMhKXQgdHOIBRHyTSgzuOK6U0vXb1w',
-            mediaType: 'image/jpeg',
-            createdBy: '9d950d38-8e03-4e90-9f0d-0c397f4e65b9',
-          },
-        ],
-        metadataValues: [
-          {
-            id: '565df42c-7636-4338-99f3-45b483618be3',
-            value: 'Ut nec nulla id justo pharetra congue.',
-            createdBy: '9d950d38-8e03-4e90-9f0d-0c397f4e65b9',
-            key: {
-              id: '0aea0d07-451c-4ab1-b630-3999113b4e57',
-              key: 'my custom field',
-              createdBy: '9d950d38-8e03-4e90-9f0d-0c397f4e65b9',
-            },
-          },
-          {
-            id: '83d69763-f90d-46c8-91c4-f373903c2e86',
-            value: 'Sed dignissim mauris sed pellentesque feugiat.',
-            createdBy: '9d950d38-8e03-4e90-9f0d-0c397f4e65b9',
-            key: {
-              id: 'ab6ae421-dd9c-4dcf-9ff0-80f1fb9d3513',
-              key: 'other field',
-              createdBy: '9d950d38-8e03-4e90-9f0d-0c397f4e65b9',
-            },
-          },
-        ],
-        tags: [
-          {
-            id: 2,
-            val: 'bar',
-            createdBy: '9d950d38-8e03-4e90-9f0d-0c397f4e65b9',
-          },
-          {
-            id: 6,
-            val: 'bacon',
-            createdBy: '9d950d38-8e03-4e90-9f0d-0c397f4e65b9',
-          },
-          {
-            id: 9,
-            val: 'blarp',
-            createdBy: '9d950d38-8e03-4e90-9f0d-0c397f4e65b9',
-          },
-        ],
-      },
     ],
     metadataValues: [],
     subcorpora: [],
   };
+}
+
+function getExpected() {
+  return [
+    [
+      'id',
+      'title',
+      'description',
+      'rights',
+      'access',
+      'location',
+      'earliest',
+      'latest',
+      'contributor',
+      'notes',
+      'ethics',
+      'createdBy',
+      'createdAt',
+      'updatedAt',
+      'parent_id',
+      'parent_title',
+      'tags',
+      'languages',
+      'sources',
+      'metadataValues',
+      'subcorpora',
+    ],
+    [
+      '29795f78-9fb3-4693-97ab-bf9c4c7ef05c',
+      'Corpus laoreet',
+      'Nulla vitae dolor non urna scelerisque volutpat.',
+      'proin',
+      'Open',
+      'bibendum',
+      '1990-01-30',
+      '1990-01-31',
+      'venenatis',
+      'Aenean rutrum erat venenatis, rhoncus lectus a, rutrum eros.',
+      'vestibulum dictum amet',
+      '9d950d38-8e03-4e90-9f0d-0c397f4e65b9',
+      '2024-03-19T14:15:49',
+      '2024-03-19T14:15:49',
+      '089770f3-b5e4-4b28-bc2b-4419e57f0941',
+      'Main corpus2',
+      'foo,bar,poi',
+      '[object Object],[object Object]',
+      '[object Object],[object Object]',
+      '',
+      '',
+    ],
+  ];
 }

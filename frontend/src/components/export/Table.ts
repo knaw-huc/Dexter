@@ -1,9 +1,9 @@
-import { RowWithHeader } from './ResourceResult';
 import { Csvable } from './Csvable';
+import { RowWithHeader } from './RowWithHeader';
 
-export type Header = string[];
-export type Row = string[];
-
+export type Cell = string;
+export type Header = Cell[];
+export type Row = Cell[];
 export class Table implements Csvable {
   name: string;
   header: Header;

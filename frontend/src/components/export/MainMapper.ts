@@ -1,19 +1,17 @@
 import { isWithId, WithId } from '../../model/DexterModel';
-import { ResourceMapper } from './ResourceMapper';
+import { TableMapper } from './TableMapper';
 import { CorpusMapper } from './CorpusMapper';
 
-export class MainMapper implements ResourceMapper<WithId> {
+export class MainMapper implements TableMapper<WithId> {
   name: string;
 
-  public mappers: ResourceMapper<WithId>[] = [new CorpusMapper()];
+  public mappers: TableMapper<WithId>[] = [new CorpusMapper()];
 
-  canMap(resource: WithId) {
+  canMap(resource: WithId): resource is WithId {
     return isWithId(resource);
   }
 
   map(resource: WithId) {
-    const mapped = this.mappers.find(m => m.canMap(resource)).map(resource);
-
-    return mapped;
+    return this.mappers.find(m => m.canMap(resource)).map(resource, 'export');
   }
 }

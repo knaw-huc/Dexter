@@ -1,41 +1,49 @@
-import { ResourceMapper } from './ResourceMapper';
+import { TableMapper } from './TableMapper';
 import { Corpus, isCorpus } from '../../model/DexterModel';
 import { Any } from '../common/Any';
-import { ResourceResult } from './ResourceResult';
-import { SourceMapper } from './SourceMapper';
-import { ArrayMapper } from './ArrayMapper';
+import { RowWithChildTables } from './RowWithChildTables';
+import { TagsMapper } from './TagsMapper';
 
-export class CorpusMapper implements ResourceMapper<Corpus> {
-  name: string = 'corpus';
+export class CorpusMapper implements TableMapper<Corpus> {
+  private tagsMapper = new TagsMapper();
 
-  public mappers: ResourceMapper<Any>[] = [
-    new ArrayMapper('sources', new SourceMapper()),
-  ];
-
-  canMap(resource: Any): boolean {
+  canMap(resource: Any): resource is Corpus {
     return isCorpus(resource);
   }
 
-  map(corpus: Corpus): ResourceResult {
-    const result = new ResourceResult(this.name);
+  map(corpus: Corpus): RowWithChildTables {
+    const result = new RowWithChildTables('corpus');
 
     let key: keyof Corpus;
     for (key in corpus) {
-      result.header.push(key);
       const field = corpus[key];
-      result.row.push(`${field}`);
-      const mapper = this.mappers.find(m => m.canMap(field));
-      if (mapper) {
-        const mapped = mapper.map(field);
-        result.header.push(...mapped.header.map(prependName));
-        result.row.push(...mapped.row);
-        result.tables.push(...mapped.tables);
+      switch (key) {
+        case 'parent':
+          if (this.canMap(field)) {
+            result.tables.push(...this.map(field).tables);
+            result.header.push('parent_id', 'parent_title');
+            result.row.push(field.id, field.title);
+          }
+          break;
+        case 'tags':
+          if (this.tagsMapper.canMap(field)) {
+            result.header.push('tags');
+            result.row.push(this.tagsMapper.map(field));
+          }
+          break;
+        default:
+          mapAsString(result, key, field);
       }
     }
     return result;
   }
 }
 
-function prependName(columnHeader: string) {
-  return `${this.name}.${columnHeader}`;
+export function mapAsString(
+  result: RowWithChildTables,
+  key: string,
+  field: Any,
+) {
+  result.header.push(key);
+  result.row.push(`${field}`);
 }
