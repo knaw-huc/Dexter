@@ -4,13 +4,20 @@ import JSZip from 'jszip';
 import FileSaver from 'file-saver';
 import { MainMapper } from './MainMapper';
 import { toCsv } from './toCsv';
+import { useEffect } from 'react';
+import { useThrowSync } from '../common/error/useThrowSync';
 
-const mapper = new MainMapper();
 export function useExporter(params: { handleError: (error: Error) => void }): {
   runExport: (toExport: Exportable) => void;
   isExporting: boolean;
 } {
   const [isExporting, setExporting] = useImmer(false);
+  const [mapper, setMapper] = useImmer<MainMapper>(null);
+  const throwSync = useThrowSync();
+
+  useEffect(() => {
+    MainMapper.init().then(setMapper).catch(throwSync);
+  }, []);
 
   async function runExport(toExport: Exportable) {
     try {

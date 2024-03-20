@@ -24,7 +24,7 @@ export class RowWithChildTables implements Csvable {
 
   constructor(name: string) {
     this.name = name;
-    this._row = new RowWithHeader(name);
+    this._row = new RowWithHeader();
     this.tables = [];
   }
 

@@ -1,13 +1,13 @@
-import { TableMapper } from './TableMapper';
+import { TablesMapper } from './Mapper';
 import { WithId } from '../../model/DexterModel';
 import { RowWithChildTables } from './RowWithChildTables';
 import _ from 'lodash';
 import { Table } from './Table';
 
-export class ArrayMapper<T extends WithId> implements TableMapper<T[]> {
-  public resourceMapper: TableMapper<T>;
+export class ArrayMapper<T extends WithId> implements TablesMapper<T[]> {
+  public resourceMapper: TablesMapper<T>;
 
-  constructor(mappers: TableMapper<T>) {
+  constructor(mappers: TablesMapper<T>) {
     this.resourceMapper = mappers;
   }
 

@@ -156,6 +156,10 @@ export type MetadataValue = Omit<ResultMetadataValue, 'keyId'> & {
   key: ResultMetadataKey;
 };
 
+export function isMetadataValue(toTest: Any): toTest is MetadataValue {
+  return !!((toTest as MetadataValue)?.value && (toTest as MetadataValue)?.key);
+}
+
 export function toFormMetadataValue(value: MetadataValue): FormMetadataValue {
   return { value: value.value, keyId: value.key.id };
 }

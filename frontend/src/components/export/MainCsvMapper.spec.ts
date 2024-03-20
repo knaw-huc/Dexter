@@ -6,7 +6,7 @@ const corpus = getTestCorpus();
 
 describe('MainCsvMapper', () => {
   it('can map corpus', async () => {
-    const toTest = new MainMapper();
+    const toTest = new MainMapper(['my custom field', 'other field']);
     const result = toTest.map(corpus);
     const expected = getExpected();
     const actual = result.toCsvTable();
@@ -345,7 +345,28 @@ function getTestCorpus(): Corpus {
         ],
       },
     ],
-    metadataValues: [],
+    metadataValues: [
+      {
+        id: '0bb7118b-b7fe-4815-a393-1429eccf163c',
+        value: 'gemapt',
+        createdBy: '9d950d38-8e03-4e90-9f0d-0c397f4e65b9',
+        key: {
+          id: '0aea0d07-451c-4ab1-b630-3999113b4e57',
+          key: 'my custom field',
+          createdBy: '9d950d38-8e03-4e90-9f0d-0c397f4e65b9',
+        },
+      },
+      {
+        id: '9a4345dd-7378-462b-b74b-2a87a1ee37f1',
+        value: 'ook gemapt',
+        createdBy: '9d950d38-8e03-4e90-9f0d-0c397f4e65b9',
+        key: {
+          id: 'ab6ae421-dd9c-4dcf-9ff0-80f1fb9d3513',
+          key: 'other field',
+          createdBy: '9d950d38-8e03-4e90-9f0d-0c397f4e65b9',
+        },
+      },
+    ],
     subcorpora: [],
   };
 }
@@ -372,7 +393,8 @@ function getExpected() {
       'tags',
       'languages',
       'sources',
-      'metadataValues',
+      'metadata.my custom field',
+      'metadata.other field',
       'subcorpora',
     ],
     [
@@ -395,7 +417,8 @@ function getExpected() {
       'foo,bar,poi',
       'English,Latin',
       '[object Object],[object Object]',
-      '',
+      'gemapt',
+      'ook gemapt',
       '',
     ],
   ];

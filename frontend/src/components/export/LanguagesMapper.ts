@@ -1,6 +1,6 @@
 import { isLanguage, ResultLanguage } from '../../model/DexterModel';
 import { Any } from '../common/Any';
-import { CellMapper } from './CellMapper';
+import { CellMapper } from './Mapper';
 
 export class LanguagesMapper implements CellMapper<ResultLanguage[]> {
   canMap(resources: Any): resources is ResultLanguage[] {
