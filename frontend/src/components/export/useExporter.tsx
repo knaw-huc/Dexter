@@ -24,13 +24,11 @@ export function useExporter(params: { handleError: (error: Error) => void }): {
       console.log('exporting', toExport);
       setExporting(true);
 
-      const result = mapper.map(toExport);
+      const tables = mapper.map(toExport);
       const zip = new JSZip();
-      result.tables.forEach(t => zip.file(`${t.name}.zip`, toCsv(t)));
-      zip.file('corpora.csv', 'id,title,description');
+      tables.forEach(t => zip.file(`${t.name}.csv`, toCsv(t)));
       const content = await zip.generateAsync({ type: 'blob' });
       const filename = `dexter-export-${toExport.id}.zip`;
-      // TODO: Uncaught ReferenceError: Buffer is not defined
       FileSaver.saveAs(content, filename);
       setExporting(false);
       console.log('finished exporting', toExport);

@@ -1,6 +1,7 @@
 import { describe, expect, it } from '@jest/globals';
 import { MainMapper } from './mapper/MainMapper';
 import { Access, Corpus } from '../../model/DexterModel';
+import { ArrayTable } from './mapper/ArrayTable';
 
 const corpus = getTestCorpus();
 
@@ -18,7 +19,7 @@ describe('MainCsvMapper', () => {
     const toTest = new MainMapper(customMetadataKeys);
     const result = toTest.map(corpus);
     const expected = getExpectedCorpusSources();
-    expect(result.tables.length).toEqual(1);
+    expect(result.tables.length).toEqual(2);
     const sourcesTable = result.tables[0];
     const csvSourcesTable = sourcesTable.toCsvTable();
     expect(sourcesTable.name).toEqual('sources');
@@ -26,62 +27,20 @@ describe('MainCsvMapper', () => {
     expect(csvSourcesTable[0]).toEqual(expected[0]);
     expect(csvSourcesTable[1]).toEqual(expected[1]);
   });
-});
 
-function getExpectedCorpusSources() {
-  return [
-    [
-      'corpus.id',
-      'corpus.title',
-      'id',
-      'externalRef',
-      'title',
-      'description',
-      'rights',
-      'access',
-      'creator',
-      'location',
-      'earliest',
-      'latest',
-      'notes',
-      'ethics',
-      'createdBy',
-      'createdAt',
-      'updatedAt',
-      'references',
-      'languages',
-      'media',
-      'metadata.my custom field',
-      'metadata.other field',
-      'tags',
-    ],
-    [
-      '5b2c664d-f433-43ca-8027-e33439973829',
-      'Phasellus bibendum ante id pretium blandit.',
-      '5b2c664d-f433-43ca-8027-e33439973829',
-      'tincidunt faucibus risus tristique',
-      'Phasellus bibendum ante id pretium blandit.',
-      'Quisque sed metus nec orci faucibus pretium.',
-      'amet tellus',
-      'Closed',
-      'placerat',
-      'turpis',
-      '1990-01-30',
-      '1990-01-31',
-      'Integer maximus metus et orci congue finibus.',
-      'donec viverra tincidunt aliquam',
-      '9d950d38-8e03-4e90-9f0d-0c397f4e65b9',
-      '2024-03-19T14:15:49',
-      '2024-03-19T14:17:34',
-      '',
-      'Dutch,Latin,Western Frisian',
-      '[object Object],[object Object],[object Object]',
-      'In et odio eleifend, feugiat ante accumsan, semper justo.',
-      'Morbi non dolor id ligula porta elementum eu scelerisque enim.',
-      'foo,bar,poi',
-    ],
-  ];
-}
+  it('can map corpus source media', async () => {
+    const toTest = new MainMapper(customMetadataKeys);
+    const result = toTest.map(corpus);
+    const expected = getExpectedCorpusSourcesMedia();
+    expect(result.tables.length).toEqual(2);
+    const mediaTable = result.tables[1];
+    const csvMediaTable = mediaTable.toCsvTable();
+    expect(mediaTable.name).toEqual('media');
+    expect(mediaTable.rows.length).toEqual(6);
+    expect(csvMediaTable[0]).toEqual(expected[0]);
+    expect(csvMediaTable[1]).toEqual(expected[1]);
+  });
+});
 
 function getExpectedCorpus() {
   return [
@@ -110,8 +69,8 @@ function getExpectedCorpus() {
     ],
     [
       '29795f78-9fb3-4693-97ab-bf9c4c7ef05c',
-      'Corpus laoreet',
-      'Nulla vitae dolor non urna scelerisque volutpat.',
+      'Main Corpus laoreet',
+      'Prulla vitae dolor non urna scelerisque volutpat.',
       'proin',
       'Open',
       'bibendum',
@@ -133,12 +92,87 @@ function getExpectedCorpus() {
     ],
   ];
 }
+function getExpectedCorpusSources() {
+  return [
+    [
+      'corpus.id',
+      'corpus.title',
+      'id',
+      'externalRef',
+      'title',
+      'description',
+      'rights',
+      'access',
+      'creator',
+      'location',
+      'earliest',
+      'latest',
+      'notes',
+      'ethics',
+      'createdBy',
+      'createdAt',
+      'updatedAt',
+      'references',
+      'languages',
+      'metadata.my custom field',
+      'metadata.other field',
+      'tags',
+    ],
+    [
+      '29795f78-9fb3-4693-97ab-bf9c4c7ef05c',
+      'Main Corpus laoreet',
+      '5b2c664d-f433-43ca-8027-e33439973829',
+      'tincidunt faucibus risus tristique',
+      'Source bibendum ante id pretium blandit.',
+      'Quisque sed metus nec orci faucibus pretium.',
+      'amet tellus',
+      'Closed',
+      'placerat',
+      'turpis',
+      '1990-01-30',
+      '1990-01-31',
+      'Integer maximus metus et orci congue finibus.',
+      'donec viverra tincidunt aliquam',
+      '9d950d38-8e03-4e90-9f0d-0c397f4e65b9',
+      '2024-03-19T14:15:49',
+      '2024-03-19T14:17:34',
+      '',
+      'Dutch,Latin,Western Frisian',
+      'In et odio eleifend, feugiat ante accumsan, semper justo.',
+      'Morbi non dolor id ligula porta elementum eu scelerisque enim.',
+      'foo,bar,poi',
+    ],
+  ];
+}
+
+function getExpectedCorpusSourcesMedia(): ArrayTable {
+  return [
+    [
+      'source.id',
+      'source.title',
+      'id',
+      'title',
+      'url',
+      'mediaType',
+      'createdBy',
+    ],
+    [
+      '5b2c664d-f433-43ca-8027-e33439973829',
+      'Source bibendum ante id pretium blandit.',
+      '69909e4e-2e78-4ec2-b578-d30d35e499e8',
+      'By Jantje',
+      'https://fastly.picsum.photos/id/78/1584/2376.jpg?hmac=80UVSwpa9Nfcq7sQ5kxb9Z5sD2oLsbd5zkFO5ybMC4E',
+      'image/jpeg',
+      '9d950d38-8e03-4e90-9f0d-0c397f4e65b9',
+    ],
+  ];
+}
 
 function getTestCorpus(): Corpus {
   return {
     id: '29795f78-9fb3-4693-97ab-bf9c4c7ef05c',
-    title: 'Corpus laoreet',
-    description: 'Nulla vitae dolor non urna scelerisque volutpat.',
+    title: 'Main Corpus laoreet',
+    description: 'Prulla vitae dolor non urna scelerisque volutpat.',
     rights: 'proin',
     access: Access.OPEN,
     location: 'bibendum',
@@ -210,7 +244,7 @@ function getTestCorpus(): Corpus {
       {
         id: '5b2c664d-f433-43ca-8027-e33439973829',
         externalRef: 'tincidunt faucibus risus tristique',
-        title: 'Phasellus bibendum ante id pretium blandit.',
+        title: 'Source bibendum ante id pretium blandit.',
         description: 'Quisque sed metus nec orci faucibus pretium.',
         rights: 'amet tellus',
         access: Access.CLOSED,
@@ -279,7 +313,7 @@ function getTestCorpus(): Corpus {
         media: [
           {
             id: '69909e4e-2e78-4ec2-b578-d30d35e499e8',
-            title: 'By Paul Evans',
+            title: 'By Jantje',
             url: 'https://fastly.picsum.photos/id/78/1584/2376.jpg?hmac=80UVSwpa9Nfcq7sQ5kxb9Z5sD2oLsbd5zkFO5ybMC4E',
             mediaType: 'image/jpeg',
             createdBy: '9d950d38-8e03-4e90-9f0d-0c397f4e65b9',

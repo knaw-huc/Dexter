@@ -1,20 +1,18 @@
-import { RowWithChildTablesMapper, TablesMapper } from './Mapper';
+import { RowMapper, RowWithChildTablesMapper, TablesMapper } from './Mapper';
 import { WithId } from '../../../../model/DexterModel';
 import _ from 'lodash';
 import { BasicTable } from '../Table';
 import { Any } from '../../../common/Any';
+import { isRowWithChildTables } from '../RowWithChildTables';
 
 /**
  * Move all rows of mapped resources into single table
  */
 export class ArrayMapper<T extends WithId> implements TablesMapper<T[]> {
-  public resourceMapper: RowWithChildTablesMapper<T>;
-  private resourceName: string;
-
-  constructor(mappers: RowWithChildTablesMapper<T>, resourceName: string) {
-    this.resourceMapper = mappers;
-    this.resourceName = resourceName;
-  }
+  constructor(
+    public resourceMapper: RowMapper<T> | RowWithChildTablesMapper<T>,
+    private resourceName: string,
+  ) {}
 
   canMap(field: Any): field is T[] {
     if (field?.length < 0) {
@@ -52,8 +50,10 @@ export class ArrayMapper<T extends WithId> implements TablesMapper<T[]> {
           array headers: ${resourcesTable.header.join(',')}\n
           row headers: ${mappedResource.header.join(',')}`);
       }
-      resourcesTable.rows.push(mappedResource.headerRow.row);
-      result.push(...mappedResource.tables);
+      resourcesTable.rows.push(mappedResource.row);
+      if (isRowWithChildTables(mappedResource)) {
+        result.push(...mappedResource.tables);
+      }
     }
 
     return result;

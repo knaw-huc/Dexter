@@ -1,38 +1,28 @@
-import { RowWithChildTablesMapper } from './resource/Mapper';
+import { RowMapper } from './resource/Mapper';
 import { WithId } from '../../../model/DexterModel';
 import { Any } from '../../common/Any';
-import { RowWithChildTables } from './RowWithChildTables';
-import { createTableFrom, prefixColumns, prefixHeader } from './ExportUtils';
+import { createTableFrom, prefixTable, prefixHeader } from './ExportUtils';
+import { RowWithHeader } from './RowWithHeader';
 
 /**
  * Prefix mapped resource table with columns
  */
-export class ColumnPrefixer<T extends WithId>
-  implements RowWithChildTablesMapper<T>
-{
-  public resourceMapper: RowWithChildTablesMapper<T>;
-  private fieldsToPrefix: (keyof T)[];
-  private headerPrefix: string;
-
+export class ColumnPrefixer<T extends WithId> implements RowMapper<T> {
   constructor(
-    mapper: RowWithChildTablesMapper<T>,
-    headerPrefix: string,
-    columnsToPrefix: (keyof T)[],
-  ) {
-    this.headerPrefix = headerPrefix;
-    this.resourceMapper = mapper;
-    this.fieldsToPrefix = columnsToPrefix;
-  }
+    public resourceMapper: RowMapper<T>,
+    private headerPrefix: string,
+    private fieldsToPrefix: (keyof T)[],
+  ) {}
 
   canMap(field: Any): field is T {
     return this.resourceMapper.canMap(field);
   }
 
-  map(resource: T, tableName: string): RowWithChildTables {
+  map(resource: T, tableName: string): RowWithHeader {
     const mapped = this.resourceMapper.map(resource, tableName);
     const toPrefix = createTableFrom(resource, this.fieldsToPrefix);
     toPrefix.header = prefixHeader(toPrefix.header, this.headerPrefix);
-    prefixColumns(mapped, toPrefix);
+    prefixTable(mapped, toPrefix);
     return mapped;
   }
 }

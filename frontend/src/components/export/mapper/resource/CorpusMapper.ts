@@ -6,7 +6,13 @@ import { TagsMapper } from './TagsMapper';
 import { LanguagesMapper } from './LanguagesMapper';
 import { MetadataValuesMapper } from './MetadataValuesMapper';
 import { ArrayMapper } from './ArrayMapper';
-import { appendCell, appendCells, appendTables } from '../ExportUtils';
+import {
+  appendCell,
+  appendCells,
+  appendTables,
+  prefixTable,
+} from '../ExportUtils';
+import { RowWithHeader } from '../RowWithHeader';
 
 const resourceName = 'corpus';
 
@@ -24,6 +30,10 @@ export class CorpusMapper implements RowWithChildTablesMapper<Corpus> {
 
   map(corpus: Corpus): RowWithChildTables {
     const result = new RowWithChildTables(resourceName);
+    const toPrefix = new RowWithHeader([
+      ['corpus.id', 'corpus.title'],
+      [corpus.id, corpus.title],
+    ]);
 
     let key: keyof Corpus;
     for (key in corpus) {
@@ -31,7 +41,7 @@ export class CorpusMapper implements RowWithChildTablesMapper<Corpus> {
       switch (key) {
         case 'parent':
           if (this.canMap(field)) {
-            result.headerRow.pushColumns(
+            result.pushColumns(
               ['parent_id', 'parent_title'],
               [field.id, field.title],
             );
@@ -47,7 +57,16 @@ export class CorpusMapper implements RowWithChildTablesMapper<Corpus> {
           appendCells(result, key, field, this.metadataValuesMapper);
           break;
         case 'sources':
-          appendTables(result, key, field, this.sourcesMapper);
+          appendTables({
+            result,
+            key,
+            field,
+            mapper: this.sourcesMapper,
+            modify: tables =>
+              tables
+                .filter(t => t.name === 'sources')
+                .map(t => prefixTable(t, toPrefix)),
+          });
           break;
         default:
           appendCell(result, key, field);

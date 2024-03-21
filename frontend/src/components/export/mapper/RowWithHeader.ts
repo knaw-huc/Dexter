@@ -20,7 +20,7 @@ export class RowWithHeader implements Csvable, Table {
     }
   }
 
-  get row() {
+  get row(): Row {
     return this.rowTable.rows[0];
   }
 

@@ -1,4 +1,5 @@
 import { Csvable } from './Csvable';
+import { ArrayTable } from './ArrayTable';
 
 export type Cell = string;
 export type Header = Cell[];
@@ -15,13 +16,13 @@ export class BasicTable implements Table {
   header: Header;
   rows: Row[];
 
-  constructor(name: string) {
+  constructor(name: string = '') {
     this.name = name;
     this.header = [];
     this.rows = [];
   }
 
-  public toCsvTable(): string[][] {
+  public toCsvTable(): ArrayTable {
     return [this.header, ...this.rows];
   }
 }

@@ -3,22 +3,6 @@ import { Cell, Table } from '../Table';
 import { RowWithHeader } from '../RowWithHeader';
 
 /**
- * Map to table
- */
-export interface TablesMapper<T> {
-  canMap(toMap: T): toMap is T;
-  map(toMap: T, fieldName: string): Table[];
-}
-
-/**
- * Map to table
- */
-export interface RowWithChildTablesMapper<T> {
-  canMap(toMap: T): toMap is T;
-  map(toMap: T, fieldName: string): RowWithChildTables;
-}
-
-/**
  * Map to cell
  */
 export interface CellMapper<T> {
@@ -27,9 +11,25 @@ export interface CellMapper<T> {
 }
 
 /**
- * Map to cell
+ * Map to row
  */
 export interface RowMapper<T> {
   canMap(toMap: T): toMap is T;
   map(toMap: T, fieldName: string): RowWithHeader;
+}
+
+/**
+ * Map to row with children
+ */
+export interface RowWithChildTablesMapper<T> {
+  canMap(toMap: T): toMap is T;
+  map(toMap: T, fieldName: string): RowWithChildTables;
+}
+
+/**
+ * Map to table
+ */
+export interface TablesMapper<T> {
+  canMap(toMap: T): toMap is T;
+  map(toMap: T, fieldName: string): Table[];
 }

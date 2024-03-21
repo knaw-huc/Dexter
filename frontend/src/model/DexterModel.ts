@@ -208,6 +208,10 @@ export type ResultMedia = FormMedia &
     createdBy: UUID;
   };
 
+export function isMedia(toTest: Any): toTest is ResultMedia {
+  return !!((toTest as ResultMedia)?.mediaType && (toTest as ResultMedia)?.url);
+}
+
 export type ResultDublinCoreMetadata = Record<string, string>;
 
 export type ResultImport = {
