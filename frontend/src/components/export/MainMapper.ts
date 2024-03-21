@@ -3,6 +3,11 @@ import { RowWithChildTablesMapper } from './Mapper';
 import { CorpusMapper } from './CorpusMapper';
 import { MetadataValuesMapper } from './MetadataValuesMapper';
 import { getMetadataKeys } from '../../utils/API';
+import { TagsMapper } from './TagsMapper';
+import { LanguagesMapper } from './LanguagesMapper';
+import { ArrayMapper } from './ArrayMapper';
+import { ColumnPrefixer } from './PrefixMapper';
+import { SourceMapper } from './SourceMapper';
 
 export class MainMapper implements RowWithChildTablesMapper<WithId> {
   name: string;
@@ -11,7 +16,18 @@ export class MainMapper implements RowWithChildTablesMapper<WithId> {
 
   constructor(keys: string[]) {
     const metadataValuesMapper = new MetadataValuesMapper(keys);
-    const corpusMapper = new CorpusMapper(metadataValuesMapper);
+    const tagsMappers = new TagsMapper();
+    const languagesMapper = new LanguagesMapper();
+    const corpusSourcesMapper = new ArrayMapper(
+      new ColumnPrefixer(new SourceMapper(), 'corpus', ['id', 'title']),
+      'sources',
+    );
+    const corpusMapper = new CorpusMapper(
+      metadataValuesMapper,
+      tagsMappers,
+      languagesMapper,
+      corpusSourcesMapper,
+    );
     this.mappers = [corpusMapper];
   }
 

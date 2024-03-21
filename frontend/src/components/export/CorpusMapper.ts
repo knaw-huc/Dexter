@@ -1,29 +1,21 @@
 import { RowWithChildTablesMapper } from './Mapper';
-import { Corpus, isCorpus } from '../../model/DexterModel';
+import { Corpus, isCorpus, Source } from '../../model/DexterModel';
 import { Any } from '../common/Any';
 import { RowWithChildTables } from './RowWithChildTables';
 import { TagsMapper } from './TagsMapper';
 import { LanguagesMapper } from './LanguagesMapper';
 import { MetadataValuesMapper } from './MetadataValuesMapper';
 import { ArrayMapper } from './ArrayMapper';
-import { SourceMapper } from './SourceMapper';
-import { ColumnPrefixer } from './PrefixMapper';
 
 const resourceName = 'corpus';
 
 export class CorpusMapper implements RowWithChildTablesMapper<Corpus> {
-  private tagsMapper = new TagsMapper();
-  private languagesMapper = new LanguagesMapper();
-  private sourcesMapper = new ArrayMapper(
-    new ColumnPrefixer(new SourceMapper(), resourceName, ['id', 'title']),
-    'sources',
-  );
-
-  private metadataValueMapper: MetadataValuesMapper;
-
-  constructor(metadataValueMapper: MetadataValuesMapper) {
-    this.metadataValueMapper = metadataValueMapper;
-  }
+  constructor(
+    private metadataValueMapper: MetadataValuesMapper,
+    private tagsMapper: TagsMapper,
+    private languagesMapper: LanguagesMapper,
+    private sourcesMapper: ArrayMapper<Source>,
+  ) {}
 
   canMap(resource: Any): resource is Corpus {
     return isCorpus(resource);
