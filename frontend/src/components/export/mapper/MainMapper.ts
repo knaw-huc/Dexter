@@ -1,13 +1,13 @@
-import { isWithId, WithId } from '../../model/DexterModel';
-import { RowWithChildTablesMapper } from './Mapper';
-import { CorpusMapper } from './CorpusMapper';
-import { MetadataValuesMapper } from './MetadataValuesMapper';
-import { getMetadataKeys } from '../../utils/API';
-import { TagsMapper } from './TagsMapper';
-import { LanguagesMapper } from './LanguagesMapper';
-import { ArrayMapper } from './ArrayMapper';
+import { isWithId, WithId } from '../../../model/DexterModel';
+import { RowWithChildTablesMapper } from './resource/Mapper';
+import { CorpusMapper } from './resource/CorpusMapper';
+import { MetadataValuesMapper } from './resource/MetadataValuesMapper';
+import { getMetadataKeys } from '../../../utils/API';
+import { TagsMapper } from './resource/TagsMapper';
+import { LanguagesMapper } from './resource/LanguagesMapper';
+import { ArrayMapper } from './resource/ArrayMapper';
 import { ColumnPrefixer } from './PrefixMapper';
-import { SourceMapper } from './SourceMapper';
+import { SourceMapper } from './resource/SourceMapper';
 
 export class MainMapper implements RowWithChildTablesMapper<WithId> {
   name: string;

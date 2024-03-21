@@ -1,12 +1,12 @@
 import { RowWithChildTablesMapper } from './Mapper';
-import { Corpus, isCorpus, Source } from '../../model/DexterModel';
-import { Any } from '../common/Any';
-import { RowWithChildTables } from './RowWithChildTables';
+import { Corpus, isCorpus, Source } from '../../../../model/DexterModel';
+import { Any } from '../../../common/Any';
+import { RowWithChildTables } from '../RowWithChildTables';
 import { TagsMapper } from './TagsMapper';
 import { LanguagesMapper } from './LanguagesMapper';
 import { MetadataValuesMapper } from './MetadataValuesMapper';
 import { ArrayMapper } from './ArrayMapper';
-import { appendCell, appendCells, appendTables } from './ExportUtils';
+import { appendCell, appendCells, appendTables } from '../ExportUtils';
 
 const resourceName = 'corpus';
 

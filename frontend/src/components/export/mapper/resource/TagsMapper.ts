@@ -1,5 +1,5 @@
-import { isTag, ResultTag } from '../../model/DexterModel';
-import { Any } from '../common/Any';
+import { isTag, ResultTag } from '../../../../model/DexterModel';
+import { Any } from '../../../common/Any';
 import { CellMapper } from './Mapper';
 
 export class TagsMapper implements CellMapper<ResultTag[]> {

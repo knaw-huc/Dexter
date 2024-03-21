@@ -1,9 +1,9 @@
-import { Exportable } from './Exportable';
+import { Exportable } from './mapper/Exportable';
 import { useImmer } from 'use-immer';
 import JSZip from 'jszip';
 import FileSaver from 'file-saver';
-import { MainMapper } from './MainMapper';
-import { toCsv } from './toCsv';
+import { MainMapper } from './mapper/MainMapper';
+import { toCsv } from './mapper/toCsv';
 import { useEffect } from 'react';
 import { useThrowSync } from '../common/error/useThrowSync';
 

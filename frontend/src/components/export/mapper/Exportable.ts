@@ -3,6 +3,6 @@ import {
   Reference,
   ResultMedia,
   Source,
-} from '../../model/DexterModel';
+} from '../../../model/DexterModel';
 
 export type Exportable = Corpus | Source | ResultMedia | Reference;

@@ -1,6 +1,6 @@
-import { RowWithChildTables } from './RowWithChildTables';
-import { Cell, Table } from './Table';
-import { RowWithHeader } from './RowWithHeader';
+import { RowWithChildTables } from '../RowWithChildTables';
+import { Cell, Table } from '../Table';
+import { RowWithHeader } from '../RowWithHeader';
 
 /**
  * Map to table

@@ -1,8 +1,8 @@
 import { RowWithChildTablesMapper, TablesMapper } from './Mapper';
-import { WithId } from '../../model/DexterModel';
+import { WithId } from '../../../../model/DexterModel';
 import _ from 'lodash';
-import { BasicTable } from './Table';
-import { Any } from '../common/Any';
+import { BasicTable } from '../Table';
+import { Any } from '../../../common/Any';
 
 /**
  * Move all rows of mapped resources into single table

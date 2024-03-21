@@ -1,5 +1,5 @@
-import { isLanguage, ResultLanguage } from '../../model/DexterModel';
-import { Any } from '../common/Any';
+import { isLanguage, ResultLanguage } from '../../../../model/DexterModel';
+import { Any } from '../../../common/Any';
 import { CellMapper } from './Mapper';
 
 export class LanguagesMapper implements CellMapper<ResultLanguage[]> {

@@ -1,6 +1,6 @@
-import { RowWithChildTablesMapper } from './Mapper';
-import { WithId } from '../../model/DexterModel';
-import { Any } from '../common/Any';
+import { RowWithChildTablesMapper } from './resource/Mapper';
+import { WithId } from '../../../model/DexterModel';
+import { Any } from '../../common/Any';
 import { RowWithChildTables } from './RowWithChildTables';
 import { createTableFrom, prefixColumns, prefixHeader } from './ExportUtils';
 

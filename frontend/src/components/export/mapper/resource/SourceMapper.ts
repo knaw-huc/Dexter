@@ -1,11 +1,11 @@
-import { isSource, Source } from '../../model/DexterModel';
-import { Any } from '../common/Any';
-import { RowWithChildTables } from './RowWithChildTables';
+import { isSource, Source } from '../../../../model/DexterModel';
+import { Any } from '../../../common/Any';
+import { RowWithChildTables } from '../RowWithChildTables';
 import { RowWithChildTablesMapper } from './Mapper';
 import { TagsMapper } from './TagsMapper';
 import { LanguagesMapper } from './LanguagesMapper';
 import { MetadataValuesMapper } from './MetadataValuesMapper';
-import { appendCell, appendCells } from './ExportUtils';
+import { appendCell, appendCells } from '../ExportUtils';
 
 export class SourceMapper implements RowWithChildTablesMapper<Source> {
   constructor(

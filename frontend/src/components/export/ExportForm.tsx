@@ -5,7 +5,7 @@ import ScrollableModal from '../common/ScrollableModal';
 import { CloseInlineIcon } from '../common/CloseInlineIcon';
 import { SubmitButton } from '../common/SubmitButton';
 import { onSubmit } from '../../utils/onSubmit';
-import { Exportable } from './Exportable';
+import { Exportable } from './mapper/Exportable';
 import { useThrowSync } from '../common/error/useThrowSync';
 import { useExporter } from './useExporter';
 import { SpinnerIcon } from '../common/SpinnerIcon';

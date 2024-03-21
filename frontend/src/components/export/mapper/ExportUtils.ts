@@ -1,9 +1,9 @@
 import { RowWithHeader } from './RowWithHeader';
 import { Header, Table } from './Table';
-import { WithId } from '../../model/DexterModel';
+import { WithId } from '../../../model/DexterModel';
 import { ArrayTable } from './ArrayTable';
-import { CellMapper, RowMapper, TablesMapper } from './Mapper';
-import { Any } from '../common/Any';
+import { CellMapper, RowMapper, TablesMapper } from './resource/Mapper';
+import { Any } from '../../common/Any';
 import { RowWithChildTables } from './RowWithChildTables';
 
 export function createTableFrom<T extends WithId>(

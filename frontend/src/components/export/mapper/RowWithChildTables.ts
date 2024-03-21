@@ -3,7 +3,7 @@ import { ArrayTable } from './ArrayTable';
 import { RowWithHeader } from './RowWithHeader';
 
 /**
- * Table row, including tables of children
+ * Table row with headers, including tables of children
  */
 export class RowWithChildTables implements Table {
   /**

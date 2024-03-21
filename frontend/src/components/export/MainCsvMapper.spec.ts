@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@jest/globals';
-import { MainMapper } from './MainMapper';
+import { MainMapper } from './mapper/MainMapper';
 import { Access, Corpus } from '../../model/DexterModel';
 
 const corpus = getTestCorpus();
