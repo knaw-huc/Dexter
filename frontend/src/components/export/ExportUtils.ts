@@ -2,6 +2,9 @@ import { RowWithHeader } from './RowWithHeader';
 import { Header, Table } from './Table';
 import { WithId } from '../../model/DexterModel';
 import { ArrayTable } from './ArrayTable';
+import { CellMapper, RowMapper, TablesMapper } from './Mapper';
+import { Any } from '../common/Any';
+import { RowWithChildTables } from './RowWithChildTables';
 
 export function createTableFrom<T extends WithId>(
   resource: T,
@@ -28,4 +31,45 @@ export function prefixColumns(prefixTo: Table, toPrefix: RowWithHeader) {
 
 export function prefixHeader(header: Header, prefix: string): Header {
   return header.map(h => `${prefix}.${h}`);
+}
+
+export function appendCell<T>(
+  result: RowWithChildTables,
+  key: keyof T,
+  field: Any,
+  mapper?: CellMapper<T>,
+) {
+  const fieldName = String(key);
+  if (mapper && mapper.canMap(field)) {
+    const mapped = mapper.map(field, fieldName);
+    result.headerRow.pushColumn(fieldName, mapped);
+  } else {
+    result.headerRow.pushColumn(fieldName, String(field));
+  }
+}
+
+export function appendCells<T>(
+  result: RowWithChildTables,
+  key: keyof T,
+  field: Any,
+  mapper: RowMapper<T>,
+) {
+  if (mapper.canMap(field)) {
+    const fieldName = String(key);
+    const mapped = mapper.map(field, fieldName);
+    result.pushColumns(mapped.header, mapped.row);
+  }
+}
+
+export function appendTables<T>(
+  result: RowWithChildTables,
+  key: keyof T,
+  field: Any,
+  mapper: TablesMapper<T>,
+) {
+  if (mapper.canMap(field)) {
+    const fieldName = String(key);
+    const mapped = mapper.map(field, fieldName);
+    result.tables.push(...mapped);
+  }
 }

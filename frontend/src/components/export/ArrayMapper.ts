@@ -52,7 +52,7 @@ export class ArrayMapper<T extends WithId> implements TablesMapper<T[]> {
           array headers: ${resourcesTable.header.join(',')}\n
           row headers: ${mappedResource.header.join(',')}`);
       }
-      resourcesTable.rows.push(mappedResource.row);
+      resourcesTable.rows.push(mappedResource.headerRow.row);
       result.push(...mappedResource.tables);
     }
 

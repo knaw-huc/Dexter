@@ -1,4 +1,4 @@
-import { BasicTable, Header, Row, Table } from './Table';
+import { BasicTable, Cell, Table } from './Table';
 import { ArrayTable } from './ArrayTable';
 import { RowWithHeader } from './RowWithHeader';
 
@@ -14,7 +14,7 @@ export class RowWithChildTables implements Table {
   /**
    * Result of mapping resource to table row
    */
-  private _row: RowWithHeader;
+  headerRow: RowWithHeader;
 
   /**
    * Child resources that resulted in their own tables
@@ -23,28 +23,26 @@ export class RowWithChildTables implements Table {
 
   constructor(name: string) {
     this.name = name;
-    this._row = new RowWithHeader();
+    this.headerRow = new RowWithHeader();
     this.tables = [];
   }
 
-  get row() {
-    return this._row.row;
+  get header() {
+    return this.headerRow.header;
   }
 
   get rows() {
-    return this._row.rows;
-  }
-
-  get header() {
-    return this._row.header;
+    return this.headerRow.rows;
   }
 
   public toCsvTable(): ArrayTable {
-    return this._row.toCsvTable();
+    return this.headerRow.toCsvTable();
   }
 
-  push(header: Header, row: Row) {
-    this.header.push(...header);
-    this.row.push(...row);
+  pushColumn(header: Cell, row: Cell) {
+    this.headerRow.pushColumn(header, row);
+  }
+  pushColumns(header: Cell[], row: Cell[]) {
+    this.headerRow.pushColumns(header, row);
   }
 }

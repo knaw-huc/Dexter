@@ -1,5 +1,5 @@
 import { Csvable } from './Csvable';
-import { BasicTable, Header, Row, Table } from './Table';
+import { BasicTable, Cell, Header, Row, Table } from './Table';
 import { ArrayTable } from './ArrayTable';
 
 export class RowWithHeader implements Csvable, Table {
@@ -38,5 +38,14 @@ export class RowWithHeader implements Csvable, Table {
 
   public toCsvTable(): string[][] {
     return this.rowTable.toCsvTable();
+  }
+
+  pushColumn(header: Cell, row: Cell) {
+    this.header.push(header);
+    this.row.push(row);
+  }
+  pushColumns(header: Cell[], row: Cell[]) {
+    this.header.push(...header);
+    this.row.push(...row);
   }
 }

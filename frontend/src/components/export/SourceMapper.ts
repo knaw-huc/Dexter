@@ -2,8 +2,18 @@ import { isSource, Source } from '../../model/DexterModel';
 import { Any } from '../common/Any';
 import { RowWithChildTables } from './RowWithChildTables';
 import { RowWithChildTablesMapper } from './Mapper';
+import { TagsMapper } from './TagsMapper';
+import { LanguagesMapper } from './LanguagesMapper';
+import { MetadataValuesMapper } from './MetadataValuesMapper';
+import { appendCell, appendCells } from './ExportUtils';
 
 export class SourceMapper implements RowWithChildTablesMapper<Source> {
+  constructor(
+    private tagsMapper: TagsMapper,
+    private languagesMapper: LanguagesMapper,
+    private metadataValuesMapper: MetadataValuesMapper,
+  ) {}
+
   name: string;
   private keysToSkip = ['corpora'];
 
@@ -19,8 +29,20 @@ export class SourceMapper implements RowWithChildTablesMapper<Source> {
       if (this.keysToSkip.includes(key)) {
         continue;
       }
-      result.header.push(key);
-      result.row.push(`${source[key]}`);
+      const field = source[key];
+      switch (key) {
+        case 'tags':
+          appendCell(result, key, field, this.tagsMapper);
+          break;
+        case 'languages':
+          appendCell(result, key, field, this.languagesMapper);
+          break;
+        case 'metadataValues':
+          appendCells(result, key, field, this.metadataValuesMapper);
+          break;
+        default:
+          appendCell(result, key, field);
+      }
     }
     return result;
   }

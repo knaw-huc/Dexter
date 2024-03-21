@@ -16,15 +16,20 @@ export class MainMapper implements RowWithChildTablesMapper<WithId> {
 
   constructor(keys: string[]) {
     const metadataValuesMapper = new MetadataValuesMapper(keys);
-    const tagsMappers = new TagsMapper();
+    const tagsMapper = new TagsMapper();
     const languagesMapper = new LanguagesMapper();
+    const sourceMapper = new SourceMapper(
+      tagsMapper,
+      languagesMapper,
+      metadataValuesMapper,
+    );
     const corpusSourcesMapper = new ArrayMapper(
-      new ColumnPrefixer(new SourceMapper(), 'corpus', ['id', 'title']),
+      new ColumnPrefixer(sourceMapper, 'corpus', ['id', 'title']),
       'sources',
     );
     const corpusMapper = new CorpusMapper(
       metadataValuesMapper,
-      tagsMappers,
+      tagsMapper,
       languagesMapper,
       corpusSourcesMapper,
     );

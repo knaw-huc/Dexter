@@ -6,12 +6,13 @@ import { TagsMapper } from './TagsMapper';
 import { LanguagesMapper } from './LanguagesMapper';
 import { MetadataValuesMapper } from './MetadataValuesMapper';
 import { ArrayMapper } from './ArrayMapper';
+import { appendCell, appendCells, appendTables } from './ExportUtils';
 
 const resourceName = 'corpus';
 
 export class CorpusMapper implements RowWithChildTablesMapper<Corpus> {
   constructor(
-    private metadataValueMapper: MetadataValuesMapper,
+    private metadataValuesMapper: MetadataValuesMapper,
     private tagsMapper: TagsMapper,
     private languagesMapper: LanguagesMapper,
     private sourcesMapper: ArrayMapper<Source>,
@@ -30,35 +31,26 @@ export class CorpusMapper implements RowWithChildTablesMapper<Corpus> {
       switch (key) {
         case 'parent':
           if (this.canMap(field)) {
-            result.tables.push(...this.map(field).tables);
-            result.header.push('parent_id', 'parent_title');
-            result.row.push(field.id, field.title);
+            result.headerRow.pushColumns(
+              ['parent_id', 'parent_title'],
+              [field.id, field.title],
+            );
           }
           break;
         case 'tags':
-          if (this.tagsMapper.canMap(field)) {
-            result.push([key], [this.tagsMapper.map(field)]);
-          }
+          appendCell(result, key, field, this.tagsMapper);
           break;
         case 'languages':
-          if (this.languagesMapper.canMap(field)) {
-            result.push([key], [this.languagesMapper.map(field)]);
-          }
+          appendCell(result, key, field, this.languagesMapper);
           break;
         case 'metadataValues':
-          if (this.metadataValueMapper.canMap(field)) {
-            const mapped = this.metadataValueMapper.map(field);
-            result.push(mapped.header, mapped.row);
-          }
+          appendCells(result, key, field, this.metadataValuesMapper);
           break;
         case 'sources':
-          if (this.sourcesMapper.canMap(field)) {
-            const mapped = this.sourcesMapper.map(field);
-            result.tables.push(...mapped);
-          }
+          appendTables(result, key, field, this.sourcesMapper);
           break;
         default:
-          result.push([key], [String(field)]);
+          appendCell(result, key, field);
       }
     }
     return result;

@@ -24,6 +24,7 @@ describe('MainCsvMapper', () => {
     expect(sourcesTable.name).toEqual('sources');
     expect(csvSourcesTable.length).toEqual(3);
     expect(csvSourcesTable[0]).toEqual(expected[0]);
+    expect(csvSourcesTable[1]).toEqual(expected[1]);
   });
 });
 
@@ -50,8 +51,34 @@ function getExpectedCorpusSources() {
       'references',
       'languages',
       'media',
-      'metadataValues',
+      'metadata.my custom field',
+      'metadata.other field',
       'tags',
+    ],
+    [
+      '5b2c664d-f433-43ca-8027-e33439973829',
+      'Phasellus bibendum ante id pretium blandit.',
+      '5b2c664d-f433-43ca-8027-e33439973829',
+      'tincidunt faucibus risus tristique',
+      'Phasellus bibendum ante id pretium blandit.',
+      'Quisque sed metus nec orci faucibus pretium.',
+      'amet tellus',
+      'Closed',
+      'placerat',
+      'turpis',
+      '1990-01-30',
+      '1990-01-31',
+      'Integer maximus metus et orci congue finibus.',
+      'donec viverra tincidunt aliquam',
+      '9d950d38-8e03-4e90-9f0d-0c397f4e65b9',
+      '2024-03-19T14:15:49',
+      '2024-03-19T14:17:34',
+      '',
+      'Dutch,Latin,Western Frisian',
+      '[object Object],[object Object],[object Object]',
+      'In et odio eleifend, feugiat ante accumsan, semper justo.',
+      'Morbi non dolor id ligula porta elementum eu scelerisque enim.',
+      'foo,bar,poi',
     ],
   ];
 }
