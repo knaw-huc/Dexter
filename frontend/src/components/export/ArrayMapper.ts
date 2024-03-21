@@ -1,27 +1,32 @@
-import { TablesMapper } from './Mapper';
+import { RowWithChildTablesMapper, TablesMapper } from './Mapper';
 import { WithId } from '../../model/DexterModel';
-import { RowWithChildTables } from './RowWithChildTables';
 import _ from 'lodash';
-import { Table } from './Table';
+import { BasicTable } from './Table';
+import { Any } from '../common/Any';
 
+/**
+ * Move all rows of mapped resources into single table
+ */
 export class ArrayMapper<T extends WithId> implements TablesMapper<T[]> {
-  public resourceMapper: TablesMapper<T>;
+  public resourceMapper: RowWithChildTablesMapper<T>;
+  private resourceName: string;
 
-  constructor(mappers: TablesMapper<T>) {
+  constructor(mappers: RowWithChildTablesMapper<T>, resourceName: string) {
     this.resourceMapper = mappers;
+    this.resourceName = resourceName;
   }
 
-  canMap(resource: T[]): resource is T[] {
-    if (resource.length < 0) {
-      return true;
+  canMap(field: Any): field is T[] {
+    if (field?.length < 0) {
+      return false;
     }
-    return this.resourceMapper.canMap(resource[0]);
+    return this.resourceMapper.canMap(field[0]);
   }
 
-  map(resources: T[], fieldName: string): RowWithChildTables {
-    const resourcesTable = new Table(fieldName);
-    const result = new RowWithChildTables(fieldName);
-    result.tables.push(resourcesTable);
+  map(resources: T[]): BasicTable[] {
+    const resourcesTable = new BasicTable(this.resourceName);
+    const result: BasicTable[] = [];
+    result.push(resourcesTable);
 
     if (!resources.length) {
       return result;
@@ -33,19 +38,22 @@ export class ArrayMapper<T extends WithId> implements TablesMapper<T[]> {
 
     const firstRowHeaders = this.resourceMapper.map(
       resources[0],
-      fieldName,
+      this.resourceName,
     ).header;
-    resourcesTable.header.push(...firstRowHeaders, fieldName);
+    resourcesTable.header.push(...firstRowHeaders);
 
     for (const resource of resources) {
-      const mappedResource = this.resourceMapper.map(resource, fieldName);
+      const mappedResource = this.resourceMapper.map(
+        resource,
+        this.resourceName,
+      );
       if (!_.isEqual(resourcesTable.header, mappedResource.header)) {
         throw Error(`Headers do not match:\n
           array headers: ${resourcesTable.header.join(',')}\n
           row headers: ${mappedResource.header.join(',')}`);
       }
-      resourcesTable.push(mappedResource.row);
-      result.tables.push(...mappedResource.tables);
+      resourcesTable.rows.push(mappedResource.row);
+      result.push(...mappedResource.tables);
     }
 
     return result;

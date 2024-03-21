@@ -15,7 +15,7 @@ export class MetadataValuesMapper implements RowMapper<MetadataValue[]> {
   map(metadataValues: MetadataValue[]): RowWithHeader {
     const result = new RowWithHeader();
     for (const key of this.allKeys) {
-      result.header.push(key);
+      result.header.push(`metadata.${key}`);
       result.row.push(metadataValues.find(v => v.key.key === key)?.value ?? '');
     }
     return result;

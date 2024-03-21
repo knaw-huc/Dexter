@@ -1,26 +1,26 @@
-import { TableMapper } from './TableMapper';
 import { isSource, Source } from '../../model/DexterModel';
 import { Any } from '../common/Any';
 import { RowWithChildTables } from './RowWithChildTables';
+import { RowWithChildTablesMapper } from './Mapper';
 
-export class SourceMapper implements TableMapper<Source> {
+export class SourceMapper implements RowWithChildTablesMapper<Source> {
   name: string;
-
-  public mappers: TableMapper<Any>[] = [
-    // new SourceMapper()
-  ];
+  private keysToSkip = ['corpora'];
 
   canMap(resource: Any): resource is Source {
     return isSource(resource);
   }
 
-  map(Source: Source): RowWithChildTables {
+  map(source: Source): RowWithChildTables {
     const result = new RowWithChildTables(this.name);
 
     let key: keyof Source;
-    for (key in Source) {
+    for (key in source) {
+      if (this.keysToSkip.includes(key)) {
+        continue;
+      }
       result.header.push(key);
-      result.row.push(`${Source[key]}`);
+      result.row.push(`${source[key]}`);
     }
     return result;
   }

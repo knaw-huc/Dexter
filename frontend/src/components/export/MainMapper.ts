@@ -1,13 +1,13 @@
 import { isWithId, WithId } from '../../model/DexterModel';
-import { TablesMapper } from './Mapper';
+import { RowWithChildTablesMapper } from './Mapper';
 import { CorpusMapper } from './CorpusMapper';
 import { MetadataValuesMapper } from './MetadataValuesMapper';
 import { getMetadataKeys } from '../../utils/API';
 
-export class MainMapper implements TablesMapper<WithId> {
+export class MainMapper implements RowWithChildTablesMapper<WithId> {
   name: string;
 
-  private mappers: TablesMapper<WithId>[];
+  private mappers: RowWithChildTablesMapper<WithId>[];
 
   constructor(keys: string[]) {
     const metadataValuesMapper = new MetadataValuesMapper(keys);

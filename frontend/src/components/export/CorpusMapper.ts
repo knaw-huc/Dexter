@@ -1,19 +1,24 @@
-import { TablesMapper } from './Mapper';
+import { RowWithChildTablesMapper } from './Mapper';
 import { Corpus, isCorpus } from '../../model/DexterModel';
 import { Any } from '../common/Any';
 import { RowWithChildTables } from './RowWithChildTables';
 import { TagsMapper } from './TagsMapper';
 import { LanguagesMapper } from './LanguagesMapper';
 import { MetadataValuesMapper } from './MetadataValuesMapper';
-import { Header } from './Table';
+import { ArrayMapper } from './ArrayMapper';
+import { SourceMapper } from './SourceMapper';
+import { ColumnPrefixer } from './PrefixMapper';
 
-function prepend(header: Header, prefix: string) {
-  return header.map(h => `${prefix}.${h}`);
-}
+const resourceName = 'corpus';
 
-export class CorpusMapper implements TablesMapper<Corpus> {
+export class CorpusMapper implements RowWithChildTablesMapper<Corpus> {
   private tagsMapper = new TagsMapper();
   private languagesMapper = new LanguagesMapper();
+  private sourcesMapper = new ArrayMapper(
+    new ColumnPrefixer(new SourceMapper(), resourceName, ['id', 'title']),
+    'sources',
+  );
+
   private metadataValueMapper: MetadataValuesMapper;
 
   constructor(metadataValueMapper: MetadataValuesMapper) {
@@ -25,7 +30,7 @@ export class CorpusMapper implements TablesMapper<Corpus> {
   }
 
   map(corpus: Corpus): RowWithChildTables {
-    const result = new RowWithChildTables('corpus');
+    const result = new RowWithChildTables(resourceName);
 
     let key: keyof Corpus;
     for (key in corpus) {
@@ -40,36 +45,30 @@ export class CorpusMapper implements TablesMapper<Corpus> {
           break;
         case 'tags':
           if (this.tagsMapper.canMap(field)) {
-            result.header.push(key);
-            result.row.push(this.tagsMapper.map(field));
+            result.push([key], [this.tagsMapper.map(field)]);
           }
           break;
         case 'languages':
           if (this.languagesMapper.canMap(field)) {
-            result.header.push(key);
-            result.row.push(this.languagesMapper.map(field));
+            result.push([key], [this.languagesMapper.map(field)]);
           }
           break;
         case 'metadataValues':
           if (this.metadataValueMapper.canMap(field)) {
             const mapped = this.metadataValueMapper.map(field);
-            result.header.push(...prepend(mapped.header, 'metadata'));
-            result.row.push(...mapped.row);
+            result.push(mapped.header, mapped.row);
+          }
+          break;
+        case 'sources':
+          if (this.sourcesMapper.canMap(field)) {
+            const mapped = this.sourcesMapper.map(field);
+            result.tables.push(...mapped);
           }
           break;
         default:
-          mapAsString(result, key, field);
+          result.push([key], [String(field)]);
       }
     }
     return result;
   }
-}
-
-export function mapAsString(
-  result: RowWithChildTables,
-  key: string,
-  field: Any,
-) {
-  result.header.push(key);
-  result.row.push(`${field}`);
 }

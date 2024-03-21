@@ -1,12 +1,11 @@
-import { Table } from './Table';
-import { Csvable } from './Csvable';
-import { CsvTable } from './CsvTable';
+import { BasicTable, Header, Row, Table } from './Table';
+import { ArrayTable } from './ArrayTable';
 import { RowWithHeader } from './RowWithHeader';
 
 /**
  * Table row, including tables of children
  */
-export class RowWithChildTables implements Csvable {
+export class RowWithChildTables implements Table {
   /**
    * Name of resource
    */
@@ -20,7 +19,7 @@ export class RowWithChildTables implements Csvable {
   /**
    * Child resources that resulted in their own tables
    */
-  tables: Table[];
+  tables: BasicTable[];
 
   constructor(name: string) {
     this.name = name;
@@ -32,11 +31,20 @@ export class RowWithChildTables implements Csvable {
     return this._row.row;
   }
 
+  get rows() {
+    return this._row.rows;
+  }
+
   get header() {
     return this._row.header;
   }
 
-  public toCsvTable(): CsvTable {
+  public toCsvTable(): ArrayTable {
     return this._row.toCsvTable();
+  }
+
+  push(header: Header, row: Row) {
+    this.header.push(...header);
+    this.row.push(...row);
   }
 }

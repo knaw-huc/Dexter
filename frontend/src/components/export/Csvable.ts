@@ -1,5 +1,5 @@
-import { CsvTable } from './CsvTable';
+import { ArrayTable } from './ArrayTable';
 
-export interface Csvable {
-  toCsvTable(): CsvTable;
-}
+export type Csvable = {
+  toCsvTable(): ArrayTable;
+};

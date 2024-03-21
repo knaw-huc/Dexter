@@ -5,14 +5,107 @@ import { Access, Corpus } from '../../model/DexterModel';
 const corpus = getTestCorpus();
 
 describe('MainCsvMapper', () => {
+  const customMetadataKeys = ['my custom field', 'other field'];
   it('can map corpus', async () => {
-    const toTest = new MainMapper(['my custom field', 'other field']);
+    const toTest = new MainMapper(customMetadataKeys);
     const result = toTest.map(corpus);
-    const expected = getExpected();
+    const expected = getExpectedCorpus();
     const actual = result.toCsvTable();
     expect(actual).toEqual(expected);
   });
+
+  it('can map corpus sources', async () => {
+    const toTest = new MainMapper(customMetadataKeys);
+    const result = toTest.map(corpus);
+    const expected = getExpectedCorpusSources();
+    expect(result.tables.length).toEqual(1);
+    const sourcesTable = result.tables[0];
+    const csvSourcesTable = sourcesTable.toCsvTable();
+    expect(sourcesTable.name).toEqual('sources');
+    expect(csvSourcesTable.length).toEqual(3);
+    expect(csvSourcesTable[0]).toEqual(expected[0]);
+  });
 });
+
+function getExpectedCorpusSources() {
+  return [
+    [
+      'corpus.id',
+      'corpus.title',
+      'id',
+      'externalRef',
+      'title',
+      'description',
+      'rights',
+      'access',
+      'creator',
+      'location',
+      'earliest',
+      'latest',
+      'notes',
+      'ethics',
+      'createdBy',
+      'createdAt',
+      'updatedAt',
+      'references',
+      'languages',
+      'media',
+      'metadataValues',
+      'tags',
+    ],
+  ];
+}
+
+function getExpectedCorpus() {
+  return [
+    [
+      'id',
+      'title',
+      'description',
+      'rights',
+      'access',
+      'location',
+      'earliest',
+      'latest',
+      'contributor',
+      'notes',
+      'ethics',
+      'createdBy',
+      'createdAt',
+      'updatedAt',
+      'parent_id',
+      'parent_title',
+      'tags',
+      'languages',
+      'metadata.my custom field',
+      'metadata.other field',
+      'subcorpora',
+    ],
+    [
+      '29795f78-9fb3-4693-97ab-bf9c4c7ef05c',
+      'Corpus laoreet',
+      'Nulla vitae dolor non urna scelerisque volutpat.',
+      'proin',
+      'Open',
+      'bibendum',
+      '1990-01-30',
+      '1990-01-31',
+      'venenatis',
+      'Aenean rutrum erat venenatis, rhoncus lectus a, rutrum eros.',
+      'vestibulum dictum amet',
+      '9d950d38-8e03-4e90-9f0d-0c397f4e65b9',
+      '2024-03-19T14:15:49',
+      '2024-03-19T14:15:49',
+      '089770f3-b5e4-4b28-bc2b-4419e57f0941',
+      'Main corpus2',
+      'foo,bar,poi',
+      'English,Latin',
+      'gemapt',
+      'ook gemapt',
+      '',
+    ],
+  ];
+}
 
 function getTestCorpus(): Corpus {
   return {
@@ -369,57 +462,4 @@ function getTestCorpus(): Corpus {
     ],
     subcorpora: [],
   };
-}
-
-function getExpected() {
-  return [
-    [
-      'id',
-      'title',
-      'description',
-      'rights',
-      'access',
-      'location',
-      'earliest',
-      'latest',
-      'contributor',
-      'notes',
-      'ethics',
-      'createdBy',
-      'createdAt',
-      'updatedAt',
-      'parent_id',
-      'parent_title',
-      'tags',
-      'languages',
-      'sources',
-      'metadata.my custom field',
-      'metadata.other field',
-      'subcorpora',
-    ],
-    [
-      '29795f78-9fb3-4693-97ab-bf9c4c7ef05c',
-      'Corpus laoreet',
-      'Nulla vitae dolor non urna scelerisque volutpat.',
-      'proin',
-      'Open',
-      'bibendum',
-      '1990-01-30',
-      '1990-01-31',
-      'venenatis',
-      'Aenean rutrum erat venenatis, rhoncus lectus a, rutrum eros.',
-      'vestibulum dictum amet',
-      '9d950d38-8e03-4e90-9f0d-0c397f4e65b9',
-      '2024-03-19T14:15:49',
-      '2024-03-19T14:15:49',
-      '089770f3-b5e4-4b28-bc2b-4419e57f0941',
-      'Main corpus2',
-      'foo,bar,poi',
-      'English,Latin',
-      '[object Object],[object Object]',
-      'gemapt',
-      'ook gemapt',
-      '',
-    ],
-  ];
 }
