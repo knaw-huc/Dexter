@@ -1,7 +1,7 @@
 import { describe, expect, it } from '@jest/globals';
-import { MainMapper } from './mapper/MainMapper';
-import { Access, Corpus } from '../../model/DexterModel';
-import { ArrayTable } from './mapper/ArrayTable';
+import { MainMapper } from './MainMapper';
+import { Access, Corpus } from '../../../model/DexterModel';
+import { ArrayTable } from './ArrayTable';
 
 const corpus = getTestCorpus();
 
@@ -11,12 +11,13 @@ describe('MainCsvMapper', () => {
     const toTest = new MainMapper(customMetadataKeys);
     const result = toTest.map(corpus);
     const expected = getExpectedCorpus();
-    expect(result.length).toEqual(3);
-    expect(result[0].name).toEqual('corpus');
-    expect(result[1].name).toEqual('sources');
-    expect(result[2].name).toEqual('media');
     const actual = result[0].toCsvTable();
     expect(actual).toEqual(expected);
+
+    expect(result.length).toEqual(4);
+    const tableNames = result.map(t => t.name);
+    tableNames.sort();
+    expect(tableNames).toEqual(['corpus', 'media', 'references', 'sources']);
   });
 
   it('can map corpus sources', async () => {
@@ -24,7 +25,7 @@ describe('MainCsvMapper', () => {
     const tables = toTest.map(corpus);
     const expected = getExpectedCorpusSources();
     expect(tables.length).toEqual(3);
-    const sourcesTable = tables[1];
+    const sourcesTable = tables.find(t => t.name === 'sources');
     const csvSourcesTable = sourcesTable.toCsvTable();
     expect(sourcesTable.name).toEqual('sources');
     expect(csvSourcesTable.length).toEqual(3);
@@ -34,15 +35,26 @@ describe('MainCsvMapper', () => {
 
   it('can map corpus source media', async () => {
     const toTest = new MainMapper(customMetadataKeys);
-    const result = toTest.map(corpus);
+    const tables = toTest.map(corpus);
     const expected = getExpectedCorpusSourcesMedia();
-    expect(result.length).toEqual(3);
-    const mediaTable = result[2];
+    expect(tables.length).toEqual(3);
+    const mediaTable = tables.find(t => t.name === 'media');
     const csvMediaTable = mediaTable.toCsvTable();
     expect(mediaTable.name).toEqual('media');
     expect(mediaTable.rows.length).toEqual(6);
     expect(csvMediaTable[0]).toEqual(expected[0]);
     expect(csvMediaTable[1]).toEqual(expected[1]);
+  });
+  it('can map corpus source references', async () => {
+    const toTest = new MainMapper(customMetadataKeys);
+    const tables = toTest.map(corpus);
+    const expected = getExpectedCorpusSourcesReferences();
+    expect(tables.length).toEqual(4);
+    const referenceTable = tables.find(t => t.name === 'references');
+    const csvReferencesTable = referenceTable.toCsvTable();
+    expect(referenceTable.rows.length).toEqual(2);
+    expect(csvReferencesTable[0]).toEqual(expected[0]);
+    expect(csvReferencesTable[1]).toEqual(expected[1]);
   });
 });
 
@@ -171,6 +183,18 @@ function getExpectedCorpusSourcesMedia(): ArrayTable {
     ],
   ];
 }
+function getExpectedCorpusSourcesReferences(): ArrayTable {
+  return [
+    ['source.id', 'source.title', 'id', 'input', 'formatted'],
+    [
+      '5b2c664d-f433-43ca-8027-e33439973829',
+      'Source bibendum ante id pretium blandit.',
+      '0d8a3db3-0f25-4bf6-955e-1d13803298d8',
+      'https://doi.org/10.1057/978-1-137-52908-4_16',
+      'Karrouche, N. (2017). National Narratives and the Invention of Ethnic Identities: Revisiting Cultural Memory and the Decolonized State in Morocco. In Palgrave Handbook of Research in Historical Culture and Education (pp. 295–310). Palgrave Macmillan UK. https://doi.org/10.1057/978-1-137-52908-4_16\n',
+    ],
+  ];
+}
 
 function getTestCorpus(): Corpus {
   return {
@@ -261,7 +285,19 @@ function getTestCorpus(): Corpus {
         createdBy: '9d950d38-8e03-4e90-9f0d-0c397f4e65b9',
         createdAt: '2024-03-19T14:15:49',
         updatedAt: '2024-03-19T14:17:34',
-        references: [],
+        references: [
+          {
+            id: '0d8a3db3-0f25-4bf6-955e-1d13803298d8',
+            input: 'https://doi.org/10.1057/978-1-137-52908-4_16',
+            csl: '[{"publisher":"Palgrave Macmillan UK","DOI":"10.1057/978-1-137-52908-4_16","type":"chapter","page":"295-310","source":"Crossref","title":"National Narratives and the Invention of Ethnic Identities: Revisiting Cultural Memory and the Decolonized State in Morocco","author":[{"given":"Norah","family":"Karrouche","sequence":"first","affiliation":[]}],"container-title":"Palgrave Handbook of Research in Historical Culture and Education","issued":{"date-parts":[[2017]]},"ISBN":"9781137529077","URL":"http://dx.doi.org/10.1057/978-1-137-52908-4_16"}]',
+          },
+          {
+            id: 'caacf181-4e7e-4305-829e-07806728bb9b',
+            input:
+              '@article{voskuil1983weg,\n  title={De weg naar luilekkerland},\n  author={Voskuil, JJ},\n  journal={BMGN-Low Countries Historical Review},\n  volume={98},\n  number={3},\n  pages={460--482},\n  year={1983},\n  publisher={Igitur}\n}\n',
+            csl: '[{"container-title":"BMGN-Low Countries Historical Review","author":[{"given":"JJ","family":"Voskuil"}],"type":"article-journal","citation-key":"voskuil1983weg","issue":"3","issued":{"date-parts":[[1983]]},"page":"460-482","publisher":"Igitur","title":"De weg naar luilekkerland","volume":"98"}]',
+          },
+        ],
         corpora: [
           {
             id: '29795f78-9fb3-4693-97ab-bf9c4c7ef05c',

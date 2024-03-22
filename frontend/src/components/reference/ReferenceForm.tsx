@@ -98,5 +98,6 @@ export function ReferenceForm(props: ReferenceFormProps) {
 function toForm(toEdit: ResultReference): FormReference {
   return {
     ...(toEdit || defaults),
+    terms: defaults.terms,
   };
 }

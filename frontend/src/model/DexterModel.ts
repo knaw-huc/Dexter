@@ -117,9 +117,15 @@ export type FormReference = {
   csl: string;
 };
 
-export type ResultReference = FormReference & WithId;
+export type ResultReference = Omit<FormReference, 'terms'> & WithId;
 
 export type Reference = ResultReference;
+
+export function isReference(toTest: Any): toTest is Reference {
+  return !!(
+    (toTest as Reference)?.input && (toTest as Reference).csl !== undefined
+  );
+}
 
 export type SubmitFormReference = FormReference;
 

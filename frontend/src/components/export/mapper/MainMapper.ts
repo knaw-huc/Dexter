@@ -11,6 +11,8 @@ import { MediaMapper } from './resource/MediaMapper';
 import _ from 'lodash';
 import { Table } from './Table';
 import { concatTables } from './ExportUtils';
+import { ReferenceMapper } from './resource/ReferenceMapper';
+import { ReferenceFormatter } from './resource/ReferenceFormatter';
 
 export class MainMapper implements TablesMapper<WithId> {
   name: string;
@@ -23,12 +25,15 @@ export class MainMapper implements TablesMapper<WithId> {
     const metadataValuesMapper = new MetadataValuesMapper(keys);
     const tagsMapper = new TagsMapper();
     const languagesMapper = new LanguagesMapper();
+    const referenceMapper = new ReferenceMapper(new ReferenceFormatter());
+    const referencesMapper = new ArrayMapper(referenceMapper, 'references');
     const sourceMapper = new SourceMapper(
       'source',
       tagsMapper,
       languagesMapper,
       metadataValuesMapper,
       mediaListMapper,
+      referencesMapper,
       ['corpora'],
     );
     const corpusSourcesMapper = new ArrayMapper(sourceMapper, 'sources');

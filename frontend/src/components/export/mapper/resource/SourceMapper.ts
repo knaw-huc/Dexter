@@ -1,4 +1,9 @@
-import { isSource, ResultMedia, Source } from '../../../../model/DexterModel';
+import {
+  isSource,
+  Reference,
+  ResultMedia,
+  Source,
+} from '../../../../model/DexterModel';
 import { Any } from '../../../common/Any';
 import { RowWithChildTables } from '../RowWithChildTables';
 import { RowWithChildTablesMapper } from './Mapper';
@@ -10,7 +15,7 @@ import {
   appendCells,
   appendTables,
   createTableFrom,
-  prefixTable,
+  prefixAll,
 } from '../ExportUtils';
 import { ArrayMapper } from './ArrayMapper';
 
@@ -21,6 +26,7 @@ export class SourceMapper implements RowWithChildTablesMapper<Source> {
     private languagesMapper: LanguagesMapper,
     private metadataValuesMapper: MetadataValuesMapper,
     private mediaMapper: ArrayMapper<ResultMedia>,
+    private referencesMapper: ArrayMapper<Reference>,
     private keysToSkip: (keyof Source)[],
   ) {}
 
@@ -54,7 +60,16 @@ export class SourceMapper implements RowWithChildTablesMapper<Source> {
             key,
             field,
             mapper: this.mediaMapper,
-            modify: tables => tables.map(t => prefixTable(t, toPrefix)),
+            modify: prefixAll(toPrefix),
+          });
+          break;
+        case 'references':
+          appendTables({
+            result,
+            key,
+            field,
+            mapper: this.referencesMapper,
+            modify: prefixAll(toPrefix),
           });
           break;
         default:

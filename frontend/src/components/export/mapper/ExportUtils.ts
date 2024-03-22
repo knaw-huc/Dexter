@@ -1,5 +1,5 @@
 import { RowWithHeader } from './RowWithHeader';
-import { BasicTable, Header, Table } from './Table';
+import { BasicTable, Table } from './Table';
 import { WithId } from '../../../model/DexterModel';
 import { ArrayTable } from './ArrayTable';
 import { CellMapper, RowMapper, TablesMapper } from './resource/Mapper';
@@ -30,10 +30,9 @@ export function prefixTable(prefixTo: Table, toPrefix: RowWithHeader) {
   }
 }
 
-export function prefixHeader(header: Header, prefix: string): Header {
-  return header.map(h => `${prefix}.${h}`);
+export function prefixAll(toPrefix: RowWithHeader) {
+  return (tables: Table[]) => tables.map(t => prefixTable(t, toPrefix));
 }
-
 export function appendCell<T>(
   result: RowWithHeader,
   key: keyof T,
