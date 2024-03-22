@@ -9,10 +9,10 @@ import {
   appendCell,
   appendCells,
   appendTables,
+  createTableFrom,
   prefixTable,
 } from '../ExportUtils';
 import { ArrayMapper } from './ArrayMapper';
-import { RowWithHeader } from '../RowWithHeader';
 
 export class SourceMapper implements RowWithChildTablesMapper<Source> {
   constructor(
@@ -30,10 +30,7 @@ export class SourceMapper implements RowWithChildTablesMapper<Source> {
 
   map(source: Source): RowWithChildTables {
     const result = new RowWithChildTables(this.name);
-    const toPrefix = new RowWithHeader([
-      ['source.id', 'source.title'],
-      [source.id, source.title],
-    ]);
+    const toPrefix = createTableFrom(source, ['id', 'title'], this.name);
 
     let key: keyof Source;
     for (key in source) {

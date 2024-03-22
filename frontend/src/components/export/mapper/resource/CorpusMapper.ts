@@ -10,11 +10,9 @@ import {
   appendCell,
   appendCells,
   appendTables,
+  createTableFrom,
   prefixTable,
 } from '../ExportUtils';
-import { RowWithHeader } from '../RowWithHeader';
-
-const resourceName = 'corpus';
 
 export class CorpusMapper implements RowWithChildTablesMapper<Corpus> {
   constructor(
@@ -22,6 +20,7 @@ export class CorpusMapper implements RowWithChildTablesMapper<Corpus> {
     private tagsMapper: TagsMapper,
     private languagesMapper: LanguagesMapper,
     private sourcesMapper: ArrayMapper<Source>,
+    private name = 'corpus',
   ) {}
 
   canMap(resource: Any): resource is Corpus {
@@ -29,11 +28,8 @@ export class CorpusMapper implements RowWithChildTablesMapper<Corpus> {
   }
 
   map(corpus: Corpus): RowWithChildTables {
-    const result = new RowWithChildTables(resourceName);
-    const toPrefix = new RowWithHeader([
-      ['corpus.id', 'corpus.title'],
-      [corpus.id, corpus.title],
-    ]);
+    const result = new RowWithChildTables(this.name);
+    const toPrefix = createTableFrom(corpus, ['id', 'title'], this.name);
 
     let key: keyof Corpus;
     for (key in corpus) {

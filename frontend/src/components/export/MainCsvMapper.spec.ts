@@ -11,16 +11,20 @@ describe('MainCsvMapper', () => {
     const toTest = new MainMapper(customMetadataKeys);
     const result = toTest.map(corpus);
     const expected = getExpectedCorpus();
-    const actual = result.toCsvTable();
+    expect(result.length).toEqual(3);
+    expect(result[0].name).toEqual('corpus');
+    expect(result[1].name).toEqual('sources');
+    expect(result[2].name).toEqual('media');
+    const actual = result[0].toCsvTable();
     expect(actual).toEqual(expected);
   });
 
   it('can map corpus sources', async () => {
     const toTest = new MainMapper(customMetadataKeys);
-    const result = toTest.map(corpus);
+    const tables = toTest.map(corpus);
     const expected = getExpectedCorpusSources();
-    expect(result.tables.length).toEqual(2);
-    const sourcesTable = result.tables[0];
+    expect(tables.length).toEqual(3);
+    const sourcesTable = tables[1];
     const csvSourcesTable = sourcesTable.toCsvTable();
     expect(sourcesTable.name).toEqual('sources');
     expect(csvSourcesTable.length).toEqual(3);
@@ -32,8 +36,8 @@ describe('MainCsvMapper', () => {
     const toTest = new MainMapper(customMetadataKeys);
     const result = toTest.map(corpus);
     const expected = getExpectedCorpusSourcesMedia();
-    expect(result.tables.length).toEqual(2);
-    const mediaTable = result.tables[1];
+    expect(result.length).toEqual(3);
+    const mediaTable = result[2];
     const csvMediaTable = mediaTable.toCsvTable();
     expect(mediaTable.name).toEqual('media');
     expect(mediaTable.rows.length).toEqual(6);
