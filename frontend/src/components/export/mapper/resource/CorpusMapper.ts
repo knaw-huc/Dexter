@@ -11,10 +11,11 @@ import {
   appendCells,
   appendTables,
   createTableFrom,
-  prefixTable,
+  prefixAll,
 } from '../ExportUtils';
 
 export class CorpusMapper implements RowWithChildTablesMapper<Corpus> {
+  private subcorporaMapper = new ArrayMapper(this, 'subcorpus');
   constructor(
     private metadataValuesMapper: MetadataValuesMapper,
     private tagsMapper: TagsMapper,
@@ -29,7 +30,7 @@ export class CorpusMapper implements RowWithChildTablesMapper<Corpus> {
 
   map(corpus: Corpus): RowWithChildTables {
     const result = new RowWithChildTables(this.name);
-    const toPrefix = createTableFrom(corpus, ['id', 'title'], this.name);
+    const sourcePrefix = createTableFrom(corpus, ['id', 'title'], this.name);
 
     let key: keyof Corpus;
     for (key in corpus) {
@@ -58,10 +59,15 @@ export class CorpusMapper implements RowWithChildTablesMapper<Corpus> {
             key,
             field,
             mapper: this.sourcesMapper,
-            modify: tables =>
-              tables
-                .filter(t => t.name === 'sources')
-                .map(t => prefixTable(t, toPrefix)),
+            modify: prefixAll(sourcePrefix),
+          });
+          break;
+        case 'subcorpora':
+          appendTables({
+            result,
+            key,
+            field,
+            mapper: this.subcorporaMapper,
           });
           break;
         default:
