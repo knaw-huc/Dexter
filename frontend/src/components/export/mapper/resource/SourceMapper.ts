@@ -6,17 +6,22 @@ import {
 } from '../../../../model/DexterModel';
 import { Any } from '../../../common/Any';
 import { RowWithChildTables } from '../RowWithChildTables';
-import { RowWithChildTablesMapper } from './Mapper';
+import {
+  AnyMapperResult,
+  isCell,
+  isRow,
+  isTables,
+  Mapper,
+  RowWithChildTablesMapper,
+} from './Mapper';
 import { TagsMapper } from './TagsMapper';
 import { LanguagesMapper } from './LanguagesMapper';
 import { MetadataValuesMapper } from './MetadataValuesMapper';
 import {
-  appendCell,
-  appendCells,
-  appendTables,
   createTableFrom,
-  prefixTables,
+  map,
   prefixHeader,
+  prefixTables,
 } from '../ExportUtils';
 import { ArrayMapper } from './ArrayMapper';
 import { PrimitiveMapper } from './PrimitiveMapper';
@@ -48,37 +53,38 @@ export class SourceMapper implements RowWithChildTablesMapper<Source> {
         continue;
       }
       const field = source[key];
+      let mapper: Mapper<Any, AnyMapperResult>;
       switch (key) {
         case 'tags':
-          appendCell(result, key, field, this.tagsMapper);
+          mapper = this.tagsMapper;
           break;
         case 'languages':
-          appendCell(result, key, field, this.languagesMapper);
+          mapper = this.languagesMapper;
           break;
         case 'metadataValues':
-          appendCells(result, key, field, this.metadataValuesMapper);
+          mapper = this.metadataValuesMapper;
           break;
-        case 'media':
-          appendTables({
-            result,
-            key,
-            field,
-            mapper: this.mediaMapper,
-            modify: prefixTables(prefixColumns),
-          });
+        case 'media': {
+          mapper = this.mediaMapper;
           break;
+        }
         case 'references':
-          appendTables({
-            result,
-            key,
-            field,
-            mapper: this.referencesMapper,
-            modify: prefixTables(prefixColumns),
-          });
+          mapper = this.referencesMapper;
           break;
         default:
-          appendCell(result, key, field, this.primitiveMapper);
+          mapper = this.primitiveMapper;
       }
+
+      map(mapper, field, key).success(mapped => {
+        if (isCell(mapped)) {
+          result.appendCell(key, mapped);
+        } else if (isRow(mapped)) {
+          result.appendRow(mapped);
+        } else if (isTables(mapped)) {
+          prefixTables(mapped, prefixColumns);
+          result.appendTables(mapped);
+        }
+      });
     }
     return result;
   }

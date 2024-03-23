@@ -2,10 +2,23 @@ import { RowWithHeader } from './RowWithHeader';
 import { BasicTable, Table } from './Table';
 import { WithId } from '../../../model/DexterModel';
 import { ArrayTable } from './ArrayTable';
-import { CellMapper, RowMapper, TablesMapper } from './resource/Mapper';
+import { CellMapper, Mapper, RowMapper, TablesMapper } from './resource/Mapper';
 import { Any } from '../../common/Any';
-import { RowWithChildTables } from './RowWithChildTables';
 import _ from 'lodash';
+import { RowWithChildTables } from './RowWithChildTables';
+import { Mapped, notMapped } from './Mapped';
+
+export function map<RESOURCE, RESULT>(
+  mapper: Mapper<RESOURCE, RESULT>,
+  field: Any,
+  key: keyof RESOURCE,
+): Mapped<RESULT> {
+  if (mapper.canMap(field)) {
+    const fieldName = String(key);
+    return new Mapped(mapper.map(field, fieldName));
+  }
+  return notMapped;
+}
 
 export function createTableFrom<T extends WithId>(
   name: string,
@@ -31,8 +44,12 @@ export function prefixColumns(prefixTo: Table, prefix: RowWithHeader): void {
     row.unshift(...prefix.row);
   }
 }
+export function prefixTables(tables: Table[], toPrefix: RowWithHeader): void {
+  tables.forEach(t => prefixColumns(t, toPrefix));
+}
 
-export function prefixTables(toPrefix: RowWithHeader) {
+// TODO: remove:
+export function prefixTablesOld(toPrefix: RowWithHeader) {
   return (tables: Table[]) => tables.map(t => prefixColumns(t, toPrefix));
 }
 export function appendCell<T>(
@@ -44,7 +61,7 @@ export function appendCell<T>(
   const fieldName = String(key);
   if (mapper.canMap(field)) {
     const mapped = mapper.map(field);
-    result.pushColumn(fieldName, mapped);
+    result.appendCell(fieldName, mapped);
   }
 }
 
@@ -57,7 +74,7 @@ export function appendCells<T>(
   if (mapper.canMap(field)) {
     const fieldName = String(key);
     const mapped = mapper.map(field, fieldName);
-    result.pushColumns(mapped.header, mapped.row);
+    result.appendRow(mapped);
   }
 }
 
@@ -80,6 +97,7 @@ export function appendTables<T>(config: AppendTableConfig<T>) {
     result.childTables.push(...newTables);
   }
 }
+// TODO: remove ^
 
 export function mergeTables(tables: Table[]): Table {
   const concatenated = new BasicTable();

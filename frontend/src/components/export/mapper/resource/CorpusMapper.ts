@@ -11,10 +11,11 @@ import {
   appendCells,
   appendTables,
   createTableFrom,
-  prefixTables,
   prefixHeader,
+  prefixTablesOld,
 } from '../ExportUtils';
 import { PrimitiveMapper } from './PrimitiveMapper';
+import { RowWithHeader } from '../RowWithHeader';
 
 export class CorpusMapper implements RowWithChildTablesMapper<Corpus> {
   private subcorporaMapper: ArrayMapper<Corpus>;
@@ -48,9 +49,11 @@ export class CorpusMapper implements RowWithChildTablesMapper<Corpus> {
       switch (key) {
         case 'parent':
           if (this.canMap(field)) {
-            result.pushColumns(
-              ['parent_id', 'parent_title'],
-              [field.id, field.title],
+            result.appendRow(
+              new RowWithHeader('prefix', [
+                ['parent_id', 'parent_title'],
+                [field.id, field.title],
+              ]),
             );
           }
           break;
@@ -69,7 +72,7 @@ export class CorpusMapper implements RowWithChildTablesMapper<Corpus> {
             key,
             field,
             mapper: this.sourcesMapper,
-            modify: prefixTables(prefixColumns),
+            modify: prefixTablesOld(prefixColumns),
           });
           break;
         case 'subcorpora':

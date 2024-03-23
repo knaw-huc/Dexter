@@ -1,4 +1,4 @@
-import { BasicTable } from './Table';
+import { BasicTable, Table } from './Table';
 import { RowWithHeader } from './RowWithHeader';
 
 /**
@@ -13,6 +13,10 @@ export class RowWithChildTables extends RowWithHeader {
   constructor(name: string) {
     super(name);
     this.childTables = [];
+  }
+
+  appendTables(toAppend: Table[]) {
+    this.childTables.push(...toAppend);
   }
 }
 

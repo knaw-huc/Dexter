@@ -1,6 +1,7 @@
 import { RowWithChildTables } from '../RowWithChildTables';
 import { Cell, Table } from '../Table';
 import { RowWithHeader } from '../RowWithHeader';
+import _ from 'lodash';
 
 /**
  * Map from a resource to a csv intermediary
@@ -43,4 +44,28 @@ export interface RowWithChildTablesMapper<RESOURCE>
 export interface TablesMapper<RESOURCE> extends Mapper<RESOURCE, Table[]> {
   canMap(toMap: RESOURCE): toMap is RESOURCE;
   map(toMap: RESOURCE, tableName: string): Table[];
+}
+
+export type AnyMapperResult =
+  | Cell
+  | RowWithHeader
+  | RowWithChildTables
+  | Table[];
+
+export function isRow(
+  toTest: Cell | RowWithHeader | Table[],
+): toTest is RowWithHeader {
+  return !!(
+    (toTest as RowWithHeader)?.header && (toTest as RowWithHeader)?.row
+  );
+}
+
+export function isCell(toTest: Cell | RowWithHeader | Table[]): toTest is Cell {
+  return _.isString(toTest);
+}
+
+export function isTables(
+  toTest: Cell | RowWithHeader | Table[],
+): toTest is Table[] {
+  return _.isArray(toTest);
 }

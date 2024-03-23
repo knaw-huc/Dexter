@@ -2,7 +2,8 @@ import { Csvable } from './Csvable';
 import { ArrayTable } from './ArrayTable';
 
 export type Cell = string;
-export type Header = Cell[];
+export type HeaderCell = Cell;
+export type Header = HeaderCell[];
 export type Row = Cell[];
 
 export type Table = Csvable & {
