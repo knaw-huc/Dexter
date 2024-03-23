@@ -10,11 +10,11 @@ import { LanguagesMapper } from './LanguagesMapper';
 import { MetadataValuesMapper } from './MetadataValuesMapper';
 import { ArrayMapper } from './ArrayMapper';
 import { PrimitiveMapper } from './PrimitiveMapper';
-import { RowWithChildTablesBaseMapper } from './RowWithChildTablesBaseMapper';
+import { BaseRowWithChildTablesMapper } from './BaseRowWithChildTablesMapper';
 import { RowWithChildTablesMapper } from './Mapper';
 
 export class SourceMapper
-  extends RowWithChildTablesBaseMapper<Source>
+  extends BaseRowWithChildTablesMapper<Source>
   implements RowWithChildTablesMapper<Source>
 {
   constructor(

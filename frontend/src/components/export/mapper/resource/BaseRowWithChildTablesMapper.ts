@@ -10,7 +10,7 @@ type KeyToMapper<RESOURCE> = Partial<
   Record<keyof RESOURCE, Mapper<Any, AnyMapperResult>>
 >;
 
-export class RowWithChildTablesBaseMapper<RESOURCE extends WithId> {
+export class BaseRowWithChildTablesMapper<RESOURCE extends WithId> {
   /**
    * Call specific mapper for properties
    */

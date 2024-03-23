@@ -12,13 +12,13 @@ import { LanguagesMapper } from './LanguagesMapper';
 import { MetadataValuesMapper } from './MetadataValuesMapper';
 import { ArrayMapper } from './ArrayMapper';
 import { PrimitiveMapper } from './PrimitiveMapper';
-import { RowWithChildTablesBaseMapper } from './RowWithChildTablesBaseMapper';
+import { BaseRowWithChildTablesMapper } from './BaseRowWithChildTablesMapper';
 import { ParentMapper } from './ParentMapper';
 import { RowWithChildTables } from '../RowWithChildTables';
 import { prefixTable } from '../ExportUtils';
 
 export class CorpusMapper
-  extends RowWithChildTablesBaseMapper<Corpus>
+  extends BaseRowWithChildTablesMapper<Corpus>
   implements RowWithChildTablesMapper<Corpus>
 {
   constructor(
