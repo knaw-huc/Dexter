@@ -6,53 +6,50 @@ import { Any } from '../../../common/Any';
 import { isRowWithChildTables } from '../RowWithChildTables';
 
 /**
- * Move all rows of mapped resources into single table
- */
+ * Move all mapped resource rows into a single table
+ **/
 export class ArrayMapper<T extends WithId> implements TablesMapper<T[]> {
   constructor(
     public resourceMapper: RowMapper<T> | RowWithChildTablesMapper<T>,
-    private resourceName: string,
   ) {}
 
   canMap(field: Any): field is T[] {
-    if (field?.length < 0) {
+    if (!field?.length) {
       return false;
     }
     return this.resourceMapper.canMap(field[0]);
   }
 
-  map(resources: T[]): BasicTable[] {
-    const resourcesTable = new BasicTable(this.resourceName);
-    const result: BasicTable[] = [];
-    result.push(resourcesTable);
-
+  map(resources: T[], tableName: string): BasicTable[] {
     if (!resources.length) {
-      return result;
+      return [];
     }
 
     if (!this.resourceMapper.canMap(resources[0])) {
       throw new Error('Cannot map ' + resources[0]);
     }
 
+    const table = new BasicTable(tableName);
+
+    const result: BasicTable[] = [];
+    result.push(table);
+
     const firstRowHeaders = this.resourceMapper.map(
       resources[0],
-      this.resourceName,
+      tableName,
     ).header;
-    resourcesTable.header.push(...firstRowHeaders);
+    table.header.push(...firstRowHeaders);
 
     for (const resource of resources) {
-      const mappedResource = this.resourceMapper.map(
-        resource,
-        this.resourceName,
-      );
-      if (!_.isEqual(resourcesTable.header, mappedResource.header)) {
+      const row = this.resourceMapper.map(resource, tableName);
+      if (!_.isEqual(table.header, row.header)) {
         throw Error(`Headers do not match:\n
-          array headers: ${resourcesTable.header.join(',')}\n
-          row headers: ${mappedResource.header.join(',')}`);
+          array headers: ${table.header.join(',')}\n
+          row headers:   ${row.header.join(',')}`);
       }
-      resourcesTable.rows.push(mappedResource.row);
-      if (isRowWithChildTables(mappedResource)) {
-        result.push(...mappedResource.tables);
+      table.rows.push(row.row);
+      if (isRowWithChildTables(row)) {
+        result.push(...row.childTables);
       }
     }
 

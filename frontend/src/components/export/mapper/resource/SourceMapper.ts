@@ -15,28 +15,32 @@ import {
   appendCells,
   appendTables,
   createTableFrom,
-  prefixAll,
+  prefixTables,
+  prefixHeader,
 } from '../ExportUtils';
 import { ArrayMapper } from './ArrayMapper';
+import { PrimitiveMapper } from './PrimitiveMapper';
 
 export class SourceMapper implements RowWithChildTablesMapper<Source> {
   constructor(
-    private name: string,
     private tagsMapper: TagsMapper,
     private languagesMapper: LanguagesMapper,
     private metadataValuesMapper: MetadataValuesMapper,
     private mediaMapper: ArrayMapper<ResultMedia>,
     private referencesMapper: ArrayMapper<Reference>,
-    private keysToSkip: (keyof Source)[],
+    private primitiveMapper: PrimitiveMapper,
+    private keysToSkip: (keyof Source)[] = [],
+    private resourceName = 'source',
   ) {}
 
   canMap(resource: Any): resource is Source {
     return isSource(resource);
   }
 
-  map(source: Source): RowWithChildTables {
-    const result = new RowWithChildTables(this.name);
-    const toPrefix = createTableFrom(source, ['id', 'title'], this.name);
+  map(source: Source, tableName: string): RowWithChildTables {
+    const result = new RowWithChildTables(tableName);
+    const prefixColumns = createTableFrom(tableName, source, ['id', 'title']);
+    prefixHeader(prefixColumns, this.resourceName);
 
     let key: keyof Source;
     for (key in source) {
@@ -60,7 +64,7 @@ export class SourceMapper implements RowWithChildTablesMapper<Source> {
             key,
             field,
             mapper: this.mediaMapper,
-            modify: prefixAll(toPrefix),
+            modify: prefixTables(prefixColumns),
           });
           break;
         case 'references':
@@ -69,11 +73,11 @@ export class SourceMapper implements RowWithChildTablesMapper<Source> {
             key,
             field,
             mapper: this.referencesMapper,
-            modify: prefixAll(toPrefix),
+            modify: prefixTables(prefixColumns),
           });
           break;
         default:
-          appendCell(result, key, field);
+          appendCell(result, key, field, this.primitiveMapper);
       }
     }
     return result;

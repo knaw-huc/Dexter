@@ -8,17 +8,16 @@ export class RowWithChildTables extends RowWithHeader {
   /**
    * Child resources that resulted in their own tables
    */
-  tables: BasicTable[];
+  childTables: BasicTable[];
 
   constructor(name: string) {
-    super();
-    this.name = name;
-    this.tables = [];
+    super(name);
+    this.childTables = [];
   }
 }
 
 export function isRowWithChildTables(
   toTest: RowWithHeader,
 ): toTest is RowWithChildTables {
-  return !!(toTest as RowWithChildTables)?.tables;
+  return !!(toTest as RowWithChildTables)?.childTables;
 }

@@ -8,43 +8,43 @@ import { RowWithChildTables } from './RowWithChildTables';
 import _ from 'lodash';
 
 export function createTableFrom<T extends WithId>(
+  name: string,
   resource: T,
   fields: (keyof T)[],
-  columnPrefix?: string,
 ) {
   const init: ArrayTable = [[], []];
   for (const key of fields) {
-    const columnHeader: string = columnPrefix
-      ? `${columnPrefix}.${String(key)}`
-      : String(key);
+    const columnHeader: string = String(key);
     init[0].push(columnHeader);
     init[1].push(String(resource[key]));
   }
-  return new RowWithHeader(init);
+  return new RowWithHeader(name, init);
 }
 
-export function prefixTable(prefixTo: Table, toPrefix: RowWithHeader) {
-  prefixTo.header.unshift(...toPrefix.header);
+export function prefixHeader(prefixTo: Table, prefix: string): void {
+  prefixTo.header = prefixTo.header.map(h => `${prefix}.${h}`);
+}
+
+export function prefixColumns(prefixTo: Table, prefix: RowWithHeader): void {
+  prefixTo.header.unshift(...prefix.header);
   for (const row of prefixTo.rows) {
-    row.unshift(...toPrefix.row);
+    row.unshift(...prefix.row);
   }
 }
 
-export function prefixAll(toPrefix: RowWithHeader) {
-  return (tables: Table[]) => tables.map(t => prefixTable(t, toPrefix));
+export function prefixTables(toPrefix: RowWithHeader) {
+  return (tables: Table[]) => tables.map(t => prefixColumns(t, toPrefix));
 }
 export function appendCell<T>(
   result: RowWithHeader,
   key: keyof T,
   field: Any,
-  mapper?: CellMapper<T>,
+  mapper: CellMapper<T>,
 ) {
   const fieldName = String(key);
-  if (mapper && mapper.canMap(field)) {
-    const mapped = mapper.map(field, fieldName);
+  if (mapper.canMap(field)) {
+    const mapped = mapper.map(field);
     result.pushColumn(fieldName, mapped);
-  } else {
-    result.pushColumn(fieldName, String(field));
   }
 }
 
@@ -68,6 +68,7 @@ type AppendTableConfig<T> = {
   mapper: TablesMapper<T>;
   modify?: (toModify: Table[]) => void;
 };
+
 export function appendTables<T>(config: AppendTableConfig<T>) {
   const { result, key, field, mapper, modify } = config;
   if (mapper.canMap(field)) {
@@ -76,25 +77,25 @@ export function appendTables<T>(config: AppendTableConfig<T>) {
     if (modify) {
       modify(newTables);
     }
-    result.tables.push(...newTables);
+    result.childTables.push(...newTables);
   }
 }
 
-export function concatTables(tables: Table[]): Table {
-  const result = new BasicTable();
+export function mergeTables(tables: Table[]): Table {
+  const concatenated = new BasicTable();
   if (!tables.length) {
-    return result;
+    return concatenated;
   }
-  result.name = tables[0].name;
-  result.header = tables[0].header;
-  for (const table of tables) {
-    if (!_.isEqual(table.header, result.header)) {
+  concatenated.name = tables[0].name;
+  concatenated.header = tables[0].header;
+  for (const toConcat of tables) {
+    if (!_.isEqual(toConcat.header, concatenated.header)) {
       throw new Error(
-        `Cannot merge tables when headers differ:\nresult: ${result.header}\ntable: ${table.header}`,
+        `Cannot merge tables when headers differ:\nresult: ${concatenated.header}\ntable:  ${toConcat.header}`,
       );
     }
-    result.header = table.header;
-    result.rows.push(...table.rows);
+    concatenated.header = toConcat.header;
+    concatenated.rows.push(...toConcat.rows);
   }
-  return result;
+  return concatenated;
 }

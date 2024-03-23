@@ -9,11 +9,12 @@ describe('MainCsvMapper', () => {
   it('can map corpus', async () => {
     const toTest = new MainMapper(customMetadataKeys);
     const result = toTest.map(getTestCorpus());
+    expect(result.length).toBe(4);
+
     const expected = getExpectedCorpus();
     const actual = result[0].toCsvTable();
     expect(actual).toEqual(expected);
 
-    expect(result.length).toEqual(4);
     const tableNames = result.map(t => t.name);
     tableNames.sort();
     expect(tableNames).toEqual(['corpus', 'media', 'references', 'sources']);
@@ -23,35 +24,58 @@ describe('MainCsvMapper', () => {
     const toTest = new MainMapper(customMetadataKeys);
     const tables = toTest.map(getTestCorpus());
     const expected = getExpectedCorpusSources();
-    expect(tables.length).toEqual(4);
     const sourcesTable = tables.find(t => t.name === 'sources');
+    expect(sourcesTable).toBeTruthy();
     const csvSourcesTable = sourcesTable.toCsvTable();
     expect(sourcesTable.name).toEqual('sources');
-    expect(csvSourcesTable.length).toEqual(3);
+    const headerAnd6Sources = 7;
+    expect(csvSourcesTable.length).toEqual(headerAnd6Sources);
     expect(csvSourcesTable[0]).toEqual(expected[0]);
     expect(csvSourcesTable[1]).toEqual(expected[1]);
+  });
+
+  it('contains the same source twice if assigned to two corpora', async () => {
+    const toTest = new MainMapper(customMetadataKeys);
+    const tables = toTest.map(getTestCorpus());
+    const sourcesTable = tables.find(t => t.name === 'sources');
+    expect(sourcesTable).toBeTruthy();
+    const csvSourcesTable = sourcesTable.toCsvTable();
+    expect(sourcesTable.name).toEqual('sources');
+    const source778 = csvSourcesTable.filter(row =>
+      row.includes('7787a679-ed53-4bd3-8535-e8ed1c740e68'),
+    );
+    expect(source778.length).toEqual(2);
+    const corporaWithSource778 = [
+      '29795f78-9fb3-4693-97ab-bf9c4c7ef05c',
+      '29795f78-9fb3-4693-97ab-bf9c4c7ef05c',
+    ];
+    const sourceRowForEveryCorpus = source778.every(row =>
+      corporaWithSource778.find(corpus => row.includes(corpus)),
+    );
+    expect(sourceRowForEveryCorpus).toBe(true);
   });
 
   it('can map corpus source media', async () => {
     const toTest = new MainMapper(customMetadataKeys);
     const tables = toTest.map(getTestCorpus());
     const expected = getExpectedCorpusSourcesMedia();
-    expect(tables.length).toEqual(4);
     const mediaTable = tables.find(t => t.name === 'media');
+    expect(mediaTable).toBeTruthy();
     const csvMediaTable = mediaTable.toCsvTable();
     expect(mediaTable.name).toEqual('media');
-    expect(mediaTable.rows.length).toEqual(6);
+    expect(mediaTable.rows.length).toEqual(18);
     expect(csvMediaTable[0]).toEqual(expected[0]);
     expect(csvMediaTable[1]).toEqual(expected[1]);
   });
+
   it('can map corpus source references', async () => {
     const toTest = new MainMapper(customMetadataKeys);
     const tables = toTest.map(getTestCorpus());
     const expected = getExpectedCorpusSourcesReferences();
-    expect(tables.length).toEqual(4);
     const referenceTable = tables.find(t => t.name === 'references');
+    expect(referenceTable).toBeTruthy();
     const csvReferencesTable = referenceTable.toCsvTable();
-    expect(referenceTable.rows.length).toEqual(2);
+    expect(referenceTable.rows.length).toEqual(5);
     expect(csvReferencesTable[0]).toEqual(expected[0]);
     expect(csvReferencesTable[1]).toEqual(expected[1]);
   });
@@ -71,7 +95,6 @@ function getExpectedCorpus() {
       'contributor',
       'notes',
       'ethics',
-      'createdBy',
       'createdAt',
       'updatedAt',
       'parent_id',
@@ -93,7 +116,6 @@ function getExpectedCorpus() {
       'venenatis',
       'Aenean rutrum erat venenatis, rhoncus lectus a, rutrum eros.',
       'vestibulum dictum amet',
-      '9d950d38-8e03-4e90-9f0d-0c397f4e65b9',
       '2024-03-19T14:15:49',
       '2024-03-19T14:15:49',
       '089770f3-b5e4-4b28-bc2b-4419e57f0941',
@@ -102,6 +124,48 @@ function getExpectedCorpus() {
       'English,Latin',
       'gemapt',
       'ook gemapt',
+    ],
+    [
+      '29795f78-9fb3-4693-97ab-bf9c4c7ef05c',
+      'Corpus laoreet',
+      'Nulla vitae dolor non urna scelerisque volutpat.',
+      'proin',
+      'Open',
+      'bibendum',
+      '1990-01-30',
+      '1990-01-31',
+      'venenatis',
+      'Aenean rutrum erat venenatis, rhoncus lectus a, rutrum eros.',
+      'vestibulum dictum amet',
+      '2024-03-19T14:15:49',
+      '2024-03-19T14:15:49',
+      '089770f3-b5e4-4b28-bc2b-4419e57f0941',
+      'Main corpus2',
+      '',
+      'English,Latin,Dutch',
+      'subcorpus metadata ook gemapt',
+      '',
+    ],
+    [
+      '6ae49ba1-ef55-4989-bf30-c00704f4dc4a',
+      'Corpus finibus',
+      'Nullam ac nibh eget nunc venenatis tristique sed quis metus.',
+      'ac aliquet',
+      'Closed',
+      'fermentum',
+      '1990-01-30',
+      '1990-01-31',
+      'mauris',
+      'Nam condimentum nibh vel nunc blandit, in eleifend turpis placerat.',
+      'id turpis',
+      '2024-03-19T14:15:49',
+      '2024-03-19T14:17:34',
+      '089770f3-b5e4-4b28-bc2b-4419e57f0941',
+      'Main corpus2',
+      '',
+      'Latin,Western Frisian,Spanish',
+      '',
+      '',
     ],
   ];
 }
@@ -123,7 +187,6 @@ function getExpectedCorpusSources() {
       'latest',
       'notes',
       'ethics',
-      'createdBy',
       'createdAt',
       'updatedAt',
       'languages',
@@ -146,7 +209,6 @@ function getExpectedCorpusSources() {
       '1990-01-31',
       'Integer maximus metus et orci congue finibus.',
       'donec viverra tincidunt aliquam',
-      '9d950d38-8e03-4e90-9f0d-0c397f4e65b9',
       '2024-03-19T14:15:49',
       '2024-03-19T14:17:34',
       'Dutch,Latin,Western Frisian',
@@ -167,8 +229,6 @@ function getExpectedCorpusSourcesMedia(): ArrayTable {
       'id',
       'title',
       'url',
-      'mediaType',
-      'createdBy',
     ],
     [
       '29795f78-9fb3-4693-97ab-bf9c4c7ef05c',
@@ -176,10 +236,8 @@ function getExpectedCorpusSourcesMedia(): ArrayTable {
       '5b2c664d-f433-43ca-8027-e33439973829',
       'Source bibendum ante id pretium blandit.',
       '69909e4e-2e78-4ec2-b578-d30d35e499e8',
-      'By Jantje',
-      'https://fastly.picsum.photos/id/78/1584/2376.jpg?hmac=80UVSwpa9Nfcq7sQ5kxb9Z5sD2oLsbd5zkFO5ybMC4E',
-      'image/jpeg',
-      '9d950d38-8e03-4e90-9f0d-0c397f4e65b9',
+      'By Jantje1',
+      'http://example.com/plaatje.jpg',
     ],
   ];
 }

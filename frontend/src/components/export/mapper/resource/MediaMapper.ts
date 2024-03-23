@@ -3,16 +3,20 @@ import { Any } from '../../../common/Any';
 import { RowWithHeader } from '../RowWithHeader';
 import { RowMapper } from './Mapper';
 import { appendCell } from '../ExportUtils';
+import { PrimitiveMapper } from './PrimitiveMapper';
 
 export class MediaMapper implements RowMapper<ResultMedia> {
-  constructor(private keysToSkip: string[] = [], private name = 'media') {}
+  constructor(
+    private primitiveMapper: PrimitiveMapper,
+    private keysToSkip: string[] = [],
+  ) {}
 
   canMap(resource: Any): resource is ResultMedia {
     return isMedia(resource);
   }
 
-  map(media: ResultMedia): RowWithHeader {
-    const result = new RowWithHeader();
+  map(media: ResultMedia, rowName: string): RowWithHeader {
+    const result = new RowWithHeader(rowName);
     let key: keyof ResultMedia;
     for (key in media) {
       if (this.keysToSkip.includes(key)) {
@@ -21,7 +25,7 @@ export class MediaMapper implements RowMapper<ResultMedia> {
       const field = media[key];
       switch (key) {
         default:
-          appendCell(result, key, field);
+          appendCell(result, key, field, this.primitiveMapper);
       }
     }
     return result;

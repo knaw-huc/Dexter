@@ -10,8 +10,9 @@ export class RowWithHeader implements Csvable, Table {
    */
   private rowTable: Table;
 
-  constructor(from?: ArrayTable) {
-    this.rowTable = new BasicTable('row');
+  constructor(name: string, from?: ArrayTable) {
+    this.name = name;
+    this.rowTable = new BasicTable(name);
     if (from) {
       this.rowTable.header = from[0];
       this.rowTable.rows.push(from[1]);

@@ -10,40 +10,52 @@ import { SourceMapper } from './resource/SourceMapper';
 import { MediaMapper } from './resource/MediaMapper';
 import _ from 'lodash';
 import { Table } from './Table';
-import { concatTables } from './ExportUtils';
+import { mergeTables } from './ExportUtils';
 import { ReferenceMapper } from './resource/ReferenceMapper';
 import { ReferenceFormatter } from './resource/ReferenceFormatter';
+import { PrimitiveMapper } from './resource/PrimitiveMapper';
 
 export class MainMapper implements TablesMapper<WithId> {
   name: string;
 
-  private mappers: RowWithChildTablesMapper<WithId>[];
+  private mappers: Record<string, RowWithChildTablesMapper<WithId>> = {};
 
   constructor(keys: string[]) {
-    const mediaItemMapper = new MediaMapper();
-    const mediaListMapper = new ArrayMapper(mediaItemMapper, 'media');
+    const primitiveMapper = new PrimitiveMapper();
+    const mediaItemMapper = new MediaMapper(primitiveMapper, [
+      'createdBy',
+      'mediaType',
+    ]);
+    const mediaListMapper = new ArrayMapper(mediaItemMapper);
     const metadataValuesMapper = new MetadataValuesMapper(keys);
     const tagsMapper = new TagsMapper();
     const languagesMapper = new LanguagesMapper();
-    const referenceMapper = new ReferenceMapper(new ReferenceFormatter());
-    const referencesMapper = new ArrayMapper(referenceMapper, 'references');
+    const referenceMapper = new ReferenceMapper(
+      new ReferenceFormatter(),
+      primitiveMapper,
+    );
+    const referencesMapper = new ArrayMapper(referenceMapper);
     const sourceMapper = new SourceMapper(
-      'source',
       tagsMapper,
       languagesMapper,
       metadataValuesMapper,
       mediaListMapper,
       referencesMapper,
-      ['corpora'],
+      primitiveMapper,
+      ['corpora', 'createdBy'],
     );
-    const corpusSourcesMapper = new ArrayMapper(sourceMapper, 'sources');
+    const sourcesMapper = new ArrayMapper(sourceMapper);
+
     const corpusMapper = new CorpusMapper(
       metadataValuesMapper,
       tagsMapper,
       languagesMapper,
-      corpusSourcesMapper,
+      sourcesMapper,
+      primitiveMapper,
+      ['createdBy'],
     );
-    this.mappers = [corpusMapper];
+
+    this.mappers.corpus = corpusMapper;
   }
 
   public static async init() {
@@ -56,19 +68,21 @@ export class MainMapper implements TablesMapper<WithId> {
   }
 
   map(resource: WithId): Table[] {
-    const mapped = this.mappers
-      .find(m => m.canMap(resource))
-      .map(resource, 'export');
+    const [name, mapper] = _.entries(this.mappers).find(([, mapper]) =>
+      mapper.canMap(resource),
+    );
+    const mapped = mapper.map(resource, name);
+    const allTables = [mapped, ...mapped.childTables];
     const groupedTables: Record<string, Table[]> = _.groupBy(
-      mapped.tables,
+      allTables,
       t => t.name,
     );
-    mapped.tables = [];
+    const merged = [];
     for (const toConcat of Object.values(groupedTables)) {
-      const concat = concatTables(toConcat);
-      mapped.tables.push(concat);
+      const concat = mergeTables(toConcat);
+      merged.push(concat);
     }
 
-    return [mapped, ...mapped.tables];
+    return merged;
   }
 }

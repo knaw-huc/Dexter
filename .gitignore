@@ -1,22 +1,22 @@
 .env
 
-# Backend
+# OS/IDE
 .idea
+*.iml
+.vscode
+.DS_Store
+
+# Backend
 .make
 target
-*.iml
 dependency-reduced-pom.xml
+/**/backend/iso-639-3.tab
 
 # Frontend
 frontend/node_modules
 frontend/dist
 frontend/build
 frontend/.env*
-.vscode
 .eslintcache
+coverage/
 
-# download/upload leftovers
-/**/backend/iso-639-3.tab
-
-# Macos
-.DS_Store

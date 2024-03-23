@@ -11,29 +11,39 @@ import {
   appendCells,
   appendTables,
   createTableFrom,
-  prefixAll,
+  prefixTables,
+  prefixHeader,
 } from '../ExportUtils';
+import { PrimitiveMapper } from './PrimitiveMapper';
 
 export class CorpusMapper implements RowWithChildTablesMapper<Corpus> {
-  private subcorporaMapper = new ArrayMapper(this, 'subcorpus');
+  private subcorporaMapper: ArrayMapper<Corpus>;
+
   constructor(
     private metadataValuesMapper: MetadataValuesMapper,
     private tagsMapper: TagsMapper,
     private languagesMapper: LanguagesMapper,
     private sourcesMapper: ArrayMapper<Source>,
-    private name = 'corpus',
-  ) {}
+    private primitiveMapper: PrimitiveMapper,
+    private keysToSkip: (keyof Corpus)[] = [],
+    private resourceName = 'corpus',
+  ) {
+    this.subcorporaMapper = new ArrayMapper(this);
+  }
 
   canMap(resource: Any): resource is Corpus {
     return isCorpus(resource);
   }
 
-  map(corpus: Corpus): RowWithChildTables {
-    const result = new RowWithChildTables(this.name);
-    const sourcePrefix = createTableFrom(corpus, ['id', 'title'], this.name);
-
+  map(corpus: Corpus, name: string): RowWithChildTables {
+    const result = new RowWithChildTables(name);
+    const prefixColumns = createTableFrom(name, corpus, ['id', 'title']);
+    prefixHeader(prefixColumns, this.resourceName);
     let key: keyof Corpus;
     for (key in corpus) {
+      if (this.keysToSkip.includes(key)) {
+        continue;
+      }
       const field = corpus[key];
       switch (key) {
         case 'parent':
@@ -59,19 +69,19 @@ export class CorpusMapper implements RowWithChildTablesMapper<Corpus> {
             key,
             field,
             mapper: this.sourcesMapper,
-            modify: prefixAll(sourcePrefix),
+            modify: prefixTables(prefixColumns),
           });
           break;
         case 'subcorpora':
           appendTables({
             result,
-            key,
+            key: this.resourceName,
             field,
             mapper: this.subcorporaMapper,
           });
           break;
         default:
-          appendCell(result, key, field);
+          appendCell(result, key, field, this.primitiveMapper);
       }
     }
     return result;
