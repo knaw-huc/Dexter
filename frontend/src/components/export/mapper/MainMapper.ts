@@ -1,5 +1,5 @@
 import { isWithId, WithId } from '../../../model/DexterModel';
-import { RowWithChildTablesMapper, TablesMapper } from './resource/Mapper';
+import { RowWithChildTablesMapper, TablesMapper } from './Mapper';
 import { CorpusMapper } from './resource/CorpusMapper';
 import { MetadataValuesMapper } from './resource/MetadataValuesMapper';
 import { getMetadataKeys } from '../../../utils/API';
@@ -12,7 +12,7 @@ import _ from 'lodash';
 import { Table } from './Table';
 import { mergeTables } from './ExportUtils';
 import { ReferenceMapper } from './resource/ReferenceMapper';
-import { ReferenceFormatter } from './resource/ReferenceFormatter';
+import { FormattedReferencemapper } from './resource/FormattedReferencemapper';
 import { PrimitiveMapper } from './resource/PrimitiveMapper';
 import { ParentMapper } from './resource/ParentMapper';
 
@@ -32,7 +32,7 @@ export class MainMapper implements TablesMapper<WithId> {
     const tagsMapper = new TagsMapper();
     const languagesMapper = new LanguagesMapper();
     const referenceMapper = new ReferenceMapper(
-      new ReferenceFormatter(),
+      new FormattedReferencemapper(),
       primitiveMapper,
     );
     const referencesMapper = new ArrayMapper(referenceMapper);

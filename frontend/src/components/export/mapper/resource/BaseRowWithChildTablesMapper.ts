@@ -1,8 +1,8 @@
-import { AnyMapperResult, isCell, isRow, isTables, Mapper } from './Mapper';
+import { AnyMapperResult, isCell, isRow, isTables, Mapper } from '../Mapper';
 import { Any } from '../../../common/Any';
 import { RowWithHeader } from '../RowWithHeader';
 import { RowWithChildTables } from '../RowWithChildTables';
-import { createTableFrom, prefixHeader, prefixTable } from '../ExportUtils';
+import { createRowFrom, prefixHeader, prefixTable } from '../ExportUtils';
 import { PrimitiveMapper } from './PrimitiveMapper';
 import { WithId } from '../../../../model/DexterModel';
 
@@ -12,12 +12,12 @@ type KeyToMapper<RESOURCE> = Partial<
 
 export class BaseRowWithChildTablesMapper<RESOURCE extends WithId> {
   /**
-   * Call specific mapper for properties
+   * Call specific mapper for specific properties
    */
   keyToMapper: KeyToMapper<RESOURCE>;
 
   /**
-   * Called when no other mappers found
+   * Call when no other mappers are found
    */
   primitiveMapper: PrimitiveMapper;
 
@@ -27,12 +27,14 @@ export class BaseRowWithChildTablesMapper<RESOURCE extends WithId> {
   keysToSkip: (keyof RESOURCE)[];
 
   /**
-   * Name denoting resource, used when naming columns and tables
+   * Type of resource being mapped
+   * Used when naming columns and tables
    */
   resourceName: string;
 
   /**
-   * Columns to prefix when mapping results in child tables   */
+   * Columns to prefix when mapping results in child tables
+   */
   columnsNamesToPrefix: (keyof RESOURCE)[];
   prefixColumns: RowWithHeader;
 
@@ -46,8 +48,8 @@ export class BaseRowWithChildTablesMapper<RESOURCE extends WithId> {
     this.keyToMapper = keyToMapper;
     this.primitiveMapper = primitiveMapper;
     this.keysToSkip = keysToSkip;
-    this.resourceName = resourceName;
     this.columnsNamesToPrefix = columnsNamesToPrefix;
+    this.resourceName = resourceName;
   }
 
   append(result: RowWithChildTables, key: string, mapped: AnyMapperResult) {
@@ -63,7 +65,7 @@ export class BaseRowWithChildTablesMapper<RESOURCE extends WithId> {
 
   map(resource: RESOURCE, tableName: string): RowWithChildTables {
     const result = new RowWithChildTables(tableName);
-    this.prefixColumns = createTableFrom(
+    this.prefixColumns = createRowFrom(
       tableName,
       resource,
       this.columnsNamesToPrefix,

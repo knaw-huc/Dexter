@@ -1,7 +1,7 @@
 import { isMedia, ResultMedia } from '../../../../model/DexterModel';
 import { Any } from '../../../common/Any';
 import { RowWithHeader } from '../RowWithHeader';
-import { RowMapper } from './Mapper';
+import { RowMapper } from '../Mapper';
 import { appendCell } from '../ExportUtils';
 import { PrimitiveMapper } from './PrimitiveMapper';
 

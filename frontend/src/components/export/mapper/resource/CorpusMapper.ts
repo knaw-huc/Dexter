@@ -4,7 +4,7 @@ import {
   isRow,
   isTables,
   RowWithChildTablesMapper,
-} from './Mapper';
+} from '../Mapper';
 import { Corpus, isCorpus, Source } from '../../../../model/DexterModel';
 import { Any } from '../../../common/Any';
 import { TagsMapper } from './TagsMapper';
@@ -52,6 +52,11 @@ export class CorpusMapper
     return isCorpus(resource);
   }
 
+  /**
+   * @override:
+   * - rename subcorpora table to corpus table
+   * - make sure sources of subcorpora are not prefixed by parent
+   */
   append(result: RowWithChildTables, key: string, mapped: AnyMapperResult) {
     if (isCell(mapped)) {
       result.appendCell(key, mapped);

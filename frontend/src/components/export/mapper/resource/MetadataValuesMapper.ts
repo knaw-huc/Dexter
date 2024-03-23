@@ -1,7 +1,7 @@
 import { isMetadataValue, MetadataValue } from '../../../../model/DexterModel';
 import { Any } from '../../../common/Any';
 import { RowWithHeader } from '../RowWithHeader';
-import { RowMapper } from './Mapper';
+import { RowMapper } from '../Mapper';
 import _ from 'lodash';
 
 export class MetadataValuesMapper implements RowMapper<MetadataValue[]> {

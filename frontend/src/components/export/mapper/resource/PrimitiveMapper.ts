@@ -1,5 +1,5 @@
 import { Any } from '../../../common/Any';
-import { CellMapper } from './Mapper';
+import { CellMapper } from '../Mapper';
 import _ from 'lodash';
 
 export type Primitive = boolean | number | string;

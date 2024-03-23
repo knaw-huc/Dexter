@@ -11,7 +11,7 @@ import { MetadataValuesMapper } from './MetadataValuesMapper';
 import { ArrayMapper } from './ArrayMapper';
 import { PrimitiveMapper } from './PrimitiveMapper';
 import { BaseRowWithChildTablesMapper } from './BaseRowWithChildTablesMapper';
-import { RowWithChildTablesMapper } from './Mapper';
+import { RowWithChildTablesMapper } from '../Mapper';
 
 export class SourceMapper
   extends BaseRowWithChildTablesMapper<Source>

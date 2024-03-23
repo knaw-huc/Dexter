@@ -1,8 +1,4 @@
-import {
-  Corpus,
-  Reference,
-  ResultMedia,
-  Source,
-} from '../../../model/DexterModel';
+import { Corpus } from '../../../model/DexterModel';
 
-export type Exportable = Corpus | Source | ResultMedia | Reference;
+// TODO: test other resource types
+export type Exportable = Corpus;

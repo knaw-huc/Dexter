@@ -2,7 +2,7 @@ import { BasicTable, Table } from './Table';
 import { RowWithHeader } from './RowWithHeader';
 
 /**
- * Table row with headers, including tables of children
+ * Row, and possible tables of child resources
  */
 export class RowWithChildTables extends RowWithHeader {
   /**

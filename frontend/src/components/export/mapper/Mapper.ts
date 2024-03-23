@@ -1,15 +1,17 @@
-import { RowWithChildTables } from '../RowWithChildTables';
-import { Cell, Table } from '../Table';
-import { RowWithHeader } from '../RowWithHeader';
+import { RowWithChildTables } from './RowWithChildTables';
+import { Cell, Table } from './Table';
+import { RowWithHeader } from './RowWithHeader';
 import _ from 'lodash';
 
 /**
  * Map from a resource to a csv intermediary
+ * See below for different options
  */
 export interface Mapper<RESOURCE, RESULT> {
   canMap(toMap: RESOURCE): toMap is RESOURCE;
   map(toMap: RESOURCE, name: string): RESULT;
 }
+
 /**
  * Map to cell
  */

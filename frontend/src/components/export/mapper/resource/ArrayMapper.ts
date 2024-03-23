@@ -1,4 +1,4 @@
-import { RowMapper, RowWithChildTablesMapper, TablesMapper } from './Mapper';
+import { RowMapper, RowWithChildTablesMapper, TablesMapper } from '../Mapper';
 import { WithId } from '../../../../model/DexterModel';
 import _ from 'lodash';
 import { BasicTable } from '../Table';
