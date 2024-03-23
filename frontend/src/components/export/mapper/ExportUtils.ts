@@ -2,23 +2,10 @@ import { RowWithHeader } from './RowWithHeader';
 import { BasicTable, Table } from './Table';
 import { WithId } from '../../../model/DexterModel';
 import { ArrayTable } from './ArrayTable';
-import { CellMapper, Mapper, RowMapper, TablesMapper } from './resource/Mapper';
+import { CellMapper, RowMapper, TablesMapper } from './resource/Mapper';
 import { Any } from '../../common/Any';
 import _ from 'lodash';
 import { RowWithChildTables } from './RowWithChildTables';
-import { MapResult, notMapped } from './MapResult';
-
-export function map<RESOURCE, RESULT>(
-  mapper: Mapper<RESOURCE, RESULT>,
-  field: Any,
-  key: keyof RESOURCE,
-): MapResult<RESULT> {
-  if (mapper.canMap(field)) {
-    const fieldName = String(key);
-    return new MapResult(mapper.map(field, fieldName));
-  }
-  return notMapped;
-}
 
 export function createTableFrom<T extends WithId>(
   name: string,
@@ -38,19 +25,16 @@ export function prefixHeader(prefixTo: Table, prefix: string): void {
   prefixTo.header = prefixTo.header.map(h => `${prefix}.${h}`);
 }
 
-export function prefixColumns(prefixTo: Table, prefix: RowWithHeader): void {
+export function prefixTable(prefixTo: Table, prefix: RowWithHeader): void {
   prefixTo.header.unshift(...prefix.header);
   for (const row of prefixTo.rows) {
     row.unshift(...prefix.row);
   }
 }
-export function prefixTables(tables: Table[], toPrefix: RowWithHeader): void {
-  tables.forEach(t => prefixColumns(t, toPrefix));
-}
 
 // TODO: remove:
 export function prefixTablesOld(toPrefix: RowWithHeader) {
-  return (tables: Table[]) => tables.map(t => prefixColumns(t, toPrefix));
+  return (tables: Table[]) => tables.map(t => prefixTable(t, toPrefix));
 }
 export function appendCell<T>(
   result: RowWithHeader,

@@ -6,51 +6,19 @@ import {
 } from '../../../../model/DexterModel';
 import { Any } from '../../../common/Any';
 import { RowWithChildTables } from '../RowWithChildTables';
-import {
-  AnyMapperResult,
-  isCell,
-  isRow,
-  isTables,
-  Mapper,
-  RowWithChildTablesMapper,
-} from './Mapper';
 import { TagsMapper } from './TagsMapper';
 import { LanguagesMapper } from './LanguagesMapper';
 import { MetadataValuesMapper } from './MetadataValuesMapper';
-import {
-  createTableFrom,
-  map,
-  prefixHeader,
-  prefixTables,
-} from '../ExportUtils';
+import { createTableFrom, prefixHeader } from '../ExportUtils';
 import { ArrayMapper } from './ArrayMapper';
 import { PrimitiveMapper } from './PrimitiveMapper';
-import { RowWithHeader } from '../RowWithHeader';
-
-export class BaseRowWithChildTablesMapper<RESOURCE> {
-  keyToMapper: Partial<Record<keyof RESOURCE, Mapper<Any, AnyMapperResult>>>;
-  prefixColumns: RowWithHeader;
-
-  append(result: RowWithChildTables, key: string, mapped: AnyMapperResult) {
-    if (isCell(mapped)) {
-      result.appendCell(key, mapped);
-    } else if (isRow(mapped)) {
-      result.appendRow(mapped);
-    } else if (isTables(mapped)) {
-      prefixTables(mapped, this.prefixColumns);
-      result.appendTables(mapped);
-    }
-  }
-}
+import { RowWithChildTablesBaseMapper } from './RowWithChildTablesBaseMapper';
+import { RowWithChildTablesMapper } from './Mapper';
 
 export class SourceMapper
-  extends BaseRowWithChildTablesMapper<Source>
+  extends RowWithChildTablesBaseMapper<Source>
   implements RowWithChildTablesMapper<Source>
 {
-  private tagsMapper: TagsMapper;
-
-  private languagesMapper: LanguagesMapper;
-
   constructor(
     tagsMapper: TagsMapper,
     languagesMapper: LanguagesMapper,
@@ -62,8 +30,6 @@ export class SourceMapper
     private resourceName = 'source',
   ) {
     super();
-    this.languagesMapper = languagesMapper;
-    this.tagsMapper = tagsMapper;
     this.keyToMapper = {
       tags: tagsMapper,
       languages: languagesMapper,
@@ -90,9 +56,11 @@ export class SourceMapper
       const field = source[key];
       const mapper = this.keyToMapper[key] || this.primitiveMapper;
 
-      map(mapper, field, key).onSuccess(mapped =>
-        this.append(result, key, mapped),
-      );
+      if (mapper.canMap(field)) {
+        const fieldName = String(key);
+        const mapped = mapper.map(field, fieldName);
+        this.append(result, key, mapped);
+      }
     }
     return result;
   }
