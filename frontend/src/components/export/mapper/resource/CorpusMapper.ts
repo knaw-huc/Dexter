@@ -1,92 +1,69 @@
-import { RowWithChildTablesMapper } from './Mapper';
+import {
+  AnyMapperResult,
+  isCell,
+  isRow,
+  isTables,
+  RowWithChildTablesMapper,
+} from './Mapper';
 import { Corpus, isCorpus, Source } from '../../../../model/DexterModel';
 import { Any } from '../../../common/Any';
-import { RowWithChildTables } from '../RowWithChildTables';
 import { TagsMapper } from './TagsMapper';
 import { LanguagesMapper } from './LanguagesMapper';
 import { MetadataValuesMapper } from './MetadataValuesMapper';
 import { ArrayMapper } from './ArrayMapper';
-import {
-  appendCell,
-  appendCells,
-  appendTables,
-  createTableFrom,
-  prefixHeader,
-  prefixTablesOld,
-} from '../ExportUtils';
 import { PrimitiveMapper } from './PrimitiveMapper';
-import { RowWithHeader } from '../RowWithHeader';
+import { RowWithChildTablesBaseMapper } from './RowWithChildTablesBaseMapper';
+import { ParentMapper } from './ParentMapper';
+import { RowWithChildTables } from '../RowWithChildTables';
+import { prefixTable } from '../ExportUtils';
 
-export class CorpusMapper implements RowWithChildTablesMapper<Corpus> {
-  private subcorporaMapper: ArrayMapper<Corpus>;
-
+export class CorpusMapper
+  extends RowWithChildTablesBaseMapper<Corpus>
+  implements RowWithChildTablesMapper<Corpus>
+{
   constructor(
-    private metadataValuesMapper: MetadataValuesMapper,
-    private tagsMapper: TagsMapper,
-    private languagesMapper: LanguagesMapper,
-    private sourcesMapper: ArrayMapper<Source>,
-    private primitiveMapper: PrimitiveMapper,
-    private keysToSkip: (keyof Corpus)[] = [],
-    private resourceName = 'corpus',
+    metadataValuesMapper: MetadataValuesMapper,
+    tagsMapper: TagsMapper,
+    languagesMapper: LanguagesMapper,
+    sourcesMapper: ArrayMapper<Source>,
+    parentMapper: ParentMapper,
+    primitiveMapper: PrimitiveMapper,
+    keysToSkip: (keyof Corpus)[] = [],
+    prefixColumns: (keyof Corpus)[] = [],
+    resourceName = 'corpus',
   ) {
-    this.subcorporaMapper = new ArrayMapper(this);
+    super(
+      {
+        metadataValues: metadataValuesMapper,
+        tags: tagsMapper,
+        languages: languagesMapper,
+        sources: sourcesMapper,
+        parent: parentMapper,
+      },
+      primitiveMapper,
+      keysToSkip,
+      prefixColumns,
+      resourceName,
+    );
+    this.keyToMapper.subcorpora = new ArrayMapper(this);
   }
 
   canMap(resource: Any): resource is Corpus {
     return isCorpus(resource);
   }
 
-  map(corpus: Corpus, name: string): RowWithChildTables {
-    const result = new RowWithChildTables(name);
-    const prefixColumns = createTableFrom(name, corpus, ['id', 'title']);
-    prefixHeader(prefixColumns, this.resourceName);
-    let key: keyof Corpus;
-    for (key in corpus) {
-      if (this.keysToSkip.includes(key)) {
-        continue;
+  append(result: RowWithChildTables, key: string, mapped: AnyMapperResult) {
+    if (isCell(mapped)) {
+      result.appendCell(key, mapped);
+    } else if (isRow(mapped)) {
+      result.appendRow(mapped);
+    } else if (isTables(mapped)) {
+      if (key === 'subcorpora') {
+        mapped.find(t => t.name === 'subcorpora').name = 'corpus';
+      } else {
+        mapped.forEach(t => prefixTable(t, this.prefixColumns));
       }
-      const field = corpus[key];
-      switch (key) {
-        case 'parent':
-          if (this.canMap(field)) {
-            result.appendRow(
-              new RowWithHeader('prefix', [
-                ['parent_id', 'parent_title'],
-                [field.id, field.title],
-              ]),
-            );
-          }
-          break;
-        case 'tags':
-          appendCell(result, key, field, this.tagsMapper);
-          break;
-        case 'languages':
-          appendCell(result, key, field, this.languagesMapper);
-          break;
-        case 'metadataValues':
-          appendCells(result, key, field, this.metadataValuesMapper);
-          break;
-        case 'sources':
-          appendTables({
-            result,
-            key,
-            field,
-            mapper: this.sourcesMapper,
-            modify: prefixTablesOld(prefixColumns),
-          });
-          break;
-        case 'subcorpora':
-          appendTables({
-            result,
-            key: this.resourceName,
-            field,
-            mapper: this.subcorporaMapper,
-          });
-          break;
-        default:
-          appendCell(result, key, field, this.primitiveMapper);
-      }
+      result.appendTables(mapped);
     }
-    return result;
   }
 }

@@ -14,6 +14,7 @@ import { mergeTables } from './ExportUtils';
 import { ReferenceMapper } from './resource/ReferenceMapper';
 import { ReferenceFormatter } from './resource/ReferenceFormatter';
 import { PrimitiveMapper } from './resource/PrimitiveMapper';
+import { ParentMapper } from './resource/ParentMapper';
 
 export class MainMapper implements TablesMapper<WithId> {
   name: string;
@@ -46,14 +47,16 @@ export class MainMapper implements TablesMapper<WithId> {
       ['id', 'title'],
     );
     const sourcesMapper = new ArrayMapper(sourceMapper);
-
+    const parentMapper = new ParentMapper();
     const corpusMapper = new CorpusMapper(
       metadataValuesMapper,
       tagsMapper,
       languagesMapper,
       sourcesMapper,
+      parentMapper,
       primitiveMapper,
       ['createdBy'],
+      ['id', 'title'],
     );
 
     this.mappers.corpus = corpusMapper;

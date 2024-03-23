@@ -11,25 +11,43 @@ type KeyToMapper<RESOURCE> = Partial<
 >;
 
 export class RowWithChildTablesBaseMapper<RESOURCE extends WithId> {
-  private keyToMapper: KeyToMapper<RESOURCE>;
-  private prefixColumns: RowWithHeader;
-  private primitiveMapper: PrimitiveMapper;
-  private keysToSkip: (keyof RESOURCE)[];
-  private resourceName: string;
-  private keysToPrefix: (keyof RESOURCE)[];
+  /**
+   * Call specific mapper for properties
+   */
+  keyToMapper: KeyToMapper<RESOURCE>;
+
+  /**
+   * Called when no other mappers found
+   */
+  primitiveMapper: PrimitiveMapper;
+
+  /**
+   * Properties to skip during mapping
+   */
+  keysToSkip: (keyof RESOURCE)[];
+
+  /**
+   * Name denoting resource, used when naming columns and tables
+   */
+  resourceName: string;
+
+  /**
+   * Columns to prefix when mapping results in child tables   */
+  columnsNamesToPrefix: (keyof RESOURCE)[];
+  prefixColumns: RowWithHeader;
 
   constructor(
     keyToMapper: KeyToMapper<RESOURCE>,
     primitiveMapper: PrimitiveMapper,
     keysToSkip: (keyof RESOURCE)[] = [],
-    keysToPrefix: (keyof RESOURCE)[] = [],
+    columnsNamesToPrefix: (keyof RESOURCE)[] = [],
     resourceName: string,
   ) {
     this.keyToMapper = keyToMapper;
     this.primitiveMapper = primitiveMapper;
     this.keysToSkip = keysToSkip;
     this.resourceName = resourceName;
-    this.keysToPrefix = keysToPrefix;
+    this.columnsNamesToPrefix = columnsNamesToPrefix;
   }
 
   append(result: RowWithChildTables, key: string, mapped: AnyMapperResult) {
@@ -48,7 +66,7 @@ export class RowWithChildTablesBaseMapper<RESOURCE extends WithId> {
     this.prefixColumns = createTableFrom(
       tableName,
       resource,
-      this.keysToPrefix,
+      this.columnsNamesToPrefix,
     );
     prefixHeader(this.prefixColumns, this.resourceName);
 
