@@ -1,12 +1,12 @@
-export class Mapped<RESULT = undefined> {
+export class MapResult<RESULT = undefined> {
   private mapped: RESULT;
   constructor(mapped?: RESULT) {
     this.mapped = mapped;
   }
-  public success(run: (mapped: RESULT) => void) {
+  public onSuccess(run: (mapped: RESULT) => void) {
     if (this.mapped !== undefined) {
       run(this.mapped);
     }
   }
 }
-export const notMapped = new Mapped();
+export const notMapped = new MapResult();

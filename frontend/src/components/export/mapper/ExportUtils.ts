@@ -6,16 +6,16 @@ import { CellMapper, Mapper, RowMapper, TablesMapper } from './resource/Mapper';
 import { Any } from '../../common/Any';
 import _ from 'lodash';
 import { RowWithChildTables } from './RowWithChildTables';
-import { Mapped, notMapped } from './Mapped';
+import { MapResult, notMapped } from './MapResult';
 
 export function map<RESOURCE, RESULT>(
   mapper: Mapper<RESOURCE, RESULT>,
   field: Any,
   key: keyof RESOURCE,
-): Mapped<RESULT> {
+): MapResult<RESULT> {
   if (mapper.canMap(field)) {
     const fieldName = String(key);
-    return new Mapped(mapper.map(field, fieldName));
+    return new MapResult(mapper.map(field, fieldName));
   }
   return notMapped;
 }
