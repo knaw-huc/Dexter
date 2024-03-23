@@ -43,6 +43,7 @@ export class MainMapper implements TablesMapper<WithId> {
       referencesMapper,
       primitiveMapper,
       ['corpora', 'createdBy'],
+      ['id', 'title'],
     );
     const sourcesMapper = new ArrayMapper(sourceMapper);
 
