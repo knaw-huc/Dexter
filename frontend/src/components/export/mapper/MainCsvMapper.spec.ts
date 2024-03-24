@@ -17,7 +17,7 @@ describe('MainCsvMapper', () => {
 
     const tableNames = result.map(t => t.name);
     tableNames.sort();
-    expect(tableNames).toEqual(['corpus', 'media', 'references', 'sources']);
+    expect(tableNames).toEqual(['corpora', 'media', 'references', 'sources']);
   });
 
   it('can map corpus sources', async () => {

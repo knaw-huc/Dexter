@@ -45,9 +45,10 @@ export class CorpusMapper implements RowWithTablesMapper<Corpus> {
     return isCorpus(resource);
   }
 
-  map(resource: Corpus, tableName: string): RowWithTables {
+  map(resource: Corpus, name: string): RowWithTables {
+    const tableName = 'corpora';
     const result = new RowWithTables(tableName);
-    const prefixName = tableName === 'subcorpora' ? 'corpus' : tableName;
+    const prefixName = name === 'subcorpora' ? 'corpus' : name;
     const toPrefix = createPrefixRow(resource, this.toPrefix, prefixName);
 
     const mappedFields = this.baseMapper.mapFields(resource);
@@ -55,7 +56,7 @@ export class CorpusMapper implements RowWithTablesMapper<Corpus> {
       if (isTables(mapped)) {
         // Prevent double prefixing of subcorpora:
         if (key === 'subcorpora') {
-          mapped.find(t => t.name === 'subcorpora').name = 'corpus';
+          mapped.find(t => t.name === 'subcorpora').name = tableName;
         } else {
           mapped.forEach(t => prefixTable(t, toPrefix));
         }
