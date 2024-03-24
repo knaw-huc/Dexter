@@ -42,6 +42,7 @@ export interface RowWithTablesMapper<RESOURCE>
 
 /**
  * Map resource(s) to a table, including any additional child tables
+ * See the array mapper
  */
 export interface TablesMapper<RESOURCE> extends Mapper<RESOURCE, Table[]> {
   canMap(toMap: RESOURCE): toMap is RESOURCE;

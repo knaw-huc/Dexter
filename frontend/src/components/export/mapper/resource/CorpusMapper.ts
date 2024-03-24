@@ -13,7 +13,7 @@ import { createPrefixRow, prefixTable } from '../ExportUtils';
 import _ from 'lodash';
 
 export class CorpusMapper implements RowWithTablesMapper<Corpus> {
-  private baseMapper: FieldsMapper<Corpus>;
+  private fieldsMapper: FieldsMapper<Corpus>;
 
   constructor(
     metadataValuesMapper: MetadataValuesMapper,
@@ -23,45 +23,48 @@ export class CorpusMapper implements RowWithTablesMapper<Corpus> {
     parentMapper: ParentMapper,
     primitiveMapper: PrimitiveMapper,
     keysToSkip: (keyof Corpus)[] = [],
-    private toPrefix: (keyof Corpus)[] = [],
+    private prefixKeys: (keyof Corpus)[] = [],
     resourceName = 'corpus',
   ) {
-    this.baseMapper = new FieldsMapper<Corpus>(
+    this.fieldsMapper = new FieldsMapper<Corpus>(
       {
         metadataValues: metadataValuesMapper,
         tags: tagsMapper,
         languages: languagesMapper,
         sources: sourcesMapper,
         parent: parentMapper,
+        subcorpora: new ArrayMapper(this),
       },
       primitiveMapper,
       keysToSkip,
       resourceName,
     );
-    this.baseMapper.keyToMapper.subcorpora = new ArrayMapper(this);
   }
 
   canMap(resource: Any): resource is Corpus {
     return isCorpus(resource);
   }
 
-  map(resource: Corpus, name: string): RowWithTables {
+  map(resource: Corpus): RowWithTables {
     const tableName = 'corpora';
+    const prefixName = 'corpus';
     const result = new RowWithTables(tableName);
-    const prefixName = name === 'subcorpora' ? 'corpus' : name;
-    const toPrefix = createPrefixRow(resource, this.toPrefix, prefixName);
+    const toPrefix = createPrefixRow(resource, this.prefixKeys, prefixName);
 
-    const mappedFields = this.baseMapper.mapFields(resource);
+    const mappedFields = this.fieldsMapper.mapFields(resource);
     _.entries(mappedFields).forEach(([key, mapped]) => {
       if (isTables(mapped)) {
-        // Prevent double prefixing of subcorpora:
         if (key === 'subcorpora') {
-          mapped.find(t => t.name === 'subcorpora').name = tableName;
+          const found = mapped.find(t => t.name === 'subcorpora');
+          if (found) {
+            // Subcorpora table should be merged with corpus table:
+            found.name = tableName;
+          }
         } else {
           mapped.forEach(t => prefixTable(t, toPrefix));
         }
       }
-      this.baseMapper.append(result, key, mapped);
+      this.fieldsMapper.append(result, key, mapped);
     });
     return result;
   }

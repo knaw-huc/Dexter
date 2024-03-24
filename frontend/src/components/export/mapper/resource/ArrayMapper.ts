@@ -12,8 +12,11 @@ export class ArrayMapper<T extends WithId> implements TablesMapper<T[]> {
   constructor(public resourceMapper: RowMapper<T> | RowWithTablesMapper<T>) {}
 
   canMap(field: Any): field is T[] {
-    if (!field?.length) {
+    if (!_.isArray(field)) {
       return false;
+    }
+    if (!field.length) {
+      return true;
     }
     return this.resourceMapper.canMap(field[0]);
   }
@@ -21,10 +24,6 @@ export class ArrayMapper<T extends WithId> implements TablesMapper<T[]> {
   map(resources: T[], tableName: string): BasicTable[] {
     if (!resources.length) {
       return [];
-    }
-
-    if (!this.resourceMapper.canMap(resources[0])) {
-      throw new Error('Cannot map ' + resources[0]);
     }
 
     const table = new BasicTable(tableName);

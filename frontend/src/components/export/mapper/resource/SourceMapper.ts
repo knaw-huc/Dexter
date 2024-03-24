@@ -17,7 +17,7 @@ import { createPrefixRow, prefixTable } from '../ExportUtils';
 import _ from 'lodash';
 
 export class SourceMapper implements RowWithTablesMapper<Source> {
-  private baseMapper: FieldsMapper<Source>;
+  private fieldsMapper: FieldsMapper<Source>;
 
   constructor(
     tagsMapper: TagsMapper,
@@ -30,7 +30,7 @@ export class SourceMapper implements RowWithTablesMapper<Source> {
     private prefixColumns: (keyof Source)[] = [],
     resourceName = 'source',
   ) {
-    this.baseMapper = new FieldsMapper<Source>(
+    this.fieldsMapper = new FieldsMapper<Source>(
       {
         tags: tagsMapper,
         languages: languagesMapper,
@@ -54,12 +54,12 @@ export class SourceMapper implements RowWithTablesMapper<Source> {
 
     const toPrefix = createPrefixRow(resource, this.prefixColumns, prefixName);
 
-    const mappedFields = this.baseMapper.mapFields(resource);
+    const mappedFields = this.fieldsMapper.mapFields(resource);
     _.entries(mappedFields).forEach(([key, mapped]) => {
       if (isTables(mapped)) {
         mapped.forEach(t => prefixTable(t, toPrefix));
       }
-      this.baseMapper.append(result, key, mapped);
+      this.fieldsMapper.append(result, key, mapped);
     });
     return result;
   }

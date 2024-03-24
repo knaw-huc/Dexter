@@ -10,8 +10,7 @@ type KeyToMapper<RESOURCE> = Partial<
 type KeyToResult<RESOURCE> = Partial<Record<keyof RESOURCE, AnyMapperResult>>;
 
 /**
- * Helper class that creates a record
- * with mapped results for each resource field
+ * Create a record with mapped results by resource key
  */
 export class FieldsMapper<RESOURCE extends WithId> {
   /**
