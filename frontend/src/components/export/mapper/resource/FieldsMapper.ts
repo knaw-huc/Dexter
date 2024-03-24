@@ -1,16 +1,19 @@
 import { AnyMapperResult, isCell, isRow, isTables, Mapper } from '../Mapper';
 import { Any } from '../../../common/Any';
-import { RowWithHeader } from '../RowWithHeader';
 import { RowWithTables } from '../RowWithTables';
-import { createRowFrom, prefixHeader, prefixTable } from '../ExportUtils';
 import { PrimitiveMapper } from './PrimitiveMapper';
 import { WithId } from '../../../../model/DexterModel';
 
 type KeyToMapper<RESOURCE> = Partial<
   Record<keyof RESOURCE, Mapper<Any, AnyMapperResult>>
 >;
+type KeyToResult<RESOURCE> = Partial<Record<keyof RESOURCE, AnyMapperResult>>;
 
-export class BaseRowWithTablesMapper<RESOURCE extends WithId> {
+/**
+ * Helper class that creates a record
+ * with mapped results for each resource field
+ */
+export class FieldsMapper<RESOURCE extends WithId> {
   /**
    * Call specific mapper for specific properties
    */
@@ -32,23 +35,15 @@ export class BaseRowWithTablesMapper<RESOURCE extends WithId> {
    */
   resourceName: string;
 
-  /**
-   * Columns to prefix when mapping results in child tables
-   */
-  columnsNamesToPrefix: (keyof RESOURCE)[];
-  prefixColumns: RowWithHeader;
-
   constructor(
     keyToMapper: KeyToMapper<RESOURCE>,
     primitiveMapper: PrimitiveMapper,
     keysToSkip: (keyof RESOURCE)[] = [],
-    columnsNamesToPrefix: (keyof RESOURCE)[] = [],
     resourceName: string,
   ) {
     this.keyToMapper = keyToMapper;
     this.primitiveMapper = primitiveMapper;
     this.keysToSkip = keysToSkip;
-    this.columnsNamesToPrefix = columnsNamesToPrefix;
     this.resourceName = resourceName;
   }
 
@@ -58,20 +53,12 @@ export class BaseRowWithTablesMapper<RESOURCE extends WithId> {
     } else if (isRow(mapped)) {
       result.appendRow(mapped);
     } else if (isTables(mapped)) {
-      mapped.forEach(t => prefixTable(t, this.prefixColumns));
       result.appendTables(mapped);
     }
   }
 
-  map(resource: RESOURCE, tableName: string): RowWithTables {
-    const result = new RowWithTables(tableName);
-    this.prefixColumns = createRowFrom(
-      tableName,
-      resource,
-      this.columnsNamesToPrefix,
-    );
-    prefixHeader(this.prefixColumns, this.resourceName);
-
+  mapFields(resource: RESOURCE): KeyToResult<RESOURCE> {
+    const result: KeyToResult<RESOURCE> = {};
     let key: keyof RESOURCE;
     for (key in resource) {
       if (this.keysToSkip.includes(key)) {
@@ -82,8 +69,7 @@ export class BaseRowWithTablesMapper<RESOURCE extends WithId> {
 
       if (mapper.canMap(field)) {
         const fieldName = String(key);
-        const mapped = mapper.map(field, fieldName);
-        this.append(result, key, mapped);
+        result[key] = mapper.map(field, fieldName);
       }
     }
     return result;

@@ -1,10 +1,4 @@
-import {
-  AnyMapperResult,
-  isCell,
-  isRow,
-  isTables,
-  RowWithTablesMapper,
-} from '../Mapper';
+import { isTables, RowWithTablesMapper } from '../Mapper';
 import { Corpus, isCorpus, Source } from '../../../../model/DexterModel';
 import { Any } from '../../../common/Any';
 import { TagsMapper } from './TagsMapper';
@@ -12,15 +6,15 @@ import { LanguagesMapper } from './LanguagesMapper';
 import { MetadataValuesMapper } from './MetadataValuesMapper';
 import { ArrayMapper } from './ArrayMapper';
 import { PrimitiveMapper } from './PrimitiveMapper';
-import { BaseRowWithTablesMapper } from './BaseRowWithTablesMapper';
+import { FieldsMapper } from './FieldsMapper';
 import { ParentMapper } from './ParentMapper';
 import { RowWithTables } from '../RowWithTables';
-import { prefixTable } from '../ExportUtils';
+import { createPrefixRow, prefixTable } from '../ExportUtils';
+import _ from 'lodash';
 
-export class CorpusMapper
-  extends BaseRowWithTablesMapper<Corpus>
-  implements RowWithTablesMapper<Corpus>
-{
+export class CorpusMapper implements RowWithTablesMapper<Corpus> {
+  private baseMapper: FieldsMapper<Corpus>;
+
   constructor(
     metadataValuesMapper: MetadataValuesMapper,
     tagsMapper: TagsMapper,
@@ -29,10 +23,10 @@ export class CorpusMapper
     parentMapper: ParentMapper,
     primitiveMapper: PrimitiveMapper,
     keysToSkip: (keyof Corpus)[] = [],
-    prefixColumns: (keyof Corpus)[] = [],
+    private toPrefix: (keyof Corpus)[] = [],
     resourceName = 'corpus',
   ) {
-    super(
+    this.baseMapper = new FieldsMapper<Corpus>(
       {
         metadataValues: metadataValuesMapper,
         tags: tagsMapper,
@@ -42,33 +36,32 @@ export class CorpusMapper
       },
       primitiveMapper,
       keysToSkip,
-      prefixColumns,
       resourceName,
     );
-    this.keyToMapper.subcorpora = new ArrayMapper(this);
+    this.baseMapper.keyToMapper.subcorpora = new ArrayMapper(this);
   }
 
   canMap(resource: Any): resource is Corpus {
     return isCorpus(resource);
   }
 
-  /**
-   * @override:
-   * - rename subcorpora table to corpus table
-   * - make sure sources of subcorpora are not prefixed by parent
-   */
-  append(result: RowWithTables, key: string, mapped: AnyMapperResult) {
-    if (isCell(mapped)) {
-      result.appendCell(key, mapped);
-    } else if (isRow(mapped)) {
-      result.appendRow(mapped);
-    } else if (isTables(mapped)) {
-      if (key === 'subcorpora') {
-        mapped.find(t => t.name === 'subcorpora').name = 'corpus';
-      } else {
-        mapped.forEach(t => prefixTable(t, this.prefixColumns));
+  map(resource: Corpus, tableName: string): RowWithTables {
+    const result = new RowWithTables(tableName);
+    const prefixName = tableName === 'subcorpora' ? 'corpus' : tableName;
+    const toPrefix = createPrefixRow(resource, this.toPrefix, prefixName);
+
+    const mappedFields = this.baseMapper.mapFields(resource);
+    _.entries(mappedFields).forEach(([key, mapped]) => {
+      if (isTables(mapped)) {
+        // Prevent double prefixing of subcorpora:
+        if (key === 'subcorpora') {
+          mapped.find(t => t.name === 'subcorpora').name = 'corpus';
+        } else {
+          mapped.forEach(t => prefixTable(t, toPrefix));
+        }
       }
-      result.appendTables(mapped);
-    }
+      this.baseMapper.append(result, key, mapped);
+    });
+    return result;
   }
 }

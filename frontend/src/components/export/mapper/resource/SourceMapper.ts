@@ -10,13 +10,15 @@ import { LanguagesMapper } from './LanguagesMapper';
 import { MetadataValuesMapper } from './MetadataValuesMapper';
 import { ArrayMapper } from './ArrayMapper';
 import { PrimitiveMapper } from './PrimitiveMapper';
-import { BaseRowWithTablesMapper } from './BaseRowWithTablesMapper';
-import { RowWithTablesMapper } from '../Mapper';
+import { FieldsMapper } from './FieldsMapper';
+import { isTables, RowWithTablesMapper } from '../Mapper';
+import { RowWithTables } from '../RowWithTables';
+import { createPrefixRow, prefixTable } from '../ExportUtils';
+import _ from 'lodash';
 
-export class SourceMapper
-  extends BaseRowWithTablesMapper<Source>
-  implements RowWithTablesMapper<Source>
-{
+export class SourceMapper implements RowWithTablesMapper<Source> {
+  private baseMapper: FieldsMapper<Source>;
+
   constructor(
     tagsMapper: TagsMapper,
     languagesMapper: LanguagesMapper,
@@ -25,10 +27,10 @@ export class SourceMapper
     referencesMapper: ArrayMapper<Reference>,
     primitiveMapper: PrimitiveMapper,
     keysToSkip: (keyof Source)[] = [],
-    keysToPrefix: (keyof Source)[] = [],
+    private prefixColumns: (keyof Source)[] = [],
     resourceName = 'source',
   ) {
-    super(
+    this.baseMapper = new FieldsMapper<Source>(
       {
         tags: tagsMapper,
         languages: languagesMapper,
@@ -38,12 +40,27 @@ export class SourceMapper
       },
       primitiveMapper,
       keysToSkip,
-      keysToPrefix,
       resourceName,
     );
   }
 
   canMap(resource: Any): resource is Source {
     return isSource(resource);
+  }
+
+  map(resource: Source, tableName: string): RowWithTables {
+    const result = new RowWithTables(tableName);
+    const prefixName = tableName === 'sources' ? 'source' : tableName;
+
+    const toPrefix = createPrefixRow(resource, this.prefixColumns, prefixName);
+
+    const mappedFields = this.baseMapper.mapFields(resource);
+    _.entries(mappedFields).forEach(([key, mapped]) => {
+      if (isTables(mapped)) {
+        mapped.forEach(t => prefixTable(t, toPrefix));
+      }
+      this.baseMapper.append(result, key, mapped);
+    });
+    return result;
   }
 }

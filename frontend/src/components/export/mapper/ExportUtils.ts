@@ -31,6 +31,27 @@ export function prefixTable(prefixTo: Table, prefix: RowWithHeader): void {
   }
 }
 
+export function createPrefixRow<RESOURCE extends WithId>(
+  /**
+   *
+   */
+  resource: RESOURCE,
+
+  /**
+   * Columns to select from resource
+   */
+  prefixColumns: (keyof RESOURCE)[],
+
+  /**
+   * String to append to each column header
+   */
+  tableName: string,
+): RowWithHeader {
+  const result = createRowFrom('prefix', resource, prefixColumns);
+  prefixHeader(result, tableName);
+  return result;
+}
+
 export function appendCell<T>(
   result: RowWithHeader,
   key: keyof T,
