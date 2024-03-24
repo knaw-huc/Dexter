@@ -4,24 +4,24 @@ import { RowWithHeader } from './RowWithHeader';
 /**
  * Row, and possible tables of child resources
  */
-export class RowWithChildTables extends RowWithHeader {
+export class RowWithTables extends RowWithHeader {
   /**
    * Child resources that resulted in their own tables
    */
-  childTables: BasicTable[];
+  tables: BasicTable[];
 
   constructor(name: string) {
     super(name);
-    this.childTables = [];
+    this.tables = [];
   }
 
   appendTables(toAppend: Table[]) {
-    this.childTables.push(...toAppend);
+    this.tables.push(...toAppend);
   }
 }
 
-export function isRowWithChildTables(
+export function isRowWithTables(
   toTest: RowWithHeader,
-): toTest is RowWithChildTables {
-  return !!(toTest as RowWithChildTables)?.childTables;
+): toTest is RowWithTables {
+  return !!(toTest as RowWithTables)?.tables;
 }

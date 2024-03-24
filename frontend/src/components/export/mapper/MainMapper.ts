@@ -1,5 +1,5 @@
 import { isWithId, WithId } from '../../../model/DexterModel';
-import { RowWithChildTablesMapper, TablesMapper } from './Mapper';
+import { RowWithTablesMapper, TablesMapper } from './Mapper';
 import { CorpusMapper } from './resource/CorpusMapper';
 import { MetadataValuesMapper } from './resource/MetadataValuesMapper';
 import { getMetadataKeys } from '../../../utils/API';
@@ -19,7 +19,7 @@ import { ParentMapper } from './resource/ParentMapper';
 export class MainMapper implements TablesMapper<WithId> {
   name: string;
 
-  private mappers: Record<string, RowWithChildTablesMapper<WithId>> = {};
+  private mappers: Record<string, RowWithTablesMapper<WithId>> = {};
 
   constructor(keys: string[]) {
     const primitiveMapper = new PrimitiveMapper();
@@ -76,7 +76,7 @@ export class MainMapper implements TablesMapper<WithId> {
       mapper.canMap(resource),
     );
     const mapped = mapper.map(resource, name);
-    const allTables = [mapped, ...mapped.childTables];
+    const allTables = [mapped, ...mapped.tables];
     const groupedTables: Record<string, Table[]> = _.groupBy(
       allTables,
       t => t.name,

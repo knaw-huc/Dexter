@@ -3,7 +3,7 @@ import {
   isCell,
   isRow,
   isTables,
-  RowWithChildTablesMapper,
+  RowWithTablesMapper,
 } from '../Mapper';
 import { Corpus, isCorpus, Source } from '../../../../model/DexterModel';
 import { Any } from '../../../common/Any';
@@ -12,14 +12,14 @@ import { LanguagesMapper } from './LanguagesMapper';
 import { MetadataValuesMapper } from './MetadataValuesMapper';
 import { ArrayMapper } from './ArrayMapper';
 import { PrimitiveMapper } from './PrimitiveMapper';
-import { BaseRowWithChildTablesMapper } from './BaseRowWithChildTablesMapper';
+import { BaseRowWithTablesMapper } from './BaseRowWithTablesMapper';
 import { ParentMapper } from './ParentMapper';
-import { RowWithChildTables } from '../RowWithChildTables';
+import { RowWithTables } from '../RowWithTables';
 import { prefixTable } from '../ExportUtils';
 
 export class CorpusMapper
-  extends BaseRowWithChildTablesMapper<Corpus>
-  implements RowWithChildTablesMapper<Corpus>
+  extends BaseRowWithTablesMapper<Corpus>
+  implements RowWithTablesMapper<Corpus>
 {
   constructor(
     metadataValuesMapper: MetadataValuesMapper,
@@ -57,7 +57,7 @@ export class CorpusMapper
    * - rename subcorpora table to corpus table
    * - make sure sources of subcorpora are not prefixed by parent
    */
-  append(result: RowWithChildTables, key: string, mapped: AnyMapperResult) {
+  append(result: RowWithTables, key: string, mapped: AnyMapperResult) {
     if (isCell(mapped)) {
       result.appendCell(key, mapped);
     } else if (isRow(mapped)) {

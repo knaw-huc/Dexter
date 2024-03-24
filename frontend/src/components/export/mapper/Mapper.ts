@@ -1,4 +1,4 @@
-import { RowWithChildTables } from './RowWithChildTables';
+import { RowWithTables } from './RowWithTables';
 import { Cell, Table } from './Table';
 import { RowWithHeader } from './RowWithHeader';
 import _ from 'lodash';
@@ -34,10 +34,10 @@ export interface RowMapper<RESOURCE> extends Mapper<RESOURCE, RowWithHeader> {
  * For example: a source can be mapped to a csv row,
  * but it also contains media and references that result in their own tables.
  */
-export interface RowWithChildTablesMapper<RESOURCE>
-  extends Mapper<RESOURCE, RowWithChildTables> {
+export interface RowWithTablesMapper<RESOURCE>
+  extends Mapper<RESOURCE, RowWithTables> {
   canMap(toMap: RESOURCE): toMap is RESOURCE;
-  map(toMap: RESOURCE, columnName: string): RowWithChildTables;
+  map(toMap: RESOURCE, columnName: string): RowWithTables;
 }
 
 /**
@@ -48,11 +48,7 @@ export interface TablesMapper<RESOURCE> extends Mapper<RESOURCE, Table[]> {
   map(toMap: RESOURCE, tableName: string): Table[];
 }
 
-export type AnyMapperResult =
-  | Cell
-  | RowWithHeader
-  | RowWithChildTables
-  | Table[];
+export type AnyMapperResult = Cell | RowWithHeader | RowWithTables | Table[];
 
 export function isRow(
   toTest: Cell | RowWithHeader | Table[],

@@ -1,17 +1,15 @@
-import { RowMapper, RowWithChildTablesMapper, TablesMapper } from '../Mapper';
+import { RowMapper, RowWithTablesMapper, TablesMapper } from '../Mapper';
 import { WithId } from '../../../../model/DexterModel';
 import _ from 'lodash';
 import { BasicTable } from '../Table';
 import { Any } from '../../../common/Any';
-import { isRowWithChildTables } from '../RowWithChildTables';
+import { isRowWithTables } from '../RowWithTables';
 
 /**
  * Move all mapped resource rows into a single table
  **/
 export class ArrayMapper<T extends WithId> implements TablesMapper<T[]> {
-  constructor(
-    public resourceMapper: RowMapper<T> | RowWithChildTablesMapper<T>,
-  ) {}
+  constructor(public resourceMapper: RowMapper<T> | RowWithTablesMapper<T>) {}
 
   canMap(field: Any): field is T[] {
     if (!field?.length) {
@@ -48,8 +46,8 @@ export class ArrayMapper<T extends WithId> implements TablesMapper<T[]> {
           row headers:   ${row.header.join(',')}`);
       }
       table.rows.push(row.row);
-      if (isRowWithChildTables(row)) {
-        result.push(...row.childTables);
+      if (isRowWithTables(row)) {
+        result.push(...row.tables);
       }
     }
 

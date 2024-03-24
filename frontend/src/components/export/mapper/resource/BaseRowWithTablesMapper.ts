@@ -1,7 +1,7 @@
 import { AnyMapperResult, isCell, isRow, isTables, Mapper } from '../Mapper';
 import { Any } from '../../../common/Any';
 import { RowWithHeader } from '../RowWithHeader';
-import { RowWithChildTables } from '../RowWithChildTables';
+import { RowWithTables } from '../RowWithTables';
 import { createRowFrom, prefixHeader, prefixTable } from '../ExportUtils';
 import { PrimitiveMapper } from './PrimitiveMapper';
 import { WithId } from '../../../../model/DexterModel';
@@ -10,7 +10,7 @@ type KeyToMapper<RESOURCE> = Partial<
   Record<keyof RESOURCE, Mapper<Any, AnyMapperResult>>
 >;
 
-export class BaseRowWithChildTablesMapper<RESOURCE extends WithId> {
+export class BaseRowWithTablesMapper<RESOURCE extends WithId> {
   /**
    * Call specific mapper for specific properties
    */
@@ -52,7 +52,7 @@ export class BaseRowWithChildTablesMapper<RESOURCE extends WithId> {
     this.resourceName = resourceName;
   }
 
-  append(result: RowWithChildTables, key: string, mapped: AnyMapperResult) {
+  append(result: RowWithTables, key: string, mapped: AnyMapperResult) {
     if (isCell(mapped)) {
       result.appendCell(key, mapped);
     } else if (isRow(mapped)) {
@@ -63,8 +63,8 @@ export class BaseRowWithChildTablesMapper<RESOURCE extends WithId> {
     }
   }
 
-  map(resource: RESOURCE, tableName: string): RowWithChildTables {
-    const result = new RowWithChildTables(tableName);
+  map(resource: RESOURCE, tableName: string): RowWithTables {
+    const result = new RowWithTables(tableName);
     this.prefixColumns = createRowFrom(
       tableName,
       resource,
