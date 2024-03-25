@@ -13,7 +13,7 @@ import { createPrefixRow, prefixTable } from '../MapperUtils';
 import _ from 'lodash';
 
 export class CorpusMapper implements RowWithTablesMapper<Corpus> {
-  private fieldsMapper: RowWithTablesMapperHelper<Corpus>;
+  private helper: RowWithTablesMapperHelper<Corpus>;
 
   constructor(
     metadataValuesMapper: MetadataValuesMapper,
@@ -26,7 +26,7 @@ export class CorpusMapper implements RowWithTablesMapper<Corpus> {
     private prefixKeys: (keyof Corpus)[] = [],
     resourceName = 'corpus',
   ) {
-    this.fieldsMapper = new RowWithTablesMapperHelper<Corpus>(
+    this.helper = new RowWithTablesMapperHelper<Corpus>(
       {
         metadataValues: metadataValuesMapper,
         tags: tagsMapper,
@@ -51,20 +51,20 @@ export class CorpusMapper implements RowWithTablesMapper<Corpus> {
     const result = new RowWithTables(tableName);
     const toPrefix = createPrefixRow(resource, this.prefixKeys, prefixName);
 
-    const mappedFields = this.fieldsMapper.mapFields(resource);
+    const mappedFields = this.helper.mapFields(resource);
     _.entries(mappedFields).forEach(([key, mapped]) => {
       if (isTables(mapped)) {
         if (key === 'subcorpora') {
           const found = mapped.find(t => t.name === 'subcorpora');
           if (found) {
-            // Subcorpora should be merged with corpus table:
+            // Subcorpora should be appended to corpus table:
             found.name = tableName;
           }
         } else {
           mapped.forEach(t => prefixTable(t, toPrefix));
         }
       }
-      this.fieldsMapper.append(result, key, mapped);
+      this.helper.append(result, key, mapped);
     });
     return result;
   }

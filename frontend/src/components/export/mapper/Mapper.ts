@@ -51,22 +51,16 @@ export interface TablesMapper<RESOURCE> extends Mapper<RESOURCE, Table[]> {
 
 export type AnyMapperResult = Cell | RowWithHeader | RowWithTables | Table[];
 
-export function isRow(
-  toTest: Cell | RowWithHeader | Table[],
-): toTest is RowWithHeader {
-  return !!(
-    (toTest as RowWithHeader)?.header && (toTest as RowWithHeader)?.row
-  );
-}
-
-export function isCell(toTest: Cell | RowWithHeader | Table[]): toTest is Cell {
+export function isCell(toTest: AnyMapperResult): toTest is Cell {
   return _.isString(toTest);
 }
 
-export function isTables(
-  toTest: Cell | RowWithHeader | Table[],
-): toTest is Table[] {
-  return _.isArray(toTest);
+export function isRow(toTest: AnyMapperResult): toTest is RowWithHeader {
+  const isRow = !!(
+    (toTest as RowWithHeader)?.header && (toTest as RowWithHeader)?.row
+  );
+  const hasTables = (toTest as RowWithTables)?.tables;
+  return isRow && !hasTables;
 }
 
 export function isRowWithTables(
@@ -77,4 +71,8 @@ export function isRowWithTables(
     (toTest as RowWithTables)?.row &&
     (toTest as RowWithTables)?.tables
   );
+}
+
+export function isTables(toTest: AnyMapperResult): toTest is Table[] {
+  return _.isArray(toTest);
 }
