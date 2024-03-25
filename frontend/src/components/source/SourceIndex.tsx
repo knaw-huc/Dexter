@@ -14,6 +14,7 @@ import { add } from '../../utils/immer/add';
 import _ from 'lodash';
 import { useDeleteSource } from './useDeleteSource';
 import { remove } from '../../utils/immer/remove';
+import { HintedTitle } from '../common/HintedTitle';
 
 export function SourceIndex() {
   const [sources, setSources] = useImmer<Source[]>([]);
@@ -68,7 +69,7 @@ export function SourceIndex() {
 
         <h1>
           <SourceIcon />
-          Sources
+          <HintedTitle title="sources" hint="sourceIndex" />
         </h1>
       </div>
       {showForm && (

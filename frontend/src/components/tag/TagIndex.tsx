@@ -7,6 +7,7 @@ import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
 import { TagIcon } from './tagIcon';
 import { useThrowSync } from '../common/error/useThrowSync';
 import { useImmer } from 'use-immer';
+import { HintedTitle } from '../common/HintedTitle';
 
 export const TagIndex = () => {
   const [tags, setTags] = useImmer<ResultTag[]>([]);
@@ -33,7 +34,7 @@ export const TagIndex = () => {
       <HeaderBreadCrumb />
       <h1>
         <TagIcon />
-        Tags
+        <HintedTitle title="tags" hint="tagIndex" />
       </h1>
       <TagForm onSaved={newTag => setTags(t => [...t, newTag])} />
       <div style={{ marginTop: '1em' }}>

@@ -26,7 +26,7 @@ import { FormErrorMessage } from '../common/error/FormError';
 import { useImmer } from 'use-immer';
 import { assign } from '../../utils/immer/assign';
 import { Hinted } from '../common/Hinted';
-import { fromFormFieldToHint } from '../../LabelStore';
+import { toFormHint } from '../../LabelStore';
 
 type SourceFormProps = {
   sourceToEdit?: Source;
@@ -59,7 +59,7 @@ export function SourceForm(props: SourceFormProps) {
 
   useEffect(init, []);
 
-  const toHint = fromFormFieldToHint('source');
+  const toHint = toFormHint('source');
 
   async function handleImportMetadata() {
     setForm(await loadImport(form));

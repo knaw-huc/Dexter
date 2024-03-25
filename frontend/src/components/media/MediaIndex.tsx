@@ -12,6 +12,7 @@ import { useImmer } from 'use-immer';
 import { remove } from '../../utils/immer/remove';
 import { update } from '../../utils/immer/update';
 import { add } from '../../utils/immer/add';
+import { HintedTitle } from '../common/HintedTitle';
 
 export function MediaIndex() {
   const [media, setMedia] = useImmer<ResultMedia[]>([]);
@@ -73,7 +74,7 @@ export function MediaIndex() {
 
         <h1>
           <MediaIcon />
-          Media
+          <HintedTitle title="media" hint="mediaIndex" />
         </h1>
       </div>
       {showForm && (

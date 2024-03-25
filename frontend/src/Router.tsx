@@ -24,6 +24,7 @@ export function Router() {
     <Routes>
       <Route path="/" element={<Page />}>
         <Route path="/" element={<Navigate to={`/${corpora}`} />} />
+
         <Route path={`/${corpora}`} element={<CorpusIndex />} />
         <Route path={`/${corpora}/:corpusId`} element={<CorpusPage />} />
         <Route path={`/${sources}`} element={<SourceIndex />} />

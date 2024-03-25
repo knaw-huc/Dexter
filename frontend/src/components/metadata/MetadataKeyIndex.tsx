@@ -11,6 +11,7 @@ import ErrorBoundary from '../common/error/ErrorBoundary';
 import { useImmer } from 'use-immer';
 import { update } from '../../utils/immer/update';
 import { add } from '../../utils/immer/add';
+import { HintedTitle } from '../common/HintedTitle';
 
 export function MetadataKeyIndex() {
   const [keys, setKeys] = useImmer<ResultMetadataKey[]>([]);
@@ -59,7 +60,7 @@ export function MetadataKeyIndex() {
 
         <h1>
           <MetadataKeyIcon />
-          Custom metadata fields
+          <HintedTitle title="Custom metadata fields" hint="metadataKeyIndex" />
         </h1>
       </div>
 

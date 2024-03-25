@@ -19,7 +19,7 @@ import { FieldError } from '../common/error/FieldError';
 import { TextFieldWithError } from '../common/TextFieldWithError';
 import { useImmer } from 'use-immer';
 import { Hinted } from '../common/Hinted';
-import { fromFormFieldToHint } from '../../LabelStore';
+import { toFormHint } from '../../LabelStore';
 
 type MediaFormProps = {
   inEdit?: ResultMedia;
@@ -54,7 +54,7 @@ export function MediaForm(props: MediaFormProps) {
     }
   }, [isInit]);
 
-  const toHint = fromFormFieldToHint('media');
+  const toHint = toFormHint('media');
 
   async function createNewMedia() {
     return createMedia(form);

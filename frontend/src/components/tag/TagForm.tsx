@@ -8,7 +8,7 @@ import { useFormErrors } from '../common/error/useFormErrors';
 import { FormErrorMessage } from '../common/error/FormError';
 import { FieldError } from '../common/error/FieldError';
 import { useImmer } from 'use-immer';
-import { fromFormFieldToHint } from '../../LabelStore';
+import { toFormHint } from '../../LabelStore';
 import { Hinted } from '../common/Hinted';
 
 type NewTagsProps = {
@@ -22,7 +22,7 @@ export function TagForm(props: NewTagsProps) {
   const [form, setForm] = useImmer<FormTag>({ val: '' });
   const { errors, setError } = useFormErrors<FormTag>();
 
-  const toHint = fromFormFieldToHint('tag');
+  const toHint = toFormHint('tag');
 
   async function handleCreateTag() {
     try {

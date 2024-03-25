@@ -18,7 +18,6 @@ import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
 import { CorporaBreadCrumbLink } from './CorporaBreadCrumbLink';
 import { CorpusParentBreadCrumbLink } from './CorpusParentBreadCrumbLink';
 import { MetadataValuePageFields } from '../metadata/MetadataValuePageFields';
-import { Title } from '../media/Title';
 import { CorpusSources } from './CorpusSources';
 import { CorpusSubcorpora } from './CorpusSubcorpora';
 import { useImmer } from 'use-immer';
@@ -28,6 +27,7 @@ import { useCorpusPageStore } from './CorpusPageStore';
 import { useThrowSync } from '../common/error/useThrowSync';
 import { ExportButton } from '../export/ExportButton';
 import { ExportForm } from '../export/ExportForm';
+import { HintedTitle } from '../common/HintedTitle';
 
 export const CorpusPage = () => {
   const corpusId = useParams().corpusId;
@@ -136,7 +136,7 @@ export const CorpusPage = () => {
       />
       <h1 style={{ marginTop: 0 }}>
         <CorpusIcon />
-        <Title title={corpus.title} />
+        <HintedTitle title={corpus.title} hint="corpusPage" />
       </h1>
       {corpus.description && <p>{corpus.description}</p>}
       {!_.isEmpty(corpus.tags) && (

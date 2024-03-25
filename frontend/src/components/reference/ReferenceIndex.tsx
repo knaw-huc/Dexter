@@ -11,6 +11,7 @@ import { ReferenceForm } from './ReferenceForm';
 import ErrorBoundary from '../common/error/ErrorBoundary';
 import { defaultReferenceStyle } from './ReferenceStyle';
 import { useImmer } from 'use-immer';
+import { HintedTitle } from '../common/HintedTitle';
 
 export function ReferenceIndex() {
   const [references, setReferences] = useImmer<ResultReference[]>([]);
@@ -78,7 +79,7 @@ export function ReferenceIndex() {
 
         <h1>
           <ReferenceIcon />
-          References
+          <HintedTitle title="references" hint="referenceIndex" />
         </h1>
       </div>
       {showForm && (

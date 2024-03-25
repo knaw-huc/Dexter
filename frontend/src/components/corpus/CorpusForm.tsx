@@ -27,7 +27,7 @@ import { useImmer } from 'use-immer';
 import { add } from '../../utils/immer/add';
 import { remove } from '../../utils/immer/remove';
 import { assign } from '../../utils/immer/assign';
-import { fromFormFieldToHint } from '../../LabelStore';
+import { toFormHint } from '../../LabelStore';
 import { Hinted } from '../common/Hinted';
 
 type CorpusFormProps = {
@@ -68,7 +68,7 @@ export function CorpusForm(props: CorpusFormProps) {
 
   useEffect(init, []);
 
-  const toHint = fromFormFieldToHint('corpus');
+  const toHint = toFormHint('corpus');
 
   async function handleSubmit() {
     await submitCorpusForm(form, keys, values);

@@ -14,6 +14,7 @@ import { CorpusIcon } from './CorpusIcon';
 import { useThrowSync } from '../common/error/useThrowSync';
 import { useImmer } from 'use-immer';
 import { add } from '../../utils/immer/add';
+import { HintedTitle } from '../common/HintedTitle';
 
 export function CorpusIndex() {
   const [corpora, setCorpora] = useImmer<Corpus[]>([]);
@@ -55,7 +56,7 @@ export function CorpusIndex() {
         </div>
         <h1>
           <CorpusIcon />
-          Corpora
+          <HintedTitle title="corpora" hint="corpusIndex" />
         </h1>
       </div>
       {showForm && (

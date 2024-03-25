@@ -14,7 +14,7 @@ import { FormErrorMessage } from '../common/error/FormError';
 import { FieldError } from '../common/error/FieldError';
 import { useImmer } from 'use-immer';
 import { Hinted } from '../common/Hinted';
-import { fromFormFieldToHint } from '../../LabelStore';
+import { toFormHint } from '../../LabelStore';
 
 type MetadataKeyFormProps = {
   inEdit?: ResultMetadataKey;
@@ -44,7 +44,7 @@ export function MetadataKeyForm(props: MetadataKeyFormProps) {
     }
   }, [isInit]);
 
-  const toHint = fromFormFieldToHint('metadataKey');
+  const toHint = toFormHint('metadataKey');
 
   async function handleSubmit() {
     const data: FormMetadataKey = { key: keyField };

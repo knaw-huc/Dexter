@@ -11,7 +11,6 @@ import { SourceIcon } from './SourceIcon';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
 import { SourcesBreadCrumbLink } from './SourcesBreadCrumbLink';
 import { MetadataValuePageFields } from '../metadata/MetadataValuePageFields';
-import { Title } from '../media/Title';
 import { H2Styled } from '../common/H2Styled';
 import { ExternalLink } from '../common/ExternalLink';
 import { useThrowSync } from '../common/error/useThrowSync';
@@ -22,6 +21,7 @@ import { useImmer } from 'use-immer';
 import { DeleteButton } from '../common/DeleteButton';
 import { useDeleteSource } from './useDeleteSource';
 import { useSourcePageStore } from './SourcePageStore';
+import { HintedTitle } from '../common/HintedTitle';
 
 export const SourcePage = () => {
   const sourceId = useParams().sourceId;
@@ -74,7 +74,7 @@ export const SourcePage = () => {
       />
       <h1>
         <SourceIcon verticalAlign="middle" fontSize="large" />
-        <Title title={source.title} />
+        <HintedTitle title={source.title} hint="sourcePage" />
       </h1>
       <p>{source.description}</p>
       {!_.isEmpty(source.tags) && (
