@@ -4,5 +4,8 @@ module.exports = {
   testEnvironment: 'node',
   globals: {
     window: { location: { origin: 'http://localhost:3001' } },
+    'ts-jest': {
+      isolatedModules: true,
+    },
   },
 };

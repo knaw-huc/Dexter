@@ -231,7 +231,7 @@ export const addTagsToSource = async (
 ): Promise<ResultTag[]> =>
   postValidated(`/${api}/${sources}/${sourceId}/${tags}`, tagId);
 
-export const deleteTag = async (id: string): Promise<void> =>
+export const deleteTag = async (id: number): Promise<void> =>
   deleteValidated(`/${api}/${tags}/${id}`);
 
 export const getTagsAutocomplete = async (

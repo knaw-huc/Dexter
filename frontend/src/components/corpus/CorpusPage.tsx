@@ -26,6 +26,8 @@ import { DeleteButton } from '../common/DeleteButton';
 import { corpora } from '../../model/Resources';
 import { useCorpusPageStore } from './CorpusPageStore';
 import { useThrowSync } from '../common/error/useThrowSync';
+import { ExportButton } from '../export/ExportButton';
+import { ExportForm } from '../export/ExportForm';
 
 export const CorpusPage = () => {
   const corpusId = useParams().corpusId;
@@ -37,10 +39,14 @@ export const CorpusPage = () => {
     corpusOptions,
     setCorpusOptions,
   } = useCorpusPageStore();
-  const [showCorpusForm, setShowCorpusForm] = useImmer(false);
-  const throwSync = useThrowSync();
 
+  const [showCorpusForm, setShowCorpusForm] = useImmer(false);
+  const [showExporter, setShowExporter] = useImmer(false);
+  const [isExported, setExported] = useImmer(false);
+
+  const throwSync = useThrowSync();
   const navigate = useNavigate();
+
   useEffect(() => {
     init();
 
@@ -101,6 +107,11 @@ export const CorpusPage = () => {
     'contributor',
   ];
 
+  function handleExported() {
+    setShowExporter(false);
+    setExported(true);
+  }
+
   if (!corpus) {
     return null;
   }
@@ -117,6 +128,11 @@ export const CorpusPage = () => {
       <EditButton
         sx={{ marginRight: '1em' }}
         onEdit={() => setShowCorpusForm(true)}
+      />
+      <ExportButton
+        sx={{ marginRight: '1em' }}
+        onExport={() => setShowExporter(true)}
+        isExported={isExported}
       />
       <h1 style={{ marginTop: 0 }}>
         <CorpusIcon />
@@ -159,6 +175,13 @@ export const CorpusPage = () => {
           sourceOptions={sourceOptions}
           onClose={handleCloseCorpusForm}
           onSaved={handleSavedCorpusForm}
+        />
+      )}
+      {showExporter && (
+        <ExportForm
+          toExport={corpus}
+          onExported={() => handleExported()}
+          onClose={() => setShowExporter(false)}
         />
       )}
     </div>

@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { useDebounce } from '../../utils/useDebounce';
 import { HighlightedLabel } from './HighlightedLabel';
 import { AutocompleteRenderGetTagProps } from '@mui/material/Autocomplete/Autocomplete';
-import { WithId } from '../../model/DexterModel';
+import { ID, WithId } from '../../model/DexterModel';
 import _ from 'lodash';
 import { useImmer } from 'use-immer';
 
@@ -36,7 +36,7 @@ export type MultiAutocompleteProps<T> = {
 
 export const CREATE_NEW_OPTION = 'create-new-option';
 
-export function MultiAutocomplete<T extends WithId>(
+export function MultiAutocomplete<T extends WithId<ID>>(
   props: MultiAutocompleteProps<T>,
 ) {
   const [options, setOptions] = useImmer<T[]>([]);

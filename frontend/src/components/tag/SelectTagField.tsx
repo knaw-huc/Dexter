@@ -55,6 +55,7 @@ export const SelectTagField = (props: TagsFieldProps) => {
     const inputIsOption = options.find(o => o.val === inputValue);
     if (props.allowCreatingNew && !inputIsOption && inputValue) {
       options.push({
+        // @ts-expect-error Tag uses numbers as IDs:
         id: CREATE_NEW_OPTION,
         val: `Create new tag: ${inputValue}`,
       });

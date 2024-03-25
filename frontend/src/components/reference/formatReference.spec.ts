@@ -3,7 +3,7 @@ import { formatReference, formatReferenceAsync } from './formatReference';
 import { ReferenceStyle } from './ReferenceStyle';
 import { ReferenceType } from './ReferenceType';
 
-describe('formatReference', () => {
+describe('formatReferenceAsync', () => {
   const referenceStyle = ReferenceStyle.apa;
   const doi = 'https://doi.org/10.1145/3343413.3377969';
 
@@ -64,7 +64,7 @@ describe('formatReference', () => {
   });
 });
 
-describe('formatReferenceSync', () => {
+describe('formatReference', () => {
   it('creates citation from csl synchronously', () => {
     const start = performance.now();
     const csl =

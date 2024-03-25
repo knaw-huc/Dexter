@@ -1,4 +1,4 @@
-import { UUID } from '../model/DexterModel';
+import { ID, UUID, WithId } from '../model/DexterModel';
 import {
   addTagsToCorpus,
   addTagsToSource,
@@ -22,26 +22,19 @@ import {
   deleteReferenceFromSource,
 } from './API';
 
-type WithId = {
-  id: string;
-};
-
-type UpdateLinkedResources<T extends WithId> = (
+type UpdateLinkedResources<T extends WithId<ID>> = (
   parentId: UUID,
   linkedResources: T[],
 ) => Promise<void>;
 
-export function updateLinkedResourcesWith<T extends WithId>(
-  addIdToParent: (parentId: string, updateIds: string[]) => Promise<T[]>,
-  deleteIdFromParent: (
-    parentId: string,
-    updateId: string,
-  ) => Promise<void | T[]>,
+export function updateLinkedResourcesWith<T extends WithId<ID>>(
+  addIdToParent: (parentId: ID, updateIds: ID[]) => Promise<T[]>,
+  deleteIdFromParent: (parentId: ID, updateId: ID) => Promise<void | T[]>,
 ): UpdateLinkedResources<T> {
   return async function (parentId: UUID, linkedResources: T[]) {
     const idsToUpdate = linkedResources.map(r => r.id);
     const responseResources = await addIdToParent(parentId, idsToUpdate);
-    const idsToDelete: string[] = responseResources
+    const idsToDelete: ID[] = responseResources
       .map(r => r.id)
       .filter(r => !idsToUpdate.includes(r));
     for (const idToDelete of idsToDelete) {
@@ -65,7 +58,7 @@ export const updateCorpusLanguages = updateLinkedResourcesWith(
   deleteLanguageFromCorpus,
 );
 
-export const updateCorpusTags = updateLinkedResourcesWith(
+export const updateCorpusTags = updateLinkedResourcesWith<WithId<number>>(
   addTagsToCorpus,
   deleteTagFromCorpus,
 );

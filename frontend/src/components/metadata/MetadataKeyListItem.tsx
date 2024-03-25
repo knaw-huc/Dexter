@@ -3,7 +3,7 @@ import { ResultMetadataKey } from '../../model/DexterModel';
 import { deleteMetadataKey } from '../../utils/API';
 import React, { ChangeEvent } from 'react';
 import { Avatar, ListItemAvatar, ListItemText } from '@mui/material';
-import { EditIconStyled } from '../common/EditButton';
+import { EditIconStyled } from '../common/EditIconStyled';
 import { DeleteIconStyled } from '../common/DeleteIconStyled';
 import { MetadataKeyIcon } from './MetadataKeyIcon';
 import { ListItemButtonStyled } from '../common/ListItemButtonStyled';

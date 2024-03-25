@@ -46,24 +46,26 @@ export function MetadataKeyForm(props: MetadataKeyFormProps) {
     const data: FormMetadataKey = { key: keyField };
     try {
       await metadataKeySchema.validate(data);
-      const id = props.inEdit
+      const result = props.inEdit
         ? await updateExistingMetadataKey(data)
         : await createNewMetadataKey(data);
-      props.onSaved({ id, ...data });
+      props.onSaved({ ...result });
     } catch (error) {
       await setError(error);
     }
   }
 
-  async function createNewMetadataKey(data: FormMetadataKey) {
-    const newMetadataKey = await createMetadataKey(data);
-    return newMetadataKey.id;
+  async function createNewMetadataKey(
+    data: FormMetadataKey,
+  ): Promise<ResultMetadataKey> {
+    return await createMetadataKey(data);
   }
 
-  async function updateExistingMetadataKey(data: FormMetadataKey) {
+  async function updateExistingMetadataKey(
+    data: FormMetadataKey,
+  ): Promise<ResultMetadataKey> {
     const metadataKeyId = props.inEdit.id;
-    await updateMetadataKey(metadataKeyId, data);
-    return metadataKeyId;
+    return await updateMetadataKey(metadataKeyId, data);
   }
 
   if (!isInit) {

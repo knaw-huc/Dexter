@@ -3,7 +3,7 @@ import { isImage, Source } from '../../model/DexterModel';
 import React from 'react';
 import { Avatar, ListItemAvatar, ListItemText } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { EditIconStyled } from '../common/EditButton';
+import { EditIconStyled } from '../common/EditIconStyled';
 import { DeleteIconStyled } from '../common/DeleteIconStyled';
 import { SourceIcon } from './SourceIcon';
 import { ListItemButtonStyled } from '../common/ListItemButtonStyled';
