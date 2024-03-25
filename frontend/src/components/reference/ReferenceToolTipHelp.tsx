@@ -12,10 +12,10 @@ type ReferenceToolTipHelpProps = {
 };
 
 const helpInputEmpty =
-  'To export references in various reference styles, please enter a doi, bibtex or one of the other input formats supported by reference.js';
+  'To export references in various reference styles, please enter a doi, bibtex or one of the other input formats supported by citation.js';
 const helpInputNotRecognized = `Current reference format is not recognized. ${helpInputEmpty}`;
 const helpInputRecognized =
-  'Current reference format is recognized and can be exported to the various reference styles supported by reference.js';
+  'Current reference format is recognized and can be exported to the various reference styles supported by citation.js';
 
 export function ReferenceToolTipHelp(props: ReferenceToolTipHelpProps) {
   let help: string;
