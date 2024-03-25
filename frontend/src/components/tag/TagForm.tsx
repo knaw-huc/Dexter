@@ -8,8 +8,6 @@ import { useFormErrors } from '../common/error/useFormErrors';
 import { FormErrorMessage } from '../common/error/FormError';
 import { FieldError } from '../common/error/FieldError';
 import { useImmer } from 'use-immer';
-import { toFormHint } from '../../LabelStore';
-import { Hinted } from '../common/Hinted';
 
 type NewTagsProps = {
   onSaved: (newTag: ResultTag) => void;
@@ -21,8 +19,6 @@ const tagSchema = yup.object({
 export function TagForm(props: NewTagsProps) {
   const [form, setForm] = useImmer<FormTag>({ val: '' });
   const { errors, setError } = useFormErrors<FormTag>();
-
-  const toHint = toFormHint('tag');
 
   async function handleCreateTag() {
     try {
@@ -42,7 +38,7 @@ export function TagForm(props: NewTagsProps) {
       <Grid container>
         <Grid item>
           <TextField
-            label={<Hinted txt="Add tag..." hint={toHint('val')} />}
+            placeholder="Add tag..."
             variant="outlined"
             value={form.val}
             onKeyDown={e => {
