@@ -1,6 +1,13 @@
-import { BasicTable } from './Table';
 import { stringify } from 'csv-stringify/browser/esm/sync';
+import { ArrayTable } from './Table';
 
-export function toCsv(table: BasicTable, delimiter = ','): string {
+/**
+ * Can it be converted into a csv?
+ */
+export type Csvable = {
+  toCsvTable(): ArrayTable;
+};
+
+export function toCsv(table: Csvable, delimiter = ','): string {
   return stringify(table.toCsvTable(), { delimiter }).toString();
 }

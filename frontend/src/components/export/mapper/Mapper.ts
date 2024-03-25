@@ -4,8 +4,8 @@ import { RowWithHeader } from './RowWithHeader';
 import _ from 'lodash';
 
 /**
- * Map from a resource to a csv intermediary
- * See below for different options
+ * Map a resource to a csv intermediary
+ * Below the different options
  */
 export interface Mapper<RESOURCE, RESULT> {
   canMap(toMap: RESOURCE): toMap is RESOURCE;
@@ -21,7 +21,7 @@ export interface CellMapper<RESOURCE> extends Mapper<RESOURCE, Cell> {
 }
 
 /**
- * Map to row
+ * Map to a row
  */
 export interface RowMapper<RESOURCE> extends Mapper<RESOURCE, RowWithHeader> {
   canMap(toMap: RESOURCE): toMap is RESOURCE;
@@ -67,4 +67,14 @@ export function isTables(
   toTest: Cell | RowWithHeader | Table[],
 ): toTest is Table[] {
   return _.isArray(toTest);
+}
+
+export function isRowWithTables(
+  toTest: AnyMapperResult,
+): toTest is RowWithTables {
+  return !!(
+    (toTest as RowWithTables)?.header &&
+    (toTest as RowWithTables)?.row &&
+    (toTest as RowWithTables)?.tables
+  );
 }

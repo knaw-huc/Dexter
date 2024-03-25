@@ -10,7 +10,7 @@ import { SourceMapper } from './resource/SourceMapper';
 import { MediaMapper } from './resource/MediaMapper';
 import _ from 'lodash';
 import { Table } from './Table';
-import { mergeTables } from './ExportUtils';
+import { mergeTables } from './MapperUtils';
 import { ReferenceMapper } from './resource/ReferenceMapper';
 import { FormattedReferencemapper } from './resource/FormattedReferencemapper';
 import { PrimitiveMapper } from './resource/PrimitiveMapper';

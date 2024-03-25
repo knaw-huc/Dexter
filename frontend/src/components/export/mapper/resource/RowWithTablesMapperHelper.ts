@@ -1,4 +1,11 @@
-import { AnyMapperResult, isCell, isRow, isTables, Mapper } from '../Mapper';
+import {
+  AnyMapperResult,
+  isCell,
+  isRow,
+  isRowWithTables,
+  isTables,
+  Mapper,
+} from '../Mapper';
 import { Any } from '../../../common/Any';
 import { RowWithTables } from '../RowWithTables';
 import { PrimitiveMapper } from './PrimitiveMapper';
@@ -10,16 +17,16 @@ type KeyToMapper<RESOURCE> = Partial<
 type KeyToResult<RESOURCE> = Partial<Record<keyof RESOURCE, AnyMapperResult>>;
 
 /**
- * Create a record with mapped results by resource key
+ * Helper class to facilitate mapping of resource objects to {@link RowWithTables}
  */
-export class FieldsMapper<RESOURCE extends WithId> {
+export class RowWithTablesMapperHelper<RESOURCE extends WithId> {
   /**
    * Call specific mapper for specific properties
    */
   keyToMapper: KeyToMapper<RESOURCE>;
 
   /**
-   * Call when no other mappers are found
+   * Called when no other mappers are found
    */
   primitiveMapper: PrimitiveMapper;
 
@@ -46,9 +53,15 @@ export class FieldsMapper<RESOURCE extends WithId> {
     this.resourceName = resourceName;
   }
 
+  /**
+   * Append a mapped resource result to a {@link RowWithTables}
+   */
   append(result: RowWithTables, key: string, mapped: AnyMapperResult) {
     if (isCell(mapped)) {
       result.appendCell(key, mapped);
+    } else if (isRowWithTables(mapped)) {
+      result.appendRow(mapped);
+      result.appendTables(mapped.tables);
     } else if (isRow(mapped)) {
       result.appendRow(mapped);
     } else if (isTables(mapped)) {
@@ -56,6 +69,11 @@ export class FieldsMapper<RESOURCE extends WithId> {
     }
   }
 
+  /**
+   * Map all properties of a resource
+   *
+   * @return record of mapping results by its key
+   */
   mapFields(resource: RESOURCE): KeyToResult<RESOURCE> {
     const result: KeyToResult<RESOURCE> = {};
     let key: keyof RESOURCE;

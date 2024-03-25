@@ -10,14 +10,14 @@ import { LanguagesMapper } from './LanguagesMapper';
 import { MetadataValuesMapper } from './MetadataValuesMapper';
 import { ArrayMapper } from './ArrayMapper';
 import { PrimitiveMapper } from './PrimitiveMapper';
-import { FieldsMapper } from './FieldsMapper';
+import { RowWithTablesMapperHelper } from './RowWithTablesMapperHelper';
 import { isTables, RowWithTablesMapper } from '../Mapper';
 import { RowWithTables } from '../RowWithTables';
-import { createPrefixRow, prefixTable } from '../ExportUtils';
+import { createPrefixRow, prefixTable } from '../MapperUtils';
 import _ from 'lodash';
 
 export class SourceMapper implements RowWithTablesMapper<Source> {
-  private fieldsMapper: FieldsMapper<Source>;
+  private fieldsMapper: RowWithTablesMapperHelper<Source>;
 
   constructor(
     tagsMapper: TagsMapper,
@@ -30,7 +30,7 @@ export class SourceMapper implements RowWithTablesMapper<Source> {
     private prefixColumns: (keyof Source)[] = [],
     resourceName = 'source',
   ) {
-    this.fieldsMapper = new FieldsMapper<Source>(
+    this.fieldsMapper = new RowWithTablesMapperHelper<Source>(
       {
         tags: tagsMapper,
         languages: languagesMapper,

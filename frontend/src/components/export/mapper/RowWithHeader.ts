@@ -1,8 +1,17 @@
-import { Csvable } from './Csvable';
-import { BasicTable, Cell, Header, HeaderCell, Row, Table } from './Table';
-import { ArrayTable } from './ArrayTable';
+import {
+  ArrayTable,
+  BasicTable,
+  Cell,
+  Header,
+  HeaderCell,
+  Row,
+  Table,
+} from './Table';
 
-export class RowWithHeader implements Csvable, Table {
+/**
+ * A csv row with its header
+ */
+export class RowWithHeader implements Table {
   name: string;
 
   /**
@@ -25,6 +34,9 @@ export class RowWithHeader implements Csvable, Table {
     return this.rowTable.rows[0];
   }
 
+  /**
+   * Freeze to enforce single row
+   */
   get rows(): Row[] {
     return Object.freeze(this.rowTable.rows) as Row[];
   }

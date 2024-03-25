@@ -1,10 +1,11 @@
-import { Csvable } from './Csvable';
-import { ArrayTable } from './ArrayTable';
+import { Csvable } from './toCsv';
 
 export type Cell = string;
 export type HeaderCell = Cell;
 export type Header = HeaderCell[];
 export type Row = Cell[];
+
+export type ArrayTable = Cell[][];
 
 export type Table = Csvable & {
   name: string;

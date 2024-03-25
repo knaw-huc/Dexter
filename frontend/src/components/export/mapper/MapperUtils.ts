@@ -1,7 +1,6 @@
 import { RowWithHeader } from './RowWithHeader';
-import { BasicTable, Table } from './Table';
+import { ArrayTable, BasicTable, Table } from './Table';
 import { WithId } from '../../../model/DexterModel';
-import { ArrayTable } from './ArrayTable';
 import { CellMapper } from './Mapper';
 import { Any } from '../../common/Any';
 import _ from 'lodash';

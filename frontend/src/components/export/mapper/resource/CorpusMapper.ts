@@ -6,14 +6,14 @@ import { LanguagesMapper } from './LanguagesMapper';
 import { MetadataValuesMapper } from './MetadataValuesMapper';
 import { ArrayMapper } from './ArrayMapper';
 import { PrimitiveMapper } from './PrimitiveMapper';
-import { FieldsMapper } from './FieldsMapper';
+import { RowWithTablesMapperHelper } from './RowWithTablesMapperHelper';
 import { ParentMapper } from './ParentMapper';
 import { RowWithTables } from '../RowWithTables';
-import { createPrefixRow, prefixTable } from '../ExportUtils';
+import { createPrefixRow, prefixTable } from '../MapperUtils';
 import _ from 'lodash';
 
 export class CorpusMapper implements RowWithTablesMapper<Corpus> {
-  private fieldsMapper: FieldsMapper<Corpus>;
+  private fieldsMapper: RowWithTablesMapperHelper<Corpus>;
 
   constructor(
     metadataValuesMapper: MetadataValuesMapper,
@@ -26,7 +26,7 @@ export class CorpusMapper implements RowWithTablesMapper<Corpus> {
     private prefixKeys: (keyof Corpus)[] = [],
     resourceName = 'corpus',
   ) {
-    this.fieldsMapper = new FieldsMapper<Corpus>(
+    this.fieldsMapper = new RowWithTablesMapperHelper<Corpus>(
       {
         metadataValues: metadataValuesMapper,
         tags: tagsMapper,
@@ -57,7 +57,7 @@ export class CorpusMapper implements RowWithTablesMapper<Corpus> {
         if (key === 'subcorpora') {
           const found = mapped.find(t => t.name === 'subcorpora');
           if (found) {
-            // Subcorpora table should be merged with corpus table:
+            // Subcorpora should be merged with corpus table:
             found.name = tableName;
           }
         } else {

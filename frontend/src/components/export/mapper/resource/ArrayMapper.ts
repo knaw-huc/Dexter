@@ -1,9 +1,13 @@
-import { RowMapper, RowWithTablesMapper, TablesMapper } from '../Mapper';
+import {
+  isRowWithTables,
+  RowMapper,
+  RowWithTablesMapper,
+  TablesMapper,
+} from '../Mapper';
 import { WithId } from '../../../../model/DexterModel';
 import _ from 'lodash';
 import { BasicTable } from '../Table';
 import { Any } from '../../../common/Any';
-import { isRowWithTables } from '../RowWithTables';
 
 /**
  * Move all mapped resource rows into a single table
@@ -41,8 +45,8 @@ export class ArrayMapper<T extends WithId> implements TablesMapper<T[]> {
       const row = this.resourceMapper.map(resource, tableName);
       if (!_.isEqual(table.header, row.header)) {
         throw Error(`Headers do not match:\n
-          array headers: ${table.header.join(',')}\n
-          row headers:   ${row.header.join(',')}`);
+          table header: ${table.header.join(',')}\n
+          row header:   ${row.header.join(',')}`);
       }
       table.rows.push(row.row);
       if (isRowWithTables(row)) {

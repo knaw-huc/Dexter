@@ -2,11 +2,15 @@ import { BasicTable, Table } from './Table';
 import { RowWithHeader } from './RowWithHeader';
 
 /**
- * Row, and possible tables of child resources
+ * Row of a mapped child resource
+ * including any additional child tables
+ *
+ * E.g. mapping a source results in a sources csv row
+ * and a list of tables of mapped references and media
  */
 export class RowWithTables extends RowWithHeader {
   /**
-   * Child resources that resulted in their own tables
+   * Child resource tables
    */
   tables: BasicTable[];
 
@@ -18,10 +22,4 @@ export class RowWithTables extends RowWithHeader {
   appendTables(toAppend: Table[]) {
     this.tables.push(...toAppend);
   }
-}
-
-export function isRowWithTables(
-  toTest: RowWithHeader,
-): toTest is RowWithTables {
-  return !!(toTest as RowWithTables)?.tables;
 }
