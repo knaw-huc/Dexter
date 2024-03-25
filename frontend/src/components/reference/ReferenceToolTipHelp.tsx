@@ -36,7 +36,7 @@ export function ReferenceToolTipHelp(props: ReferenceToolTipHelpProps) {
             <SpinnerIcon />
           </>
         ) : props.isManaged ? (
-          <OkIcon />
+          <OkIcon sx={{ color: 'green' }} />
         ) : props.isEmpty ? (
           <HelpIcon />
         ) : (
