@@ -3,6 +3,21 @@
 ## [Development](https://github.com/knaw-huc/Dexter/tree/development)
 🧪 Features / ✨ Enhancements / 🔧 Technical / 🐛 Bug Fixes
 
+## [v0.14](https://github.com/knaw-huc/Dexter/releases/tag/v0.13.2)
+### 🧪 Features 
+- Export corpus and its subcorpora, sources, media and references to a zip with csv files
+- Add tooltips to form fields and page headers with descriptions (loaded from backend `assets/labels.json`)
+
+### ✨ Enhancements 
+- On the corpus page in the subcorpora section: show the tags of sources and subcorpora of a corpus   
+- Remove 'restricted' access option
+
+### 🔧 Technical 
+- Introduce zustand to manage the state of corpus and source pages
+
+### 🐛 Bug Fixes
+- Attach a newly created source to its corpus when creating a new source from a corpus page
+
 ## [v0.13](https://github.com/knaw-huc/Dexter/releases/tag/v0.13.2)
 ### 🧪 Features
 - Add references that can be imported using doi of bibtex and can be linked to multiple sources
