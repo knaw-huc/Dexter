@@ -18,6 +18,8 @@ import { FormErrorMessage } from '../common/error/FormError';
 import { FieldError } from '../common/error/FieldError';
 import { TextFieldWithError } from '../common/TextFieldWithError';
 import { useImmer } from 'use-immer';
+import { Hinted } from '../common/Hinted';
+import { fromFormFieldToHint } from '../../LabelStore';
 
 type MediaFormProps = {
   inEdit?: ResultMedia;
@@ -51,6 +53,8 @@ export function MediaForm(props: MediaFormProps) {
       init();
     }
   }, [isInit]);
+
+  const toHint = fromFormFieldToHint('media');
 
   async function createNewMedia() {
     return createMedia(form);
@@ -86,7 +90,7 @@ export function MediaForm(props: MediaFormProps) {
           <FormErrorMessage error={errors.generic} />
           <FieldError error={errors.title} />
           <TextFieldWithError
-            label="Title"
+            label={<Hinted txt="title" hint={toHint('title')} />}
             error={errors.title}
             value={form.title}
             onChange={change => {
@@ -95,7 +99,12 @@ export function MediaForm(props: MediaFormProps) {
           />
 
           <TextFieldWithError
-            label={`Url (${supportedMediaTypes.join(', ')})`}
+            label={
+              <Hinted
+                txt={`Url (${supportedMediaTypes.join(', ')})`}
+                hint={toHint('url')}
+              />
+            }
             error={errors.url}
             value={form.url}
             onChange={change => setForm(f => (f.url = change))}

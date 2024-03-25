@@ -37,7 +37,7 @@ export function ReferenceField(props: ReferenceFieldProps) {
 
   return (
     <>
-      <Label>{props.label || 'Reference'}</Label>
+      {props.label && <Label>{props.label}</Label>}
       <SplitRow
         left={
           <TextFieldStyled

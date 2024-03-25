@@ -13,7 +13,6 @@ import ScrollableModal from '../common/ScrollableModal';
 import { ValidatedSelectField } from '../common/ValidatedSelectField';
 import { SelectSourcesField } from './SelectSourcesField';
 import { TextFieldWithError } from '../common/TextFieldWithError';
-import _ from 'lodash';
 import { CloseInlineIcon } from '../common/CloseInlineIcon';
 import { SubmitButton } from '../common/SubmitButton';
 import { MetadataValueFormFields } from '../metadata/MetadataValueFormFields';
@@ -28,6 +27,8 @@ import { useImmer } from 'use-immer';
 import { add } from '../../utils/immer/add';
 import { remove } from '../../utils/immer/remove';
 import { assign } from '../../utils/immer/assign';
+import { fromFormFieldToHint } from '../../LabelStore';
+import { Hinted } from '../common/Hinted';
 
 type CorpusFormProps = {
   /**
@@ -67,6 +68,8 @@ export function CorpusForm(props: CorpusFormProps) {
 
   useEffect(init, []);
 
+  const toHint = fromFormFieldToHint('corpus');
+
   async function handleSubmit() {
     await submitCorpusForm(form, keys, values);
   }
@@ -95,7 +98,7 @@ export function CorpusForm(props: CorpusFormProps) {
   ) {
     return (
       <TextFieldWithError
-        label={_.capitalize(fieldName)}
+        label={<Hinted txt={fieldName} hint={toHint(fieldName)} />}
         error={errors[fieldName]}
         value={form[fieldName] as string}
         onChange={value => setForm(f => assign(f, { [fieldName]: value }))}
@@ -120,7 +123,7 @@ export function CorpusForm(props: CorpusFormProps) {
           {renderTextField('ethics')}
 
           <ValidatedSelectField<Access>
-            label="Access"
+            label={<Hinted txt="access" hint={toHint('access')} />}
             error={errors.access}
             selectedOption={form.access}
             onSelectOption={access => setForm(f => ({ ...f, access }))}
@@ -134,7 +137,7 @@ export function CorpusForm(props: CorpusFormProps) {
           {renderTextField('notes', { rows: 6, multiline: true })}
 
           <SelectTagField
-            label="Tags"
+            label={<Hinted txt="tags" hint={toHint('tags')} />}
             error={errors.tags}
             selected={form.tags}
             onChangeSelected={tags => setForm(f => ({ ...f, tags }))}
@@ -143,13 +146,14 @@ export function CorpusForm(props: CorpusFormProps) {
           />
 
           <LanguagesField
+            label={<Hinted txt="languages" hint={toHint('languages')} />}
             error={errors.languages}
             selected={form.languages}
             onChangeSelected={languages => setForm(f => ({ ...f, languages }))}
           />
 
           <SelectSourcesField
-            label="Add sources to corpus"
+            label={<Hinted txt="Add sources" hint={toHint('sources')} />}
             error={errors.sources}
             options={props.sourceOptions}
             selected={form.sources}
@@ -159,7 +163,7 @@ export function CorpusForm(props: CorpusFormProps) {
 
           {props.parentOptions && (
             <SelectCorpusField
-              label="Add to main corpus"
+              label={<Hinted txt="Add to corpus" hint={toHint('parent')} />}
               error={errors.parent}
               selected={form.parent}
               options={props.parentOptions}
@@ -169,6 +173,7 @@ export function CorpusForm(props: CorpusFormProps) {
           )}
 
           <MetadataValueFormFields
+            label={<Hinted txt="metadata" hint={toHint('metadata')} />}
             error={errors.metadataValues}
             keys={keys}
             values={values}

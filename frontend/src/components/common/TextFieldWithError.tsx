@@ -1,14 +1,14 @@
-import React from 'react';
-import { Label } from '../common/Label';
-import { FieldError } from '../common/error/FieldError';
+import React, { ReactNode } from 'react';
+import { Label } from './Label';
+import { FieldError } from './error/FieldError';
 import { TextFieldStyled } from './TextFieldStyled';
-import { TextareaFieldProps } from '../common/TextareaFieldProps';
-import { ErrorWithMessage } from '../common/error/ErrorWithMessage';
+import { TextareaFieldProps } from './TextareaFieldProps';
+import { ErrorWithMessage } from './error/ErrorWithMessage';
 import { SxProps } from '@mui/system';
 import { Theme } from '@mui/material/styles';
 
 export type TextFormFieldProps = TextareaFieldProps & {
-  label: string;
+  label: ReactNode;
   error?: ErrorWithMessage;
   value: string | undefined;
   onChange: (change?: string) => void;
@@ -25,7 +25,7 @@ export function TextFieldWithError(props: TextFormFieldProps) {
   const { label, error, onChange, value, ...textFieldProps } = props;
   return (
     <>
-      {props.label && <Label>{label}</Label>}
+      {label && <Label>{label}</Label>}
       {error && <FieldError error={error} />}
       <TextFieldStyled
         {...textFieldProps}

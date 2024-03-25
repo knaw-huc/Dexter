@@ -30,9 +30,7 @@ export function ImportField(props: ImportFieldProps) {
 
   return (
     <div>
-      <Label style={{ textTransform: 'capitalize' }}>
-        {label || 'External reference'}
-      </Label>
+      {label && <Label>{label}</Label>}
 
       <SplitRow
         left={

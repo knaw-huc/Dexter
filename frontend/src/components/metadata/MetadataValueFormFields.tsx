@@ -64,7 +64,7 @@ export function MetadataValueFormFields(props: MetadataValueFormFieldsProps) {
   return (
     <>
       <FormControl fullWidth>
-        <Label>{props.label || 'Metadata'}</Label>
+        {props.label && <Label>{props.label}</Label>}
         <FieldError error={props.error} />
         <SplitRow
           left={

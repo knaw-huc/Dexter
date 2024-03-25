@@ -14,7 +14,6 @@ import { TextFieldWithError } from '../common/TextFieldWithError';
 import { CloseInlineIcon } from '../common/CloseInlineIcon';
 import { SubmitButton } from '../common/SubmitButton';
 import { ImportField } from './ImportField';
-import _ from 'lodash';
 import { MetadataValueFormFields } from '../metadata/MetadataValueFormFields';
 import { isImportableUrl, useImportMetadata } from './useImportMetadata';
 import { useSubmitSourceForm } from './useSubmitSourceForm';
@@ -26,6 +25,8 @@ import { useFormErrors } from '../common/error/useFormErrors';
 import { FormErrorMessage } from '../common/error/FormError';
 import { useImmer } from 'use-immer';
 import { assign } from '../../utils/immer/assign';
+import { Hinted } from '../common/Hinted';
+import { fromFormFieldToHint } from '../../LabelStore';
 
 type SourceFormProps = {
   sourceToEdit?: Source;
@@ -58,6 +59,8 @@ export function SourceForm(props: SourceFormProps) {
 
   useEffect(init, []);
 
+  const toHint = fromFormFieldToHint('source');
+
   async function handleImportMetadata() {
     setForm(await loadImport(form));
   }
@@ -72,7 +75,7 @@ export function SourceForm(props: SourceFormProps) {
   ) {
     return (
       <TextFieldWithError
-        label={_.capitalize(fieldName)}
+        label={<Hinted txt={fieldName} hint={toHint(fieldName)} />}
         error={errors[fieldName]}
         value={form[fieldName] as string}
         onChange={value => setForm(f => assign(f, { [fieldName]: value }))}
@@ -92,6 +95,9 @@ export function SourceForm(props: SourceFormProps) {
       <FormErrorMessage error={errors.generic} />
       <form onSubmit={onSubmit(handleSubmit)}>
         <ImportField
+          label={
+            <Hinted txt={'External reference'} hint={toHint('externalRef')} />
+          }
           error={errors.externalRef}
           value={form.externalRef}
           onChange={externalRef => setForm(f => ({ ...f, externalRef }))}
@@ -107,7 +113,7 @@ export function SourceForm(props: SourceFormProps) {
         {renderFormField('ethics')}
 
         <ValidatedSelectField<Access>
-          label="Access"
+          label={<Hinted txt="access" hint={toHint('access')} />}
           error={errors.access}
           selectedOption={form.access}
           onSelectOption={access => setForm(f => ({ ...f, access }))}
@@ -120,7 +126,7 @@ export function SourceForm(props: SourceFormProps) {
         {renderFormField('notes', { rows: 6, multiline: true })}
 
         <SelectTagField
-          label="Tags"
+          label={<Hinted txt="tags" hint={toHint('tags')} />}
           error={errors.tags}
           selected={form.tags}
           onChangeSelected={tags => setForm(f => ({ ...f, tags }))}
@@ -129,12 +135,14 @@ export function SourceForm(props: SourceFormProps) {
         />
 
         <LanguagesField
+          label={<Hinted txt="languages" hint={toHint('languages')} />}
           error={errors.languages}
           selected={form.languages}
           onChangeSelected={languages => setForm(f => ({ ...f, languages }))}
         />
 
         <MetadataValueFormFields
+          label={<Hinted txt="metadata" hint={toHint('metadata')} />}
           error={errors.metadataValues}
           keys={keys}
           values={form.metadataValues}
@@ -142,6 +150,7 @@ export function SourceForm(props: SourceFormProps) {
         />
 
         <SelectMediaField
+          label={<Hinted txt="media" hint={toHint('media')} />}
           error={errors.media}
           selected={form.media}
           onChangeSelected={media => setForm(f => ({ ...f, media }))}

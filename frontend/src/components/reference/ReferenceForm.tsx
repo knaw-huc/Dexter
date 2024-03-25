@@ -18,6 +18,8 @@ import { useDebounce } from '../../utils/useDebounce';
 import { useLoadReference } from './useLoadReference';
 import { ReferenceStyle } from './ReferenceStyle';
 import { useImmer } from 'use-immer';
+import { Hinted } from '../common/Hinted';
+import { fromFormFieldToHint } from '../../LabelStore';
 
 const referenceSchema = yup.object({
   input: yup.string().required('Reference input cannot be empty'),
@@ -64,6 +66,8 @@ export function ReferenceForm(props: ReferenceFormProps) {
     }
   }, [debouncedInput, props.referenceStyle, initialInput]);
 
+  const toHint = fromFormFieldToHint('reference');
+
   async function handleSubmit() {
     try {
       const toSubmit = { ...form };
@@ -83,6 +87,7 @@ export function ReferenceForm(props: ReferenceFormProps) {
           <FormErrorMessage error={errors.generic} />
           <FieldError error={errors.input} />
           <ReferenceField
+            label={<Hinted txt="references" hint={toHint('reference')} />}
             toEdit={form}
             onChange={input => setForm(f => ({ ...f, input }))}
             referenceStyle={props.referenceStyle}

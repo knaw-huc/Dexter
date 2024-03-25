@@ -1,9 +1,10 @@
 import { ErrorWithMessage } from './error/ErrorWithMessage';
+import { ReactNode } from 'react';
 
 /**
  * Form field are capable to display custom labels and errors
  */
 export type FormFieldprops = {
-  label?: string;
+  label?: ReactNode;
   error?: ErrorWithMessage;
 };

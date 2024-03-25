@@ -26,7 +26,7 @@ export function LanguagesField(props: LanguagesFieldProps) {
 
   return (
     <>
-      <Label>{props.label || 'Languages'}</Label>
+      {props.label && <Label>{props.label}</Label>}
       <MultiAutocomplete<ResultLanguage>
         placeholder="Search and select languages"
         selected={props.selected}
