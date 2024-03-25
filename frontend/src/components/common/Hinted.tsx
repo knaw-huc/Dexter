@@ -3,6 +3,7 @@ import React from 'react';
 import { LabelKey, useLabelStore } from '../../LabelStore';
 import styled from '@emotion/styled';
 import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
+import _ from 'lodash';
 
 const HintIcon = styled(HelpOutlineOutlinedIcon)`
   position: relative;
@@ -17,7 +18,7 @@ export function Hinted(props: { txt: string; hint: LabelKey | string }) {
 
   return (
     <>
-      {props.txt}
+      {_.capitalize(props.txt)}
       <Tooltip title={getLabel(props.hint as LabelKey)}>
         <HintIcon />
       </Tooltip>
