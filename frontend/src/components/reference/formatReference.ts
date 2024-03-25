@@ -1,8 +1,8 @@
 import Cite from 'citation-js';
 import { ReferenceStyle } from './ReferenceStyle';
 import { ReferenceType } from './ReferenceType';
-import { api, assets } from '../../model/Resources';
 import { ReferenceFormat } from './ReferenceFormat';
+import { getAssetValidated } from '../../utils/API';
 
 const init = initReferenceStyle('chicago', 'chicago-note-bibliography.xml');
 
@@ -36,13 +36,11 @@ export function formatReference(
 }
 
 /**
- * Source: https://github.com/larsgw/reference.js/issues/204#issuecomment-699048488
+ * Source: https://github.com/larsgw/citation.js/issues/204#issuecomment-699048488
  */
 async function initReferenceStyle(styleName: string, cslFilename: string) {
   const styleConfig = Cite.plugins.config.get('@csl');
-  const response = await fetch(
-    `${window.location.origin}/${api}/${assets}/${cslFilename}`,
-  );
+  const response = await getAssetValidated(cslFilename);
   const csl = await response.text();
   styleConfig.templates.add(styleName, csl);
 }

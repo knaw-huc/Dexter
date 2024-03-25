@@ -34,7 +34,7 @@ export function LoginAvatar() {
             new Error('Could not login: username & password incorrect'),
           );
         } else {
-          throwSync(new Error('Error while logging in'));
+          throwSync(new Error('Could not login'));
         }
       });
   }

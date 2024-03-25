@@ -24,6 +24,7 @@ import {
 } from '../model/Resources';
 import { Version } from './Version';
 import { useImmer } from 'use-immer';
+import ErrorBoundary from './common/error/ErrorBoundary';
 
 const pages = [corpora, sources, tags, metadata, media, references];
 const settings: JSX.Element[] = [<Version key={1} />];
@@ -70,7 +71,13 @@ export default function Header() {
                 </Button>
               ))}
           </Box>
-          {user.userState.username ? <UserMenu /> : <LoginAvatar />}
+          {user.userState.username ? (
+            <UserMenu />
+          ) : (
+            <ErrorBoundary>
+              <LoginAvatar />
+            </ErrorBoundary>
+          )}
         </Toolbar>
       </Container>
     </AppBar>

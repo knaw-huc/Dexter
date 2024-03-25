@@ -33,6 +33,7 @@ import {
   user,
   values,
   withResources,
+  assets,
 } from '../model/Resources';
 import { ErrorWithMessage } from '../components/common/error/ErrorWithMessage';
 import { Any } from '../components/common/Any';
@@ -51,7 +52,7 @@ export type ResponseErrorParams = {
 
 export class ResponseError extends Error {
   response: Response;
-  json: ErrorWithMessage;
+  body: ErrorWithMessage;
   private constructor() {
     super();
   }
@@ -61,14 +62,18 @@ export class ResponseError extends Error {
     const statusPrefix = statusText ? statusText + ': ' : '';
     e.message = `${statusPrefix}request to ${url} failed with ${status}`;
     e.name = this.constructor.name;
-    e.response = params.response;
-    e.json = await params.response.json();
+    e.response = params.response.clone();
+    try {
+      e.body = await params.response.clone().json();
+    } catch (e) {
+      e.body = { message: await params.response.clone().text() };
+    }
     return e;
   }
 }
 
 export async function toReadable(prefixMessage: string, e: ResponseError) {
-  return { message: `${prefixMessage}: ${e.json.message}` };
+  return { message: `${prefixMessage}: ${e.body.message}` };
 }
 
 async function getValidated(path: string, params?: Record<string, string>) {
@@ -119,6 +124,16 @@ async function deleteValidated(url: string): Promise<void> {
     headers: headers,
   });
   await validateResponse({ response });
+}
+
+export async function getAssetValidated(
+  cslFilename: string,
+): Promise<Response> {
+  const response = await fetch(
+    `${window.location.origin}/${api}/${assets}/${cslFilename}`,
+  );
+  await validateResponse({ response });
+  return response;
 }
 
 /**

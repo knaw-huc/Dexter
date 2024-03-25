@@ -49,7 +49,7 @@ export function useFormErrors<T>(): UseFormErrorsResult<T> {
     if (!error) {
       clearErrors();
     } else if (isResponseError(error)) {
-      const responseError = error.json;
+      const responseError = error.body;
       const constraints = _.entries(constraintToError);
       for (const [constraint, { field, error }] of constraints) {
         if (responseError.message.includes(constraint)) {
