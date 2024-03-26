@@ -3,15 +3,16 @@ import IconButton from '@mui/material/IconButton';
 import Avatar from '@mui/material/Avatar';
 import LoginIcon from '@mui/icons-material/Login';
 import * as React from 'react';
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import { login } from '../utils/API';
-import { userContext } from '../state/user/userContext';
 import { useThrowSync } from './common/error/useThrowSync';
 import { useImmer } from 'use-immer';
+import { useUserStore } from '../state/UserStore';
+import { isResponseError } from './common/isResponseError';
 
 export function LoginAvatar() {
   const [isLoggingIn, setLoggingIn] = useImmer(false);
-  const { dispatchUser } = useContext(userContext);
+  const { setUser } = useUserStore();
   const throwSync = useThrowSync();
 
   useEffect(() => {
@@ -27,9 +28,9 @@ export function LoginAvatar() {
 
   function tryLogin() {
     login()
-      .then(r => dispatchUser({ username: r.name }))
+      .then(user => setUser(user))
       .catch(e => {
-        if (e.response.status === 401) {
+        if (isResponseError(e) && e.response.status === 401) {
           throwSync(
             new Error('Could not login: username & password incorrect'),
           );

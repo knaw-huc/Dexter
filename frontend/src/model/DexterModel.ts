@@ -1,4 +1,5 @@
 import { Any } from '../components/common/Any';
+import { ReferenceStyle } from '../components/reference/ReferenceStyle';
 
 export type UUID = string;
 /**
@@ -246,4 +247,17 @@ export type WithId<T extends ID = UUID> = {
 
 export function isWithId(resource: Any): resource is WithId {
   return !!(resource as WithId).id;
+}
+
+export type UserSettings = {
+  referenceStyle: ReferenceStyle;
+};
+
+export type User = {
+  name: string;
+  settings: UserSettings;
+};
+
+export function isUser(toTest: Any): toTest is User {
+  return !!((toTest as User).name && (toTest as User).settings);
 }

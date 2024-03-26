@@ -1,7 +1,15 @@
 import React, { useEffect } from 'react';
-import { Reference, ResultReference } from '../../model/DexterModel';
+import {
+  Reference,
+  ResultReference,
+  UserSettings,
+} from '../../model/DexterModel';
 import { ReferenceListItem } from './ReferenceListItem';
-import { deleteReference, getReferences } from '../../utils/API';
+import {
+  deleteReference,
+  getReferences,
+  updateUserSettings,
+} from '../../utils/API';
 import { AddNewResourceButton } from '../common/AddNewResourceButton';
 import { List } from '@mui/material';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
@@ -9,17 +17,19 @@ import { ReferenceIcon } from './ReferenceIcon';
 import { useThrowSync } from '../common/error/useThrowSync';
 import { ReferenceForm } from './ReferenceForm';
 import ErrorBoundary from '../common/error/ErrorBoundary';
-import { defaultReferenceStyle } from './ReferenceStyle';
+import { ReferenceStyle } from './ReferenceStyle';
 import { useImmer } from 'use-immer';
 import { HintedTitle } from '../common/HintedTitle';
+import { ValidatedSelectField } from '../common/ValidatedSelectField';
+import { useUserStore } from '../../state/UserStore';
 
 export function ReferenceIndex() {
   const [references, setReferences] = useImmer<ResultReference[]>([]);
   const [showForm, setShowForm] = useImmer(false);
   const [referenceToEdit, setReferenceToEdit] = useImmer<ResultReference>(null);
-  const referenceStyle = defaultReferenceStyle;
 
   const throwSync = useThrowSync();
+  const { user, getReferenceStyle, setUser } = useUserStore();
 
   useEffect(() => {
     getReferences().then(setReferences).catch(throwSync);
@@ -65,18 +75,40 @@ export function ReferenceIndex() {
   if (!references) {
     return null;
   }
+  const selectedStyle = getReferenceStyle();
+
+  async function handleSelectReferenceStyle(selected: ReferenceStyle) {
+    const update: UserSettings = { ...user.settings, referenceStyle: selected };
+    try {
+      await updateUserSettings(update);
+    } catch (e) {
+      throwSync(e);
+    }
+    setUser(user => void (user.settings = update));
+  }
+
   return (
     <>
       <div>
         <HeaderBreadCrumb />
 
-        <div style={{ float: 'right' }}>
-          <AddNewResourceButton
-            title="New reference"
-            onClick={() => setShowForm(true)}
-          />
-        </div>
-
+        <AddNewResourceButton
+          title="New"
+          onClick={() => setShowForm(true)}
+          sx={{ marginRight: '1em', float: 'right' }}
+        />
+        <ValidatedSelectField<ReferenceStyle>
+          placeholder="Select your reference style"
+          selectedOption={selectedStyle}
+          onSelectOption={handleSelectReferenceStyle}
+          options={Object.values(ReferenceStyle)}
+          sx={{
+            marginRight: '1em',
+            float: 'right',
+            width: '10em',
+          }}
+          size="small"
+        />
         <h1>
           <ReferenceIcon />
           <HintedTitle title="references" hint="referenceIndex" />
@@ -87,7 +119,7 @@ export function ReferenceIndex() {
           inEdit={referenceToEdit}
           onClose={handleCloseReference}
           onSaved={handleSavedReference}
-          referenceStyle={referenceStyle}
+          referenceStyle={selectedStyle}
         />
       )}
       {references && (
@@ -99,7 +131,7 @@ export function ReferenceIndex() {
                 reference={reference}
                 onDelete={() => handleDelete(reference)}
                 onEdit={() => handleEdit(reference)}
-                referenceStyle={referenceStyle}
+                referenceStyle={selectedStyle}
               />
             </ErrorBoundary>
           ))}

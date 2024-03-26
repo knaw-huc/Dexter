@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { useContext } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -11,7 +10,6 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import ScienceIcon from '@mui/icons-material/Science';
-import { userContext } from '../state/user/userContext';
 import { useNavigate } from 'react-router-dom';
 import { LoginAvatar } from './LoginAvatar';
 import {
@@ -25,13 +23,14 @@ import {
 import { Version } from './Version';
 import { useImmer } from 'use-immer';
 import ErrorBoundary from './common/error/ErrorBoundary';
+import { useUserStore } from '../state/UserStore';
 
 const pages = [corpora, sources, tags, metadata, media, references];
 const settings: JSX.Element[] = [<Version key={1} />];
 
 export default function Header() {
   const navigate = useNavigate();
-  const user = useContext(userContext);
+  const { user } = useUserStore();
 
   return (
     <AppBar position="static">
@@ -60,7 +59,7 @@ export default function Header() {
             DEXTER
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {user.userState.username &&
+            {user?.name &&
               pages.map(page => (
                 <Button
                   key={page}
@@ -71,13 +70,9 @@ export default function Header() {
                 </Button>
               ))}
           </Box>
-          {user.userState.username ? (
-            <UserMenu />
-          ) : (
-            <ErrorBoundary>
-              <LoginAvatar />
-            </ErrorBoundary>
-          )}
+          <ErrorBoundary>
+            {user?.name ? <UserMenu /> : <LoginAvatar />}
+          </ErrorBoundary>
         </Toolbar>
       </Container>
     </AppBar>
@@ -85,7 +80,7 @@ export default function Header() {
 }
 
 function UserMenu() {
-  const username = useContext(userContext).userState.username;
+  const { user } = useUserStore();
 
   const [anchorElUser, setAnchorElUser] = useImmer<HTMLElement>(null);
   const handleCloseUserMenu = () => {
@@ -96,10 +91,13 @@ function UserMenu() {
     setAnchorElUser(event.currentTarget);
   };
 
+  if (!user) {
+    return null;
+  }
   return (
     <Box sx={{ flexGrow: 0 }}>
       <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-        <Avatar>{username[0].toUpperCase()}</Avatar>
+        <Avatar>{user.name[0].toUpperCase()}</Avatar>
       </IconButton>
       <Menu
         sx={{ mt: '45px' }}
@@ -118,7 +116,7 @@ function UserMenu() {
         onClose={handleCloseUserMenu}
       >
         <MenuItem style={{ cursor: 'default', borderBottom: '1px solid #ccc' }}>
-          <Typography textAlign="center">{username}</Typography>
+          <Typography textAlign="center">{user.name}</Typography>
         </MenuItem>
         {settings.map((setting, i) => (
           <MenuItem key={i} onClick={handleCloseUserMenu}>

@@ -18,6 +18,8 @@ import {
   Source,
   SupportedMediaTypeType,
   UUID,
+  UserSettings,
+  User,
 } from '../model/DexterModel';
 import { validateResponse } from './validateResponse';
 import _ from 'lodash';
@@ -327,11 +329,11 @@ export const postImport = async (url: URL): Promise<ResultImport> =>
  * User:
  */
 
-export type LoginResponse = {
-  name: string;
-};
-export const login = async (): Promise<LoginResponse> =>
+export const login = async (): Promise<User> =>
   postValidated(`/${api}/${user}/login`);
+export const updateUserSettings = async (
+  userSettings: UserSettings,
+): Promise<void> => putValidated(`/${api}/${user}`, userSettings);
 
 /**
  * Metadata:

@@ -5,6 +5,7 @@ import SupportedMediaType
 import SupportedMediaTypeSerializer
 import UnauthorizedExceptionMapper
 import UserResource
+import UserSettingsHelper
 import WereldCulturenDublinCoreImporter
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
@@ -104,8 +105,7 @@ class DexterApplication : Application<DexterConfiguration>() {
             register(MetadataValuesResource(jdbi))
             register(SourcesResource(jdbi))
             register(TagsResource(jdbi))
-            register(UserResource())
-
+            register(UserResource(jdbi, UserSettingsHelper(environment.objectMapper, jdbi)))
             register(JsonProcessingExceptionWithIdMapper())
             register(UnauthorizedExceptionMapper())
         }

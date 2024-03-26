@@ -2,11 +2,7 @@ import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.JsonSerializer
 import com.fasterxml.jackson.databind.SerializerProvider
 import nl.knaw.huc.dexter.db.MediaDao
-import org.jdbi.v3.core.mapper.ColumnMapper
-import org.jdbi.v3.core.statement.StatementContext
 import java.io.IOException
-import java.sql.ResultSet
-import java.sql.SQLException
 import java.time.format.DateTimeParseException
 
 /**

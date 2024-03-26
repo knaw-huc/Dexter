@@ -16,16 +16,16 @@ import { ExternalLink } from '../common/ExternalLink';
 import { useThrowSync } from '../common/error/useThrowSync';
 import { SourceMedia } from './SourceMedia';
 import { SourceReferences } from './SourceReferences';
-import { defaultReferenceStyle } from '../reference/ReferenceStyle';
 import { useImmer } from 'use-immer';
 import { DeleteButton } from '../common/DeleteButton';
 import { useDeleteSource } from './useDeleteSource';
 import { useSourcePageStore } from './SourcePageStore';
 import { HintedTitle } from '../common/HintedTitle';
+import { useUserStore } from '../../state/UserStore';
 
 export const SourcePage = () => {
   const sourceId = useParams().sourceId;
-  const referenceStyle = defaultReferenceStyle;
+  const referenceStyle = useUserStore().getReferenceStyle();
   const { source, setSource } = useSourcePageStore();
 
   const [showForm, setShowForm] = useImmer(false);
