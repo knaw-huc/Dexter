@@ -4,8 +4,8 @@ import { CreateIconStyled } from './CreateIconStyled';
 import { SxProps } from '@mui/system';
 import { Theme } from '@mui/material/styles';
 
-export function AddNewResourceButton(props: {
-  title: string;
+export function AddNewButton(props: {
+  title?: string;
   onClick: () => void;
   sx?: SxProps<Theme>;
 }) {
@@ -17,7 +17,7 @@ export function AddNewResourceButton(props: {
       sx={props.sx}
     >
       <CreateIconStyled />
-      {props.title}
+      {props.title || 'New'}
     </ButtonWithIcon>
   );
 }

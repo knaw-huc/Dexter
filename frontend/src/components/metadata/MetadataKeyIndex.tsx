@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { getMetadataKeys } from '../../utils/API';
 import { ResultMetadataKey } from '../../model/DexterModel';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
-import { AddNewResourceButton } from '../common/AddNewResourceButton';
+import { AddNewButton } from '../common/AddNewButton';
 import { MetadataKeyListItem } from './MetadataKeyListItem';
 import { MetadataKeyForm } from './MetadataKeyForm';
 import { MetadataKeyIcon } from './MetadataKeyIcon';
@@ -52,10 +52,7 @@ export function MetadataKeyIndex() {
         <HeaderBreadCrumb />
 
         <div style={{ float: 'right' }}>
-          <AddNewResourceButton
-            title="New metadata field"
-            onClick={() => setFormOpen(true)}
-          />
+          <AddNewButton onClick={() => setFormOpen(true)} />
         </div>
 
         <h1>

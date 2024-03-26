@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { image, ResultMedia } from '../../model/DexterModel';
 import { MediaPreview } from './MediaPreview';
 import { MediaForm } from './MediaForm';
-import { AddNewResourceButton } from '../common/AddNewResourceButton';
+import { AddNewButton } from '../common/AddNewButton';
 import { Grid } from '@mui/material';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
 import { deleteMedia, getMedia } from '../../utils/API';
@@ -66,10 +66,7 @@ export function MediaIndex() {
         <HeaderBreadCrumb />
 
         <div style={{ float: 'right' }}>
-          <AddNewResourceButton
-            title="New media"
-            onClick={() => setShowForm(true)}
-          />
+          <AddNewButton onClick={() => setShowForm(true)} />
         </div>
 
         <h1>

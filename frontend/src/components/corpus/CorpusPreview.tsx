@@ -48,7 +48,7 @@ export function CorpusPreview(props: CorpusPreviewProps) {
       <CardHeaderImage src={headerImage} onClick={navigateToCorpus} />
       <CardContent style={{ height: '100%', paddingBottom: '1em' }}>
         <Grid container>
-          <Grid item sx={{ maxHeight: '130px', minHeight: '90px' }} xs={12}>
+          <Grid item sx={{ maxHeight: '130px' }} xs={12}>
             {props.onUnlink && <CloseInlineIcon onClick={props.onUnlink} />}
             <HeaderLinkClamped onClick={navigateToCorpus}>
               <CorpusIcon />

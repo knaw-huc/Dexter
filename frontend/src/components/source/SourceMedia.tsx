@@ -1,7 +1,7 @@
 import { H2Styled } from '../common/H2Styled';
 import { MediaIcon } from '../media/MediaIcon';
 import { Grid } from '@mui/material';
-import { AddNewResourceButton } from '../common/AddNewResourceButton';
+import { AddNewButton } from '../common/AddNewButton';
 import { SelectExistingResourceButton } from './SelectExistingResourceButton';
 import { MediaPreview } from '../media/MediaPreview';
 import React from 'react';
@@ -73,10 +73,7 @@ export function SourceMedia() {
       </H2Styled>
       <Grid container spacing={2}>
         <Grid item xs={6} md={4}>
-          <AddNewResourceButton
-            title="New media"
-            onClick={() => setShowMediaForm(true)}
-          />
+          <AddNewButton onClick={() => setShowMediaForm(true)} />
           <SelectExistingResourceButton
             title="Existing media"
             onClick={() => setShowSelectMediaForm(true)}

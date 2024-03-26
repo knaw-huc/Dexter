@@ -1,7 +1,7 @@
 import { H2Styled } from '../common/H2Styled';
 import { CorpusIcon } from './CorpusIcon';
 import { Grid } from '@mui/material';
-import { AddNewResourceButton } from '../common/AddNewResourceButton';
+import { AddNewButton } from '../common/AddNewButton';
 import { SelectExistingResourceButton } from '../source/SelectExistingResourceButton';
 import { TagsFilter } from '../tag/TagsFilter';
 import { CorpusPreview } from './CorpusPreview';
@@ -88,10 +88,7 @@ export function CorpusSubcorpora() {
       </H2Styled>
       <Grid container spacing={2}>
         <Grid item xs={6} md={4}>
-          <AddNewResourceButton
-            title="New corpus"
-            onClick={() => setShowSubcorpusForm(true)}
-          />
+          <AddNewButton onClick={() => setShowSubcorpusForm(true)} />
           <SelectExistingResourceButton
             title="Existing corpus"
             onClick={() => setShowSelectSubcorpusForm(true)}

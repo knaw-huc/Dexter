@@ -10,7 +10,7 @@ import {
   getReferences,
   updateUserSettings,
 } from '../../utils/API';
-import { AddNewResourceButton } from '../common/AddNewResourceButton';
+import { AddNewButton } from '../common/AddNewButton';
 import { List } from '@mui/material';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
 import { ReferenceIcon } from './ReferenceIcon';
@@ -92,8 +92,7 @@ export function ReferenceIndex() {
       <div>
         <HeaderBreadCrumb />
 
-        <AddNewResourceButton
-          title="New"
+        <AddNewButton
           onClick={() => setShowForm(true)}
           sx={{ marginRight: '1em', float: 'right' }}
         />

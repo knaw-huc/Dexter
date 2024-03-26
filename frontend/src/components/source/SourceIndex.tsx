@@ -3,7 +3,7 @@ import { Source } from '../../model/DexterModel';
 import { SourceListItem } from './SourceListItem';
 import { getSourcesWithResources } from '../../utils/API';
 import { SourceForm } from './SourceForm';
-import { AddNewResourceButton } from '../common/AddNewResourceButton';
+import { AddNewButton } from '../common/AddNewButton';
 import { List } from '@mui/material';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
 import { SourceIcon } from './SourceIcon';
@@ -61,10 +61,7 @@ export function SourceIndex() {
         <HeaderBreadCrumb />
 
         <div style={{ float: 'right' }}>
-          <AddNewResourceButton
-            title="New source"
-            onClick={() => setShowForm(true)}
-          />
+          <AddNewButton onClick={() => setShowForm(true)} />
         </div>
 
         <h1>

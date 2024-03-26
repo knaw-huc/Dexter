@@ -6,8 +6,6 @@ import {
   getCorporaWithResources,
   getSourcesWithResources,
 } from '../../utils/API';
-import { AddIconStyled } from '../common/AddIconStyled';
-import { ButtonWithIcon } from '../common/ButtonWithIcon';
 import { Grid } from '@mui/material';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
 import { CorpusIcon } from './CorpusIcon';
@@ -15,6 +13,7 @@ import { useThrowSync } from '../common/error/useThrowSync';
 import { useImmer } from 'use-immer';
 import { add } from '../../utils/immer/add';
 import { HintedTitle } from '../common/HintedTitle';
+import { AddNewButton } from '../common/AddNewButton';
 
 export function CorpusIndex() {
   const [corpora, setCorpora] = useImmer<Corpus[]>([]);
@@ -49,10 +48,7 @@ export function CorpusIndex() {
         <HeaderBreadCrumb></HeaderBreadCrumb>
 
         <div style={{ float: 'right' }}>
-          <ButtonWithIcon variant="contained" onClick={() => setShowForm(true)}>
-            <AddIconStyled />
-            Corpus
-          </ButtonWithIcon>
+          <AddNewButton onClick={() => setShowForm(true)} />
         </div>
         <h1>
           <CorpusIcon />
