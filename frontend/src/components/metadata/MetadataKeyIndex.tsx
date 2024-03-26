@@ -61,16 +61,15 @@ export function MetadataKeyIndex() {
         </h1>
       </div>
 
-      <ErrorBoundary>
-        {keys?.map((key, i) => (
+      {keys?.map((key, i) => (
+        <ErrorBoundary key={i}>
           <MetadataKeyListItem
-            key={i}
             metadataKey={key}
             onDeleted={() => setKeys(keys.filter(k => k.id !== key.id))}
             onEditClick={() => handleEditClick(key)}
           />
-        ))}
-      </ErrorBoundary>
+        </ErrorBoundary>
+      ))}
       {isFormOpen && (
         <MetadataKeyForm
           inEdit={toEdit}

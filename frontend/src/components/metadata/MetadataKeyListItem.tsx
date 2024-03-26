@@ -8,6 +8,7 @@ import { DeleteIcon } from '../common/icon/DeleteIcon';
 import { MetadataKeyIcon } from './MetadataKeyIcon';
 import { ListItemButtonStyled } from '../common/ListItemButtonStyled';
 import { useThrowSync } from '../common/error/useThrowSync';
+import { isResponseError } from '../common/isResponseError';
 
 type MetadataKeyItemProps = {
   metadataKey: ResultMetadataKey;
@@ -28,7 +29,12 @@ export const MetadataKeyListItem = (props: MetadataKeyItemProps) => {
 
     await deleteMetadataKey(props.metadataKey.id)
       .then(props.onDeleted)
-      .catch(throwSync);
+      .catch(e => {
+        const msg =
+          'Could not delete metadata field: ' +
+          (isResponseError(e) ? e.body.message : e.message);
+        throwSync(Error(msg));
+      });
   }
 
   function handleEditClick(e: ChangeEvent<HTMLInputElement>) {
