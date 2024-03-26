@@ -6,10 +6,10 @@ import { FormFieldprops } from '../common/FormFieldProps';
 import { Label } from '../common/Label';
 import { FieldError } from '../common/error/FieldError';
 import { ReferenceStyle } from './ReferenceStyle';
-import { FormattedReference } from './FormattedReference';
 import { formatReference } from './formatReference';
 import { ReferenceType } from './ReferenceType';
 import { ReferenceFormat } from './ReferenceFormat';
+import { ListItemText } from '@mui/material';
 
 export type SelectReferenceFieldProps = FormFieldprops & {
   selected: Reference[];
@@ -31,12 +31,13 @@ export const SelectReferenceField = (props: SelectReferenceFieldProps) => {
   }
 
   function toSelectedLabel(reference: Reference): JSX.Element {
-    return (
-      <FormattedReference
-        reference={reference}
-        referenceStyle={props.referenceStyle}
-      />
+    const formatted = formatReference(
+      reference.csl,
+      props.referenceStyle,
+      ReferenceType.bibliography,
+      ReferenceFormat.text,
     );
+    return <ListItemText>{formatted}</ListItemText>;
   }
 
   function toStringLabel(reference: Reference): string {

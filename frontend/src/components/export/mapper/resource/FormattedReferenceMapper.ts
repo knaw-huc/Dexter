@@ -6,7 +6,9 @@ import { ReferenceType } from '../../../reference/ReferenceType';
 import { CslString, isCsl } from '../../../reference/CslJson';
 import { ReferenceFormat } from '../../../reference/ReferenceFormat';
 
-export class FormattedReferencemapper implements CellMapper<CslString> {
+export class FormattedReferenceMapper implements CellMapper<CslString> {
+  constructor(private refererenceStyle: ReferenceStyle) {}
+
   canMap(resources: Any): resources is CslString {
     return isCsl(resources);
   }
@@ -14,7 +16,7 @@ export class FormattedReferencemapper implements CellMapper<CslString> {
   map(csl: CslString): string {
     return formatReference(
       csl,
-      ReferenceStyle.apa,
+      this.refererenceStyle,
       ReferenceType.bibliography,
       ReferenceFormat.text,
     );

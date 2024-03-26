@@ -12,27 +12,28 @@ import _ from 'lodash';
 import { Table } from './Table';
 import { mergeTables } from './MapperUtils';
 import { ReferenceMapper } from './resource/ReferenceMapper';
-import { FormattedReferencemapper } from './resource/FormattedReferencemapper';
+import { FormattedReferenceMapper } from './resource/FormattedReferenceMapper';
 import { PrimitiveMapper } from './resource/PrimitiveMapper';
 import { ParentMapper } from './resource/ParentMapper';
+import { ReferenceStyle } from '../../reference/ReferenceStyle';
 
 export class MainMapper implements TablesMapper<WithId> {
   name: string;
 
   private mappers: Record<string, RowWithTablesMapper<WithId>> = {};
 
-  constructor(keys: string[]) {
+  constructor(allMetadataKeys: string[], referenceStyle: ReferenceStyle) {
     const primitiveMapper = new PrimitiveMapper();
     const mediaItemMapper = new MediaMapper(primitiveMapper, [
       'createdBy',
       'mediaType',
     ]);
     const mediaListMapper = new ArrayMapper(mediaItemMapper);
-    const metadataValuesMapper = new MetadataValuesMapper(keys);
+    const metadataValuesMapper = new MetadataValuesMapper(allMetadataKeys);
     const tagsMapper = new TagsMapper();
     const languagesMapper = new LanguagesMapper();
     const referenceMapper = new ReferenceMapper(
-      new FormattedReferencemapper(),
+      new FormattedReferenceMapper(referenceStyle),
       primitiveMapper,
     );
     const referencesMapper = new ArrayMapper(referenceMapper);
@@ -62,9 +63,12 @@ export class MainMapper implements TablesMapper<WithId> {
     this.mappers.corpus = corpusMapper;
   }
 
-  public static async init() {
+  public static async init(referenceStyle: ReferenceStyle) {
     const keys = await getMetadataKeys();
-    return new MainMapper(keys.map(k => k.key));
+    return new MainMapper(
+      keys.map(k => k.key),
+      referenceStyle,
+    );
   }
 
   canMap(resource: WithId): resource is WithId {

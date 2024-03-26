@@ -20,12 +20,6 @@ type ReferenceFieldProps = FormFieldprops & {
   isLoading: boolean;
 };
 
-/**
- *  TODO: v2:
- *   - create user config
- *   - use styling stored in user config
- *   - add style selector on index page that modifies styling in user config
- **/
 export function ReferenceField(props: ReferenceFieldProps) {
   const toEdit = props.toEdit;
   const isLoading = props.isLoading;

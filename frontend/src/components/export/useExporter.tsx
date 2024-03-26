@@ -6,6 +6,7 @@ import { MainMapper } from './mapper/MainMapper';
 import { toCsv } from './mapper/toCsv';
 import { useEffect } from 'react';
 import { useThrowSync } from '../common/error/useThrowSync';
+import { useUserStore } from '../../state/UserStore';
 
 export function useExporter(params: { handleError: (error: Error) => void }): {
   runExport: (toExport: Exportable) => void;
@@ -14,9 +15,10 @@ export function useExporter(params: { handleError: (error: Error) => void }): {
   const [isExporting, setExporting] = useImmer(false);
   const [mapper, setMapper] = useImmer<MainMapper>(null);
   const throwSync = useThrowSync();
+  const referenceStyle = useUserStore().getReferenceStyle();
 
   useEffect(() => {
-    MainMapper.init().then(setMapper).catch(throwSync);
+    MainMapper.init(referenceStyle).then(setMapper).catch(throwSync);
   }, []);
 
   async function runExport(toExport: Exportable) {
