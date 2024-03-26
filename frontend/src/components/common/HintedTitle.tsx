@@ -3,7 +3,6 @@ import React from 'react';
 import { toTitleHint, useLabelStore } from '../../LabelStore';
 import styled from '@emotion/styled';
 import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
-import _ from 'lodash';
 
 const HintIcon = styled(HelpOutlineOutlinedIcon)`
   position: relative;
@@ -19,7 +18,7 @@ export function HintedTitle(props: { title: string; hint?: string }) {
 
   return (
     <>
-      {_.capitalize(props.title)}
+      {props.title}
       <Tooltip title={getLabel(toTitleHint(props.hint ?? props.title))}>
         <HintIcon />
       </Tooltip>
