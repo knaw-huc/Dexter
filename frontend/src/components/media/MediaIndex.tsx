@@ -71,7 +71,7 @@ export function MediaIndex() {
 
         <h1>
           <MediaIcon />
-          <HintedTitle title="media" hint="mediaIndex" />
+          <HintedTitle title="Media" hint="mediaIndex" />
         </h1>
       </div>
       {showForm && (

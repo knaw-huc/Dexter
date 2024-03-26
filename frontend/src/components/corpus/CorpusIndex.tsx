@@ -52,7 +52,7 @@ export function CorpusIndex() {
         </div>
         <h1>
           <CorpusIcon />
-          <HintedTitle title="corpora" hint="corpusIndex" />
+          <HintedTitle title="Corpora" hint="corpusIndex" />
         </h1>
       </div>
       {showForm && (

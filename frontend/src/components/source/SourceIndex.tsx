@@ -66,7 +66,7 @@ export function SourceIndex() {
 
         <h1>
           <SourceIcon />
-          <HintedTitle title="sources" hint="sourceIndex" />
+          <HintedTitle title="Sources" hint="sourceIndex" />
         </h1>
       </div>
       {showForm && (

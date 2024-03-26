@@ -34,7 +34,7 @@ export const TagIndex = () => {
       <HeaderBreadCrumb />
       <h1>
         <TagIcon />
-        <HintedTitle title="tags" hint="tagIndex" />
+        <HintedTitle title="Tags" hint="tagIndex" />
       </h1>
       <TagForm onSaved={newTag => setTags(t => [...t, newTag])} />
       <div style={{ marginTop: '1em' }}>

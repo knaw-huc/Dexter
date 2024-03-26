@@ -110,7 +110,7 @@ export function ReferenceIndex() {
         />
         <h1>
           <ReferenceIcon />
-          <HintedTitle title="references" hint="referenceIndex" />
+          <HintedTitle title="References" hint="referenceIndex" />
         </h1>
       </div>
       {showForm && (
