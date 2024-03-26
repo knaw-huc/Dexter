@@ -33,7 +33,7 @@ export function SourceReferences(props: { referenceStyle: ReferenceStyle }) {
 
   async function handleUnlinkReference(reference: ResultReference) {
     const warning = window.confirm(
-      'Are you sure you wish to remove this reference?',
+      'Are you sure you wish to remove this reference from this source?',
     );
     if (warning === false) return;
 
