@@ -14,11 +14,12 @@ object ResourcePaths {
     const val TAGS = "tags"
     const val USER = "user"
     const val WERELDCULTUREN = "wereldculturen"
-    // sub paths
     const val USERS = "users"
 
+    // sub paths
     const val AUTOCOMPLETE = "autocomplete"
     const val LOGIN = "login"
+    const val SETTINGS = "settings"
     const val KEYS = "keys"
     const val VALUES = "values"
 

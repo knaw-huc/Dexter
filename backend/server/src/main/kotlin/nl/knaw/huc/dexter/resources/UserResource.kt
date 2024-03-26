@@ -25,6 +25,7 @@ class UserResource(private val jdbi: Jdbi, private val helper: UserSettingsHelpe
     }
 
     @PUT
+    @Path(ResourcePaths.SETTINGS)
     @Consumes(MediaType.APPLICATION_JSON)
     fun updateSettings(
             settings: FormUserSettings,

@@ -36,6 +36,7 @@ import {
   values,
   withResources,
   assets,
+  settings,
 } from '../model/Resources';
 import { ErrorWithMessage } from '../components/common/error/ErrorWithMessage';
 import { Any } from '../components/common/Any';
@@ -333,7 +334,7 @@ export const login = async (): Promise<User> =>
   postValidated(`/${api}/${user}/login`);
 export const updateUserSettings = async (
   userSettings: UserSettings,
-): Promise<void> => putValidated(`/${api}/${user}`, userSettings);
+): Promise<void> => putValidated(`/${api}/${user}/${settings}`, userSettings);
 
 /**
  * Metadata:

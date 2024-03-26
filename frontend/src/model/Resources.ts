@@ -7,6 +7,7 @@ export const keys = 'keys';
 export const media = 'media';
 export const metadata = 'metadata';
 export const sources = 'sources';
+export const settings = 'settings';
 export const tags = 'tags';
 export const user = 'user';
 export const values = 'values';
