@@ -16,6 +16,7 @@ import { add } from '../../utils/immer/add';
 import { useSourcePageStore } from './SourcePageStore';
 import { updateSourceMedia } from '../../utils/updateRemoteIds';
 import _ from 'lodash';
+import { reject } from '../../utils/reject';
 
 export function SourceMedia() {
   const { source, setSource } = useSourcePageStore();
@@ -27,11 +28,9 @@ export function SourceMedia() {
   const [mediaToEdit, setMediaToEdit] = useImmer(null);
 
   async function handleUnlinkMedia(media: ResultMedia) {
-    const warning = window.confirm(
-      'Are you sure you want to remove this media from this source?',
-    );
-
-    if (warning === false) return;
+    if (reject('Remove this media from this source?')) {
+      return;
+    }
 
     await deleteMediaFromSource(sourceId, media.id);
     setSource(s => remove(s.media, media.id));

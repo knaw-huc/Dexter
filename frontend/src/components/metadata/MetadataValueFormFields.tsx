@@ -10,6 +10,7 @@ import _ from 'lodash';
 import { FormFieldprops } from '../common/FormFieldProps';
 import { FieldError } from '../common/error/FieldError';
 import { useImmer } from 'use-immer';
+import { reject } from '../../utils/reject';
 
 type MetadataValueFormFieldsProps = FormFieldprops & {
   keys: ResultMetadataKey[];
@@ -33,11 +34,9 @@ export function MetadataValueFormFields(props: MetadataValueFormFieldsProps) {
   }
 
   async function handleDelete(toDelete: FormMetadataValue) {
-    const warning = window.confirm(
-      'Are you sure you want to delete this metadata field?',
-    );
-
-    if (warning === false) return;
+    if (reject('Delete this metadata field?')) {
+      return;
+    }
 
     const update = props.values.filter(v => v.keyId !== toDelete.keyId);
     props.onChange(update);

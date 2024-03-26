@@ -2,6 +2,7 @@ import { deleteMetadataValue, deleteSource } from '../../utils/API';
 import { sources } from '../../model/Resources';
 import { Source } from '../../model/DexterModel';
 import { useNavigate } from 'react-router-dom';
+import { reject } from '../../utils/reject';
 
 export function useDeleteSource(params: { onError: (error: Error) => void }): {
   deleteSource: (source: Source) => void;
@@ -10,11 +11,9 @@ export function useDeleteSource(params: { onError: (error: Error) => void }): {
 
   return {
     deleteSource: async (source: Source) => {
-      const warning = window.confirm(
-        'Are you sure you wish to delete this source?',
-      );
-
-      if (warning === false) return;
+      if (reject('Delete this source?')) {
+        return;
+      }
 
       try {
         for (const value of source.metadataValues) {

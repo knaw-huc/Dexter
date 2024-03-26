@@ -21,6 +21,7 @@ import { updateSourceReferences } from '../../utils/updateRemoteIds';
 import { useSourcePageStore } from './SourcePageStore';
 import { assign } from '../../utils/immer/assign';
 import _ from 'lodash';
+import { reject } from '../../utils/reject';
 
 export function SourceReferences(props: { referenceStyle: ReferenceStyle }) {
   const { referenceStyle } = props;
@@ -32,10 +33,9 @@ export function SourceReferences(props: { referenceStyle: ReferenceStyle }) {
   const [referenceToEdit, setReferenceToEdit] = useImmer<Reference>(null);
 
   async function handleUnlinkReference(reference: ResultReference) {
-    const warning = window.confirm(
-      'Are you sure you wish to remove this reference from this source?',
-    );
-    if (warning === false) return;
+    if (reject('Remove this reference from this source?')) {
+      return;
+    }
 
     await deleteReferenceFromSource(sourceId, reference.id);
     setSource(s => remove(s.references, reference.id));

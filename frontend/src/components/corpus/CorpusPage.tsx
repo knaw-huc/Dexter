@@ -28,6 +28,7 @@ import { useThrowSync } from '../common/error/useThrowSync';
 import { ExportButton } from '../export/ExportButton';
 import { ExportForm } from '../export/ExportForm';
 import { HintedTitle } from '../common/HintedTitle';
+import { reject } from '../../utils/reject';
 
 export const CorpusPage = () => {
   const corpusId = useParams().corpusId;
@@ -79,11 +80,9 @@ export const CorpusPage = () => {
   }
 
   async function handleDeleteCorpus() {
-    const warning = window.confirm(
-      'Are you sure you wish to delete this corpus?',
-    );
-
-    if (warning === false) return;
+    if (reject('Are you sure you wish to delete this corpus?')) {
+      return;
+    }
 
     try {
       for (const value of corpus.metadataValues) {

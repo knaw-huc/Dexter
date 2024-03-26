@@ -16,6 +16,7 @@ import { getAllRelevantTags } from './getAllRelevantTags';
 import { useCorpusPageStore } from './CorpusPageStore';
 import { add } from '../../utils/immer/add';
 import { remove } from '../../utils/immer/remove';
+import { reject } from '../../utils/reject';
 
 export function CorpusSources() {
   const { corpus, setSources, sourceOptions } = useCorpusPageStore();
@@ -38,11 +39,9 @@ export function CorpusSources() {
   };
 
   const handleDeselectSource = async (corpusId: string, sourceId: string) => {
-    const warning = window.confirm(
-      'Are you sure you wish to remove this source from this corpus?',
-    );
-
-    if (warning === false) return;
+    if (reject('Remove this source from this corpus?')) {
+      return;
+    }
 
     await deleteSourceFromCorpus(corpusId, sourceId);
     setSources(s => remove(s, sourceId));

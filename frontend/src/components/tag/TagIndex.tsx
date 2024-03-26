@@ -8,6 +8,7 @@ import { TagIcon } from './tagIcon';
 import { useThrowSync } from '../common/error/useThrowSync';
 import { useImmer } from 'use-immer';
 import { HintedTitle } from '../common/HintedTitle';
+import { reject } from '../../utils/reject';
 
 export const TagIndex = () => {
   const [tags, setTags] = useImmer<ResultTag[]>([]);
@@ -18,9 +19,9 @@ export const TagIndex = () => {
   }, []);
 
   async function handleDelete(toDelete: ResultTag) {
-    const warning = window.confirm('Are you sure you wish to delete this tag?');
-
-    if (warning === false) return;
+    if (reject('Delete this tag?')) {
+      return;
+    }
 
     await deleteTag(toDelete.id).catch(e => throwSync(e));
     setTags(prev => prev.filter(t => t.id !== toDelete.id));

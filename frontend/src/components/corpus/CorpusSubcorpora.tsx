@@ -17,6 +17,7 @@ import { useCorpusPageStore } from './CorpusPageStore';
 import { add } from '../../utils/immer/add';
 import { remove } from '../../utils/immer/remove';
 import _ from 'lodash';
+import { reject } from '../../utils/reject';
 
 export function CorpusSubcorpora() {
   const { corpus, setSubcorpora, corpusOptions, sourceOptions } =
@@ -52,10 +53,9 @@ export function CorpusSubcorpora() {
   }
 
   const handleDeselectSubcorpus = async (subcorpusId: string) => {
-    const warning = window.confirm(
-      'Are you sure you wish to remove this subcorpus from this corpus?',
-    );
-    if (warning === false) return;
+    if (reject('Remove this subcorpus from this corpus?')) {
+      return;
+    }
 
     const subcorpus = corpusOptions.find(c => c.id === subcorpusId);
     await updateCorpus(subcorpusId, { ...subcorpus, parentId: undefined });

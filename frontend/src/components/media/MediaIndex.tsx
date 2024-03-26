@@ -13,6 +13,7 @@ import { remove } from '../../utils/immer/remove';
 import { update } from '../../utils/immer/update';
 import { add } from '../../utils/immer/add';
 import { HintedTitle } from '../common/HintedTitle';
+import { reject } from '../../utils/reject';
 
 export function MediaIndex() {
   const [media, setMedia] = useImmer<ResultMedia[]>([]);
@@ -27,11 +28,9 @@ export function MediaIndex() {
   }, []);
 
   async function handleDelete(media: ResultMedia) {
-    const warning = window.confirm(
-      'Are you sure you wish to delete this media entry?',
-    );
-
-    if (warning === false) return;
+    if (reject('Delete this media entry?')) {
+      return;
+    }
 
     await deleteMedia(media.id);
     setMedia(prev => remove(prev, media.id));

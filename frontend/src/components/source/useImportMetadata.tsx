@@ -4,6 +4,7 @@ import { postImport } from '../../utils/API';
 import { ErrorWithMessage } from '../common/error/ErrorWithMessage';
 import { Any } from '../common/Any';
 import { useImmer } from 'use-immer';
+import { reject } from '../../utils/reject';
 
 type WithExternalRef = {
   externalRef?: string;
@@ -26,13 +27,10 @@ export function useImportMetadata<T extends WithExternalRef>(
   const [isImportLoading, setImportLoading] = useImmer(false);
 
   function checkCanImporting(externalRef: string) {
-    const warning = window.confirm(
-      'Importing overwrites existing values. Are you sure you want to import?',
-    );
-
-    if (warning === false) {
-      return false;
+    if (reject('Importing overwrites existing values. Continue?')) {
+      return;
     }
+
     if (isImportLoading) {
       return false;
     }

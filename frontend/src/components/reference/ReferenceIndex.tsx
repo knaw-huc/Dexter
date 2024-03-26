@@ -22,6 +22,7 @@ import { useImmer } from 'use-immer';
 import { HintedTitle } from '../common/HintedTitle';
 import { ValidatedSelectField } from '../common/ValidatedSelectField';
 import { useUserStore } from '../../state/UserStore';
+import { reject } from '../../utils/reject';
 
 export function ReferenceIndex() {
   const [references, setReferences] = useImmer<ResultReference[]>([]);
@@ -36,11 +37,9 @@ export function ReferenceIndex() {
   }, []);
 
   const handleDelete = async (reference: ResultReference) => {
-    const warning = window.confirm(
-      'Are you sure you wish to delete this reference?',
-    );
-
-    if (warning === false) return;
+    if (reject('Delete this reference?')) {
+      return;
+    }
 
     try {
       await deleteReference(reference.id);

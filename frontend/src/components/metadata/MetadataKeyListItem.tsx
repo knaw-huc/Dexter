@@ -9,6 +9,7 @@ import { MetadataKeyIcon } from './MetadataKeyIcon';
 import { ListItemButtonStyled } from '../common/ListItemButtonStyled';
 import { useThrowSync } from '../common/error/useThrowSync';
 import { isResponseError } from '../common/isResponseError';
+import { reject } from '../../utils/reject';
 
 type MetadataKeyItemProps = {
   metadataKey: ResultMetadataKey;
@@ -21,11 +22,9 @@ export const MetadataKeyListItem = (props: MetadataKeyItemProps) => {
 
   async function handleDelete(e: React.MouseEvent) {
     e.stopPropagation();
-    const warning = window.confirm(
-      'Are you sure you wish to delete this metadata field?',
-    );
-
-    if (warning === false) return;
+    if (reject('Delete this metadata field?')) {
+      return;
+    }
 
     await deleteMetadataKey(props.metadataKey.id)
       .then(props.onDeleted)
