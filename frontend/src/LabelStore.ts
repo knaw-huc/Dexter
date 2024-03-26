@@ -67,7 +67,7 @@ export function toFormHint(resource: string) {
 }
 
 export function toTitleHint(resource: string) {
-  return `HELP_TITLE_${format(resource)}` as LabelKey;
+  return `HELP_${format(resource)}_TITLE` as LabelKey;
 }
 
 function format(part: string) {
