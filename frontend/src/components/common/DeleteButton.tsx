@@ -2,9 +2,8 @@ import React from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { styleButtonIcon } from '../../utils/styleButtonIcon';
 import { ButtonWithIcon } from './icon/ButtonWithIcon';
-import { styleHoverIcon } from '../../utils/styleHoverIcon';
 
-export const DeleteIconStyled = styleHoverIcon(styleButtonIcon(DeleteIcon));
+export const DeleteIconStyled = styleButtonIcon(DeleteIcon);
 
 export function DeleteButton(props: { onDelete: () => void }) {
   return (

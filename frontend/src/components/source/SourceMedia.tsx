@@ -15,6 +15,7 @@ import { update } from '../../utils/immer/update';
 import { add } from '../../utils/immer/add';
 import { useSourcePageStore } from './SourcePageStore';
 import { updateSourceMedia } from '../../utils/updateRemoteIds';
+import _ from 'lodash';
 
 export function SourceMedia() {
   const { source, setSource } = useSourcePageStore();
@@ -71,6 +72,8 @@ export function SourceMedia() {
     setSource(s => ({ ...s, media }));
   }
 
+  const hasMedia = !_.isEmpty(media);
+
   return (
     <>
       <H2Styled>
@@ -84,17 +87,19 @@ export function SourceMedia() {
         </Grid>
         <Grid item xs={6} md={8}></Grid>
       </Grid>
-      <Grid container spacing={2} sx={{ pl: 0.1, mt: 2, mb: 2 }}>
-        {media.map(media => (
-          <Grid item xs={4} key={media.id}>
-            <MediaPreview
-              media={media}
-              onUnlink={() => handleUnlinkMedia(media)}
-              onEdit={() => handleClickEditMedia(media)}
-            />
-          </Grid>
-        ))}
-      </Grid>
+      {hasMedia && (
+        <Grid container spacing={2} sx={{ pl: 0.1, mt: 2, mb: 2 }}>
+          {media.map(media => (
+            <Grid item xs={4} key={media.id}>
+              <MediaPreview
+                media={media}
+                onUnlink={() => handleUnlinkMedia(media)}
+                onEdit={() => handleClickEditMedia(media)}
+              />
+            </Grid>
+          ))}
+        </Grid>
+      )}
       {showMediaForm && (
         <MediaForm
           onClose={handleCloseMedia}

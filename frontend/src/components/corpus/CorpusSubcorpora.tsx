@@ -16,6 +16,7 @@ import { getCorpusTags } from './getCorpusTags';
 import { useCorpusPageStore } from './CorpusPageStore';
 import { add } from '../../utils/immer/add';
 import { remove } from '../../utils/immer/remove';
+import _ from 'lodash';
 
 export function CorpusSubcorpora() {
   const { corpus, setSubcorpora, corpusOptions, sourceOptions } =
@@ -75,6 +76,12 @@ export function CorpusSubcorpora() {
     return relevantCorpora.flatMap(c => c.tags);
   }
 
+  const filteredSubcorpora = getFilteredSubcorpora(
+    corpus.subcorpora,
+    filterTags,
+  );
+  const hasCorpora = !_.isEmpty(corpus.subcorpora);
+
   return (
     <>
       <H2Styled>
@@ -88,26 +95,30 @@ export function CorpusSubcorpora() {
             onClick={() => setShowSelectSubcorpusForm(true)}
           />
         </Grid>
-        <Grid item xs={6} md={8}>
-          <TagsFilter
-            placeholder="Filter corpora by their tags, plus the tags of their subcorpora and sources "
-            options={getRelevantTags()}
-            selected={filterTags}
-            onChangeSelected={update => setFilterTags(update)}
-          />
-        </Grid>
-      </Grid>
-
-      <Grid container spacing={2} sx={{ pl: 0.1, pr: 1, mt: 2, mb: 2 }}>
-        {getFilteredSubcorpora(corpus.subcorpora, filterTags).map(c => (
-          <Grid item xs={4} key={c.id}>
-            <CorpusPreview
-              corpus={c}
-              onUnlink={() => handleDeselectSubcorpus(c.id)}
+        {hasCorpora && (
+          <Grid item xs={6} md={8}>
+            <TagsFilter
+              placeholder="Filter corpora by their tags, plus the tags of their subcorpora and sources "
+              options={getRelevantTags()}
+              selected={filterTags}
+              onChangeSelected={update => setFilterTags(update)}
             />
           </Grid>
-        ))}
+        )}
       </Grid>
+
+      {hasCorpora && (
+        <Grid container spacing={2} sx={{ pl: 0.1, pr: 1, mt: 2, mb: 2 }}>
+          {filteredSubcorpora.map(c => (
+            <Grid item xs={4} key={c.id}>
+              <CorpusPreview
+                corpus={c}
+                onUnlink={() => handleDeselectSubcorpus(c.id)}
+              />
+            </Grid>
+          ))}
+        </Grid>
+      )}
 
       {showSubcorpusForm && (
         <CorpusForm

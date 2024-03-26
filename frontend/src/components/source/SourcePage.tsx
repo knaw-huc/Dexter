@@ -108,11 +108,9 @@ export const SourcePage = () => {
         <MetadataValuePageFields values={source.metadataValues} />
       )}
 
-      {!_.isEmpty(source.media) && <SourceMedia />}
+      <SourceMedia />
 
-      {!_.isEmpty(source.media) && (
-        <SourceReferences referenceStyle={referenceStyle} />
-      )}
+      <SourceReferences referenceStyle={referenceStyle} />
 
       {showForm && (
         <SourceForm

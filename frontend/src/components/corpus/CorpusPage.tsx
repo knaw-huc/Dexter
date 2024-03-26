@@ -164,9 +164,9 @@ export const CorpusPage = () => {
         <MetadataValuePageFields values={corpus.metadataValues} />
       )}
 
-      {!_.isEmpty(corpus.subcorpora) && <CorpusSubcorpora />}
+      <CorpusSubcorpora />
 
-      {!_.isEmpty(corpus.sources) && <CorpusSources />}
+      <CorpusSources />
 
       {showCorpusForm && (
         <CorpusForm

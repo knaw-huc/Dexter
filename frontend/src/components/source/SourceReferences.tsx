@@ -20,6 +20,7 @@ import { add } from '../../utils/immer/add';
 import { updateSourceReferences } from '../../utils/updateRemoteIds';
 import { useSourcePageStore } from './SourcePageStore';
 import { assign } from '../../utils/immer/assign';
+import _ from 'lodash';
 
 export function SourceReferences(props: { referenceStyle: ReferenceStyle }) {
   const { referenceStyle } = props;
@@ -75,6 +76,8 @@ export function SourceReferences(props: { referenceStyle: ReferenceStyle }) {
     setSource(s => assign(s, { references }));
   }
 
+  const hasReferences = !_.isEmpty(references);
+
   return (
     <>
       <H2Styled>
@@ -90,18 +93,20 @@ export function SourceReferences(props: { referenceStyle: ReferenceStyle }) {
         </Grid>
         <Grid item xs={6} md={8}></Grid>
       </Grid>
-      <ul style={{ paddingLeft: 0 }}>
-        {references.map(reference => (
-          <ReferenceListItem
-            key={reference.id}
-            reference={reference}
-            onUnlink={() => handleUnlinkReference(reference)}
-            onEdit={() => handleClickEditReference(reference)}
-            referenceStyle={props.referenceStyle}
-            hideIcon={true}
-          />
-        ))}
-      </ul>
+      {hasReferences && (
+        <ul style={{ paddingLeft: 0 }}>
+          {references.map(reference => (
+            <ReferenceListItem
+              key={reference.id}
+              reference={reference}
+              onUnlink={() => handleUnlinkReference(reference)}
+              onEdit={() => handleClickEditReference(reference)}
+              referenceStyle={props.referenceStyle}
+              hideIcon={true}
+            />
+          ))}
+        </ul>
+      )}
       {showReferenceForm && (
         <ReferenceForm
           onClose={handleCloseReference}
