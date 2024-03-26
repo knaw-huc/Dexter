@@ -1,4 +1,6 @@
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import { styleHoverIcon } from '../../../utils/styleHoverIcon';
+import styled from '@emotion/styled';
 
-export const OkIcon = styleHoverIcon(CheckCircleOutlineIcon);
+export const OkIcon = styled(CheckCircleOutlineIcon)`
+  font-size: 1.4em;
+`;
