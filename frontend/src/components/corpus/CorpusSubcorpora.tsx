@@ -57,14 +57,9 @@ export function CorpusSubcorpora() {
     if (warning === false) return;
 
     const subcorpus = corpusOptions.find(c => c.id === subcorpusId);
-    delete subcorpus.parent;
-    await updateCorpus(subcorpusId, subcorpus);
+    await updateCorpus(subcorpusId, { ...subcorpus, parentId: undefined });
     setSubcorpora(c => remove(c, subcorpus.id));
   };
-
-  function handleDeletedSubcorpus(subcorpus: Corpus) {
-    setSubcorpora(c => remove(c, subcorpus.id));
-  }
 
   /**
    * Find options that result in a non-empty list of corpora
@@ -108,7 +103,7 @@ export function CorpusSubcorpora() {
           <Grid item xs={4} key={c.id}>
             <CorpusPreview
               corpus={c}
-              onRemove={() => handleDeletedSubcorpus(c)}
+              onRemove={() => handleDeselectSubcorpus(c.id)}
             />
           </Grid>
         ))}
