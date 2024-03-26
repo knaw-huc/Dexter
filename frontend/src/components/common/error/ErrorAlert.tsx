@@ -2,7 +2,7 @@ import { Alert, AlertProps, Theme } from '@mui/material';
 import { ERROR_MESSAGE_CLASS } from './FieldError';
 import React from 'react';
 import { SxProps } from '@mui/system';
-import { CloseInlineIcon } from '../CloseInlineIcon';
+import { TopRightCloseIcon } from '../TopRightCloseIcon';
 
 export function ErrorAlert(props: {
   message: string;
@@ -12,7 +12,7 @@ export function ErrorAlert(props: {
 }) {
   const optionalCloseButton: Partial<AlertProps> = {};
   if (props.onClose) {
-    optionalCloseButton.action = <CloseInlineIcon onClick={props.onClose} />;
+    optionalCloseButton.action = <TopRightCloseIcon onClick={props.onClose} />;
   }
   if (!props.message) {
     return;

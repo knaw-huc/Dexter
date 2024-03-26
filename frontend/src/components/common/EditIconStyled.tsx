@@ -1,8 +1,5 @@
-import styled from '@emotion/styled';
 import { styleButtonIcon } from '../../utils/styleButtonIcon';
 import CreateIcon from '@mui/icons-material/Create';
-import { btnIconStyling } from './BtnIconStyling';
+import { styleHoverIcon } from '../../utils/styleHoverIcon';
 
-export const EditIconStyled = styled(styleButtonIcon(CreateIcon))`
-  ${btnIconStyling}
-`;
+export const EditIconStyled = styleHoverIcon(styleButtonIcon(CreateIcon));

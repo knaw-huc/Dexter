@@ -1,8 +1,7 @@
-import styled from '@emotion/styled';
 import { styleButtonIcon } from '../../utils/styleButtonIcon';
-import { btnIconStyling } from './BtnIconStyling';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import { styleHoverIcon } from '../../utils/styleHoverIcon';
 
-export const NextIconStyled = styled(styleButtonIcon(ArrowForwardIosIcon))`
-  ${btnIconStyling}
-`;
+export const NextIconStyled = styleHoverIcon(
+  styleButtonIcon(ArrowForwardIosIcon),
+);

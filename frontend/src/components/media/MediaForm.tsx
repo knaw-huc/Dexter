@@ -8,7 +8,7 @@ import {
 } from '../../model/DexterModel';
 import { createMedia, updateMedia } from '../../utils/API';
 import ScrollableModal from '../common/ScrollableModal';
-import { CloseInlineIcon } from '../common/CloseInlineIcon';
+import { TopRightCloseIcon } from '../common/TopRightCloseIcon';
 import { SubmitButton } from '../common/SubmitButton';
 import * as yup from 'yup';
 import { onSubmit } from '../../utils/onSubmit';
@@ -83,7 +83,7 @@ export function MediaForm(props: MediaFormProps) {
   return (
     <>
       <ScrollableModal handleClose={props.onClose} fullHeight={false}>
-        <CloseInlineIcon onClick={props.onClose} />
+        <TopRightCloseIcon onClick={props.onClose} />
 
         <h1>{props.inEdit ? 'Edit media' : 'Add media'}</h1>
         <form onSubmit={onSubmit(handleSubmit)}>
@@ -93,9 +93,7 @@ export function MediaForm(props: MediaFormProps) {
             label={<Hinted txt="title" hint={toHint('title')} />}
             error={errors.title}
             value={form.title}
-            onChange={change => {
-              setForm(f => (f.title = change));
-            }}
+            onChange={title => setForm(f => ({ ...f, title }))}
           />
 
           <TextFieldWithError
@@ -107,7 +105,7 @@ export function MediaForm(props: MediaFormProps) {
             }
             error={errors.url}
             value={form.url}
-            onChange={change => setForm(f => (f.url = change))}
+            onChange={url => setForm(f => ({ ...f, url }))}
           />
 
           <SubmitButton onClick={handleSubmit} />

@@ -11,7 +11,7 @@ import { SelectTagField } from '../tag/SelectTagField';
 import { LanguagesField } from '../language/LanguagesField';
 import { ValidatedSelectField } from '../common/ValidatedSelectField';
 import { TextFieldWithError } from '../common/TextFieldWithError';
-import { CloseInlineIcon } from '../common/CloseInlineIcon';
+import { TopRightCloseIcon } from '../common/TopRightCloseIcon';
 import { SubmitButton } from '../common/SubmitButton';
 import { ImportField } from './ImportField';
 import { MetadataValueFormFields } from '../metadata/MetadataValueFormFields';
@@ -89,7 +89,7 @@ export function SourceForm(props: SourceFormProps) {
   }
   return (
     <ScrollableModal handleClose={props.onClose}>
-      <CloseInlineIcon onClick={props.onClose} />
+      <TopRightCloseIcon onClick={props.onClose} />
 
       <h1>{sourceToEdit ? 'Edit source' : 'Create new source'}</h1>
       <FormErrorMessage error={errors.generic} />

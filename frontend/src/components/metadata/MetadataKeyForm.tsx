@@ -4,7 +4,7 @@ import React, { ChangeEvent, useEffect } from 'react';
 import { FormMetadataKey, ResultMetadataKey } from '../../model/DexterModel';
 import { createMetadataKey, updateMetadataKey } from '../../utils/API';
 import ScrollableModal from '../common/ScrollableModal';
-import { CloseInlineIcon } from '../common/CloseInlineIcon';
+import { TopRightCloseIcon } from '../common/TopRightCloseIcon';
 import { SubmitButton } from '../common/SubmitButton';
 import { Label } from '../common/Label';
 import * as yup from 'yup';
@@ -78,7 +78,7 @@ export function MetadataKeyForm(props: MetadataKeyFormProps) {
   return (
     <>
       <ScrollableModal handleClose={props.onClose} fullHeight={false}>
-        <CloseInlineIcon onClick={props.onClose} />
+        <TopRightCloseIcon onClick={props.onClose} />
 
         <h1>
           {props.inEdit ? 'Edit metadata field' : 'Create new metadata field'}

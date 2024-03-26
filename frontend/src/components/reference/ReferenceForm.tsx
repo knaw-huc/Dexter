@@ -10,7 +10,7 @@ import { useFormErrors } from '../common/error/useFormErrors';
 import { FormErrorMessage } from '../common/error/FormError';
 import { FieldError } from '../common/error/FieldError';
 import ScrollableModal from '../common/ScrollableModal';
-import { CloseInlineIcon } from '../common/CloseInlineIcon';
+import { TopRightCloseIcon } from '../common/TopRightCloseIcon';
 import { onSubmit } from '../../utils/onSubmit';
 import { SubmitButton } from '../common/SubmitButton';
 import { ReferenceField } from './ReferenceField';
@@ -81,7 +81,7 @@ export function ReferenceForm(props: ReferenceFormProps) {
   return (
     <>
       <ScrollableModal handleClose={props.onClose} fullHeight={false}>
-        <CloseInlineIcon onClick={props.onClose} />
+        <TopRightCloseIcon onClick={props.onClose} />
         <form onSubmit={onSubmit(handleSubmit)}>
           <h1>{toEdit ? 'Edit reference' : 'Create new reference'}</h1>
           <FormErrorMessage error={errors.generic} />

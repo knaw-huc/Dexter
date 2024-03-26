@@ -1,16 +1,15 @@
-import { grey } from '@mui/material/colors';
 import { ResultMedia } from '../../model/DexterModel';
 import React from 'react';
-import { Card, CardActions, CardMedia, Grid, Typography } from '@mui/material';
+import { Card, CardActions, CardMedia, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { EditIconStyled } from '../common/EditIconStyled';
-import { DeleteIconStyled } from '../common/DeleteIconStyled';
 import { Title } from './Title';
 import { media } from '../../model/Resources';
+import { CloseIconStyled } from '../common/CloseIconStyled';
 
 type MediaItemProps = {
   media: ResultMedia;
-  onDelete: () => void;
+  onRemove: () => void;
   onEdit: () => void;
 };
 
@@ -19,11 +18,6 @@ export const MediaPreview = (props: MediaItemProps) => {
 
   function handleSelect() {
     navigate(`/${media}/${props.media.id}`);
-  }
-
-  function handleDelete(e: React.MouseEvent) {
-    e.stopPropagation();
-    props.onDelete();
   }
 
   function handleEdit(e: MouseEvent) {
@@ -43,29 +37,21 @@ export const MediaPreview = (props: MediaItemProps) => {
           title={props.media.title}
           onClick={handleSelect}
         />
-        <CardActions>
-          <Grid container spacing={2}>
-            <Grid item xs={9}>
-              <Typography gutterBottom variant="h5" sx={{ ml: '0.25em' }}>
-                <Title title={props.media.title} />
-              </Typography>
-            </Grid>
-            <Grid
-              item
-              xs={3}
-              alignItems="stretch"
-              style={{
-                display: 'flex',
-                marginTop: '0.25em',
-                minWidth: '80px',
-              }}
-            >
-              <span style={{ color: grey[500] }}>
-                <EditIconStyled hoverColor="black" onClick={handleEdit} />
-                <DeleteIconStyled onClick={handleDelete} />
-              </span>
-            </Grid>
-          </Grid>
+        <CardActions sx={{ alignItems: 'initial' }}>
+          <Typography gutterBottom variant="h5" sx={{ ml: '0.25em' }}>
+            <Title title={props.media.title} />
+          </Typography>
+          <span
+            style={{
+              fontSize: '1em',
+              marginLeft: 'auto',
+              minWidth: '3em',
+              marginTop: '0.25em',
+            }}
+          >
+            <EditIconStyled onClick={handleEdit} style={{ margin: 0 }} />
+            <CloseIconStyled onClick={props.onRemove} style={{ margin: 0 }} />
+          </span>
         </CardActions>
       </Card>
     </>

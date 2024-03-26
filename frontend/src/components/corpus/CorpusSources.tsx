@@ -75,7 +75,7 @@ export function CorpusSources() {
             <Grid item xs={4} key={source.id}>
               <SourcePreview
                 source={source}
-                onUnlink={() => handleDeselectSource(corpusId, source.id)}
+                onRemove={() => handleDeselectSource(corpusId, source.id)}
               />
             </Grid>
           ))}

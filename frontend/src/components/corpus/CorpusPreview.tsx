@@ -8,7 +8,7 @@ import { CorpusIcon } from './CorpusIcon';
 import { Title } from '../media/Title';
 import { CardHeaderImage } from '../common/CardHeaderImage';
 import { TagList } from '../tag/TagList';
-import { CloseInlineIcon } from '../common/CloseInlineIcon';
+import { TopRightCloseIcon } from '../common/TopRightCloseIcon';
 import { corpora } from '../../model/Resources';
 import { getCorpusTags } from './getCorpusTags';
 import _ from 'lodash';
@@ -18,7 +18,7 @@ import ScatterPlotIcon from '@mui/icons-material/ScatterPlot';
 
 type CorpusPreviewProps = {
   corpus: Corpus;
-  onUnlink?: () => void;
+  onRemove?: () => void;
 };
 
 const NestedIconStyled = styled(ScatterPlotIcon)`
@@ -49,7 +49,7 @@ export function CorpusPreview(props: CorpusPreviewProps) {
       <CardContent style={{ height: '100%', paddingBottom: '1em' }}>
         <Grid container>
           <Grid item sx={{ maxHeight: '130px' }} xs={12}>
-            {props.onUnlink && <CloseInlineIcon onClick={props.onUnlink} />}
+            {props.onRemove && <TopRightCloseIcon onClick={props.onRemove} />}
             <HeaderLinkClamped onClick={navigateToCorpus}>
               <CorpusIcon />
               <Title title={corpus.title} />

@@ -13,7 +13,7 @@ import ScrollableModal from '../common/ScrollableModal';
 import { ValidatedSelectField } from '../common/ValidatedSelectField';
 import { SelectSourcesField } from './SelectSourcesField';
 import { TextFieldWithError } from '../common/TextFieldWithError';
-import { CloseInlineIcon } from '../common/CloseInlineIcon';
+import { TopRightCloseIcon } from '../common/TopRightCloseIcon';
 import { SubmitButton } from '../common/SubmitButton';
 import { MetadataValueFormFields } from '../metadata/MetadataValueFormFields';
 import { TextareaFieldProps } from '../common/TextareaFieldProps';
@@ -113,7 +113,7 @@ export function CorpusForm(props: CorpusFormProps) {
   return (
     <>
       <ScrollableModal handleClose={props.onClose}>
-        <CloseInlineIcon onClick={props.onClose} />
+        <TopRightCloseIcon onClick={props.onClose} />
         <h1>{corpusToEdit ? 'Edit corpus' : 'Create new corpus'}</h1>
         <FormErrorMessage error={errors.generic} />
         <form onSubmit={onSubmit(handleSubmit)}>

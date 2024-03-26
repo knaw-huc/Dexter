@@ -1,8 +1,7 @@
-import styled from '@emotion/styled';
 import { styleButtonIcon } from '../../utils/styleButtonIcon';
-import { btnIconStyling } from '../common/BtnIconStyling';
 import MoveToInboxIcon from '@mui/icons-material/MoveToInbox';
+import { styleHoverIcon } from '../../utils/styleHoverIcon';
 
-export const ExportIconStyled = styled(styleButtonIcon(MoveToInboxIcon))`
-  ${btnIconStyling}
-`;
+export const ExportIconStyled = styleHoverIcon(
+  styleButtonIcon(MoveToInboxIcon),
+);

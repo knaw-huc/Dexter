@@ -13,7 +13,7 @@ export function EditButton(props: { onEdit: () => void; sx?: SxProps<Theme> }) {
       style={{ float: 'right' }}
       sx={props.sx}
     >
-      <EditIconStyled />
+      <EditIconStyled color="white" hoverColor="white" />
       Edit
     </ButtonWithIcon>
   );

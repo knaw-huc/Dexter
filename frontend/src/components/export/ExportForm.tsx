@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import TextField from '@mui/material/TextField';
 import React from 'react';
 import ScrollableModal from '../common/ScrollableModal';
-import { CloseInlineIcon } from '../common/CloseInlineIcon';
+import { TopRightCloseIcon } from '../common/TopRightCloseIcon';
 import { SubmitButton } from '../common/SubmitButton';
 import { onSubmit } from '../../utils/onSubmit';
 import { Exportable } from './mapper/Exportable';
@@ -36,7 +36,7 @@ export function ExportForm(props: ExportFormProps) {
   return (
     <>
       <ScrollableModal handleClose={props.onClose} fullHeight={false}>
-        <CloseInlineIcon onClick={props.onClose} />
+        <TopRightCloseIcon onClick={props.onClose} />
 
         <h1>Export to CSV</h1>
         <form onSubmit={onSubmit(handleSubmit)}>

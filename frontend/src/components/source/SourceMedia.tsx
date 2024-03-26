@@ -26,6 +26,12 @@ export function SourceMedia() {
   const [mediaToEdit, setMediaToEdit] = useImmer(null);
 
   async function handleUnlinkMedia(media: ResultMedia) {
+    const warning = window.confirm(
+      'Are you sure you want to remove this media from this source?',
+    );
+
+    if (warning === false) return;
+
     await deleteMediaFromSource(sourceId, media.id);
     setSource(s => remove(s.media, media.id));
   }
@@ -83,7 +89,7 @@ export function SourceMedia() {
           <Grid item xs={4} key={media.id}>
             <MediaPreview
               media={media}
-              onDelete={() => handleUnlinkMedia(media)}
+              onRemove={() => handleUnlinkMedia(media)}
               onEdit={() => handleClickEditMedia(media)}
             />
           </Grid>

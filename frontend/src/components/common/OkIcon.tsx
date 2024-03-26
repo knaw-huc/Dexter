@@ -1,7 +1,4 @@
-import styled from '@emotion/styled';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import { btnIconStyling } from './BtnIconStyling';
+import { styleHoverIcon } from '../../utils/styleHoverIcon';
 
-export const OkIcon = styled(CheckCircleOutlineIcon)`
-  ${btnIconStyling}
-`;
+export const OkIcon = styleHoverIcon(CheckCircleOutlineIcon);

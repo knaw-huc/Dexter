@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, Grid } from '@mui/material';
 import { PClamped } from '../common/PClamped';
 import { TagList } from '../tag/TagList';
-import { CloseInlineIcon } from '../common/CloseInlineIcon';
+import { TopRightCloseIcon } from '../common/TopRightCloseIcon';
 import { SourceIcon } from './SourceIcon';
 import { Title } from '../media/Title';
 import { CardHeaderImage } from '../common/CardHeaderImage';
@@ -13,7 +13,7 @@ import { sources } from '../../model/Resources';
 
 interface SourceItemDropdownProps {
   source: Source;
-  onUnlink: () => void;
+  onRemove: () => void;
 }
 
 export const SourcePreview = (props: SourceItemDropdownProps) => {
@@ -31,10 +31,10 @@ export const SourcePreview = (props: SourceItemDropdownProps) => {
       <CardContent style={{ height: '100%', paddingBottom: '1em' }}>
         <Grid container>
           <Grid item sx={{ maxHeight: '110px' }} xs={12}>
-            <CloseInlineIcon
+            <TopRightCloseIcon
               onClick={(e: React.MouseEvent<HTMLInputElement>) => {
                 e.stopPropagation();
-                props.onUnlink();
+                props.onRemove();
               }}
             />
             <HeaderLinkClamped onClick={navigateToSource}>
