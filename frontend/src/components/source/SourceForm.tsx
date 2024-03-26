@@ -11,7 +11,6 @@ import { SelectTagField } from '../tag/SelectTagField';
 import { LanguagesField } from '../language/LanguagesField';
 import { ValidatedSelectField } from '../common/ValidatedSelectField';
 import { TextFieldWithError } from '../common/TextFieldWithError';
-import { TopRightCloseIcon } from '../common/TopRightCloseIcon';
 import { SubmitButton } from '../common/SubmitButton';
 import { ImportField } from './ImportField';
 import { MetadataValueFormFields } from '../metadata/MetadataValueFormFields';
@@ -27,6 +26,7 @@ import { useImmer } from 'use-immer';
 import { assign } from '../../utils/immer/assign';
 import { Hinted } from '../common/Hinted';
 import { toFormHint } from '../../LabelStore';
+import { TopRightCloseIcon } from '../common/icon/CloseIcon';
 
 type SourceFormProps = {
   sourceToEdit?: Source;

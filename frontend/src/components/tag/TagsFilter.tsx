@@ -1,8 +1,8 @@
 import { ResultTag } from '../../model/DexterModel';
 import React from 'react';
 import { SelectTagField } from './SelectTagField';
-import { ButtonWithIcon } from '../common/ButtonWithIcon';
-import { FilterIconStyled } from '../common/FilterIconStyled';
+import { ButtonWithIcon } from '../common/icon/ButtonWithIcon';
+import { FilterIcon } from '../common/icon/FilterIcon';
 import { useImmer } from 'use-immer';
 
 export function TagsFilter(props: {
@@ -35,7 +35,7 @@ function FilterButton(props: { onClick: () => void }) {
       style={{ float: 'right' }}
       onClick={props.onClick}
     >
-      <FilterIconStyled />
+      <FilterIcon />
       Tag
     </ButtonWithIcon>
   );

@@ -13,7 +13,6 @@ export const styleHoverIcon = (
   shouldForwardProp: prop => !['color', 'hoverColor'].includes(prop),
 })`
   color: ${(props: IconStyledProps) => props.color || 'grey'};
-  font-size: 1.4em;
   &:hover {
     cursor: pointer;
     color: ${(props: IconStyledProps) => props.hoverColor || 'black'};

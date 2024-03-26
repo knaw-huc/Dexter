@@ -2,7 +2,7 @@ import React from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import styled from '@emotion/styled';
 import { styleButtonIcon } from '../../utils/styleButtonIcon';
-import { ButtonWithIcon } from './ButtonWithIcon';
+import { ButtonWithIcon } from './icon/ButtonWithIcon';
 
 type DeleteIconStyledProps = {
   hoverColor?: string;

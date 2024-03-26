@@ -1,4 +1,4 @@
-import { styleButtonIcon } from '../../utils/styleButtonIcon';
+import { styleButtonIcon } from '../../../utils/styleButtonIcon';
 import styled from '@emotion/styled';
 import OpenInNewOutlinedIcon from '@mui/icons-material/OpenInNewOutlined';
 const OpenInNewOutlinedIconStyled = styled(OpenInNewOutlinedIcon)`
@@ -6,4 +6,4 @@ const OpenInNewOutlinedIconStyled = styled(OpenInNewOutlinedIcon)`
   font-size: 1.2em;
   padding-top: 0.25em;
 `;
-export const ExternalIconStyled = styleButtonIcon(OpenInNewOutlinedIconStyled);
+export const ExternalIcon = styleButtonIcon(OpenInNewOutlinedIconStyled);

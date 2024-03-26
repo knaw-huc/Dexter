@@ -1,9 +1,9 @@
 import React from 'react';
-import { ButtonWithIcon } from '../common/ButtonWithIcon';
+import { ButtonWithIcon } from '../common/icon/ButtonWithIcon';
 import { SxProps } from '@mui/system';
 import { Theme } from '@mui/material/styles';
-import { ExportIconStyled } from './ExportIconStyled';
-import { OkIcon } from '../common/OkIcon';
+import { ExportIcon } from './ExportIcon';
+import { OkIcon } from '../common/icon/OkIcon';
 
 export function ExportButton(props: {
   onExport: () => void;
@@ -18,11 +18,7 @@ export function ExportButton(props: {
       style={{ float: 'right' }}
       sx={props.sx}
     >
-      {props.isExported ? (
-        <OkIcon sx={{ mr: '0.5em' }} />
-      ) : (
-        <ExportIconStyled />
-      )}
+      {props.isExported ? <OkIcon sx={{ mr: '0.5em' }} /> : <ExportIcon />}
       {props.isExported ? 'Exported' : 'Export'}
     </ButtonWithIcon>
   );

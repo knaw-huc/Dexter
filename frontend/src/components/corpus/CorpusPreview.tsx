@@ -8,13 +8,13 @@ import { CorpusIcon } from './CorpusIcon';
 import { Title } from '../media/Title';
 import { CardHeaderImage } from '../common/CardHeaderImage';
 import { TagList } from '../tag/TagList';
-import { TopRightCloseIcon } from '../common/TopRightCloseIcon';
 import { corpora } from '../../model/Resources';
 import { getCorpusTags } from './getCorpusTags';
 import _ from 'lodash';
 import { hasEqualId } from '../../utils/hasEqualId';
 import styled from '@emotion/styled';
 import ScatterPlotIcon from '@mui/icons-material/ScatterPlot';
+import { TopRightCloseIcon } from '../common/icon/CloseIcon';
 
 type CorpusPreviewProps = {
   corpus: Corpus;

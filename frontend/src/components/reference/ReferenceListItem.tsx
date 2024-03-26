@@ -2,7 +2,7 @@ import { grey } from '@mui/material/colors';
 import { Reference } from '../../model/DexterModel';
 import React from 'react';
 import { Avatar, ListItemAvatar } from '@mui/material';
-import { DeleteIconStyled } from '../common/DeleteIconStyled';
+import { DeleteIcon } from '../common/icon/DeleteIcon';
 import { ReferenceIcon } from './ReferenceIcon';
 import { ListItemButtonStyled } from '../common/ListItemButtonStyled';
 import { FormattedReference } from './FormattedReference';
@@ -33,7 +33,7 @@ export const ReferenceListItem = (props: SourceListItemProps) => {
       onClick={handleClickReferenceItem}
       secondaryAction={
         <div style={{ color: grey[500] }}>
-          <DeleteIconStyled onClick={handleDeleted} />
+          <DeleteIcon onClick={handleDeleted} />
         </div>
       }
       sx={{ ml: 0, pl: 0 }}

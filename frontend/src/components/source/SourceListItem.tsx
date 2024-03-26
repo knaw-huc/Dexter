@@ -3,8 +3,8 @@ import { isImage, Source } from '../../model/DexterModel';
 import React from 'react';
 import { Avatar, ListItemAvatar, ListItemText } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { EditIconStyled } from '../common/EditIconStyled';
-import { DeleteIconStyled } from '../common/DeleteIconStyled';
+import { EditIcon } from '../common/icon/EditIcon';
+import { DeleteIcon } from '../common/icon/DeleteIcon';
 import { SourceIcon } from './SourceIcon';
 import { ListItemButtonStyled } from '../common/ListItemButtonStyled';
 import { sources } from '../../model/Resources';
@@ -39,8 +39,8 @@ export const SourceListItem = (props: SourceListItemProps) => {
       onClick={handleSelect}
       secondaryAction={
         <span style={{ color: grey[500] }}>
-          <EditIconStyled hoverColor="black" onClick={handleEdit} />
-          <DeleteIconStyled onClick={handleDeleted} />
+          <EditIcon hoverColor="black" onClick={handleEdit} />
+          <DeleteIcon onClick={handleDeleted} />
         </span>
       }
       sx={{ ml: 0, pl: 0 }}

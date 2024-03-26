@@ -1,5 +1,5 @@
 import React from 'react';
-import { ExternalIconStyled } from './common/ExternalIconStyled';
+import { ExternalIcon } from './common/icon/ExternalIcon';
 import styled from '@emotion/styled';
 
 // @ts-expect-error Injected by webpack, see webpack.config-*.js
@@ -16,7 +16,7 @@ export function Version() {
   return (
     <AStyled href="https://github.com/knaw-huc/Dexter/blob/main/CHANGELOG.md">
       Dexter version {VERSION}
-      <ExternalIconStyled />
+      <ExternalIcon />
     </AStyled>
   );
 }

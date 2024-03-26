@@ -1,9 +1,9 @@
 import { Tooltip } from '@mui/material';
-import { OkIcon } from '../common/OkIcon';
-import { HelpIcon } from '../common/HelpIcon';
-import { WarningIcon } from '../common/WarningIcon';
+import { OkIcon } from '../common/icon/OkIcon';
+import { HelpIcon } from '../common/icon/HelpIcon';
+import { WarningIcon } from '../common/icon/WarningIcon';
 import React from 'react';
-import { SpinnerIcon } from '../common/SpinnerIcon';
+import { SpinnerIcon } from '../common/icon/SpinnerIcon';
 
 type ReferenceToolTipHelpProps = {
   isManaged: boolean;

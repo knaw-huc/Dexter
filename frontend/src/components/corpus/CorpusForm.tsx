@@ -13,7 +13,6 @@ import ScrollableModal from '../common/ScrollableModal';
 import { ValidatedSelectField } from '../common/ValidatedSelectField';
 import { SelectSourcesField } from './SelectSourcesField';
 import { TextFieldWithError } from '../common/TextFieldWithError';
-import { TopRightCloseIcon } from '../common/TopRightCloseIcon';
 import { SubmitButton } from '../common/SubmitButton';
 import { MetadataValueFormFields } from '../metadata/MetadataValueFormFields';
 import { TextareaFieldProps } from '../common/TextareaFieldProps';
@@ -29,6 +28,7 @@ import { remove } from '../../utils/immer/remove';
 import { assign } from '../../utils/immer/assign';
 import { toFormHint } from '../../LabelStore';
 import { Hinted } from '../common/Hinted';
+import { TopRightCloseIcon } from '../common/icon/CloseIcon';
 
 type CorpusFormProps = {
   /**

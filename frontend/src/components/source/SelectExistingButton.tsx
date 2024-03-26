@@ -1,6 +1,6 @@
-import { ButtonWithIcon } from '../common/ButtonWithIcon';
+import { ButtonWithIcon } from '../common/icon/ButtonWithIcon';
 import React from 'react';
-import { LinkIconStyled } from '../common/LinkIconStyled';
+import { LinkIcon } from '../common/icon/LinkIcon';
 
 export function SelectExistingButton(props: {
   title?: string;
@@ -8,7 +8,7 @@ export function SelectExistingButton(props: {
 }) {
   return (
     <ButtonWithIcon variant="contained" onClick={props.onClick}>
-      <LinkIconStyled />
+      <LinkIcon />
       {props.title || 'Existing'}
     </ButtonWithIcon>
   );

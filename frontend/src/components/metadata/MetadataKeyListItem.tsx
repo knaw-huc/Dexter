@@ -3,8 +3,8 @@ import { ResultMetadataKey } from '../../model/DexterModel';
 import { deleteMetadataKey } from '../../utils/API';
 import React, { ChangeEvent } from 'react';
 import { Avatar, ListItemAvatar, ListItemText } from '@mui/material';
-import { EditIconStyled } from '../common/EditIconStyled';
-import { DeleteIconStyled } from '../common/DeleteIconStyled';
+import { EditIcon } from '../common/icon/EditIcon';
+import { DeleteIcon } from '../common/icon/DeleteIcon';
 import { MetadataKeyIcon } from './MetadataKeyIcon';
 import { ListItemButtonStyled } from '../common/ListItemButtonStyled';
 import { useThrowSync } from '../common/error/useThrowSync';
@@ -41,8 +41,8 @@ export const MetadataKeyListItem = (props: MetadataKeyItemProps) => {
       onClick={props.onEditClick}
       secondaryAction={
         <span style={{ color: grey[500] }}>
-          <EditIconStyled hoverColor="black" onClick={handleEditClick} />
-          <DeleteIconStyled onClick={handleDelete} />
+          <EditIcon hoverColor="black" onClick={handleEditClick} />
+          <DeleteIcon onClick={handleDelete} />
         </span>
       }
       sx={{ ml: 0, pl: 0 }}

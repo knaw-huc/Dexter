@@ -1,6 +1,6 @@
-import { ButtonWithIcon } from './ButtonWithIcon';
+import { ButtonWithIcon } from './icon/ButtonWithIcon';
 import React from 'react';
-import { CreateIconStyled } from './CreateIconStyled';
+import { CreateIcon } from './icon/CreateIcon';
 import { SxProps } from '@mui/system';
 import { Theme } from '@mui/material/styles';
 
@@ -16,7 +16,7 @@ export function AddNewButton(props: {
       onClick={props.onClick}
       sx={props.sx}
     >
-      <CreateIconStyled />
+      <CreateIcon />
       {props.title || 'New'}
     </ButtonWithIcon>
   );

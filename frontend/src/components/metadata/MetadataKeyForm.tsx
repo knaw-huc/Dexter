@@ -4,7 +4,6 @@ import React, { ChangeEvent, useEffect } from 'react';
 import { FormMetadataKey, ResultMetadataKey } from '../../model/DexterModel';
 import { createMetadataKey, updateMetadataKey } from '../../utils/API';
 import ScrollableModal from '../common/ScrollableModal';
-import { TopRightCloseIcon } from '../common/TopRightCloseIcon';
 import { SubmitButton } from '../common/SubmitButton';
 import { Label } from '../common/Label';
 import * as yup from 'yup';
@@ -15,6 +14,7 @@ import { FieldError } from '../common/error/FieldError';
 import { useImmer } from 'use-immer';
 import { Hinted } from '../common/Hinted';
 import { toFormHint } from '../../LabelStore';
+import { TopRightCloseIcon } from '../common/icon/CloseIcon';
 
 type MetadataKeyFormProps = {
   inEdit?: ResultMetadataKey;

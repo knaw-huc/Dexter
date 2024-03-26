@@ -2,12 +2,12 @@ import React from 'react';
 import { Label } from '../common/Label';
 import { TextFieldStyled } from '../common/TextFieldStyled';
 import { Button, Tooltip } from '@mui/material';
-import { HelpIcon } from '../common/HelpIcon';
+import { HelpIcon } from '../common/icon/HelpIcon';
 import { SplitRow } from '../common/SplitRow';
 import { TextFormFieldProps } from '../common/TextFieldWithError';
 import { FieldError } from '../common/error/FieldError';
 import { FormFieldprops } from '../common/FormFieldProps';
-import { SpinnerIcon } from '../common/SpinnerIcon';
+import { SpinnerIcon } from '../common/icon/SpinnerIcon';
 
 type ImportFieldProps = FormFieldprops &
   Omit<TextFormFieldProps, 'label'> & {

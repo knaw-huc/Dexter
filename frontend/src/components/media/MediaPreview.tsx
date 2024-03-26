@@ -2,10 +2,10 @@ import { ResultMedia } from '../../model/DexterModel';
 import React from 'react';
 import { Card, CardActions, CardMedia, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { EditIconStyled } from '../common/EditIconStyled';
+import { EditIcon } from '../common/icon/EditIcon';
 import { Title } from './Title';
 import { media } from '../../model/Resources';
-import { CloseIconStyled } from '../common/CloseIconStyled';
+import { CloseIcon } from '../common/icon/CloseIcon';
 
 type MediaItemProps = {
   media: ResultMedia;
@@ -49,8 +49,8 @@ export const MediaPreview = (props: MediaItemProps) => {
               marginTop: '0.25em',
             }}
           >
-            <EditIconStyled onClick={handleEdit} style={{ margin: 0 }} />
-            <CloseIconStyled onClick={props.onRemove} style={{ margin: 0 }} />
+            <EditIcon onClick={handleEdit} style={{ margin: 0 }} />
+            <CloseIcon onClick={props.onRemove} style={{ margin: 0 }} />
           </span>
         </CardActions>
       </Card>

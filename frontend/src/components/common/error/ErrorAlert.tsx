@@ -2,7 +2,8 @@ import { Alert, AlertProps, Theme } from '@mui/material';
 import { ERROR_MESSAGE_CLASS } from './FieldError';
 import React from 'react';
 import { SxProps } from '@mui/system';
-import { TopRightCloseIcon } from '../TopRightCloseIcon';
+
+import { TopRightCloseIcon } from '../icon/CloseIcon';
 
 export function ErrorAlert(props: {
   message: string;

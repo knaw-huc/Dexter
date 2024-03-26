@@ -1,5 +1,5 @@
 import { FormFieldprops } from '../common/FormFieldProps';
-import { SpinnerIcon } from '../common/SpinnerIcon';
+import { SpinnerIcon } from '../common/icon/SpinnerIcon';
 import { InputAdornment } from '@mui/material';
 import { SplitRow } from '../common/SplitRow';
 import { ValidatedSelectField } from '../common/ValidatedSelectField';

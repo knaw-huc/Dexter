@@ -5,11 +5,11 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, Grid } from '@mui/material';
 import { PClamped } from '../common/PClamped';
 import { TagList } from '../tag/TagList';
-import { TopRightCloseIcon } from '../common/TopRightCloseIcon';
 import { SourceIcon } from './SourceIcon';
 import { Title } from '../media/Title';
 import { CardHeaderImage } from '../common/CardHeaderImage';
 import { sources } from '../../model/Resources';
+import { TopRightCloseIcon } from '../common/icon/CloseIcon';
 
 interface SourceItemDropdownProps {
   source: Source;

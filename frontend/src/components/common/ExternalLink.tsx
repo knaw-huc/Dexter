@@ -4,7 +4,7 @@ import isUrl from '../../utils/isUrl';
 import { truncateMiddle } from '../../utils/truncateMiddle';
 import React from 'react';
 import styled from '@emotion/styled';
-import { ExternalIconStyled } from './ExternalIconStyled';
+import { ExternalIcon } from './icon/ExternalIcon';
 
 const A = styled.a`
   color: ${blue[600]};
@@ -30,7 +30,7 @@ export function ExternalLink(props: {
           <A href={props.url} target="_blank" rel="noreferrer">
             {truncateMiddle(props.url, 100)}
           </A>
-          <ExternalIconStyled />
+          <ExternalIcon />
         </>
       ) : (
         <>{props.url}</>

@@ -5,7 +5,7 @@ import { Label } from '../common/Label';
 import { SplitRow } from '../common/SplitRow';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
-import { DeleteIconStyled } from '../common/DeleteIconStyled';
+import { DeleteIcon } from '../common/icon/DeleteIcon';
 import _ from 'lodash';
 import { FormFieldprops } from '../common/FormFieldProps';
 import { FieldError } from '../common/error/FieldError';
@@ -109,7 +109,7 @@ export function MetadataValueFormFields(props: MetadataValueFormFieldsProps) {
               onChange={e => handleChangeFormValue(value, e)}
               InputProps={{
                 endAdornment: (
-                  <DeleteIconStyled onClick={() => handleDelete(value)} />
+                  <DeleteIcon onClick={() => handleDelete(value)} />
                 ),
               }}
             />

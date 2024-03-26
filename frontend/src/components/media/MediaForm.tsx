@@ -8,7 +8,6 @@ import {
 } from '../../model/DexterModel';
 import { createMedia, updateMedia } from '../../utils/API';
 import ScrollableModal from '../common/ScrollableModal';
-import { TopRightCloseIcon } from '../common/TopRightCloseIcon';
 import { SubmitButton } from '../common/SubmitButton';
 import * as yup from 'yup';
 import { onSubmit } from '../../utils/onSubmit';
@@ -20,6 +19,7 @@ import { TextFieldWithError } from '../common/TextFieldWithError';
 import { useImmer } from 'use-immer';
 import { Hinted } from '../common/Hinted';
 import { toFormHint } from '../../LabelStore';
+import { TopRightCloseIcon } from '../common/icon/CloseIcon';
 
 type MediaFormProps = {
   inEdit?: ResultMedia;

@@ -2,14 +2,14 @@ import styled from '@emotion/styled';
 import TextField from '@mui/material/TextField';
 import React from 'react';
 import ScrollableModal from '../common/ScrollableModal';
-import { TopRightCloseIcon } from '../common/TopRightCloseIcon';
 import { SubmitButton } from '../common/SubmitButton';
 import { onSubmit } from '../../utils/onSubmit';
 import { Exportable } from './mapper/Exportable';
 import { useThrowSync } from '../common/error/useThrowSync';
 import { useExporter } from './useExporter';
-import { SpinnerIcon } from '../common/SpinnerIcon';
-import { NextIconStyled } from '../common/NextIconStyled';
+import { SpinnerIcon } from '../common/icon/SpinnerIcon';
+import { NextIcon } from '../common/icon/NextIcon';
+import { TopRightCloseIcon } from '../common/icon/CloseIcon';
 
 type ExportFormProps = {
   toExport?: Exportable;
@@ -49,7 +49,7 @@ export function ExportForm(props: ExportFormProps) {
             label={
               <>
                 Export{' '}
-                <NextIconStyled
+                <NextIcon
                   sx={{
                     marginLeft: '1em',
                     marginRight: '0 !important',

@@ -10,7 +10,6 @@ import { useFormErrors } from '../common/error/useFormErrors';
 import { FormErrorMessage } from '../common/error/FormError';
 import { FieldError } from '../common/error/FieldError';
 import ScrollableModal from '../common/ScrollableModal';
-import { TopRightCloseIcon } from '../common/TopRightCloseIcon';
 import { onSubmit } from '../../utils/onSubmit';
 import { SubmitButton } from '../common/SubmitButton';
 import { ReferenceField } from './ReferenceField';
@@ -20,6 +19,7 @@ import { ReferenceStyle } from './ReferenceStyle';
 import { useImmer } from 'use-immer';
 import { Hinted } from '../common/Hinted';
 import { toFormHint } from '../../LabelStore';
+import { TopRightCloseIcon } from '../common/icon/CloseIcon';
 
 const referenceSchema = yup.object({
   input: yup.string().required('Reference input cannot be empty'),
