@@ -2,7 +2,7 @@ import { H2Styled } from '../common/H2Styled';
 import { ReferenceIcon } from '../reference/ReferenceIcon';
 import { Grid } from '@mui/material';
 import { AddNewButton } from '../common/AddNewButton';
-import { SelectExistingResourceButton } from './SelectExistingResourceButton';
+import { SelectExistingButton } from './SelectExistingButton';
 import React from 'react';
 import { Reference, ResultReference } from '../../model/DexterModel';
 import { ReferenceStyle } from '../reference/ReferenceStyle';
@@ -84,8 +84,7 @@ export function SourceReferences(props: { referenceStyle: ReferenceStyle }) {
       <Grid container spacing={2}>
         <Grid item xs={6} md={4}>
           <AddNewButton onClick={() => setShowReferenceForm(true)} />
-          <SelectExistingResourceButton
-            title="Existing"
+          <SelectExistingButton
             onClick={() => setShowSelectReferenceForm(true)}
           />
         </Grid>

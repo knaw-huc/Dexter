@@ -2,7 +2,7 @@ import { H2Styled } from '../common/H2Styled';
 import { MediaIcon } from '../media/MediaIcon';
 import { Grid } from '@mui/material';
 import { AddNewButton } from '../common/AddNewButton';
-import { SelectExistingResourceButton } from './SelectExistingResourceButton';
+import { SelectExistingButton } from './SelectExistingButton';
 import { MediaPreview } from '../media/MediaPreview';
 import React from 'react';
 import { ResultMedia } from '../../model/DexterModel';
@@ -74,10 +74,7 @@ export function SourceMedia() {
       <Grid container spacing={2}>
         <Grid item xs={6} md={4}>
           <AddNewButton onClick={() => setShowMediaForm(true)} />
-          <SelectExistingResourceButton
-            title="Existing media"
-            onClick={() => setShowSelectMediaForm(true)}
-          />
+          <SelectExistingButton onClick={() => setShowSelectMediaForm(true)} />
         </Grid>
         <Grid item xs={6} md={8}></Grid>
       </Grid>

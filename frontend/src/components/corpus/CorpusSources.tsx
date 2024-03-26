@@ -2,7 +2,7 @@ import { H2Styled } from '../common/H2Styled';
 import { SourceIcon } from '../source/SourceIcon';
 import { Grid } from '@mui/material';
 import { AddNewButton } from '../common/AddNewButton';
-import { SelectExistingResourceButton } from '../source/SelectExistingResourceButton';
+import { SelectExistingButton } from '../source/SelectExistingButton';
 import { TagsFilter } from '../tag/TagsFilter';
 import _ from 'lodash';
 import { SourcePreview } from '../source/SourcePreview';
@@ -58,10 +58,7 @@ export function CorpusSources() {
       <Grid container spacing={2}>
         <Grid item xs={6} md={4}>
           <AddNewButton onClick={() => setShowSourceForm(true)} />
-          <SelectExistingResourceButton
-            title="Existing source"
-            onClick={() => setShowSelectSourceForm(true)}
-          />
+          <SelectExistingButton onClick={() => setShowSelectSourceForm(true)} />
         </Grid>
         <Grid item xs={6} md={8}>
           <TagsFilter
