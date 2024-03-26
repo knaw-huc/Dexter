@@ -7,11 +7,13 @@ import { ReferenceIcon } from './ReferenceIcon';
 import { ListItemButtonStyled } from '../common/ListItemButtonStyled';
 import { FormattedReference } from './FormattedReference';
 import { ReferenceStyle } from './ReferenceStyle';
+import { CloseIcon } from '../common/icon/CloseIcon';
 
 type SourceListItemProps = {
   referenceStyle: ReferenceStyle;
   reference: Reference;
-  onDelete: () => void;
+  onDelete?: () => void;
+  onUnlink?: () => void;
   onEdit: () => void;
   hideIcon?: boolean;
 };
@@ -20,6 +22,11 @@ export const ReferenceListItem = (props: SourceListItemProps) => {
   function handleDeleted(e: React.MouseEvent) {
     e.stopPropagation();
     props.onDelete();
+  }
+
+  function handleUnlink(e: React.MouseEvent) {
+    e.stopPropagation();
+    props.onUnlink();
   }
 
   function handleClickReferenceItem() {
@@ -33,7 +40,8 @@ export const ReferenceListItem = (props: SourceListItemProps) => {
       onClick={handleClickReferenceItem}
       secondaryAction={
         <div style={{ color: grey[500] }}>
-          <DeleteIcon onClick={handleDeleted} />
+          {props.onDelete && <DeleteIcon onClick={handleDeleted} />}
+          {props.onUnlink && <CloseIcon onClick={handleUnlink} />}
         </div>
       }
       sx={{ ml: 0, pl: 0 }}

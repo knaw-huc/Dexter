@@ -89,7 +89,7 @@ export function SourceMedia() {
           <Grid item xs={4} key={media.id}>
             <MediaPreview
               media={media}
-              onRemove={() => handleUnlinkMedia(media)}
+              onUnlink={() => handleUnlinkMedia(media)}
               onEdit={() => handleClickEditMedia(media)}
             />
           </Grid>

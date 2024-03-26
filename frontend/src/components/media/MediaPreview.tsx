@@ -9,7 +9,7 @@ import { CloseIcon } from '../common/icon/CloseIcon';
 
 type MediaItemProps = {
   media: ResultMedia;
-  onRemove: () => void;
+  onUnlink: () => void;
   onEdit: () => void;
 };
 
@@ -57,7 +57,7 @@ export const MediaPreview = (props: MediaItemProps) => {
             }}
           >
             <CloseIcon
-              onClick={props.onRemove}
+              onClick={props.onUnlink}
               style={{ margin: '0', float: 'right' }}
             />
             <EditIcon

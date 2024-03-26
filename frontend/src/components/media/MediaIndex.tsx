@@ -87,7 +87,7 @@ export function MediaIndex() {
             <Grid item key={media.id} xs={4}>
               <MediaPreview
                 media={media}
-                onRemove={() => handleDelete(media)}
+                onUnlink={() => handleDelete(media)}
                 onEdit={() => handleEdit(media)}
               />
             </Grid>

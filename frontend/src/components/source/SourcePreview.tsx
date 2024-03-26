@@ -13,7 +13,7 @@ import { TopRightCloseIcon } from '../common/icon/CloseIcon';
 
 interface SourceItemDropdownProps {
   source: Source;
-  onRemove: () => void;
+  onUnlink: () => void;
 }
 
 export const SourcePreview = (props: SourceItemDropdownProps) => {
@@ -34,7 +34,7 @@ export const SourcePreview = (props: SourceItemDropdownProps) => {
             <TopRightCloseIcon
               onClick={(e: React.MouseEvent<HTMLInputElement>) => {
                 e.stopPropagation();
-                props.onRemove();
+                props.onUnlink();
               }}
             />
             <HeaderLinkClamped onClick={navigateToSource}>

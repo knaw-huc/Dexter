@@ -18,7 +18,7 @@ import { TopRightCloseIcon } from '../common/icon/CloseIcon';
 
 type CorpusPreviewProps = {
   corpus: Corpus;
-  onRemove?: () => void;
+  onUnlink?: () => void;
 };
 
 const NestedIconStyled = styled(ScatterPlotIcon)`
@@ -49,7 +49,7 @@ export function CorpusPreview(props: CorpusPreviewProps) {
       <CardContent style={{ height: '100%', paddingBottom: '1em' }}>
         <Grid container>
           <Grid item sx={{ maxHeight: '130px' }} xs={12}>
-            {props.onRemove && <TopRightCloseIcon onClick={props.onRemove} />}
+            {props.onUnlink && <TopRightCloseIcon onClick={props.onUnlink} />}
             <HeaderLinkClamped onClick={navigateToCorpus}>
               <CorpusIcon />
               <Title title={corpus.title} />

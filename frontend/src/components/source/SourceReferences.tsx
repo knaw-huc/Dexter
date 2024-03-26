@@ -95,7 +95,7 @@ export function SourceReferences(props: { referenceStyle: ReferenceStyle }) {
           <ReferenceListItem
             key={reference.id}
             reference={reference}
-            onDelete={() => handleUnlinkReference(reference)}
+            onUnlink={() => handleUnlinkReference(reference)}
             onEdit={() => handleClickEditReference(reference)}
             referenceStyle={props.referenceStyle}
             hideIcon={true}

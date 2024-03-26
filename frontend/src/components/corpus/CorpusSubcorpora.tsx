@@ -103,7 +103,7 @@ export function CorpusSubcorpora() {
           <Grid item xs={4} key={c.id}>
             <CorpusPreview
               corpus={c}
-              onRemove={() => handleDeselectSubcorpus(c.id)}
+              onUnlink={() => handleDeselectSubcorpus(c.id)}
             />
           </Grid>
         ))}
