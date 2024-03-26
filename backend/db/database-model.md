@@ -153,6 +153,7 @@ erDiagram
     users {
         id uuid PK "not null"
         name text "not null"
+        settings text "not null"
     }
 
     corpora ||--o{ corpora : parent_id
