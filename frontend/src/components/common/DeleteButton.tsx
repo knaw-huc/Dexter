@@ -1,21 +1,10 @@
 import React from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
-import styled from '@emotion/styled';
 import { styleButtonIcon } from '../../utils/styleButtonIcon';
 import { ButtonWithIcon } from './icon/ButtonWithIcon';
+import { styleHoverIcon } from '../../utils/styleHoverIcon';
 
-type DeleteIconStyledProps = {
-  hoverColor?: string;
-};
-export const DeleteIconStyled = styled(styleButtonIcon(DeleteIcon))`
-  font-size: 1.4em;
-
-  &:hover {
-    cursor: pointer;
-    color: ${(props: DeleteIconStyledProps) =>
-      props.hoverColor ? props.hoverColor : ''};
-  }
-`;
+export const DeleteIconStyled = styleHoverIcon(styleButtonIcon(DeleteIcon));
 
 export function DeleteButton(props: { onDelete: () => void }) {
   return (

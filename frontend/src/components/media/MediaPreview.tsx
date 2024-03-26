@@ -50,13 +50,20 @@ export const MediaPreview = (props: MediaItemProps) => {
           <span
             style={{
               fontSize: '1em',
+              minWidth: '4em',
               marginLeft: 'auto',
-              minWidth: '3em',
-              marginTop: '0.25em',
+              marginTop: '0.5em',
+              marginRight: '0.25em',
             }}
           >
-            <EditIcon onClick={handleEdit} style={{ margin: 0 }} />
-            <CloseIcon onClick={props.onRemove} style={{ margin: 0 }} />
+            <CloseIcon
+              onClick={props.onRemove}
+              style={{ margin: '0', float: 'right' }}
+            />
+            <EditIcon
+              onClick={handleEdit}
+              style={{ margin: '0 0.1em 0', float: 'right' }}
+            />
           </span>
         </CardActions>
       </Card>
