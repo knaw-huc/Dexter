@@ -38,7 +38,13 @@ export const MediaPreview = (props: MediaItemProps) => {
           onClick={handleSelect}
         />
         <CardActions sx={{ alignItems: 'initial' }}>
-          <Typography gutterBottom variant="h5" sx={{ ml: '0.25em' }}>
+          <Typography
+            className="clickable"
+            onClick={handleSelect}
+            gutterBottom
+            variant="h5"
+            sx={{ ml: '0.25em' }}
+          >
             <Title title={props.media.title} />
           </Typography>
           <span
