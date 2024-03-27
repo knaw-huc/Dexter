@@ -68,7 +68,7 @@ export function SourceMedia() {
 
   async function handleChangeSelectedMedia(media: ResultMedia[]) {
     await updateSourceMedia(sourceId, media);
-    setSource(s => ({ ...s, media }));
+    setSource(s => void (s.media = media));
   }
 
   const hasMedia = !_.isEmpty(media);
