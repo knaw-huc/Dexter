@@ -23,7 +23,7 @@ import { SelectCorpusField } from './SelectCorpusField';
 import { useFormErrors } from '../common/error/useFormErrors';
 import { FormErrorMessage } from '../common/error/FormError';
 import { useImmer } from 'use-immer';
-import { add } from '../../utils/immer/add';
+import { push } from '../../utils/immer/push';
 import { remove } from '../../utils/immer/remove';
 import { assign } from '../../utils/immer/assign';
 import { toFormHint } from '../../LabelStore';
@@ -80,7 +80,7 @@ export function CorpusForm(props: CorpusFormProps) {
 
   async function handleLinkSource(sourceId: string) {
     const toAdd = props.sourceOptions.find(s => s.id === sourceId);
-    setForm(f => add(f.sources, toAdd));
+    setForm(f => push(f.sources, toAdd));
   }
 
   async function handleSelectParentCorpus(corpusId: string) {

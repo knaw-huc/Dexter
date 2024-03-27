@@ -9,8 +9,8 @@ import { MetadataKeyIcon } from './MetadataKeyIcon';
 import { useThrowSync } from '../common/error/useThrowSync';
 import ErrorBoundary from '../common/error/ErrorBoundary';
 import { useImmer } from 'use-immer';
-import { update } from '../../utils/immer/update';
-import { add } from '../../utils/immer/add';
+import { replace } from '../../utils/immer/replace';
+import { push } from '../../utils/immer/push';
 import { HintedTitle } from '../common/HintedTitle';
 
 export function MetadataKeyIndex() {
@@ -30,10 +30,10 @@ export function MetadataKeyIndex() {
 
   function handleSavedKey(key: ResultMetadataKey) {
     if (toEdit) {
-      setKeys(keys => update(keys, key));
+      setKeys(keys => replace(keys, key));
       setToEdit(null);
     } else {
-      setKeys(keys => add(keys, key));
+      setKeys(keys => push(keys, key));
     }
     setFormOpen(false);
   }

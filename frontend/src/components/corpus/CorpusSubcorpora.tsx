@@ -14,7 +14,7 @@ import { updateCorpus } from '../../utils/API';
 import { isRelevantResource } from './getAllRelevantTags';
 import { getCorpusTags } from './getCorpusTags';
 import { useCorpusPageStore } from './CorpusPageStore';
-import { add } from '../../utils/immer/add';
+import { push } from '../../utils/immer/push';
 import { remove } from '../../utils/immer/remove';
 import _ from 'lodash';
 import { reject } from '../../utils/reject';
@@ -34,7 +34,7 @@ export function CorpusSubcorpora() {
       ...subcorpus,
       parentId: subcorpus.parent.id,
     });
-    setSubcorpora(sc => add(sc, subcorpus));
+    setSubcorpora(subcorpora => push(subcorpora, subcorpus));
     setShowSubcorpusForm(false);
   };
 
@@ -45,7 +45,7 @@ export function CorpusSubcorpora() {
       ...subcorpus,
       parentId: subcorpus.parent.id,
     });
-    setSubcorpora(sc => add(sc, subcorpus));
+    setSubcorpora(subcorpora => push(subcorpora, subcorpus));
   };
 
   function handleCloseCorpusForm() {
@@ -59,7 +59,7 @@ export function CorpusSubcorpora() {
 
     const subcorpus = corpusOptions.find(c => c.id === subcorpusId);
     await updateCorpus(subcorpusId, { ...subcorpus, parentId: undefined });
-    setSubcorpora(c => remove(c, subcorpus.id));
+    setSubcorpora(subcorpora => remove(subcorpora, subcorpus.id));
   };
 
   /**

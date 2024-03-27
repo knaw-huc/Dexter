@@ -36,7 +36,7 @@ export const SourcePage = () => {
   const { deleteSource } = useDeleteSource({ onError: throwSync });
 
   const handleSavedForm = (update: Source) => {
-    setSource(draft => assign(draft, update));
+    setSource(source => assign(source, update));
     setShowForm(false);
   };
 

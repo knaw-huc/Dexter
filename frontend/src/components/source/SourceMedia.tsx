@@ -11,8 +11,8 @@ import { SelectMediaForm } from './SelectMediaForm';
 import { useImmer } from 'use-immer';
 import { addMediaToSource, deleteMediaFromSource } from '../../utils/API';
 import { remove } from '../../utils/immer/remove';
-import { update } from '../../utils/immer/update';
-import { add } from '../../utils/immer/add';
+import { replace } from '../../utils/immer/replace';
+import { push } from '../../utils/immer/push';
 import { useSourcePageStore } from './SourcePageStore';
 import { updateSourceMedia } from '../../utils/updateRemoteIds';
 import _ from 'lodash';
@@ -50,14 +50,14 @@ export function SourceMedia() {
   }
 
   function handleEditedMedia(media: ResultMedia) {
-    setSource(s => update(s.media, media));
+    setSource(s => replace(s.media, media));
     setMediaToEdit(null);
     setShowMediaForm(false);
   }
 
   async function addCreatedMedia(media: ResultMedia) {
     await addMediaToSource(sourceId, [media.id]);
-    setSource(s => add(s.media, media));
+    setSource(s => push(s.media, media));
     setShowMediaForm(false);
   }
 

@@ -9,8 +9,8 @@ import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
 import { SourceIcon } from './SourceIcon';
 import { useThrowSync } from '../common/error/useThrowSync';
 import { useImmer } from 'use-immer';
-import { update } from '../../utils/immer/update';
-import { add } from '../../utils/immer/add';
+import { replace } from '../../utils/immer/replace';
+import { push } from '../../utils/immer/push';
 import _ from 'lodash';
 import { useDeleteSource } from './useDeleteSource';
 import { remove } from '../../utils/immer/remove';
@@ -39,10 +39,10 @@ export function SourceIndex() {
 
   function handleSaveSource(source: Source) {
     if (sourceToEdit) {
-      setSources(sources => update(sources, source));
+      setSources(sources => replace(sources, source));
       setSourceToEdit(null);
     } else {
-      setSources(sources => add(sources, source));
+      setSources(sources => push(sources, source));
     }
     setShowForm(false);
   }

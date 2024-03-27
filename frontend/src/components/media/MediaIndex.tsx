@@ -10,8 +10,8 @@ import { MediaIcon } from './MediaIcon';
 import { useThrowSync } from '../common/error/useThrowSync';
 import { useImmer } from 'use-immer';
 import { remove } from '../../utils/immer/remove';
-import { update } from '../../utils/immer/update';
-import { add } from '../../utils/immer/add';
+import { replace } from '../../utils/immer/replace';
+import { push } from '../../utils/immer/push';
 import { HintedTitle } from '../common/HintedTitle';
 import { reject } from '../../utils/reject';
 
@@ -43,10 +43,10 @@ export function MediaIndex() {
 
   function handleSaveMedia(media: ResultMedia) {
     if (mediaToEdit) {
-      setMedia(prev => update(prev, media));
+      setMedia(prev => replace(prev, media));
       setMediaToEdit(null);
     } else {
-      setMedia(prev => add(prev, media));
+      setMedia(prev => push(prev, media));
     }
     setShowForm(false);
   }

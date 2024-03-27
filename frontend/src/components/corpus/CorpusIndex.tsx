@@ -11,7 +11,7 @@ import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
 import { CorpusIcon } from './CorpusIcon';
 import { useThrowSync } from '../common/error/useThrowSync';
 import { useImmer } from 'use-immer';
-import { add } from '../../utils/immer/add';
+import { push } from '../../utils/immer/push';
 import { HintedTitle } from '../common/HintedTitle';
 import { AddNewButton } from '../common/AddNewButton';
 
@@ -35,7 +35,7 @@ export function CorpusIndex() {
   }, []);
 
   function handleSave(update: Corpus) {
-    setCorpora(corpora => add(corpora, update));
+    setCorpora(corpora => push(corpora, update));
     setShowForm(false);
   }
 

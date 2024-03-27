@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { Source } from '../../model/DexterModel';
 import { immer } from 'zustand/middleware/immer';
-import { DraftRecipe, DraftSetter } from '../../utils/immer/Setter';
+import { DraftSetter } from '../../utils/immer/Setter';
 import { defaultSource } from './defaultSource';
 
 interface SourcePageState {
@@ -15,8 +15,6 @@ interface SourcePageState {
 export const useSourcePageStore = create<SourcePageState>()(
   immer(set => ({
     source: defaultSource,
-    setSource: (recipe: DraftRecipe<Source>) => {
-      set(state => recipe(state.source));
-    },
+    setSource: recipe => set(state => recipe(state.source)),
   })),
 );

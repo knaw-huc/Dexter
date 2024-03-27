@@ -14,7 +14,7 @@ import { addSourcesToCorpus, deleteSourceFromCorpus } from '../../utils/API';
 import { SelectSourcesForm } from './SelectSourcesForm';
 import { getAllRelevantTags } from './getAllRelevantTags';
 import { useCorpusPageStore } from './CorpusPageStore';
-import { add } from '../../utils/immer/add';
+import { push } from '../../utils/immer/push';
 import { remove } from '../../utils/immer/remove';
 import { reject } from '../../utils/reject';
 
@@ -29,13 +29,13 @@ export function CorpusSources() {
   async function handleSavedSource(update: Source) {
     await addSourcesToCorpus(corpusId, [update.id]);
     setShowSourceForm(false);
-    setSources(s => add(s, update));
+    setSources(s => push(s, update));
   }
 
   const handleSelectSource = async (corpusId: string, sourceId: string) => {
     await addSourcesToCorpus(corpusId, [sourceId]);
     const toLink = sourceOptions.find(s => s.id === sourceId);
-    setSources(s => add(s, toLink));
+    setSources(s => push(s, toLink));
   };
 
   const handleDeselectSource = async (corpusId: string, sourceId: string) => {

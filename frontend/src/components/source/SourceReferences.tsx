@@ -15,8 +15,8 @@ import {
   deleteReferenceFromSource,
 } from '../../utils/API';
 import { remove } from '../../utils/immer/remove';
-import { update } from '../../utils/immer/update';
-import { add } from '../../utils/immer/add';
+import { replace } from '../../utils/immer/replace';
+import { push } from '../../utils/immer/push';
 import { updateSourceReferences } from '../../utils/updateRemoteIds';
 import { useSourcePageStore } from './SourcePageStore';
 import { assign } from '../../utils/immer/assign';
@@ -55,14 +55,14 @@ export function SourceReferences(props: { referenceStyle: ReferenceStyle }) {
   }
 
   function handleEditReference(reference: ResultReference) {
-    setSource(s => update(s.references, reference));
+    setSource(s => replace(s.references, reference));
     setReferenceToEdit(null);
     setShowReferenceForm(false);
   }
 
   async function addCreatedReference(reference: ResultReference) {
     await addReferencesToSource(sourceId, [reference.id]);
-    setSource(s => add(s.references, reference));
+    setSource(s => push(s.references, reference));
     setShowReferenceForm(false);
   }
 
