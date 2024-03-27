@@ -20,13 +20,8 @@ import { reject } from '../../utils/reject';
 import { SelectSubcorporaForm } from './SelectSubcorporaForm';
 
 export function CorpusSubcorpora() {
-  const {
-    corpus,
-    setSubcorpora,
-    corpusOptions,
-    setCorpusOptions,
-    sourceOptions,
-  } = useCorpusPageStore();
+  const { corpus, setSubcorpora, getCorpusOptions, getSourceOptions } =
+    useCorpusPageStore();
 
   const [filterTags, setFilterTags] = useImmer<ResultTag[]>([]);
   const [showSubcorpusForm, setShowSubcorpusForm] = useImmer(false);
@@ -43,13 +38,12 @@ export function CorpusSubcorpora() {
   };
 
   const handleSelectSubcorpus = async (subcorpusId: string) => {
-    const newSubcorpus = corpusOptions.find(c => c.id === subcorpusId);
+    const newSubcorpus = getCorpusOptions().find(c => c.id === subcorpusId);
     await updateCorpus(subcorpusId, {
       ...newSubcorpus,
       parentId: corpus.id,
     });
     setSubcorpora(subcorpora => push(subcorpora, newSubcorpus));
-    setCorpusOptions(subcorpora => remove(subcorpora, newSubcorpus.id));
   };
 
   function handleCloseCorpusForm() {
@@ -61,10 +55,9 @@ export function CorpusSubcorpora() {
       return;
     }
 
-    const subcorpus = corpusOptions.find(c => c.id === subcorpusId);
+    const subcorpus = getCorpusOptions().find(c => c.id === subcorpusId);
     await updateCorpus(subcorpusId, { ...subcorpus, parentId: undefined });
     setSubcorpora(subcorpora => remove(subcorpora, subcorpus.id));
-    setCorpusOptions(subcorpora => push(subcorpora, subcorpus));
   };
 
   /**
@@ -127,7 +120,7 @@ export function CorpusSubcorpora() {
 
       {showSubcorpusForm && (
         <CorpusForm
-          sourceOptions={sourceOptions}
+          sourceOptions={getSourceOptions()}
           onClose={handleCloseCorpusForm}
           onSaved={handleSavedSubcorpus}
         />
@@ -135,7 +128,7 @@ export function CorpusSubcorpora() {
 
       {showSelectSubcorpusForm && (
         <SelectSubcorporaForm
-          options={corpusOptions}
+          options={getCorpusOptions()}
           selected={corpus.subcorpora}
           onSelectCorpus={handleSelectSubcorpus}
           onDeselectCorpus={handleDeselectSubcorpus}

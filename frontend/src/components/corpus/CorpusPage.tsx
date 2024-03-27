@@ -30,16 +30,16 @@ export const CorpusPage = () => {
   const {
     corpus,
     setCorpus,
-    sourceOptions,
-    setSourceOptions,
-    corpusOptions,
-    setCorpusOptions,
+    setAllSources,
+    setAllCorpora,
+    getCorpusOptions,
+    getSourceOptions,
   } = useCorpusPageStore();
   const { isInit } = useInitCorpusPage({
     corpusId,
     setCorpus,
-    setCorpusOptions,
-    setSourceOptions,
+    setAllCorpora,
+    setAllSources,
   });
 
   const [showCorpusForm, setShowCorpusForm] = useImmer(false);
@@ -153,8 +153,8 @@ export const CorpusPage = () => {
       {showCorpusForm && (
         <CorpusForm
           corpusToEdit={corpus}
-          parentOptions={corpusOptions}
-          sourceOptions={sourceOptions}
+          parentOptions={getCorpusOptions()}
+          sourceOptions={getSourceOptions()}
           onClose={handleCloseCorpusForm}
           onSaved={handleSavedCorpusForm}
         />

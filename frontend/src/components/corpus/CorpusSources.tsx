@@ -19,7 +19,7 @@ import { remove } from '../../utils/draft/remove';
 import { reject } from '../../utils/reject';
 
 export function CorpusSources() {
-  const { corpus, setSources, sourceOptions } = useCorpusPageStore();
+  const { corpus, setSources, allSources } = useCorpusPageStore();
   const corpusId = corpus.id;
   const sources = corpus.sources;
   const [filterTags, setFilterTags] = useImmer<ResultTag[]>([]);
@@ -34,7 +34,7 @@ export function CorpusSources() {
 
   const handleSelectSource = async (corpusId: string, sourceId: string) => {
     await addSourcesToCorpus(corpusId, [sourceId]);
-    const toLink = sourceOptions.find(s => s.id === sourceId);
+    const toLink = allSources.find(s => s.id === sourceId);
     setSources(s => push(s, toLink));
   };
 
@@ -92,7 +92,7 @@ export function CorpusSources() {
       )}
       {showSelectSourceForm && (
         <SelectSourcesForm
-          options={sourceOptions}
+          options={allSources}
           selected={sources}
           onSelectSource={sourceId => handleSelectSource(corpusId, sourceId)}
           onDeselectSource={sourceId =>
