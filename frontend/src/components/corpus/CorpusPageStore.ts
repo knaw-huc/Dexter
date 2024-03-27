@@ -18,13 +18,13 @@ interface CorpusPageState {
    * Corpora that can be selected as parent or subcorpora
    */
   corpusOptions: Corpus[];
-  setCorpusOptions: Setter<Corpus[]>;
+  setCorpusOptions: DraftSetter<Corpus[]>;
 
   /**
    * Sources that can be selected
    */
   sourceOptions: Source[];
-  setSourceOptions: Setter<Source[]>;
+  setSourceOptions: DraftSetter<Source[]>;
 }
 
 export const useCorpusPageStore = create<CorpusPageState>()(
@@ -35,11 +35,9 @@ export const useCorpusPageStore = create<CorpusPageState>()(
     setSources: recipe => set(state => recipe(state.corpus.sources)),
 
     corpusOptions: [],
-    setCorpusOptions: corpusOptions =>
-      set(state => assign(state, { corpusOptions })),
+    setCorpusOptions: recipe => set(state => recipe(state.corpusOptions)),
 
     sourceOptions: [],
-    setSourceOptions: sourceOptions =>
-      set(state => assign(state, { sourceOptions })),
+    setSourceOptions: recipe => set(state => recipe(state.sourceOptions)),
   })),
 );

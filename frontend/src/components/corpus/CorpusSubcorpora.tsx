@@ -9,7 +9,6 @@ import React from 'react';
 import { Corpus, ResultTag } from '../../model/DexterModel';
 import { useImmer } from 'use-immer';
 import { CorpusForm } from './CorpusForm';
-import { SelectCorpusForm } from './SelectCorpusForm';
 import { updateCorpus } from '../../utils/API';
 import { isRelevantResource } from './getAllRelevantTags';
 import { getCorpusTags } from './getCorpusTags';
@@ -18,11 +17,16 @@ import { push } from '../../utils/draft/push';
 import { remove } from '../../utils/draft/remove';
 import _ from 'lodash';
 import { reject } from '../../utils/reject';
+import { SelectSubcorporaForm } from './SelectSubcorporaForm';
 
 export function CorpusSubcorpora() {
-  const { corpus, setSubcorpora, corpusOptions, sourceOptions } =
-    useCorpusPageStore();
-  const subcorpora = corpus.subcorpora;
+  const {
+    corpus,
+    setSubcorpora,
+    corpusOptions,
+    setCorpusOptions,
+    sourceOptions,
+  } = useCorpusPageStore();
 
   const [filterTags, setFilterTags] = useImmer<ResultTag[]>([]);
   const [showSubcorpusForm, setShowSubcorpusForm] = useImmer(false);
@@ -39,13 +43,13 @@ export function CorpusSubcorpora() {
   };
 
   const handleSelectSubcorpus = async (subcorpusId: string) => {
-    const subcorpus = subcorpora.find(c => c.id === subcorpusId);
-    subcorpus.parent = corpus.parent;
+    const newSubcorpus = corpusOptions.find(c => c.id === subcorpusId);
     await updateCorpus(subcorpusId, {
-      ...subcorpus,
-      parentId: subcorpus.parent.id,
+      ...newSubcorpus,
+      parentId: corpus.id,
     });
-    setSubcorpora(subcorpora => push(subcorpora, subcorpus));
+    setSubcorpora(subcorpora => push(subcorpora, newSubcorpus));
+    setCorpusOptions(subcorpora => remove(subcorpora, newSubcorpus.id));
   };
 
   function handleCloseCorpusForm() {
@@ -60,6 +64,7 @@ export function CorpusSubcorpora() {
     const subcorpus = corpusOptions.find(c => c.id === subcorpusId);
     await updateCorpus(subcorpusId, { ...subcorpus, parentId: undefined });
     setSubcorpora(subcorpora => remove(subcorpora, subcorpus.id));
+    setCorpusOptions(subcorpora => push(subcorpora, subcorpus));
   };
 
   /**
@@ -129,9 +134,9 @@ export function CorpusSubcorpora() {
       )}
 
       {showSelectSubcorpusForm && (
-        <SelectCorpusForm
-          label="Add subcorpora"
-          options={corpusOptions.filter(c => !c.parent)}
+        <SelectSubcorporaForm
+          options={corpusOptions}
+          selected={corpus.subcorpora}
           onSelectCorpus={handleSelectSubcorpus}
           onDeselectCorpus={handleDeselectSubcorpus}
           onClose={() => setShowSelectSubcorpusForm(false)}

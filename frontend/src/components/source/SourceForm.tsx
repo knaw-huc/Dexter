@@ -8,7 +8,7 @@ import {
 } from '../../model/DexterModel';
 import ScrollableModal from '../common/ScrollableModal';
 import { SelectTagField } from '../tag/SelectTagField';
-import { LanguagesField } from '../language/LanguagesField';
+import { SelectLanguagesField } from '../language/SelectLanguagesField';
 import { ValidatedSelectField } from '../common/ValidatedSelectField';
 import { TextFieldWithError } from '../common/TextFieldWithError';
 import { SubmitButton } from '../common/SubmitButton';
@@ -134,7 +134,7 @@ export function SourceForm(props: SourceFormProps) {
           allowCreatingNew
         />
 
-        <LanguagesField
+        <SelectLanguagesField
           label={<Hinted txt="languages" hint={toHint('languages')} />}
           error={errors.languages}
           selected={form.languages}

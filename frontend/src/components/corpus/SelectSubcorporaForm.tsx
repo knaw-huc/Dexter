@@ -1,19 +1,19 @@
 import React from 'react';
 import ScrollableModal from '../common/ScrollableModal';
 import {
-  SelectReferenceField,
-  SelectReferenceFieldProps,
-} from './SelectReferenceField';
+  SelectSubcorporaField,
+  SelectSubcorporaFieldProps,
+} from './SelectSubcorporaField';
 import { CloseButton } from '../common/CloseButton';
 
-type Props = SelectReferenceFieldProps & {
+export type SelectSourcesFormProps = SelectSubcorporaFieldProps & {
   onClose: () => void;
 };
 
-export function SelectReferenceForm(props: Props) {
+export function SelectSubcorporaForm(props: SelectSourcesFormProps) {
   return (
     <ScrollableModal handleClose={props.onClose} fullHeight={false}>
-      <SelectReferenceField {...props} />
+      <SelectSubcorporaField {...props} />
       <CloseButton onClose={props.onClose} />
     </ScrollableModal>
   );

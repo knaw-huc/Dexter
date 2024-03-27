@@ -11,7 +11,7 @@ export type LanguagesFieldProps = FormFieldprops & {
   onChangeSelected: (selected: ResultLanguage[]) => void;
 };
 
-export function LanguagesField(props: LanguagesFieldProps) {
+export function SelectLanguagesField(props: LanguagesFieldProps) {
   async function handleAutocompleteOptions(input: string) {
     return await getLanguagesAutocomplete(input);
   }

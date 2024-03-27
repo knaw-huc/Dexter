@@ -8,7 +8,7 @@ import {
   Source,
 } from '../../model/DexterModel';
 import { SelectTagField } from '../tag/SelectTagField';
-import { LanguagesField } from '../language/LanguagesField';
+import { SelectLanguagesField } from '../language/SelectLanguagesField';
 import ScrollableModal from '../common/ScrollableModal';
 import { ValidatedSelectField } from '../common/ValidatedSelectField';
 import { SelectSourcesField } from './SelectSourcesField';
@@ -145,7 +145,7 @@ export function CorpusForm(props: CorpusFormProps) {
             allowCreatingNew
           />
 
-          <LanguagesField
+          <SelectLanguagesField
             label={<Hinted txt="languages" hint={toHint('languages')} />}
             error={errors.languages}
             selected={form.languages}
