@@ -50,7 +50,7 @@ export function CorpusSubcorpora() {
       return;
     }
 
-    const subcorpus = getCorpusOptions().find(c => c.id === subcorpusId);
+    const subcorpus = corpus.subcorpora.find(c => c.id === subcorpusId);
     await updateCorpus(subcorpusId, { ...subcorpus, parentId: undefined });
     setSubcorpora(subcorpora => remove(subcorpora, subcorpus.id));
   };
