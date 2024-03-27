@@ -14,17 +14,14 @@ type UseInitCorpusFormResult = {
   isInit: boolean;
 };
 
-type UseInitCorpusFormParams = {
+export function useInitCorpusForm(params: {
   corpusToEdit?: Corpus;
   setForm: Dispatch<SetStateAction<Corpus>>;
   setKeys: Dispatch<ResultMetadataKey[]>;
   setValues: Dispatch<SetStateAction<FormMetadataValue[]>>;
-};
-
-export function useInitCorpusForm(
-  params: UseInitCorpusFormParams,
-): UseInitCorpusFormResult {
-  const { corpusToEdit, setForm, setKeys, setValues } = params;
+  parent?: Corpus;
+}): UseInitCorpusFormResult {
+  const { corpusToEdit, setForm, setKeys, setValues, parent } = params;
   const [isInit, setInit] = useImmer(false);
 
   function init() {
@@ -36,7 +33,10 @@ export function useInitCorpusForm(
       }
 
       const toEdit = corpusToEdit;
-      setForm({ ...(toEdit ?? defaultCorpus) });
+      setForm({
+        ...(toEdit || defaultCorpus),
+        parent,
+      });
       setKeys(await getMetadataKeys());
       if (toEdit?.metadataValues.length) {
         setValues(toEdit.metadataValues.map(toFormMetadataValue));

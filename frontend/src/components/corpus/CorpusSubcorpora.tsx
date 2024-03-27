@@ -28,11 +28,6 @@ export function CorpusSubcorpora() {
   const [showSelectSubcorpusForm, setShowSelectSubcorpusForm] = useImmer(false);
 
   const handleSavedSubcorpus = async (subcorpus: Corpus) => {
-    subcorpus.parent = corpus.parent;
-    await updateCorpus(subcorpus.id, {
-      ...subcorpus,
-      parentId: subcorpus.parent.id,
-    });
     setSubcorpora(subcorpora => push(subcorpora, subcorpus));
     setShowSubcorpusForm(false);
   };
@@ -120,6 +115,7 @@ export function CorpusSubcorpora() {
 
       {showSubcorpusForm && (
         <CorpusForm
+          parentCorpus={corpus}
           sourceOptions={getSourceOptions()}
           onClose={handleCloseCorpusForm}
           onSaved={handleSavedSubcorpus}
