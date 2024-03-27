@@ -22,6 +22,7 @@ import { useDeleteSource } from './useDeleteSource';
 import { useSourcePageStore } from './SourcePageStore';
 import { HintedTitle } from '../common/HintedTitle';
 import { useUserStore } from '../../state/UserStore';
+import { assign } from '../../utils/immer/assign';
 
 export const SourcePage = () => {
   const sourceId = useParams().sourceId;
@@ -36,12 +37,14 @@ export const SourcePage = () => {
     init();
 
     async function init() {
-      getSourceWithResourcesById(sourceId).then(setSource).catch(throwSync);
+      getSourceWithResourcesById(sourceId)
+        .then(source => setSource(draft => assign(draft, source)))
+        .catch(throwSync);
     }
   }, []);
 
   const handleSavedForm = (update: Source) => {
-    setSource(update);
+    setSource(draft => assign(draft, update));
     setShowForm(false);
   };
 

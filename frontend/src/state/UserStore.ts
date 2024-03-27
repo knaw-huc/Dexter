@@ -1,12 +1,14 @@
 import { create } from 'zustand';
-import { isUser, User, UserSettings } from '../model/DexterModel';
-import { MixedSetter, MixedSetterParam } from '../utils/immer/Setter';
+import { User } from '../model/DexterModel';
+import { DraftRecipe, DraftSetter } from '../utils/immer/Setter';
 import { immer } from 'zustand/middleware/immer';
 import { ReferenceStyle } from '../components/reference/ReferenceStyle';
-import { assign } from '../utils/immer/assign';
 
-export const defaultUserSettings: UserSettings = {
-  referenceStyle: ReferenceStyle.apa,
+export const defaultUser: User = {
+  name: '',
+  settings: {
+    referenceStyle: ReferenceStyle.apa,
+  },
 };
 
 interface UserState {
@@ -14,24 +16,20 @@ interface UserState {
    * Resource displayed on index page
    */
   user: User;
-  setUser: MixedSetter<User>;
+  setUser: DraftSetter<User>;
   getReferenceStyle: () => ReferenceStyle;
 }
 
 export const useUserStore = create<UserState>()(
   immer((set, get) => ({
     user: null,
-    setUser: (recipe: MixedSetterParam<User>) => {
-      if (isUser(recipe)) {
-        set(state => assign(state, { user: recipe }));
-      } else {
-        set(state => recipe(state.user));
-      }
+    setUser: (recipe: DraftRecipe<User>) => {
+      set(state => recipe(state.user));
     },
     getReferenceStyle: () => {
       return (
-        get().user?.settings?.referenceStyle ||
-        defaultUserSettings.referenceStyle
+        get().user.settings.referenceStyle ||
+        defaultUser.settings.referenceStyle
       );
     },
   })),

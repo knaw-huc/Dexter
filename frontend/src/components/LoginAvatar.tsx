@@ -9,6 +9,7 @@ import { useThrowSync } from './common/error/useThrowSync';
 import { useImmer } from 'use-immer';
 import { useUserStore } from '../state/UserStore';
 import { isResponseError } from './common/isResponseError';
+import { assign } from '../utils/immer/assign';
 
 export function LoginAvatar() {
   const [isLoggingIn, setLoggingIn] = useImmer(false);
@@ -28,7 +29,7 @@ export function LoginAvatar() {
 
   function tryLogin() {
     login()
-      .then(user => setUser(user))
+      .then(user => setUser(draft => assign(draft, user)))
       .catch(e => {
         if (isResponseError(e) && e.response.status === 401) {
           throwSync(
