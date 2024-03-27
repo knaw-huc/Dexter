@@ -1,32 +1,38 @@
 import { create } from 'zustand';
-import { User } from '../model/DexterModel';
-import { DraftRecipe, DraftSetter } from '../utils/draft/Setter';
+import { User, UserSettings } from '../model/DexterModel';
+import { Setter } from '../utils/draft/Setter';
 import { immer } from 'zustand/middleware/immer';
 import { ReferenceStyle } from '../components/reference/ReferenceStyle';
 import { defaultUser } from './defaultUser';
+import _ from 'lodash';
 
 interface UserState {
   /**
    * Resource displayed on index page
    */
   user: User;
-  setUser: DraftSetter<User>;
+  setUserName: Setter<string>;
+  setUserSettings: Setter<UserSettings>;
   getReferenceStyle: () => ReferenceStyle;
 }
 
 export const useUserStore = create<UserState>()(
   immer((set, get) => {
-    function getSettings() {
-      return { ...defaultUser.settings, ...get().user?.settings };
+    function createSettings(update: Partial<UserSettings>) {
+      const cleaned = _.omitBy(update, _.isNil);
+      return { ...defaultUser.settings, ...cleaned };
     }
 
     return {
       user: defaultUser,
-      setUser: (recipe: DraftRecipe<User>) => {
-        set(state => recipe(state.user));
+      setUserName: (update: string) => {
+        set(state => void (state.user.name = update));
+      },
+      setUserSettings: (update: Partial<UserSettings>) => {
+        set(state => void (state.user.settings = createSettings(update)));
       },
       getReferenceStyle: () => {
-        return getSettings().referenceStyle;
+        return get().user.settings.referenceStyle;
       },
     };
   }),

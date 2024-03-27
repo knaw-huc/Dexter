@@ -30,7 +30,7 @@ export function ReferenceIndex() {
   const [referenceToEdit, setReferenceToEdit] = useImmer<ResultReference>(null);
 
   const throwSync = useThrowSync();
-  const { user, getReferenceStyle, setUser } = useUserStore();
+  const { user, getReferenceStyle, setUserSettings } = useUserStore();
 
   useEffect(() => {
     getReferences().then(setReferences).catch(throwSync);
@@ -83,7 +83,7 @@ export function ReferenceIndex() {
     } catch (e) {
       throwSync(e);
     }
-    setUser(user => void (user.settings = update));
+    setUserSettings(update);
   }
 
   return (
