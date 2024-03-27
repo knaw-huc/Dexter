@@ -1,14 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Corpus } from '../../model/DexterModel';
 import { CorpusForm } from './CorpusForm';
-import {
-  deleteCorpus,
-  deleteMetadataValue,
-  getCorporaWithResources,
-  getCorpusWithResourcesById,
-  getSourcesWithResources,
-} from '../../utils/API';
+import { deleteCorpus, deleteMetadataValue } from '../../utils/API';
 import { EditButton } from '../common/EditButton';
 import _ from 'lodash';
 import { TagList } from '../tag/TagList';
@@ -29,6 +23,7 @@ import { ExportButton } from '../export/ExportButton';
 import { ExportForm } from '../export/ExportForm';
 import { HintedTitle } from '../common/HintedTitle';
 import { reject } from '../../utils/reject';
+import { useInitCorpusPage } from './useInitCorpusPage';
 
 export const CorpusPage = () => {
   const corpusId = useParams().corpusId;
@@ -40,6 +35,12 @@ export const CorpusPage = () => {
     corpusOptions,
     setCorpusOptions,
   } = useCorpusPageStore();
+  const { isInit } = useInitCorpusPage({
+    corpusId,
+    setCorpus,
+    setCorpusOptions,
+    setSourceOptions,
+  });
 
   const [showCorpusForm, setShowCorpusForm] = useImmer(false);
   const [showExporter, setShowExporter] = useImmer(false);
@@ -47,24 +48,6 @@ export const CorpusPage = () => {
 
   const throwSync = useThrowSync();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    init();
-
-    async function init() {
-      try {
-        setCorpus(await getCorpusWithResourcesById(corpusId));
-        setSourceOptions(await getSourcesWithResources());
-        setCorpusOptions(
-          await getCorporaWithResources().then(all =>
-            all.filter(c => c.id !== corpusId),
-          ),
-        );
-      } catch (e) {
-        throwSync(e);
-      }
-    }
-  }, []);
 
   const handleSavedCorpusForm = (corpus: Corpus) => {
     handleSavedCorpus(corpus);
@@ -111,7 +94,7 @@ export const CorpusPage = () => {
     setExported(true);
   }
 
-  if (!corpus) {
+  if (!isInit) {
     return null;
   }
   return (

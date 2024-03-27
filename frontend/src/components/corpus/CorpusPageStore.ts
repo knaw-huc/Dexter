@@ -3,6 +3,7 @@ import { Corpus, Source } from '../../model/DexterModel';
 import { immer } from 'zustand/middleware/immer';
 import { DraftSetter, Setter } from '../../utils/immer/Setter';
 import { assign } from '../../utils/immer/assign';
+import { defaultCorpus } from './defaultCorpus';
 
 interface CorpusPageState {
   /**
@@ -17,18 +18,18 @@ interface CorpusPageState {
    * Corpora that can be selected as parent or subcorpora
    */
   corpusOptions: Corpus[];
-  setCorpusOptions: (update: Corpus[]) => void;
+  setCorpusOptions: Setter<Corpus[]>;
 
   /**
    * Sources that can be selected
    */
   sourceOptions: Source[];
-  setSourceOptions: (update: Source[]) => void;
+  setSourceOptions: Setter<Source[]>;
 }
 
 export const useCorpusPageStore = create<CorpusPageState>()(
   immer(set => ({
-    corpus: null,
+    corpus: defaultCorpus,
     setCorpus: corpus => set(state => assign(state, { corpus })),
     setSubcorpora: recipe => set(state => recipe(state.corpus.subcorpora)),
     setSources: recipe => set(state => recipe(state.corpus.sources)),

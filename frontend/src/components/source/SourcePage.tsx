@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useParams } from 'react-router-dom';
 import { Source } from '../../model/DexterModel';
-import { getSourceWithResourcesById } from '../../utils/API';
 import { SourceForm } from './SourceForm';
 import { EditButton } from '../common/EditButton';
 import { TagList } from '../tag/TagList';
@@ -23,25 +22,18 @@ import { useSourcePageStore } from './SourcePageStore';
 import { HintedTitle } from '../common/HintedTitle';
 import { useUserStore } from '../../state/UserStore';
 import { assign } from '../../utils/immer/assign';
+import { useInitSourcePage } from './useInitSourcePage';
 
 export const SourcePage = () => {
   const sourceId = useParams().sourceId;
-  const referenceStyle = useUserStore().getReferenceStyle();
   const { source, setSource } = useSourcePageStore();
+  const { isInit } = useInitSourcePage({ sourceId, setSource });
+
+  const referenceStyle = useUserStore().getReferenceStyle();
 
   const [showForm, setShowForm] = useImmer(false);
   const throwSync = useThrowSync();
   const { deleteSource } = useDeleteSource({ onError: throwSync });
-
-  useEffect(() => {
-    init();
-
-    async function init() {
-      getSourceWithResourcesById(sourceId)
-        .then(source => setSource(draft => assign(draft, source)))
-        .catch(throwSync);
-    }
-  }, []);
 
   const handleSavedForm = (update: Source) => {
     setSource(draft => assign(draft, update));
@@ -59,7 +51,7 @@ export const SourcePage = () => {
     'creator',
   ];
 
-  if (!source) {
+  if (!isInit) {
     return null;
   }
   return (

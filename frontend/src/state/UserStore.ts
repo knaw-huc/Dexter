@@ -3,13 +3,7 @@ import { User } from '../model/DexterModel';
 import { DraftRecipe, DraftSetter } from '../utils/immer/Setter';
 import { immer } from 'zustand/middleware/immer';
 import { ReferenceStyle } from '../components/reference/ReferenceStyle';
-
-export const defaultUser: User = {
-  name: '',
-  settings: {
-    referenceStyle: ReferenceStyle.apa,
-  },
-};
+import { defaultUser } from './defaultUser';
 
 interface UserState {
   /**
@@ -21,16 +15,19 @@ interface UserState {
 }
 
 export const useUserStore = create<UserState>()(
-  immer((set, get) => ({
-    user: null,
-    setUser: (recipe: DraftRecipe<User>) => {
-      set(state => recipe(state.user));
-    },
-    getReferenceStyle: () => {
-      return (
-        get().user.settings.referenceStyle ||
-        defaultUser.settings.referenceStyle
-      );
-    },
-  })),
+  immer((set, get) => {
+    function getSettings() {
+      return { ...defaultUser.settings, ...get().user?.settings };
+    }
+
+    return {
+      user: defaultUser,
+      setUser: (recipe: DraftRecipe<User>) => {
+        set(state => recipe(state.user));
+      },
+      getReferenceStyle: () => {
+        return getSettings().referenceStyle;
+      },
+    };
+  }),
 );

@@ -7,6 +7,7 @@ import {
 } from '../../model/DexterModel';
 import { getMetadataKeys } from '../../utils/API';
 import { useImmer } from 'use-immer';
+import { defaultCorpus } from './defaultCorpus';
 
 type UseInitCorpusFormResult = {
   init: () => void;
@@ -18,30 +19,6 @@ type UseInitCorpusFormParams = {
   setForm: Dispatch<SetStateAction<Corpus>>;
   setKeys: Dispatch<ResultMetadataKey[]>;
   setValues: Dispatch<SetStateAction<FormMetadataValue[]>>;
-};
-
-const defaults: Corpus = {
-  parent: undefined,
-  title: '',
-  description: undefined,
-  rights: undefined,
-  access: undefined,
-  location: undefined,
-  earliest: undefined,
-  latest: undefined,
-  contributor: undefined,
-  notes: undefined,
-  tags: [],
-  languages: [],
-  sources: [],
-  metadataValues: [],
-  subcorpora: [],
-
-  // Not created or modified by form:
-  id: undefined,
-  createdBy: undefined,
-  createdAt: undefined,
-  updatedAt: undefined,
 };
 
 export function useInitCorpusForm(
@@ -59,7 +36,7 @@ export function useInitCorpusForm(
       }
 
       const toEdit = corpusToEdit;
-      setForm({ ...(toEdit ?? defaults) });
+      setForm({ ...(toEdit ?? defaultCorpus) });
       setKeys(await getMetadataKeys());
       if (toEdit?.metadataValues.length) {
         setValues(toEdit.metadataValues.map(toFormMetadataValue));

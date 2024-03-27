@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import _ from 'lodash';
 import { ValidationError } from 'yup';
 import { FormErrors } from './FormError';
 import { ErrorWithMessage } from './ErrorWithMessage';
 import { scrollToError } from './scrollToError';
 import { isResponseError } from '../isResponseError';
+import { useImmer } from 'use-immer';
+import { set } from '../../../utils/immer/set';
 
 type UseFormErrorsResult<T> = {
   errors: FormErrors<T>;
@@ -40,12 +42,12 @@ const constraintToError: Record<
  * Filter backend errors by their message constraint,
  * or return 'generic' error
  */
-export function useFormErrors<T>(): UseFormErrorsResult<T> {
-  const [errors, setErrors] = useState<FormErrors<T>>({} as FormErrors<T>);
+export function useFormErrors<T extends object>(): UseFormErrorsResult<T> {
+  const [errors, setErrors] = useImmer<FormErrors<T>>({} as FormErrors<T>);
 
   useEffect(scrollToError, [errors]);
 
-  async function setFormError<T>(error: Error): Promise<void> {
+  async function setFormError(error: Error): Promise<void> {
     if (!error) {
       clearErrors();
     } else if (isResponseError(error)) {
@@ -53,17 +55,17 @@ export function useFormErrors<T>(): UseFormErrorsResult<T> {
       const constraints = _.entries(constraintToError);
       for (const [constraint, { field, error }] of constraints) {
         if (responseError.message.includes(constraint)) {
-          setErrors(prev => _.set({ ...prev }, field as keyof T, error));
+          setErrors(draft => set(draft, field, error));
           return;
         }
       }
       if (responseError.message) {
-        setErrors(f => ({ ...f, generic: responseError }));
+        setErrors(draft => set(draft, 'generic', error));
       }
     } else if (isValidationError(error)) {
-      setErrors(prev => _.set({ ...prev }, error.path as keyof T, error));
+      setErrors(draft => set(draft, error.path, error));
     } else {
-      setErrors(prev => ({ ...prev, generic: error }));
+      setErrors(draft => set(draft, 'generic', error));
     }
   }
 
@@ -76,7 +78,7 @@ export function useFormErrors<T>(): UseFormErrorsResult<T> {
   }
 
   function setFieldError(key: keyof T, e: Error) {
-    setErrors(prev => _.set({ ...prev }, key, e));
+    setErrors(draft => set(draft, key as string, e));
   }
 
   return { errors, setError: setFormError, clearErrors, setFieldError };
