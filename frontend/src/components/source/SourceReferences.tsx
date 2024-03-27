@@ -14,12 +14,12 @@ import {
   addReferencesToSource,
   deleteReferenceFromSource,
 } from '../../utils/API';
-import { remove } from '../../utils/immer/remove';
-import { replace } from '../../utils/immer/replace';
-import { push } from '../../utils/immer/push';
+import { remove } from '../../utils/draft/remove';
+import { replace } from '../../utils/draft/replace';
+import { push } from '../../utils/draft/push';
 import { updateSourceReferences } from '../../utils/updateRemoteIds';
 import { useSourcePageStore } from './SourcePageStore';
-import { assign } from '../../utils/immer/assign';
+import { assign } from '../../utils/draft/assign';
 import _ from 'lodash';
 import { reject } from '../../utils/reject';
 
@@ -73,7 +73,7 @@ export function SourceReferences(props: { referenceStyle: ReferenceStyle }) {
 
   async function handleChangeSelectedReferences(references: Reference[]) {
     await updateSourceReferences(sourceId, references);
-    setSource(s => assign(s, { references }));
+    setSource(source => assign(source, { references }));
   }
 
   const hasReferences = !_.isEmpty(references);

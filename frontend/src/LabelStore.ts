@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
-import { Setter } from './utils/immer/Setter';
-import { assign } from './utils/immer/assign';
+import { Setter } from './utils/draft/Setter';
+import { assign } from './utils/draft/assign';
 import _ from 'lodash';
 
 export const LABEL_FILE = 'labels.json';

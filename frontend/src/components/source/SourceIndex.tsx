@@ -9,11 +9,11 @@ import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
 import { SourceIcon } from './SourceIcon';
 import { useThrowSync } from '../common/error/useThrowSync';
 import { useImmer } from 'use-immer';
-import { replace } from '../../utils/immer/replace';
-import { push } from '../../utils/immer/push';
+import { replace } from '../../utils/draft/replace';
+import { push } from '../../utils/draft/push';
 import _ from 'lodash';
 import { useDeleteSource } from './useDeleteSource';
-import { remove } from '../../utils/immer/remove';
+import { remove } from '../../utils/draft/remove';
 import { HintedTitle } from '../common/HintedTitle';
 
 export function SourceIndex() {

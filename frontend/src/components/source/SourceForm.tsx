@@ -23,7 +23,7 @@ import { SelectMediaField } from '../media/SelectMediaField';
 import { useFormErrors } from '../common/error/useFormErrors';
 import { FormErrorMessage } from '../common/error/FormError';
 import { useImmer } from 'use-immer';
-import { assign } from '../../utils/immer/assign';
+import { assign } from '../../utils/draft/assign';
 import { Hinted } from '../common/Hinted';
 import { toFormHint } from '../../LabelStore';
 import { TopRightCloseIcon } from '../common/icon/CloseIcon';

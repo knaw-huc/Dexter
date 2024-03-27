@@ -21,7 +21,7 @@ import { useDeleteSource } from './useDeleteSource';
 import { useSourcePageStore } from './SourcePageStore';
 import { HintedTitle } from '../common/HintedTitle';
 import { useUserStore } from '../../state/UserStore';
-import { assign } from '../../utils/immer/assign';
+import { assign } from '../../utils/draft/assign';
 import { useInitSourcePage } from './useInitSourcePage';
 
 export const SourcePage = () => {

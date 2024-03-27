@@ -11,7 +11,7 @@ import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
 import { CorpusIcon } from './CorpusIcon';
 import { useThrowSync } from '../common/error/useThrowSync';
 import { useImmer } from 'use-immer';
-import { push } from '../../utils/immer/push';
+import { push } from '../../utils/draft/push';
 import { HintedTitle } from '../common/HintedTitle';
 import { AddNewButton } from '../common/AddNewButton';
 

@@ -14,8 +14,8 @@ import { updateCorpus } from '../../utils/API';
 import { isRelevantResource } from './getAllRelevantTags';
 import { getCorpusTags } from './getCorpusTags';
 import { useCorpusPageStore } from './CorpusPageStore';
-import { push } from '../../utils/immer/push';
-import { remove } from '../../utils/immer/remove';
+import { push } from '../../utils/draft/push';
+import { remove } from '../../utils/draft/remove';
 import _ from 'lodash';
 import { reject } from '../../utils/reject';
 

@@ -6,9 +6,9 @@ import _ from 'lodash';
  * @return void
  */
 export function set<T extends object>(
-  resource: T,
+  inDraft: T,
   key: string,
   value: Any,
 ): void {
-  _.set(resource, key, value);
+  _.set(inDraft, key, value);
 }

@@ -9,7 +9,7 @@ import { useThrowSync } from './common/error/useThrowSync';
 import { useImmer } from 'use-immer';
 import { useUserStore } from '../state/UserStore';
 import { isResponseError } from './common/isResponseError';
-import { assign } from '../utils/immer/assign';
+import { assign } from '../utils/draft/assign';
 
 export function LoginAvatar() {
   const [isLoggingIn, setLoggingIn] = useImmer(false);

@@ -9,8 +9,8 @@ import { MetadataKeyIcon } from './MetadataKeyIcon';
 import { useThrowSync } from '../common/error/useThrowSync';
 import ErrorBoundary from '../common/error/ErrorBoundary';
 import { useImmer } from 'use-immer';
-import { replace } from '../../utils/immer/replace';
-import { push } from '../../utils/immer/push';
+import { replace } from '../../utils/draft/replace';
+import { push } from '../../utils/draft/push';
 import { HintedTitle } from '../common/HintedTitle';
 
 export function MetadataKeyIndex() {

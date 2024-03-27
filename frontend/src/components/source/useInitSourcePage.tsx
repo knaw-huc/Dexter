@@ -2,8 +2,8 @@ import { useEffect } from 'react';
 import { Source, UUID } from '../../model/DexterModel';
 import { getSourceWithResourcesById } from '../../utils/API';
 import { useImmer } from 'use-immer';
-import { assign } from '../../utils/immer/assign';
-import { DraftSetter } from '../../utils/immer/Setter';
+import { assign } from '../../utils/draft/assign';
+import { DraftSetter } from '../../utils/draft/Setter';
 import { useThrowSync } from '../common/error/useThrowSync';
 
 export function useInitSourcePage(params: {
@@ -19,8 +19,8 @@ export function useInitSourcePage(params: {
 
   async function init() {
     try {
-      const source = await getSourceWithResourcesById(sourceId);
-      setSource(draft => assign(draft, source));
+      const update = await getSourceWithResourcesById(sourceId);
+      setSource(source => assign(source, update));
       setInit(true);
     } catch (e) {
       throwSync(e);

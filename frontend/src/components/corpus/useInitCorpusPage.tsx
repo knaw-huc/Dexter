@@ -6,9 +6,9 @@ import {
   getSourcesWithResources,
 } from '../../utils/API';
 import { useImmer } from 'use-immer';
-import { Setter } from '../../utils/immer/Setter';
+import { Setter } from '../../utils/draft/Setter';
 import { useThrowSync } from '../common/error/useThrowSync';
-import { remove } from '../../utils/immer/remove';
+import { remove } from '../../utils/draft/remove';
 
 export function useInitCorpusPage(params: {
   corpusId: UUID;

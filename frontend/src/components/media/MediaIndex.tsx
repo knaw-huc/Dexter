@@ -9,9 +9,9 @@ import { deleteMedia, getMedia } from '../../utils/API';
 import { MediaIcon } from './MediaIcon';
 import { useThrowSync } from '../common/error/useThrowSync';
 import { useImmer } from 'use-immer';
-import { remove } from '../../utils/immer/remove';
-import { replace } from '../../utils/immer/replace';
-import { push } from '../../utils/immer/push';
+import { remove } from '../../utils/draft/remove';
+import { replace } from '../../utils/draft/replace';
+import { push } from '../../utils/draft/push';
 import { HintedTitle } from '../common/HintedTitle';
 import { reject } from '../../utils/reject';
 
