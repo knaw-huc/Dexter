@@ -3,7 +3,7 @@
 ## [Development](https://github.com/knaw-huc/Dexter/tree/development)
 🧪 Features / ✨ Enhancements / 🔧 Technical / 🐛 Bug Fixes
 
-## [v0.14](https://github.com/knaw-huc/Dexter/releases/tag/v0.14.4)
+## [v0.14](https://github.com/knaw-huc/Dexter/releases/tag/v0.14.5)
 ### 🧪 Features 
 - Export corpus and its subcorpora, sources, media and references to a zip with csv files
 - Add tooltips to form fields and page headers with descriptions (loaded from backend `assets/labels.json`)
