@@ -7,7 +7,6 @@ import { MetadataKeyListItem } from './MetadataKeyListItem';
 import { MetadataKeyForm } from './MetadataKeyForm';
 import { MetadataKeyIcon } from './MetadataKeyIcon';
 import { useThrowSync } from '../common/error/useThrowSync';
-import ErrorBoundary from '../common/error/ErrorBoundary';
 import { useImmer } from 'use-immer';
 import { replace } from '../../utils/draft/replace';
 import { push } from '../../utils/draft/push';
@@ -62,13 +61,12 @@ export function MetadataKeyIndex() {
       </div>
 
       {keys?.map((key, i) => (
-        <ErrorBoundary key={i}>
-          <MetadataKeyListItem
-            metadataKey={key}
-            onDeleted={() => setKeys(keys.filter(k => k.id !== key.id))}
-            onEditClick={() => handleEditClick(key)}
-          />
-        </ErrorBoundary>
+        <MetadataKeyListItem
+          key={i}
+          metadataKey={key}
+          onDeleted={() => setKeys(keys.filter(k => k.id !== key.id))}
+          onEditClick={() => handleEditClick(key)}
+        />
       ))}
       {isFormOpen && (
         <MetadataKeyForm

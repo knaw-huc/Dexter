@@ -7,9 +7,11 @@ import { EditIcon } from '../common/icon/EditIcon';
 import { DeleteIcon } from '../common/icon/DeleteIcon';
 import { MetadataKeyIcon } from './MetadataKeyIcon';
 import { ListItemButtonStyled } from '../common/ListItemButtonStyled';
-import { useThrowSync } from '../common/error/useThrowSync';
 import { isResponseError } from '../common/isResponseError';
 import { reject } from '../../utils/reject';
+import { useImmer } from 'use-immer';
+import { ErrorAlert } from '../common/error/ErrorAlert';
+import { toMessage } from '../common/error/toMessage';
 
 type MetadataKeyItemProps = {
   metadataKey: ResultMetadataKey;
@@ -18,7 +20,7 @@ type MetadataKeyItemProps = {
 };
 
 export const MetadataKeyListItem = (props: MetadataKeyItemProps) => {
-  const throwSync = useThrowSync();
+  const [error, setError] = useImmer<Error>(null);
 
   async function handleDelete(e: React.MouseEvent) {
     e.stopPropagation();
@@ -32,7 +34,7 @@ export const MetadataKeyListItem = (props: MetadataKeyItemProps) => {
         const msg =
           'Could not delete metadata field: ' +
           (isResponseError(e) ? e.body.message : e.message);
-        throwSync(Error(msg));
+        setError(Error(msg));
       });
   }
 
@@ -42,22 +44,29 @@ export const MetadataKeyListItem = (props: MetadataKeyItemProps) => {
   }
 
   return (
-    <ListItemButtonStyled
-      onClick={props.onEditClick}
-      secondaryAction={
-        <span style={{ color: grey[500] }}>
-          <EditIcon hoverColor="black" onClick={handleEditClick} />
-          <DeleteIcon onClick={handleDelete} />
-        </span>
-      }
-      sx={{ ml: 0, pl: 0 }}
-    >
-      <ListItemAvatar sx={{ ml: '1em' }}>
-        <Avatar>
-          <MetadataKeyIcon iconColor="white" isInline={false} />
-        </Avatar>
-      </ListItemAvatar>
-      <ListItemText>{props.metadataKey.key}</ListItemText>
-    </ListItemButtonStyled>
+    <>
+      {error && (
+        <ErrorAlert message={toMessage(error)} sx={{ marginBottom: 0 }} />
+      )}
+      <ListItemButtonStyled
+        onClick={props.onEditClick}
+        secondaryAction={
+          <span style={{ color: grey[500] }}>
+            <EditIcon hoverColor="black" onClick={handleEditClick} />
+            <DeleteIcon onClick={handleDelete} />
+          </span>
+        }
+        sx={{ ml: 0, pl: 0 }}
+      >
+        <ListItemAvatar sx={{ ml: '1em' }}>
+          <Avatar>
+            <MetadataKeyIcon iconColor="white" isInline={false} />
+          </Avatar>
+        </ListItemAvatar>
+        <ListItemText>
+          <p>{props.metadataKey.key}</p>
+        </ListItemText>
+      </ListItemButtonStyled>
+    </>
   );
 };
