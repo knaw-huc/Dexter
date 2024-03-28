@@ -1,6 +1,7 @@
 import React from 'react';
 import { ErrorAlert } from './ErrorAlert';
 import { ErrorWithMessage } from './ErrorWithMessage';
+import { toMessage } from './toMessage';
 
 export function FormErrorMessage(props: { error?: ErrorWithMessage }) {
   const formError = props.error;
@@ -9,7 +10,7 @@ export function FormErrorMessage(props: { error?: ErrorWithMessage }) {
     return null;
   }
 
-  return <ErrorAlert message={formError.message} />;
+  return <ErrorAlert message={toMessage(formError)} />;
 }
 
 export type FormField<T> = keyof T | 'generic';

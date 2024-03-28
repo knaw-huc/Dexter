@@ -280,6 +280,12 @@ export const createReference = async (
 ): Promise<ResultReference> =>
   postValidated(`/${api}/${references}`, newReference);
 
+export const updateReference = async (
+  id: UUID,
+  newReference: FormReference,
+): Promise<ResultReference> =>
+  putValidated(`/${api}/${references}/${id}`, newReference);
+
 export const addReferencesToCorpus = async (
   corpusId: string,
   referenceId: string[],

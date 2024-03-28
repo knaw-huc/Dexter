@@ -3,8 +3,9 @@ import {
   FormReference,
   ResultReference,
   SubmitFormReference,
+  UUID,
 } from '../../model/DexterModel';
-import { createReference } from '../../utils/API';
+import { createReference, updateReference } from '../../utils/API';
 import * as yup from 'yup';
 import { useFormErrors } from '../common/error/useFormErrors';
 import { FormErrorMessage } from '../common/error/FormError';
@@ -55,6 +56,7 @@ export function ReferenceForm(props: ReferenceFormProps) {
 
   useEffect(() => {
     loadReference();
+
     async function loadReference() {
       if (debouncedInput === initialInput) {
         setForm(toForm(props.inEdit));
@@ -68,11 +70,22 @@ export function ReferenceForm(props: ReferenceFormProps) {
 
   const toHint = toFormHint('reference');
 
+  async function createNew(toSubmit: FormReference) {
+    return createReference(toSubmit);
+  }
+
+  async function updateExisting(id: UUID, toSubmit: FormReference) {
+    return updateReference(id, toSubmit);
+  }
+
   async function handleSubmit() {
     try {
       const toSubmit = { ...form };
       await referenceSchema.validate(toSubmit);
-      props.onSaved(await createReference(toSubmit));
+      const result = props.inEdit
+        ? await updateExisting(props.inEdit.id, toSubmit)
+        : await createNew(toSubmit);
+      props.onSaved(result);
     } catch (error) {
       await setError(error);
     }

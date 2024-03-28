@@ -1,7 +1,8 @@
 import { isResponseError } from '../isResponseError';
 import { toConstraint } from './toConstraint';
+import { ErrorWithMessage } from './ErrorWithMessage';
 
-export function toMessage(error: Error) {
+export function toMessage(error: ErrorWithMessage) {
   if (!error) {
     return 'An error occurred';
   }
