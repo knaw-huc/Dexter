@@ -76,7 +76,7 @@ enum class PsqlDiagnosticsHelper(
                     ?: errMsg.toString()
 
                 errMsg.constraint?.let {
-                    msg += " (code: ${errMsg.constraint})"
+                    msg += " (constraint: ${errMsg.constraint})"
                 }
 
                 throw BadRequestException(msg)
