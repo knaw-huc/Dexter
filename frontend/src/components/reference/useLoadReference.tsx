@@ -1,14 +1,9 @@
-import {
-  FormReference,
-  ResultReference,
-  SubmitFormReference,
-} from '../../model/DexterModel';
+import { ResultReference, SubmitFormReference } from '../../model/DexterModel';
 import { ReferenceStyle } from './ReferenceStyle';
 import { ErrorWithMessage } from '../common/error/ErrorWithMessage';
 import { createTerms } from './createTerms';
 import { createCsl } from './createCsl';
-import _ from 'lodash';
-import { normalize } from '../../utils/normalize';
+import { truncateInput } from './truncateInput';
 
 type Params = {
   /**
@@ -28,17 +23,6 @@ type Result = {
     style: ReferenceStyle,
   ) => Promise<void>;
 };
-
-function truncateInput(
-  result: FormReference,
-  inputSearchTermLength: number = 70,
-) {
-  return normalize(
-    _.truncate(result.input, {
-      length: inputSearchTermLength,
-    }),
-  );
-}
 
 /**
  * Generate csl and search terms
@@ -65,11 +49,11 @@ export function useLoadReference(params: Params): Result {
     const result: SubmitFormReference = { ...toLoad };
     try {
       result.csl = await createCsl(toLoad.input);
-      result.terms = createTerms(result.csl) || truncateInput(result);
+      result.terms = createTerms(result.csl) || truncateInput(result.input);
       handleError(null);
     } catch (e) {
       result.csl = '';
-      result.terms = truncateInput(result);
+      result.terms = truncateInput(result.input);
       handleError(e, toLoad);
     }
     onLoaded(result);
