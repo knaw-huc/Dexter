@@ -23,10 +23,10 @@ styled(TextField)`
 
 export function ExportForm(props: ExportFormProps) {
   const throwSync = useThrowSync();
-  const { runExport, isExporting } = useExporter({ handleError: throwSync });
+  const { runExport, isExporting } = useExporter();
   async function handleSubmit() {
     try {
-      runExport(props.toExport);
+      await runExport(props.toExport);
       props.onExported();
     } catch (error) {
       throwSync(error);

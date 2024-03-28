@@ -8,8 +8,8 @@ import { useEffect } from 'react';
 import { useThrowSync } from '../common/error/useThrowSync';
 import { useUserStore } from '../../state/UserStore';
 
-export function useExporter(params: { handleError: (error: Error) => void }): {
-  runExport: (toExport: Exportable) => void;
+export function useExporter(): {
+  runExport: (toExport: Exportable) => Promise<void>;
   isExporting: boolean;
 } {
   const [isExporting, setExporting] = useImmer(false);
@@ -22,21 +22,18 @@ export function useExporter(params: { handleError: (error: Error) => void }): {
   }, []);
 
   async function runExport(toExport: Exportable) {
-    try {
-      console.log('exporting', toExport);
-      setExporting(true);
+    console.log('exporting', toExport);
+    setExporting(true);
 
-      const tables = mapper.map(toExport);
-      const zip = new JSZip();
-      tables.forEach(t => zip.file(`${t.name}.csv`, toCsv(t)));
-      const content = await zip.generateAsync({ type: 'blob' });
-      const filename = `dexter-export-${toExport.id}.zip`;
-      FileSaver.saveAs(content, filename);
-      setExporting(false);
-      console.log('finished exporting', toExport);
-    } catch (e) {
-      params.handleError(e);
-    }
+    const tables = mapper.map(toExport);
+    const zip = new JSZip();
+    tables.forEach(t => zip.file(`${t.name}.csv`, toCsv(t)));
+    const content = await zip.generateAsync({ type: 'blob' });
+    const filename = `dexter-export-${toExport.id}.zip`;
+    FileSaver.saveAs(content, filename);
+    setExporting(false);
+    console.log('finished exporting', toExport);
   }
+
   return { isExporting, runExport };
 }
