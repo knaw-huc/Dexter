@@ -1,13 +1,15 @@
 import { describe, expect, it } from '@jest/globals';
 import { MainMapper } from './MainMapper';
 import { Corpus } from '../../../model/DexterModel';
-import { ArrayTable } from './ArrayTable';
 import corpus from '../../../test/resources/corpus.json';
+import { ReferenceStyle } from '../../reference/ReferenceStyle';
+import { ArrayTable } from './Table';
 
 describe('MainCsvMapper', () => {
   const customMetadataKeys = ['my custom field', 'other field'];
+  const apa = ReferenceStyle.apa;
   it('can map corpus', async () => {
-    const toTest = new MainMapper(customMetadataKeys);
+    const toTest = new MainMapper(customMetadataKeys, apa);
     const result = toTest.map(getTestCorpus());
     expect(result.length).toBe(4);
 
@@ -21,7 +23,7 @@ describe('MainCsvMapper', () => {
   });
 
   it('can map corpus sources', async () => {
-    const toTest = new MainMapper(customMetadataKeys);
+    const toTest = new MainMapper(customMetadataKeys, apa);
     const tables = toTest.map(getTestCorpus());
     const expected = getExpectedCorpusSources();
     const sourcesTable = tables.find(t => t.name === 'sources');
@@ -35,7 +37,7 @@ describe('MainCsvMapper', () => {
   });
 
   it('contains the same source twice if assigned to two corpora', async () => {
-    const toTest = new MainMapper(customMetadataKeys);
+    const toTest = new MainMapper(customMetadataKeys, apa);
     const tables = toTest.map(getTestCorpus());
     const sourcesTable = tables.find(t => t.name === 'sources');
     expect(sourcesTable).toBeTruthy();
@@ -56,7 +58,7 @@ describe('MainCsvMapper', () => {
   });
 
   it('can map corpus source media', async () => {
-    const toTest = new MainMapper(customMetadataKeys);
+    const toTest = new MainMapper(customMetadataKeys, apa);
     const tables = toTest.map(getTestCorpus());
     const expected = getExpectedCorpusSourcesMedia();
     const mediaTable = tables.find(t => t.name === 'media');
@@ -69,7 +71,7 @@ describe('MainCsvMapper', () => {
   });
 
   it('can map corpus source references', async () => {
-    const toTest = new MainMapper(customMetadataKeys);
+    const toTest = new MainMapper(customMetadataKeys, apa);
     const tables = toTest.map(getTestCorpus());
     const expected = getExpectedCorpusSourcesReferences();
     const referenceTable = tables.find(t => t.name === 'references');
