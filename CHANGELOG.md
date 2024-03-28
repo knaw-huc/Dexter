@@ -3,7 +3,7 @@
 ## [Development](https://github.com/knaw-huc/Dexter/tree/development)
 🧪 Features / ✨ Enhancements / 🔧 Technical / 🐛 Bug Fixes
 
-## [v0.14](https://github.com/knaw-huc/Dexter/releases/tag/v0.14.5)
+## [v0.14](https://github.com/knaw-huc/Dexter/releases/tag/v0.14.6)
 ### 🧪 Features 
 - Export corpus and its subcorpora, sources, media and references to a zip with csv files
 - Add tooltips to form fields and page headers with descriptions (loaded from backend `assets/labels.json`)
@@ -17,9 +17,11 @@
 ### 🔧 Technical 
 - Manage the state of corpus and source pages with zustand
 - Store user settings in the backend (only contains configured reference style atm)
+- Add constraint to backend error message, to allow for more specific and readable frontend error message
 
 ### 🐛 Bug Fixes
 - Attach a newly created source to its corpus when creating a new source from a corpus page
+- Actually update reference when editing, instead of creating a new reference
 
 ## [v0.13](https://github.com/knaw-huc/Dexter/releases/tag/v0.13.2)
 ### 🧪 Features
