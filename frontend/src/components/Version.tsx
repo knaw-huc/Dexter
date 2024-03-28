@@ -14,7 +14,10 @@ const AStyled = styled.a`
 `;
 export function Version() {
   return (
-    <AStyled href="https://github.com/knaw-huc/Dexter/blob/main/CHANGELOG.md">
+    <AStyled
+      target="_blank"
+      href="https://github.com/knaw-huc/Dexter/blob/main/CHANGELOG.md"
+    >
       Dexter version {VERSION}
       <ExternalIcon />
     </AStyled>
