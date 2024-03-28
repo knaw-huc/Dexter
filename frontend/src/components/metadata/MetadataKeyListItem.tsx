@@ -7,7 +7,6 @@ import { EditIcon } from '../common/icon/EditIcon';
 import { DeleteIcon } from '../common/icon/DeleteIcon';
 import { MetadataKeyIcon } from './MetadataKeyIcon';
 import { ListItemButtonStyled } from '../common/ListItemButtonStyled';
-import { isResponseError } from '../common/isResponseError';
 import { reject } from '../../utils/reject';
 import { useImmer } from 'use-immer';
 import { ErrorAlert } from '../common/error/ErrorAlert';
@@ -30,12 +29,7 @@ export const MetadataKeyListItem = (props: MetadataKeyItemProps) => {
 
     await deleteMetadataKey(props.metadataKey.id)
       .then(props.onDeleted)
-      .catch(e => {
-        const msg =
-          'Could not delete metadata field: ' +
-          (isResponseError(e) ? e.body.message : e.message);
-        setError(Error(msg));
-      });
+      .catch(setError);
   }
 
   function handleEditClick(e: ChangeEvent<HTMLInputElement>) {
@@ -46,7 +40,11 @@ export const MetadataKeyListItem = (props: MetadataKeyItemProps) => {
   return (
     <>
       {error && (
-        <ErrorAlert message={toMessage(error)} sx={{ marginBottom: 0 }} />
+        <ErrorAlert
+          message={toMessage(error)}
+          sx={{ mb: 0 }}
+          onClose={() => setError(null)}
+        />
       )}
       <ListItemButtonStyled
         onClick={props.onEditClick}

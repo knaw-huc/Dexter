@@ -55,20 +55,32 @@ enum class PsqlDiagnosticsHelper(
             } catch (ex: JdbiException) {
                 val cause = ex.cause
                 if (cause is PSQLException) {
-                    cause.serverErrorMessage?.let { errMsg ->
-                        val msg: String = values()
-                            .find { it.constraint == errMsg.constraint }
-                            ?.let {
-                                if (it.includeDetail) "$it: ${errMsg.detail}"
-                                else it.msg
-                            }
-                            ?: errMsg.detail
-                            ?: errMsg.constraint
-                            ?: errMsg.toString()
-                        throw BadRequestException(msg)
-                    }
+                    handlePsqlException(cause)
                 }
                 throw ex
             }
+
+        private fun handlePsqlException(cause: PSQLException) {
+            cause.serverErrorMessage?.let { errMsg ->
+                var msg = "";
+
+                val definedConstraint = values()
+                    .find { it.constraint == errMsg.constraint }
+
+                msg = definedConstraint
+                    ?.let {
+                        if (it.includeDetail) "${it.msg} ${errMsg.detail}"
+                        else it.msg
+                    }
+                    ?: errMsg.detail
+                    ?: errMsg.toString()
+
+                errMsg.constraint?.let {
+                    msg += " (code: ${errMsg.constraint})"
+                }
+
+                throw BadRequestException(msg)
+            }
+        }
     }
 }
