@@ -45,8 +45,8 @@ export class ArrayMapper<T extends WithId> implements TablesMapper<T[]> {
       const row = this.resourceMapper.map(resource, tableName);
       if (!_.isEqual(table.header, row.header)) {
         throw Error(`Headers do not match:\n
-          table header: ${table.header.join(',')}\n
-          row header:   ${row.header.join(',')}`);
+          table [${table.name}] header: ${table.header.join(',')}\n
+          row [${row.name}] header:   ${row.header.join(',')}`);
       }
       table.rows.push(row.row);
       if (isRowWithTables(row)) {
