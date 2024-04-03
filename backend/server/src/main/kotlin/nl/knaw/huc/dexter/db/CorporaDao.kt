@@ -27,6 +27,9 @@ interface CorporaDao {
     @SqlQuery("select * from corpora where id = :id and created_by = :createdBy")
     fun findByUser(id: UUID, createdBy: UUID): ResultCorpus?
 
+    @SqlQuery("select * from corpora where created_by = :createdBy")
+    fun findAllByUser(createdBy: UUID): List<ResultCorpus>
+
     @SqlQuery(
         "update corpora " +
                 "set (parent_id,title,description,rights,access,location,earliest,latest,contributor,notes,ethics) " +
@@ -45,6 +48,9 @@ interface CorporaDao {
     @SqlQuery("select k.* from corpora_tags ck join tags k on ck.tag_id = k.id where corpus_id = :corpusId")
     @RegisterKotlinMapper(ResultTag::class)
     fun getTags(corpusId: UUID): List<ResultTag>
+
+    @SqlQuery("select k.id from corpora_tags ck join tags k on ck.tag_id = k.id where corpus_id = :corpusId")
+    fun getTagIds(corpusId: UUID): List<Int>
 
     @SqlUpdate("insert into corpora_tags (corpus_id,tag_id) values (:corpusId,:tagId) on conflict do nothing")
     fun addTag(corpusId: UUID, tagId: Int)
@@ -65,6 +71,9 @@ interface CorporaDao {
     @SqlQuery("select l.* from corpora_languages cl join iso_639_3 l on cl.lang_id = l.id where corpus_id = :corpusId")
     fun getLanguages(corpusId: UUID): List<ResultLanguage>
 
+    @SqlQuery("select l.id from corpora_languages cl join iso_639_3 l on cl.lang_id = l.id where corpus_id = :corpusId")
+    fun getLanguageIds(corpusId: UUID): List<String>
+
     @SqlUpdate("insert into corpora_languages (corpus_id,lang_id) values (:corpusId,:languageId) on conflict do nothing")
     fun addLanguage(corpusId: UUID, languageId: String)
 
@@ -73,6 +82,9 @@ interface CorporaDao {
 
     @SqlQuery("select s.* from corpora_sources cs join sources s on cs.source_id = s.id where corpus_id = :corpusId")
     fun getSources(corpusId: UUID): List<ResultSource>
+
+    @SqlQuery("select s.id from corpora_sources cs join sources s on cs.source_id = s.id where corpus_id = :corpusId")
+    fun getSourceIds(corpusId: UUID): List<UUID>
 
     @SqlQuery(
         "select distinct on (s.id) s.* " +
@@ -99,6 +111,12 @@ interface CorporaDao {
             "where cmv.corpus_id=:corpusId")
     fun getMetadataValues(corpusId: UUID): List<ResultMetadataValue>
 
+    @SqlQuery("select mv.id as id " +
+            "from metadata_values as mv " +
+            "join metadata_values_sources_corpora cmv on mv.id = cmv.metadata_value_id " +
+            "where cmv.corpus_id=:corpusId")
+    fun getMetadataValueIds(corpusId: UUID): List<UUID>
+
     @SqlUpdate("insert into metadata_values_sources_corpora (corpus_id, metadata_value_id) values (:corpusId, :valueId) on conflict do nothing")
     fun addMetadataValue(corpusId: UUID, valueId: UUID)
 
@@ -107,6 +125,11 @@ interface CorporaDao {
             "where corpus_id = :corpusId")
     @RegisterKotlinMapper(ResultMedia::class)
     fun getMedia(corpusId: UUID): List<ResultMedia>
+
+    @SqlQuery("select m.id from media m " +
+            "join corpora_media cm on m.id = cm.media_id " +
+            "where corpus_id = :corpusId")
+    fun getMediaIds(corpusId: UUID): List<UUID>
 
     @SqlUpdate("insert into corpora_media (corpus_id, media_id) values (:corpusId, :mediaId) on conflict do nothing")
     fun addMedia(corpusId: UUID, mediaId: UUID)
@@ -117,6 +140,9 @@ interface CorporaDao {
     @SqlQuery("select * from corpora where parent_id = :parentId")
     @RegisterKotlinMapper(ResultCorpus::class)
     fun getSubcorpora(parentId: UUID): List<ResultCorpus>
+
+    @SqlQuery("select id from corpora where parent_id = :parentId")
+    fun getSubcorpusIds(parentId: UUID): List<UUID>
 
     companion object {
         fun corpusNotFound(corpusId: UUID): Nothing = throw NotFoundException("Corpus not found: $corpusId")

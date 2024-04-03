@@ -5,6 +5,7 @@ import SupportedMediaType
 import SupportedMediaTypeSerializer
 import UnauthorizedExceptionMapper
 import UserResource
+import UserResourcesHelper
 import UserSettingsHelper
 import WereldCulturenDublinCoreImporter
 import com.fasterxml.jackson.databind.module.SimpleModule
@@ -105,7 +106,10 @@ class DexterApplication : Application<DexterConfiguration>() {
             register(MetadataValuesResource(jdbi))
             register(SourcesResource(jdbi))
             register(TagsResource(jdbi))
-            register(UserResource(jdbi, UserSettingsHelper(environment.objectMapper, jdbi)))
+            register(UserResource(
+                UserSettingsHelper(environment.objectMapper, jdbi),
+                UserResourcesHelper(jdbi)
+            ))
             register(JsonProcessingExceptionWithIdMapper())
             register(UnauthorizedExceptionMapper())
         }

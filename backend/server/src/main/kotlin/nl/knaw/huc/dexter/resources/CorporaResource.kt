@@ -48,10 +48,8 @@ class CorporaResource(private val jdbi: Jdbi) {
         log.info("get all corpora with resources")
         return jdbi.inTransaction<List<ResultCorpusWithResources>, Exception>(REPEATABLE_READ) { handle ->
             handle.attach(CorporaDao::class.java).let { corporaDao ->
-                handle.attach(SourcesDao::class.java).let { sourcesDao ->
-                    corporaDao.listByUser(user.id).map { corpus ->
-                        addCorpusResources(corpus, handle)
-                    }
+                corporaDao.listByUser(user.id).map { corpus ->
+                    addCorpusResources(corpus, handle)
                 }
             }
         }

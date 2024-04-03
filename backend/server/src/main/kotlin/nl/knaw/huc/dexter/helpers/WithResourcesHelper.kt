@@ -19,17 +19,12 @@ class WithResourcesHelper {
         ): ResultCorpusWithResources {
             handle.attach(CorporaDao::class.java).let { corporaDao ->
                 return corpus.toResultCorpusWithResources(
-                    if (corpus.parentId != null) corporaDao.find(corpus.parentId) else null,
-                    corporaDao.getTags(corpus.id),
-                    corporaDao.getLanguages(corpus.id),
-                    corporaDao.getSources(corpus.id).map { source ->
-                        addSourceResources(source, handle)
-                    },
-                    getCorpusMetadataValueWithResources(corpus.id, handle),
-                    corporaDao.getMedia(corpus.id),
-                    corporaDao.getSubcorpora(corpus.id).map { subcorpus ->
-                        addCorpusResources(subcorpus, handle)
-                    }
+                    corporaDao.getTagIds(corpus.id),
+                    corporaDao.getLanguageIds(corpus.id),
+                    corporaDao.getSourceIds(corpus.id),
+                    corporaDao.getMetadataValueIds(corpus.id),
+                    corporaDao.getMediaIds(corpus.id),
+                    corporaDao.getSubcorpusIds(corpus.id)
                 )
             }
         }
