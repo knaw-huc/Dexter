@@ -2,8 +2,8 @@ import nl.knaw.huc.dexter.api.*
 
 data class ResultUserResources(
     val corpora: List<ResultCorpusWithResources>,
+    val sources: List<ResultSourceWithResources>,
     // TODO:
-    //    val sources: List<ResultSourceWithResources>,
     //    val media: List<ResultMedia>,
     //    val references: List<ResultReference>,
     //    val languages: List<ResultLanguage>,

@@ -59,21 +59,21 @@ data class ResultSourceWithResources (
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime,
 
-    val references: List<ResultReference>,
-    val corpora: List<ResultCorpus>,
-    val languages: List<ResultLanguage>,
-    val media: List<ResultMedia>,
-    val metadataValues: List<ResultMetadataValueWithResources>,
-    val tags: List<ResultTag>
+    val references: List<UUID>,
+    val corpora: List<UUID>,
+    val languages: List<String>,
+    val media: List<UUID>,
+    val metadataValues: List<UUID>,
+    val tags: List<Int>
 )
 
 fun ResultSource.toResultSourceWithResources(
-    references: List<ResultReference>,
-    corpora: List<ResultCorpus>,
-    languages: List<ResultLanguage>,
-    media: List<ResultMedia>,
-    metadataValues: List<ResultMetadataValueWithResources>,
-    tags: List<ResultTag>
+    references: List<UUID>,
+    corpora: List<UUID>,
+    languages: List<String>,
+    media: List<UUID>,
+    metadataValues: List<UUID>,
+    tags: List<Int>
 ) = ResultSourceWithResources(
     id = id,
     externalRef = externalRef,

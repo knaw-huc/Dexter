@@ -29,6 +29,9 @@ interface SourcesDao {
     @SqlQuery("select * from sources where id = :id and created_by = :createdBy")
     fun findByUser(id: UUID, createdBy: UUID): ResultSource?
 
+    @SqlQuery("select * from sources where created_by = :createdBy")
+    fun findAllByUser(createdBy: UUID): List<ResultSource>
+
     @SqlQuery(
         "update sources " +
                 "set (external_ref,title,description,rights,access,creator,location,earliest,latest,notes,ethics) " +
@@ -48,6 +51,9 @@ interface SourcesDao {
     @RegisterKotlinMapper(ResultTag::class)
     fun getTags(sourceId: UUID): List<ResultTag>
 
+    @SqlQuery("select tag_id from sources_tags where source_id = :sourceId")
+    fun getTagIds(sourceId: UUID): List<Int>
+
     @SqlUpdate("insert into sources_tags (source_id,tag_id) values (:sourceId,:tagId) on conflict do nothing")
     fun addTag(sourceId: UUID, tagId: Int)
 
@@ -56,8 +62,10 @@ interface SourcesDao {
 
 
     @SqlQuery("select r.* from sources_references sc join \"references\" r on sc.reference_id = r.id where source_id = :sourceId")
-    @RegisterKotlinMapper(ResultReference::class)
     fun getReferences(sourceId: UUID): List<ResultReference>
+
+    @SqlQuery("select reference_id from sources_references where source_id = :sourceId")
+    fun getReferenceIds(sourceId: UUID): List<UUID>
 
     @SqlUpdate("insert into sources_references (source_id,reference_id) values (:sourceId,:referenceId) on conflict do nothing")
     fun addReference(sourceId: UUID, referenceId: UUID)
@@ -67,6 +75,9 @@ interface SourcesDao {
 
     @SqlQuery("select l.* from sources_languages sl join iso_639_3 l on sl.lang_id = l.id where source_id = :sourceId")
     fun getLanguages(sourceId: UUID): List<ResultLanguage>
+
+    @SqlQuery("select lang_id from sources_languages where source_id = :sourceId")
+    fun getLanguageIds(sourceId: UUID): List<String>
 
     @SqlUpdate("insert into sources_languages (source_id,lang_id) values (:sourceId,:languageId) on conflict do nothing")
     fun addLanguage(sourceId: UUID, languageId: String)
@@ -80,6 +91,9 @@ interface SourcesDao {
             "where smv.source_id=:sourceId")
     fun getMetadataValues(sourceId: UUID): List<ResultMetadataValue>
 
+    @SqlQuery("select metadata_value_id from metadata_values_sources_corpora mvsc where mvsc.source_id=:sourceId")
+    fun getMetadataValueIds(sourceId: UUID): List<UUID>
+
     @SqlUpdate("insert into metadata_values_sources_corpora (source_id, metadata_value_id) values (:sourceId, :valueId) on conflict do nothing")
     fun addMetadataValue(sourceId: UUID, valueId: UUID)
 
@@ -89,17 +103,17 @@ interface SourcesDao {
     @RegisterKotlinMapper(ResultMedia::class)
     fun getMedia(sourceId: UUID): List<ResultMedia>
 
+    @SqlQuery("select media_id from sources_media where source_id = :sourceId")
+    fun getMediaIds(sourceId: UUID): List<UUID>
+
     @SqlUpdate("insert into sources_media (source_id, media_id) values (:sourceId,:mediaId) on conflict do nothing")
     fun addMedia(sourceId: UUID, mediaId: UUID)
 
     @SqlUpdate("delete from sources_media where source_id = :sourceId and media_id = :mediaId")
     fun deleteMedia(sourceId: UUID, mediaId: UUID)
 
-    @SqlQuery("select * from corpora c " +
-            "join corpora_sources cs on c.id = cs.corpus_id " +
-            "where cs.source_id = :sourceId")
-    @RegisterKotlinMapper(ResultCorpus::class)
-    fun getCorpora(sourceId: UUID): List<ResultCorpus>
+    @SqlQuery("select corpus_id from corpora_sources where source_id = :sourceId")
+    fun getCorpusIds(sourceId: UUID): List<UUID>
 
     companion object {
         fun sourceNotFound(sourceId: UUID): Nothing = throw NotFoundException("Source not found: $sourceId")

@@ -35,12 +35,12 @@ class WithResourcesHelper {
         ): ResultSourceWithResources {
             handle.attach(SourcesDao::class.java).let { sourceDao ->
                 return source.toResultSourceWithResources(
-                    sourceDao.getReferences(source.id),
-                    sourceDao.getCorpora(source.id),
-                    sourceDao.getLanguages(source.id),
-                    sourceDao.getMedia(source.id),
-                    getSourceMetadataValueWithResources(source.id, handle),
-                    sourceDao.getTags(source.id),
+                    sourceDao.getReferenceIds(source.id),
+                    sourceDao.getCorpusIds(source.id),
+                    sourceDao.getLanguageIds(source.id),
+                    sourceDao.getMediaIds(source.id),
+                    sourceDao.getMetadataValueIds(source.id),
+                    sourceDao.getTagIds(source.id),
                 )
             }
         }
