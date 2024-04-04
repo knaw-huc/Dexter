@@ -62,6 +62,7 @@ interface SourcesDao {
 
 
     @SqlQuery("select r.* from sources_references sc join \"references\" r on sc.reference_id = r.id where source_id = :sourceId")
+    @RegisterKotlinMapper(ResultReference::class)
     fun getReferences(sourceId: UUID): List<ResultReference>
 
     @SqlQuery("select reference_id from sources_references where source_id = :sourceId")
@@ -111,6 +112,12 @@ interface SourcesDao {
 
     @SqlUpdate("delete from sources_media where source_id = :sourceId and media_id = :mediaId")
     fun deleteMedia(sourceId: UUID, mediaId: UUID)
+
+    @SqlQuery("select * from corpora c " +
+            "join corpora_sources cs on c.id = cs.corpus_id " +
+            "where cs.source_id = :sourceId")
+    @RegisterKotlinMapper(ResultCorpus::class)
+    fun getCorpora(sourceId: UUID): List<ResultCorpus>
 
     @SqlQuery("select corpus_id from corpora_sources where source_id = :sourceId")
     fun getCorpusIds(sourceId: UUID): List<UUID>

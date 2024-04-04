@@ -25,6 +25,9 @@ interface MediaDao {
     @SqlQuery("select * from media where id = :id")
     fun find(id: UUID): ResultMedia?
 
+    @SqlQuery("select * from media where created_by = :user")
+    fun findAllByUser(user: UUID): List<ResultMedia>
+
     @SqlQuery("insert into media (title, url, media_type, created_by) values (:title, :url, :mediaType, :createdBy) returning *")
     fun insert(
         @BindKotlin metadataValue: Media,

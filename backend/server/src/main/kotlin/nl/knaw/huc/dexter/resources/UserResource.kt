@@ -2,6 +2,7 @@ import io.dropwizard.auth.Auth
 import nl.knaw.huc.dexter.api.*
 import nl.knaw.huc.dexter.auth.DexterUser
 import nl.knaw.huc.dexter.auth.RoleNames
+import nl.knaw.huc.dexter.helpers.UserResourcesHelper
 import org.slf4j.LoggerFactory
 import javax.annotation.security.RolesAllowed
 import javax.ws.rs.*

@@ -5,7 +5,7 @@ import SupportedMediaType
 import SupportedMediaTypeSerializer
 import UnauthorizedExceptionMapper
 import UserResource
-import UserResourcesHelper
+import nl.knaw.huc.dexter.helpers.UserResourcesHelper
 import UserSettingsHelper
 import WereldCulturenDublinCoreImporter
 import com.fasterxml.jackson.databind.module.SimpleModule

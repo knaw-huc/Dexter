@@ -19,12 +19,17 @@ class WithResourcesHelper {
         ): ResultCorpusWithResources {
             handle.attach(CorporaDao::class.java).let { corporaDao ->
                 return corpus.toResultCorpusWithResources(
-                    corporaDao.getTagIds(corpus.id),
-                    corporaDao.getLanguageIds(corpus.id),
-                    corporaDao.getSourceIds(corpus.id),
-                    corporaDao.getMetadataValueIds(corpus.id),
-                    corporaDao.getMediaIds(corpus.id),
-                    corporaDao.getSubcorpusIds(corpus.id)
+                    if (corpus.parentId != null) corporaDao.find(corpus.parentId) else null,
+                    corporaDao.getTags(corpus.id),
+                    corporaDao.getLanguages(corpus.id),
+                    corporaDao.getSources(corpus.id).map { source ->
+                        addSourceResources(source, handle)
+                    },
+                    getCorpusMetadataValueWithResources(corpus.id, handle),
+                    corporaDao.getMedia(corpus.id),
+                    corporaDao.getSubcorpora(corpus.id).map { subcorpus ->
+                        addCorpusResources(subcorpus, handle)
+                    }
                 )
             }
         }
@@ -35,12 +40,12 @@ class WithResourcesHelper {
         ): ResultSourceWithResources {
             handle.attach(SourcesDao::class.java).let { sourceDao ->
                 return source.toResultSourceWithResources(
-                    sourceDao.getReferenceIds(source.id),
-                    sourceDao.getCorpusIds(source.id),
-                    sourceDao.getLanguageIds(source.id),
-                    sourceDao.getMediaIds(source.id),
-                    sourceDao.getMetadataValueIds(source.id),
-                    sourceDao.getTagIds(source.id),
+                    sourceDao.getReferences(source.id),
+                    sourceDao.getCorpora(source.id),
+                    sourceDao.getLanguages(source.id),
+                    sourceDao.getMedia(source.id),
+                    getSourceMetadataValueWithResources(source.id, handle),
+                    sourceDao.getTags(source.id),
                 )
             }
         }
