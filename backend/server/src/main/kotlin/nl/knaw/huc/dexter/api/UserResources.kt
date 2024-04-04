@@ -3,11 +3,11 @@ import nl.knaw.huc.dexter.api.*
 data class ResultUserResources(
     val corpora: List<ResultCorpusWithResources>,
     val sources: List<ResultSourceWithResources>,
+    val metadataValues: List<ResultMetadataValue>,
+    val metadataKeys: List<ResultMetadataKey>,
     // TODO:
     //    val media: List<ResultMedia>,
     //    val references: List<ResultReference>,
-    //    val languages: List<ResultLanguage>,
     //    val tags: List<ResultTag>,
-    //    val metadataValues: List<ResultMetadataValueWithResources>,
-    //    val metadataKeys: List<ResultMetadataKey>,
+    //    val languages: List<ResultLanguage>,
 )
