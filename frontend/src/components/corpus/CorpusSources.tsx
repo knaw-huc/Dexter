@@ -14,8 +14,8 @@ import { addSourcesToCorpus, deleteSourceFromCorpus } from '../../utils/API';
 import { SelectSourcesForm } from './SelectSourcesForm';
 import { getAllRelevantTags } from './getAllRelevantTags';
 import { useCorpusPageStore } from './CorpusPageStore';
-import { push } from '../../utils/draft/push';
-import { remove } from '../../utils/draft/remove';
+import { push } from '../../utils/recipe/push';
+import { remove } from '../../utils/recipe/remove';
 import { reject } from '../../utils/reject';
 
 export function CorpusSources() {

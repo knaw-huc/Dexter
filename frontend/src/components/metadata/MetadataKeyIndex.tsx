@@ -8,8 +8,8 @@ import { MetadataKeyForm } from './MetadataKeyForm';
 import { MetadataKeyIcon } from './MetadataKeyIcon';
 import { useThrowSync } from '../common/error/useThrowSync';
 import { useImmer } from 'use-immer';
-import { replace } from '../../utils/draft/replace';
-import { push } from '../../utils/draft/push';
+import { replace } from '../../utils/recipe/replace';
+import { push } from '../../utils/recipe/push';
 import { HintedTitle } from '../common/HintedTitle';
 
 export function MetadataKeyIndex() {

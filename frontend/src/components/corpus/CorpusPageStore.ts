@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 import { Corpus, Source } from '../../model/DexterModel';
 import { immer } from 'zustand/middleware/immer';
-import { DraftSetter, Setter } from '../../utils/draft/Setter';
-import { assign } from '../../utils/draft/assign';
+import { DraftSetter, Setter } from '../../utils/recipe/Setter';
+import { assign } from '../../utils/recipe/assign';
 import { defaultCorpus } from './defaultCorpus';
 
 interface CorpusPageState {

@@ -14,12 +14,12 @@ import {
   addReferencesToSource,
   deleteReferenceFromSource,
 } from '../../utils/API';
-import { remove } from '../../utils/draft/remove';
-import { replace } from '../../utils/draft/replace';
-import { push } from '../../utils/draft/push';
+import { remove } from '../../utils/recipe/remove';
+import { replace } from '../../utils/recipe/replace';
+import { push } from '../../utils/recipe/push';
 import { updateSourceReferences } from '../../utils/updateRemoteIds';
 import { useSourcePageStore } from './SourcePageStore';
-import { assign } from '../../utils/draft/assign';
+import { assign } from '../../utils/recipe/assign';
 import _ from 'lodash';
 import { reject } from '../../utils/reject';
 

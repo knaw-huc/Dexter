@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { User, UserSettings } from '../model/DexterModel';
-import { Setter } from '../utils/draft/Setter';
+import { Setter } from '../utils/recipe/Setter';
 import { immer } from 'zustand/middleware/immer';
 import { ReferenceStyle } from '../components/reference/ReferenceStyle';
 import { defaultUser } from './defaultUser';

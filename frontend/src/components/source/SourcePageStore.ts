@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { Source } from '../../model/DexterModel';
 import { immer } from 'zustand/middleware/immer';
-import { DraftSetter } from '../../utils/draft/Setter';
+import { DraftSetter } from '../../utils/recipe/Setter';
 import { defaultSource } from './defaultSource';
 
 interface SourcePageState {

@@ -2,8 +2,8 @@ import { useEffect } from 'react';
 import { Source, UUID } from '../../model/DexterModel';
 import { getSourceWithResourcesById } from '../../utils/API';
 import { useImmer } from 'use-immer';
-import { assign } from '../../utils/draft/assign';
-import { DraftSetter } from '../../utils/draft/Setter';
+import { assign } from '../../utils/recipe/assign';
+import { DraftSetter } from '../../utils/recipe/Setter';
 import { useThrowSync } from '../common/error/useThrowSync';
 
 export function useInitSourcePage(params: {
