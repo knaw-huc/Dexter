@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Corpus } from '../../model/DexterModel';
 import { CorpusForm } from './CorpusForm';
@@ -17,16 +17,43 @@ import { CorpusSubcorpora } from './CorpusSubcorpora';
 import { useImmer } from 'use-immer';
 import { DeleteButton } from '../common/DeleteButton';
 import { corpora } from '../../model/Resources';
-import { useCorpusPageStore } from './CorpusPageStore';
 import { useThrowSync } from '../common/error/useThrowSync';
 import { ExportButton } from '../export/ExportButton';
 import { ExportForm } from '../export/ExportForm';
 import { HintedTitle } from '../common/HintedTitle';
 import { reject } from '../../utils/reject';
 import { useInitCorpusPage } from './useInitCorpusPage';
+import { useBoundStore } from '../../state/resources/useBoundStore';
+import { jsx } from '@emotion/react';
+import JSX = jsx.JSX;
+import { useCorpusPageStore } from '../../state/resources/useCorpusPageStore';
 
-export const CorpusPage = () => {
+export function CorpusPage(): JSX.Element {
   const corpusId = useParams().corpusId;
+
+  const boundStore = useBoundStore();
+
+  useEffect(() => {
+    boundStore.corpusPage.setCorpusId(corpusId);
+  }, [corpusId]);
+
+  useEffect(() => {
+    if (boundStore.userResources.isLoading) {
+      console.log('boundStore is loading');
+      return;
+    }
+    console.log('boundStore has loaded', {
+      isLoading: boundStore.userResources.isLoading,
+      error: boundStore.userResources.error,
+      userResources: boundStore.userResources,
+      corpus: boundStore.corpusPage.getCorpus(),
+    });
+  }, [
+    boundStore,
+    boundStore.userResources,
+    boundStore.userResources.isLoading,
+  ]);
+
   const {
     corpus,
     setCorpus,
@@ -168,4 +195,4 @@ export const CorpusPage = () => {
       )}
     </div>
   );
-};
+}

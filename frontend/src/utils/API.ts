@@ -1,42 +1,45 @@
 import {
   Corpus,
-  FormReference,
   FormCorpus,
   FormMedia,
   FormMetadataKey,
   FormMetadataValue,
+  FormReference,
   FormSource,
   FormTag,
-  ResultReference,
   ResultImport,
   ResultLanguage,
+  ResultListLanguages,
   ResultMedia,
   ResultMetadataKey,
   ResultMetadataValue,
+  ResultReference,
   ResultSource,
   ResultTag,
+  ResultUserResources,
   Source,
   SupportedMediaTypeType,
-  UUID,
-  UserSettings,
   User,
+  UserSettings,
+  UUID,
 } from '../model/DexterModel';
 import { validateResponse } from './validateResponse';
 import _ from 'lodash';
 import {
   api,
-  references,
+  assets,
   corpora,
   keys,
   media,
   metadata,
+  references,
+  resources,
+  settings,
   sources,
   tags,
   user,
   values,
   withResources,
-  assets,
-  settings,
 } from '../model/Resources';
 import { ErrorWithMessage } from '../components/common/error/ErrorWithMessage';
 import { Any } from '../components/common/Any';
@@ -198,6 +201,9 @@ export const deleteSourceFromCorpus = async (
 /**
  * Language:
  */
+
+export const getLanguages = async (): Promise<ResultListLanguages> =>
+  getValidated(`/${api}/languages`);
 
 export const getLanguagesAutocomplete = async (
   input: string,
@@ -454,3 +460,7 @@ export const getMediaAutocomplete = async (
   input: string,
 ): Promise<ResultMedia[]> =>
   postValidated(`/${api}/${media}/autocomplete`, input);
+
+export const getUserResources = async (): Promise<ResultUserResources> => {
+  return getValidated(`/${api}/${user}/${resources}`);
+};

@@ -36,6 +36,16 @@ export type ResultCorpus = FormCorpus &
     updatedAt: LocalDateTime;
   };
 
+export type ResultCorpusWithChildIds = ResultCorpus & {
+  parent?: UUID;
+  tags: number[];
+  languages: string[];
+  sources: UUID[];
+  metadataValues: UUID[];
+  media: UUID[];
+  subcorpora: UUID[];
+};
+
 /**
  * Corpus including child resources
  */
@@ -77,6 +87,15 @@ export type ResultSource = FormSource &
     createdAt: LocalDateTime;
     updatedAt: LocalDateTime;
   };
+
+export type ResultSourceWithChildIds = ResultSource & {
+  references: UUID[];
+  corpora: UUID[];
+  languages: string[];
+  media: UUID[];
+  metadataValues: UUID[];
+  tags: number[];
+};
 
 /**
  * Source including all child resources
@@ -226,16 +245,18 @@ export type ResultImport = {
   imported?: ResultDublinCoreMetadata;
 };
 
-export interface ResultLanguage {
+export type ResultListLanguage = {
   id: string;
-  part2b: string;
-  part2t: string;
-  part1: string;
-  scope: string;
-  type: string;
   refName: string;
-  comment: string;
-}
+};
+
+export type ResultLanguage = ResultListLanguage;
+
+export type ResultListLanguages = {
+  source: string;
+  termsOfUse: string;
+  languages: ResultListLanguage[];
+};
 
 export function isLanguage(toTest: Any): toTest is ResultLanguage {
   return !!(toTest as ResultLanguage)?.refName;
@@ -261,3 +282,13 @@ export type User = {
 export function isUser(toTest: Any): toTest is User {
   return !!((toTest as User).name && (toTest as User).settings);
 }
+
+export type ResultUserResources = {
+  corpora: ResultCorpusWithChildIds[];
+  sources: ResultSourceWithChildIds[];
+  metadataValues: ResultMetadataValue[];
+  metadataKeys: ResultMetadataKey[];
+  media: ResultMedia[];
+  references: ResultReference[];
+  tags: ResultTag[];
+};

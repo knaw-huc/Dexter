@@ -6,6 +6,7 @@ export const corpora = 'corpora';
 export const keys = 'keys';
 export const media = 'media';
 export const metadata = 'metadata';
+export const resources = 'resources';
 export const sources = 'sources';
 export const settings = 'settings';
 export const tags = 'tags';
