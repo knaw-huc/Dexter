@@ -13,8 +13,6 @@ import {
   toMetadataValue,
   UUID,
 } from '../../model/DexterModel';
-import { DraftSetter, Setter } from '../../utils/recipe/Setter';
-import { assign } from '../../utils/recipe/assign';
 
 export type CorpusPageState = {
   corpusId: UUID;
@@ -31,10 +29,6 @@ export const createCorpusPageSlice: ImmerBoundStateCreator<
 });
 
 export type SharedCorpusPageSlice = {
-  setCorpus: Setter<Corpus>;
-  setSubcorpora: DraftSetter<Corpus[]>;
-  setSources: DraftSetter<Source[]>;
-
   getCorpus: () => Corpus;
   getCorpusOptions: () => Corpus[];
   getSourceOptions: () => Source[];
@@ -45,23 +39,15 @@ export const createSharedCorpusPageSlice: ImmerBoundStateCreator<
   SharedCorpusPageSlice
 > = (set, get) => {
   function getCorpus() {
-    return findCorpusChildren(
-      findCorpus(get().corpusPage.corpusId, get()),
-      get(),
-    );
+    const corpusId = get().corpusPage.corpusId;
+    if (!corpusId) {
+      return;
+    }
+    return findCorpusChildren(findCorpus(corpusId, get()), get());
   }
+
   return {
     getCorpus,
-
-    setCorpus: corpus =>
-      set(state =>
-        assign(
-          state.userResources.corpora.find(c => c.id === corpus.id),
-          { corpus },
-        ),
-      ),
-    setSubcorpora: recipe => set(state => recipe(state.corpus.subcorpora)),
-    setSources: recipe => set(state => recipe(state.corpus.sources)),
 
     getCorpusOptions: () => {
       const all = get().userResources.corpora.map(c =>

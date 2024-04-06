@@ -13,13 +13,12 @@ import { SourceForm } from '../source/SourceForm';
 import { addSourcesToCorpus, deleteSourceFromCorpus } from '../../utils/API';
 import { SelectSourcesForm } from './SelectSourcesForm';
 import { getAllRelevantTags } from './getAllRelevantTags';
-import { useCorpusPageStore } from './CorpusPageStore';
-import { push } from '../../utils/recipe/push';
-import { remove } from '../../utils/recipe/remove';
 import { reject } from '../../utils/reject';
+import { useCorpusPageStore } from '../../state/resources/useCorpusPageStore';
 
 export function CorpusSources() {
-  const { corpus, setSources, allSources } = useCorpusPageStore();
+  const { getCorpus, getSourceOptions } = useCorpusPageStore();
+  const corpus = getCorpus();
   const corpusId = corpus.id;
   const sources = corpus.sources;
   const [filterTags, setFilterTags] = useImmer<ResultTag[]>([]);
@@ -29,13 +28,10 @@ export function CorpusSources() {
   async function handleSavedSource(update: Source) {
     await addSourcesToCorpus(corpusId, [update.id]);
     setShowSourceForm(false);
-    setSources(s => push(s, update));
   }
 
   const handleSelectSource = async (corpusId: string, sourceId: string) => {
     await addSourcesToCorpus(corpusId, [sourceId]);
-    const toLink = allSources.find(s => s.id === sourceId);
-    setSources(s => push(s, toLink));
   };
 
   const handleDeselectSource = async (corpusId: string, sourceId: string) => {
@@ -44,7 +40,6 @@ export function CorpusSources() {
     }
 
     await deleteSourceFromCorpus(corpusId, sourceId);
-    setSources(s => remove(s, sourceId));
   };
 
   const hasSources = !_.isEmpty(sources);
@@ -92,7 +87,7 @@ export function CorpusSources() {
       )}
       {showSelectSourceForm && (
         <SelectSourcesForm
-          options={allSources}
+          options={getSourceOptions()}
           selected={sources}
           onSelectSource={sourceId => handleSelectSource(corpusId, sourceId)}
           onDeselectSource={sourceId =>

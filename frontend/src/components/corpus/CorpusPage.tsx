@@ -22,11 +22,10 @@ import { ExportButton } from '../export/ExportButton';
 import { ExportForm } from '../export/ExportForm';
 import { HintedTitle } from '../common/HintedTitle';
 import { reject } from '../../utils/reject';
-import { useInitCorpusPage } from './useInitCorpusPage';
 import { useBoundStore } from '../../state/resources/useBoundStore';
 import { jsx } from '@emotion/react';
-import JSX = jsx.JSX;
 import { useCorpusPageStore } from '../../state/resources/useCorpusPageStore';
+import JSX = jsx.JSX;
 
 export function CorpusPage(): JSX.Element {
   const corpusId = useParams().corpusId;
@@ -54,20 +53,9 @@ export function CorpusPage(): JSX.Element {
     boundStore.userResources.isLoading,
   ]);
 
-  const {
-    corpus,
-    setCorpus,
-    setAllSources,
-    setAllCorpora,
-    getCorpusOptions,
-    getSourceOptions,
-  } = useCorpusPageStore();
-  const { isInit } = useInitCorpusPage({
-    corpusId,
-    setCorpus,
-    setAllCorpora,
-    setAllSources,
-  });
+  const { getCorpus, getCorpusOptions, getSourceOptions } =
+    useCorpusPageStore();
+  const corpus = getCorpus();
 
   const [showCorpusForm, setShowCorpusForm] = useImmer(false);
   const [showExporter, setShowExporter] = useImmer(false);
@@ -76,12 +64,11 @@ export function CorpusPage(): JSX.Element {
   const throwSync = useThrowSync();
   const navigate = useNavigate();
 
-  const handleSavedCorpusForm = (corpus: Corpus) => {
-    handleSavedCorpus(corpus);
+  const handleSavedCorpusForm = () => {
+    handleSavedCorpus();
   };
 
-  const handleSavedCorpus = (corpus: Corpus) => {
-    setCorpus(corpus);
+  const handleSavedCorpus = () => {
     setShowCorpusForm(false);
   };
 
@@ -121,8 +108,8 @@ export function CorpusPage(): JSX.Element {
     setExported(true);
   }
 
-  if (!isInit) {
-    return null;
+  if (!corpus) {
+    return;
   }
   return (
     <div>

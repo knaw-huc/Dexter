@@ -12,23 +12,20 @@ import { CorpusForm } from './CorpusForm';
 import { updateCorpus } from '../../utils/API';
 import { isRelevantResource } from './getAllRelevantTags';
 import { getCorpusTags } from './getCorpusTags';
-import { useCorpusPageStore } from './CorpusPageStore';
-import { push } from '../../utils/recipe/push';
-import { remove } from '../../utils/recipe/remove';
 import _ from 'lodash';
 import { reject } from '../../utils/reject';
 import { SelectSubcorporaForm } from './SelectSubcorporaForm';
+import { useCorpusPageStore } from '../../state/resources/useCorpusPageStore';
 
 export function CorpusSubcorpora() {
-  const { corpus, setSubcorpora, getCorpusOptions, getSourceOptions } =
+  const { getCorpus, getCorpusOptions, getSourceOptions } =
     useCorpusPageStore();
-
+  const corpus = getCorpus();
   const [filterTags, setFilterTags] = useImmer<ResultTag[]>([]);
   const [showSubcorpusForm, setShowSubcorpusForm] = useImmer(false);
   const [showSelectSubcorpusForm, setShowSelectSubcorpusForm] = useImmer(false);
 
-  const handleSavedSubcorpus = async (subcorpus: Corpus) => {
-    setSubcorpora(subcorpora => push(subcorpora, subcorpus));
+  const handleSavedSubcorpus = async () => {
     setShowSubcorpusForm(false);
   };
 
@@ -38,7 +35,6 @@ export function CorpusSubcorpora() {
       ...newSubcorpus,
       parentId: corpus.id,
     });
-    setSubcorpora(subcorpora => push(subcorpora, newSubcorpus));
   };
 
   function handleCloseCorpusForm() {
@@ -52,7 +48,6 @@ export function CorpusSubcorpora() {
 
     const subcorpus = corpus.subcorpora.find(c => c.id === subcorpusId);
     await updateCorpus(subcorpusId, { ...subcorpus, parentId: undefined });
-    setSubcorpora(subcorpora => remove(subcorpora, subcorpus.id));
   };
 
   /**
