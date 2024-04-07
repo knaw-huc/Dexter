@@ -7,18 +7,22 @@ import { TagsFilter } from '../tag/TagsFilter';
 import _ from 'lodash';
 import { SourcePreview } from '../source/SourcePreview';
 import React from 'react';
-import { ResultTag, Source } from '../../model/DexterModel';
+import { ResultTag, Source, UUID } from '../../model/DexterModel';
 import { useImmer } from 'use-immer';
 import { SourceForm } from '../source/SourceForm';
-import { addSourcesToCorpus, deleteSourceFromCorpus } from '../../utils/API';
 import { SelectSourcesForm } from './SelectSourcesForm';
 import { getAllRelevantTags } from './getAllRelevantTags';
 import { reject } from '../../utils/reject';
-import { useCorpusPageStore } from '../../state/resources/useCorpusPageStore';
+import { useCorpora } from '../../state/resources/hooks/useCorpora';
 
-export function CorpusSources() {
-  const { getCorpus, getSourceOptions } = useCorpusPageStore();
-  const corpus = getCorpus();
+export function CorpusSources(props: { corpusId: UUID }) {
+  const {
+    getCorpus,
+    deleteSourceFromCorpus,
+    addSourcesToCorpus,
+    findSourceOptions,
+  } = useCorpora();
+  const corpus = getCorpus(props.corpusId);
   const corpusId = corpus.id;
   const sources = corpus.sources;
   const [filterTags, setFilterTags] = useImmer<ResultTag[]>([]);
@@ -87,7 +91,7 @@ export function CorpusSources() {
       )}
       {showSelectSourceForm && (
         <SelectSourcesForm
-          options={getSourceOptions()}
+          options={findSourceOptions(corpusId)}
           selected={sources}
           onSelectSource={sourceId => handleSelectSource(corpusId, sourceId)}
           onDeselectSource={sourceId =>

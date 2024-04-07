@@ -1,25 +1,15 @@
 import { ID, UUID, WithId } from '../model/DexterModel';
 import {
-  addTagsToCorpus,
-  addTagsToSource,
-  addLanguagesToCorpus,
   addLanguagesToSource,
-  addMetadataValueToCorpus,
-  addMetadataValueToSource,
-  addSourcesToCorpus,
-  deleteTagFromCorpus,
-  deleteTagFromSource,
-  deleteLanguageFromCorpus,
-  deleteLanguageFromSource,
-  deleteMetadataValueFromCorpus,
-  deleteMetadataValueFromSource,
-  deleteSourceFromCorpus,
   addMediaToSource,
-  addMediaToCorpus,
-  deleteMediaFromSource,
-  deleteMediaFromCorpus,
+  addMetadataValueToSource,
   addReferencesToSource,
+  addTagsToSource,
+  deleteLanguageFromSource,
+  deleteMediaFromSource,
+  deleteMetadataValueFromSource,
   deleteReferenceFromSource,
+  deleteTagFromSource,
 } from './API';
 
 type UpdateLinkedResources<T extends WithId<ID>> = (
@@ -43,30 +33,6 @@ export function updateLinkedResourcesWith<T extends WithId<ID>>(
   };
 }
 
-export const updateCorpusMetadataValues = updateLinkedResourcesWith(
-  addMetadataValueToCorpus,
-  deleteMetadataValueFromCorpus,
-);
-
-export const updateSources = updateLinkedResourcesWith(
-  addSourcesToCorpus,
-  deleteSourceFromCorpus,
-);
-
-export const updateCorpusLanguages = updateLinkedResourcesWith(
-  addLanguagesToCorpus,
-  deleteLanguageFromCorpus,
-);
-
-export const updateCorpusTags = updateLinkedResourcesWith<WithId<number>>(
-  addTagsToCorpus,
-  deleteTagFromCorpus,
-);
-
-export const updateCorpusMedia = updateLinkedResourcesWith(
-  addMediaToCorpus,
-  deleteMediaFromCorpus,
-);
 export const updateSourceMetadataValues = updateLinkedResourcesWith<WithId>(
   addMetadataValueToSource,
   deleteMetadataValueFromSource,

@@ -6,21 +6,21 @@ import { SelectExistingButton } from '../source/SelectExistingButton';
 import { TagsFilter } from '../tag/TagsFilter';
 import { CorpusPreview } from './CorpusPreview';
 import React from 'react';
-import { Corpus, ResultTag } from '../../model/DexterModel';
+import { Corpus, ResultTag, UUID } from '../../model/DexterModel';
 import { useImmer } from 'use-immer';
 import { CorpusForm } from './CorpusForm';
-import { updateCorpus } from '../../utils/API';
 import { isRelevantResource } from './getAllRelevantTags';
 import { getCorpusTags } from './getCorpusTags';
 import _ from 'lodash';
 import { reject } from '../../utils/reject';
 import { SelectSubcorporaForm } from './SelectSubcorporaForm';
-import { useCorpusPageStore } from '../../state/resources/useCorpusPageStore';
+import { useCorpora } from '../../state/resources/hooks/useCorpora';
 
-export function CorpusSubcorpora() {
-  const { getCorpus, getCorpusOptions, getSourceOptions } =
-    useCorpusPageStore();
-  const corpus = getCorpus();
+export function CorpusSubcorpora(props: { corpusId: UUID }) {
+  const { getCorpus, updateCorpus, findCorpusOptions, findSourceOptions } =
+    useCorpora();
+
+  const corpus = getCorpus(props.corpusId);
   const [filterTags, setFilterTags] = useImmer<ResultTag[]>([]);
   const [showSubcorpusForm, setShowSubcorpusForm] = useImmer(false);
   const [showSelectSubcorpusForm, setShowSelectSubcorpusForm] = useImmer(false);
@@ -30,7 +30,9 @@ export function CorpusSubcorpora() {
   };
 
   const handleSelectSubcorpus = async (subcorpusId: string) => {
-    const newSubcorpus = getCorpusOptions().find(c => c.id === subcorpusId);
+    const newSubcorpus = findCorpusOptions(props.corpusId).find(
+      c => c.id === subcorpusId,
+    );
     await updateCorpus(subcorpusId, {
       ...newSubcorpus,
       parentId: corpus.id,
@@ -111,7 +113,7 @@ export function CorpusSubcorpora() {
       {showSubcorpusForm && (
         <CorpusForm
           parentCorpus={corpus}
-          sourceOptions={getSourceOptions()}
+          sourceOptions={findSourceOptions(props.corpusId)}
           onClose={handleCloseCorpusForm}
           onSaved={handleSavedSubcorpus}
         />
@@ -119,7 +121,7 @@ export function CorpusSubcorpora() {
 
       {showSelectSubcorpusForm && (
         <SelectSubcorporaForm
-          options={getCorpusOptions()}
+          options={findCorpusOptions(corpus.id)}
           selected={corpus.subcorpora}
           onSelectCorpus={handleSelectSubcorpus}
           onDeselectCorpus={handleDeselectSubcorpus}

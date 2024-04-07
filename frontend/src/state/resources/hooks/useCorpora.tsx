@@ -1,0 +1,205 @@
+import {
+  Corpus,
+  FormCorpus,
+  ResultCorpus,
+  ResultCorpusWithChildIds,
+  ResultLanguage,
+  ResultMetadataValue,
+  ResultTag,
+  ResultUserResources,
+  Source,
+  toResultCorpusWithChildren,
+  UUID,
+  WithId,
+} from '../../../model/DexterModel';
+import { api, metadata, sources, tags, values } from '../../../model/Resources';
+import {
+  deleteMetadataValue,
+  deleteValidated,
+  postValidated,
+  putValidated,
+} from '../../../utils/API';
+import { updateLinkedResourcesWith } from '../../../utils/updateRemoteIds';
+import { useUserResourcesStore } from '../useUserResourcesStore';
+import _ from 'lodash';
+import { assign } from '../../../utils/recipe/assign';
+import { useBoundStore } from '../useBoundStore';
+import { findCorpusWithChildIds } from '../utils/findCorpusWithChildIds';
+import { linkCorpusChildren } from '../utils/linkCorpusChildren';
+import { findSourceOptions } from '../utils/findSourceOptions';
+import { findCorpusOptions } from '../utils/findCorpusOptions';
+
+export function useCorpora() {
+  const { updateUserResources, corpora } = useUserResourcesStore();
+  const store = useBoundStore();
+
+  function getCorpusFrom(
+    draft: ResultUserResources,
+    corpusId: string,
+  ): ResultCorpusWithChildIds {
+    return draft.corpora.find(c => c.id === corpusId);
+  }
+
+  const addSourcesToCorpus = async (
+    corpusId: string,
+    sourceIds: string[],
+  ): Promise<Source[]> => {
+    updateUserResources(draft => {
+      const corpus = getCorpusFrom(draft, corpusId);
+      corpus.sources = _.union(corpus.sources, sourceIds);
+    });
+    return postValidated(
+      `/${api}/${corpora}/${corpusId}/${sources}`,
+      sourceIds,
+    );
+  };
+
+  const deleteSourceFromCorpus = async (
+    corpusId: string,
+    sourceId: string,
+  ): Promise<void> => {
+    updateUserResources(draft => {
+      _.pull(getCorpusFrom(draft, corpusId).sources, sourceId);
+    });
+    return deleteValidated(
+      `/${api}/${corpora}/${corpusId}/${sources}/${sourceId}`,
+    );
+  };
+
+  const addLanguagesToCorpus = async (
+    corpusId: string,
+    languageIds: string[],
+  ): Promise<ResultLanguage[]> => {
+    updateUserResources(draft => {
+      const corpus = getCorpusFrom(draft, corpusId);
+      corpus.languages = _.union(corpus.sources, languageIds);
+    });
+    return postValidated(
+      `/${api}/${corpora}/${corpusId}/languages`,
+      languageIds,
+    );
+  };
+
+  const deleteLanguageFromCorpus = async (
+    corpusId: string,
+    languageId: string,
+  ): Promise<void> => {
+    updateUserResources(draft => {
+      _.pull(getCorpusFrom(draft, corpusId).sources, languageId);
+    });
+    return deleteValidated(
+      `/${api}/${corpora}/${corpusId}/languages/${languageId}`,
+    );
+  };
+
+  const addMetadataValuesToCorpus = async (
+    corpusId: string,
+    metadataValueIds: string[],
+  ): Promise<ResultMetadataValue[]> => {
+    updateUserResources(draft => {
+      const corpus = getCorpusFrom(draft, corpusId);
+      corpus.metadataValues = _.union(corpus.sources, metadataValueIds);
+    });
+    return postValidated(
+      `/${api}/${corpora}/${corpusId}/${metadata}/${values}`,
+      metadataValueIds,
+    );
+  };
+
+  const deleteMetadataValueFromCorpus = async (
+    corpusId: string,
+    metadataValueId: string,
+  ): Promise<void> => {
+    updateUserResources(draft => {
+      _.pull(getCorpusFrom(draft, corpusId).metadataValues, metadataValueId);
+    });
+    return deleteMetadataValue(metadataValueId);
+  };
+
+  const addTagsToCorpus = async (
+    corpusId: string,
+    tagIds: number[],
+  ): Promise<ResultTag[]> => {
+    updateUserResources(draft => {
+      const corpus = getCorpusFrom(draft, corpusId);
+      corpus.tags = _.union(corpus.tags, tagIds);
+    });
+    return postValidated(`/${api}/${corpora}/${corpusId}/${tags}`, tagIds);
+  };
+
+  const deleteTagFromCorpus = async (
+    corpusId: string,
+    tagId: string,
+  ): Promise<void> => {
+    updateUserResources(draft => {
+      _.pull(getCorpusFrom(draft, corpusId).sources, tagId);
+    });
+    return deleteValidated(`/${api}/${corpora}/${corpusId}/${tags}/${tagId}`);
+  };
+
+  return {
+    getCorpus(corpusId: UUID): Corpus {
+      return linkCorpusChildren(findCorpusWithChildIds(corpusId, store), store);
+    },
+
+    getCorpora(): Corpus[] {
+      return store.userResources.corpora.map(c => linkCorpusChildren(c, store));
+    },
+
+    createCorpus: async (newCorpus: FormCorpus): Promise<ResultCorpus> => {
+      const created: ResultCorpus = await postValidated(
+        `/${api}/${corpora}`,
+        newCorpus,
+      );
+      updateUserResources(draft => {
+        draft.corpora.push(toResultCorpusWithChildren(created));
+      });
+      return created;
+    },
+
+    updateCorpus: async (
+      id: string,
+      form: FormCorpus,
+    ): Promise<ResultCorpus> => {
+      const updated = await putValidated(`/${api}/${corpora}/${id}`, form);
+      updateUserResources(draft => {
+        assign(getCorpusFrom(draft, id), updated);
+      });
+      return updated;
+    },
+
+    deleteCorpus: async (id: string): Promise<void> => {
+      updateUserResources(draft => {
+        _.remove(draft.corpora, c => c.id === id);
+      });
+      return deleteValidated(`/${api}/${corpora}/${id}`);
+    },
+
+    updateCorpusMetadataValues: updateLinkedResourcesWith(
+      addMetadataValuesToCorpus,
+      deleteMetadataValueFromCorpus,
+    ),
+
+    updateSources: updateLinkedResourcesWith(
+      addSourcesToCorpus,
+      deleteSourceFromCorpus,
+    ),
+
+    updateCorpusLanguages: updateLinkedResourcesWith(
+      addLanguagesToCorpus,
+      deleteLanguageFromCorpus,
+    ),
+
+    updateCorpusTags: updateLinkedResourcesWith<WithId<number>>(
+      addTagsToCorpus,
+      deleteTagFromCorpus,
+    ),
+
+    deleteSourceFromCorpus,
+
+    addSourcesToCorpus,
+
+    findSourceOptions: (corpusId: UUID) => findSourceOptions(corpusId, store),
+    findCorpusOptions: (corpusId: UUID) => findCorpusOptions(corpusId, store),
+  };
+}

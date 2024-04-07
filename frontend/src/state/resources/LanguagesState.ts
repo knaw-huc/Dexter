@@ -2,7 +2,7 @@ import { ResourceState } from './ResourceState';
 import { ImmerBoundStateCreator } from '../ImmerBoundStateCreator';
 import { Setter } from '../../utils/recipe/Setter';
 import { ResultListLanguages } from '../../model/DexterModel';
-import { BoundStore } from './BoundStore';
+import { BoundState } from './BoundState';
 import { assign } from '../../utils/recipe/assign';
 
 export const defaultLanguages: ResultListLanguages = {
@@ -17,7 +17,7 @@ export type LanguagesState = ResourceState &
   };
 
 export const createLanguageSlice: ImmerBoundStateCreator<
-  BoundStore,
+  BoundState,
   LanguagesState
 > = set => ({
   ...defaultLanguages,

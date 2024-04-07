@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Corpus } from '../../model/DexterModel';
 import { CorpusForm } from './CorpusForm';
-import { deleteCorpus, deleteMetadataValue } from '../../utils/API';
+import { deleteMetadataValue } from '../../utils/API';
 import { EditButton } from '../common/EditButton';
 import _ from 'lodash';
 import { TagList } from '../tag/TagList';
@@ -24,38 +24,32 @@ import { HintedTitle } from '../common/HintedTitle';
 import { reject } from '../../utils/reject';
 import { useBoundStore } from '../../state/resources/useBoundStore';
 import { jsx } from '@emotion/react';
-import { useCorpusPageStore } from '../../state/resources/useCorpusPageStore';
+import { useCorpora } from '../../state/resources/hooks/useCorpora';
+import { findCorpus } from '../../state/resources/utils/findCorpus';
 import JSX = jsx.JSX;
 
 export function CorpusPage(): JSX.Element {
   const corpusId = useParams().corpusId;
 
-  const boundStore = useBoundStore();
+  const store = useBoundStore();
 
   useEffect(() => {
-    boundStore.corpusPage.setCorpusId(corpusId);
-  }, [corpusId]);
-
-  useEffect(() => {
-    if (boundStore.userResources.isLoading) {
+    if (store.userResources.isLoading) {
       console.log('boundStore is loading');
       return;
     }
     console.log('boundStore has loaded', {
-      isLoading: boundStore.userResources.isLoading,
-      error: boundStore.userResources.error,
-      userResources: boundStore.userResources,
-      corpus: boundStore.corpusPage.getCorpus(),
+      isLoading: store.userResources.isLoading,
+      error: store.userResources.error,
+      userResources: store.userResources,
+      corpus: findCorpus(corpusId, store),
     });
-  }, [
-    boundStore,
-    boundStore.userResources,
-    boundStore.userResources.isLoading,
-  ]);
+  }, [store, store.userResources, store.userResources.isLoading]);
 
-  const { getCorpus, getCorpusOptions, getSourceOptions } =
-    useCorpusPageStore();
-  const corpus = getCorpus();
+  const { getCorpus, deleteCorpus, findSourceOptions, findCorpusOptions } =
+    useCorpora();
+
+  const corpus = getCorpus(corpusId);
 
   const [showCorpusForm, setShowCorpusForm] = useImmer(false);
   const [showExporter, setShowExporter] = useImmer(false);
@@ -160,15 +154,15 @@ export function CorpusPage(): JSX.Element {
         <MetadataValuePageFields values={corpus.metadataValues} />
       )}
 
-      <CorpusSubcorpora />
+      <CorpusSubcorpora corpusId={corpusId} />
 
-      <CorpusSources />
+      <CorpusSources corpusId={corpusId} />
 
       {showCorpusForm && (
         <CorpusForm
           corpusToEdit={corpus}
-          parentOptions={getCorpusOptions()}
-          sourceOptions={getSourceOptions()}
+          parentOptions={findCorpusOptions(corpusId)}
+          sourceOptions={findSourceOptions(corpusId)}
           onClose={handleCloseCorpusForm}
           onSaved={handleSavedCorpusForm}
         />

@@ -8,15 +8,9 @@ import {
   toResultMetadataValue,
   UUID,
 } from '../../model/DexterModel';
-import { createCorpus, updateCorpus } from '../../utils/API';
 import { createMetadataValues } from '../../utils/createMetadataValues';
-import {
-  updateCorpusLanguages,
-  updateCorpusMetadataValues,
-  updateCorpusTags,
-  updateSources,
-} from '../../utils/updateRemoteIds';
 import { corpusFormValidator } from './corpusFormValidator';
+import { useCorpora } from '../../state/resources/hooks/useCorpora';
 
 type UseSubmitCorpusFormResult = {
   submitCorpusForm: (
@@ -37,6 +31,14 @@ export function useSubmitCorpusForm(
   params: UseSubmitCorpusFormParams,
 ): UseSubmitCorpusFormResult {
   const { corpusToEdit, onSubmitted, setError } = params;
+  const {
+    updateCorpus,
+    updateSources,
+    updateCorpusTags,
+    updateCorpusLanguages,
+    updateCorpusMetadataValues,
+    createCorpus,
+  } = useCorpora();
 
   async function submitCorpusForm(
     toSubmit: SubmitFormCorpus,

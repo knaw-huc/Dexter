@@ -46,6 +46,21 @@ export type ResultCorpusWithChildIds = ResultCorpus & {
   subcorpora: UUID[];
 };
 
+export function toResultCorpusWithChildren(
+  result: ResultCorpus,
+): ResultCorpusWithChildIds {
+  return {
+    ...result,
+    parent: null,
+    tags: [],
+    languages: [],
+    sources: [],
+    metadataValues: [],
+    media: [],
+    subcorpora: [],
+  };
+}
+
 /**
  * Corpus including child resources
  */
@@ -96,6 +111,20 @@ export type ResultSourceWithChildIds = ResultSource & {
   metadataValues: UUID[];
   tags: number[];
 };
+
+export function toResultSourceWithChildren(
+  result: ResultSource,
+): ResultSourceWithChildIds {
+  return {
+    ...result,
+    references: [],
+    corpora: [],
+    languages: [],
+    media: [],
+    metadataValues: [],
+    tags: [],
+  };
+}
 
 /**
  * Source including all child resources

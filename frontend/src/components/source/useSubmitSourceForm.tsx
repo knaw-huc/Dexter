@@ -4,11 +4,7 @@ import {
   SubmitFormSource,
   UUID,
 } from '../../model/DexterModel';
-import {
-  addSourcesToCorpus,
-  createSource,
-  updateSource,
-} from '../../utils/API';
+import { createSource, updateSource } from '../../utils/API';
 import { createMetadataValues } from '../../utils/createMetadataValues';
 import {
   updateSourceLanguages,
@@ -17,6 +13,7 @@ import {
   updateSourceTags,
 } from '../../utils/updateRemoteIds';
 import { sourceFormValidator } from './sourceFormValidator';
+import { useCorpora } from '../../state/resources/hooks/useCorpora';
 
 type UseSubmitSourceFormResult = {
   submitSourceForm: (
@@ -36,7 +33,7 @@ export function useSubmitSourceForm(
   params: UseSubmitSourceFormParams,
 ): UseSubmitSourceFormResult {
   const { setError, sourceToEdit, corpusId, onSubmitted } = params;
-
+  const { addSourcesToCorpus } = useCorpora();
   async function submitSourceForm(
     toSubmit: SubmitFormSource,
     keys: ResultMetadataKey[],
