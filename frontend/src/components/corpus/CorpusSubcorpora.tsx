@@ -30,9 +30,7 @@ export function CorpusSubcorpora(props: { corpusId: UUID }) {
   };
 
   const handleSelectSubcorpus = async (subcorpusId: string) => {
-    const newSubcorpus = findCorpusOptions(props.corpusId).find(
-      c => c.id === subcorpusId,
-    );
+    const newSubcorpus = getCorpus(subcorpusId);
     await updateCorpus(subcorpusId, {
       ...newSubcorpus,
       parentId: corpus.id,

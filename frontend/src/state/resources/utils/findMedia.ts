@@ -5,5 +5,5 @@ export function findMedia(
   id: UUID,
   resources: BoundState,
 ): ResultMedia | undefined {
-  return resources.userResources.media.find(m => m.id === id);
+  return resources.userResources.media.get(id);
 }

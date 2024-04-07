@@ -1,9 +1,9 @@
 import { BoundState } from '../BoundState';
-import { ResultListLanguage } from '../../../model/DexterModel';
+import { ResultLanguage } from '../../../model/DexterModel';
 
 export function findLanguage(
-  id: string,
+  languageId: string,
   resources: BoundState,
-): ResultListLanguage | undefined {
-  return resources.languages.languages.find(l => l.id === id);
+): ResultLanguage | undefined {
+  return resources.languages.languages.get(languageId);
 }

@@ -6,7 +6,7 @@ import {
   ResultLanguage,
   ResultMetadataValue,
   ResultTag,
-  ResultUserResources,
+  UserResourceIdsMaps,
   Source,
   toResultCorpusWithChildren,
   UUID,
@@ -28,16 +28,17 @@ import { findCorpusWithChildIds } from '../utils/findCorpusWithChildIds';
 import { linkCorpusChildren } from '../utils/linkCorpusChildren';
 import { findSourceOptions } from '../utils/findSourceOptions';
 import { findCorpusOptions } from '../utils/findCorpusOptions';
+import { toValueArray } from '../utils/toValueArray';
 
 export function useCorpora() {
   const { updateUserResources, corpora } = useUserResourcesStore();
   const store = useBoundStore();
 
   function getCorpusFrom(
-    draft: ResultUserResources,
+    draft: UserResourceIdsMaps,
     corpusId: string,
   ): ResultCorpusWithChildIds {
-    return draft.corpora.find(c => c.id === corpusId);
+    return draft.corpora.get(corpusId);
   }
 
   const addSourcesToCorpus = async (
@@ -143,7 +144,9 @@ export function useCorpora() {
     },
 
     getCorpora(): Corpus[] {
-      return store.userResources.corpora.map(c => linkCorpusChildren(c, store));
+      return toValueArray(store.userResources.corpora).map(c =>
+        linkCorpusChildren(c, store),
+      );
     },
 
     createCorpus: async (newCorpus: FormCorpus): Promise<ResultCorpus> => {
@@ -152,7 +155,7 @@ export function useCorpora() {
         newCorpus,
       );
       updateUserResources(draft => {
-        draft.corpora.push(toResultCorpusWithChildren(created));
+        draft.corpora.set(created.id, toResultCorpusWithChildren(created));
       });
       return created;
     },
@@ -170,7 +173,7 @@ export function useCorpora() {
 
     deleteCorpus: async (id: string): Promise<void> => {
       updateUserResources(draft => {
-        _.remove(draft.corpora, c => c.id === id);
+        draft.corpora.delete(id);
       });
       return deleteValidated(`/${api}/${corpora}/${id}`);
     },

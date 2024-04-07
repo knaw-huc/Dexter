@@ -2,6 +2,7 @@ import { Source, UUID } from '../../../model/DexterModel';
 import { useBoundStore } from '../useBoundStore';
 import { findSourceWithChildIds } from '../utils/findSourceWithChildIds';
 import { linkSourceChildren } from '../utils/linkSourceChildren';
+import { toValueArray } from '../utils/toValueArray';
 
 export function useSources() {
   // const { updateUserResources, sources } = useUserResourcesStore();
@@ -20,7 +21,9 @@ export function useSources() {
     },
 
     getSources(): Source[] {
-      return store.userResources.sources.map(c => linkSourceChildren(c, store));
+      return toValueArray(store.userResources.sources).map(c =>
+        linkSourceChildren(c, store),
+      );
     },
   };
 }

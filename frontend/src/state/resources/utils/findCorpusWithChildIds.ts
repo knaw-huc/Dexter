@@ -5,5 +5,5 @@ export function findCorpusWithChildIds(
   id: UUID,
   state: BoundState,
 ): ResultCorpusWithChildIds | undefined {
-  return state.userResources.corpora.find(c => c.id === id);
+  return state.userResources.corpora.get(id);
 }

@@ -321,3 +321,13 @@ export type ResultUserResources = {
   references: ResultReference[];
   tags: ResultTag[];
 };
+
+export type UserResourceIdsMaps = {
+  corpora: Map<UUID, ResultCorpusWithChildIds>;
+  sources: Map<UUID, ResultSourceWithChildIds>;
+  metadataValues: Map<UUID, ResultMetadataValue>;
+  metadataKeys: Map<UUID, ResultMetadataKey>;
+  media: Map<UUID, ResultMedia>;
+  references: Map<UUID, ResultReference>;
+  tags: Map<number, ResultTag>;
+};

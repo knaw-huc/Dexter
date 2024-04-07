@@ -5,5 +5,5 @@ export function findReference(
   id: UUID,
   resources: BoundState,
 ): ResultReference | undefined {
-  return resources.userResources.references.find(r => r.id === id);
+  return resources.userResources.references.get(id);
 }

@@ -5,5 +5,5 @@ export function findTag(
   id: number,
   resources: BoundState,
 ): ResultTag | undefined {
-  return resources.userResources.tags.find(t => t.id === id);
+  return resources.userResources.tags.get(id);
 }

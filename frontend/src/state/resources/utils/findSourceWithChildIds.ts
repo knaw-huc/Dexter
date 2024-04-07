@@ -5,5 +5,5 @@ export function findSourceWithChildIds(
   id: UUID,
   state: BoundState,
 ): ResultSourceWithChildIds | undefined {
-  return state.userResources.sources.find(c => c.id === id);
+  return state.userResources.sources.get(id);
 }
