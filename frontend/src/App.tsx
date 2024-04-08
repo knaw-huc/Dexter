@@ -17,9 +17,7 @@ export function App() {
     getUserResources()
       .then(r => {
         userResources.setUserResources(r);
-        setTimeout(() => {
-          userResources.setLoading(false);
-        }, 1000);
+        userResources.setLoading(false);
       })
       .catch(userResources.setError);
     getLanguages()
