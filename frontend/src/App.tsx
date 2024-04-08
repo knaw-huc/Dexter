@@ -5,7 +5,6 @@ import { Router } from './Router';
 import { LABEL_FILE, useLabelStore } from './LabelStore';
 import { getAssetValidated, getLanguages, getUserResources } from './utils/API';
 import { useBoundStore } from './state/resources/useBoundStore';
-import { SpinnerIcon } from './components/common/icon/SpinnerIcon';
 
 export function App() {
   const { userResources, languages } = useBoundStore();
@@ -16,7 +15,9 @@ export function App() {
     getUserResources()
       .then(r => {
         userResources.setUserResources(r);
-        userResources.setLoading(false);
+        setTimeout(() => {
+          userResources.setLoading(false);
+        }, 1000);
       })
       .catch(userResources.setError);
     getLanguages()
@@ -26,14 +27,6 @@ export function App() {
       })
       .catch(languages.setError);
   }, []);
-
-  if (userResources.isLoading || languages.isLoading) {
-    return (
-      <>
-        <SpinnerIcon />
-      </>
-    );
-  }
 
   return (
     <>

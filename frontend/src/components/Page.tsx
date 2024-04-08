@@ -3,10 +3,14 @@ import React from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Header from './/Header';
 import ErrorBoundary from './common/error/ErrorBoundary';
+import { CenteredSpinner } from './common/CenteredSpinner';
+import { useIsUserResourcesLoading } from '../state/resources/hooks/useLoading';
 
 export const Page = () => {
   const location = useLocation();
   const refreshOnPathChange = location.pathname;
+  const isLoading = useIsUserResourcesLoading();
+
   return (
     <div
       style={{
@@ -20,7 +24,11 @@ export const Page = () => {
         }}
       >
         <ErrorBoundary key={refreshOnPathChange}>
-          <Outlet />
+          {isLoading ? (
+            <CenteredSpinner label="User data loading..." />
+          ) : (
+            <Outlet />
+          )}
         </ErrorBoundary>
       </Container>
     </div>
