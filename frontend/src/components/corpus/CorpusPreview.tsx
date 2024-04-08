@@ -1,7 +1,7 @@
 import React from 'react';
 import { Corpus, isImage } from '../../model/DexterModel';
 import { useNavigate } from 'react-router-dom';
-import { Card, CardContent, Grid, Tooltip } from '@mui/material';
+import { Card, CardContent, Grid } from '@mui/material';
 import { HeaderLinkClamped } from '../common/HeaderLinkClamped';
 import { PClamped } from '../common/PClamped';
 import { CorpusIcon } from './CorpusIcon';
@@ -62,11 +62,12 @@ export function CorpusPreview(props: CorpusPreviewProps) {
               tags={uniqueChildTags}
               sx={{ opacity: '0.5' }}
               renderLabel={tag => (
-                <span style={{ marginRight: '1.25em' }}>
+                <span
+                  style={{ marginRight: '1.25em' }}
+                  title="Tags from subcorpora and sources"
+                >
                   {tag.val}
-                  <Tooltip title="Tags from subcorpora and sources">
-                    <NestedIconStyled />
-                  </Tooltip>
+                  <NestedIconStyled />
                 </span>
               )}
             />
