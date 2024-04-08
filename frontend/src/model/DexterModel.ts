@@ -3,7 +3,7 @@ import { ReferenceStyle } from '../components/reference/ReferenceStyle';
 
 export type UUID = string;
 /**
- * ID defaults to UUID
+ * ID defaults to UUID, but also supports numbers (i.e. tag IDs)
  */
 export type ID = UUID | number;
 export type LocalDate = string;
@@ -323,11 +323,11 @@ export type ResultUserResources = {
 };
 
 export type UserResourceIdsMaps = {
-  corpora: Map<UUID, ResultCorpusWithChildIds>;
-  sources: Map<UUID, ResultSourceWithChildIds>;
-  metadataValues: Map<UUID, ResultMetadataValue>;
-  metadataKeys: Map<UUID, ResultMetadataKey>;
-  media: Map<UUID, ResultMedia>;
-  references: Map<UUID, ResultReference>;
-  tags: Map<number, ResultTag>;
+  corpora: Map<ID, ResultCorpusWithChildIds>;
+  sources: Map<ID, ResultSourceWithChildIds>;
+  metadataValues: Map<ID, ResultMetadataValue>;
+  metadataKeys: Map<ID, ResultMetadataKey>;
+  media: Map<ID, ResultMedia>;
+  references: Map<ID, ResultReference>;
+  tags: Map<ID, ResultTag>;
 };

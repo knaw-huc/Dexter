@@ -2,8 +2,10 @@ import { ResourceState } from './ResourceState';
 import { ImmerBoundStateCreator } from '../ImmerBoundStateCreator';
 import { DraftSetter, Setter } from '../../utils/recipe/Setter';
 import {
+  ID,
   ResultUserResources,
   UserResourceIdsMaps,
+  WithId,
 } from '../../model/DexterModel';
 import { BoundState } from './BoundState';
 import { assign } from '../../utils/recipe/assign';
@@ -39,15 +41,19 @@ export const createUserResourceSlice: ImmerBoundStateCreator<
     set(state => void (state.userResources.isLoading = update)),
 });
 
+function toResourceByIdMap<T extends WithId<ID>>(update: T[]) {
+  return new Map(update.map(e => [e.id, e]));
+}
+
 function toIdMaps(update: ResultUserResources): UserResourceIdsMaps {
   return {
     ...update,
-    corpora: new Map(update.corpora.map(e => [e.id, e])),
-    sources: new Map(update.sources.map(e => [e.id, e])),
-    metadataValues: new Map(update.metadataValues.map(e => [e.id, e])),
-    metadataKeys: new Map(update.metadataKeys.map(e => [e.id, e])),
-    media: new Map(update.media.map(e => [e.id, e])),
-    references: new Map(update.references.map(e => [e.id, e])),
-    tags: new Map(update.tags.map(e => [e.id, e])),
+    corpora: toResourceByIdMap(update.corpora),
+    sources: toResourceByIdMap(update.sources),
+    metadataValues: toResourceByIdMap(update.metadataValues),
+    metadataKeys: toResourceByIdMap(update.metadataKeys),
+    media: toResourceByIdMap(update.media),
+    references: toResourceByIdMap(update.references),
+    tags: toResourceByIdMap(update.tags),
   };
 }

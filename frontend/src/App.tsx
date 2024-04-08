@@ -5,8 +5,10 @@ import { Router } from './Router';
 import { LABEL_FILE, useLabelStore } from './LabelStore';
 import { getAssetValidated, getLanguages, getUserResources } from './utils/API';
 import { useBoundStore } from './state/resources/useBoundStore';
+import { enableMapSet } from 'immer';
 
 export function App() {
+  enableMapSet();
   const { userResources, languages } = useBoundStore();
 
   const { setLabels } = useLabelStore();
