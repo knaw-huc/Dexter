@@ -1,6 +1,5 @@
 import React from 'react';
 import { ResultMedia, SupportedMediaType } from '../../model/DexterModel';
-import { createMedia, getMediaAutocomplete } from '../../utils/API';
 import _ from 'lodash';
 import { grey } from '@mui/material/colors';
 import { truncateMiddle } from '../../utils/truncateMiddle';
@@ -13,6 +12,7 @@ import {
 import { FormFieldprops } from '../common/FormFieldProps';
 import { Label } from '../common/Label';
 import { FieldError } from '../common/error/FieldError';
+import { useMedia } from '../../state/resources/hooks/useMedia';
 
 export type SelectMediaFieldProps = FormFieldprops & {
   selected: ResultMedia[];
@@ -40,6 +40,7 @@ const createNewMediaOption: Omit<ResultMedia, 'url'> = {
  * Create, link and unlink media
  */
 export const SelectMediaField = (props: SelectMediaFieldProps) => {
+  const { getMediaAutocomplete, createMedia } = useMedia();
   function toOptions(inputValue: string, autocomplete: ResultMedia[]) {
     const options = [...autocomplete];
     const inputIsOption = options.find(o => o.url === inputValue);

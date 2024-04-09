@@ -6,7 +6,6 @@ import {
   ResultMedia,
   supportedMediaTypes,
 } from '../../model/DexterModel';
-import { createMedia, updateMedia } from '../../utils/API';
 import ScrollableModal from '../common/ScrollableModal';
 import { SubmitButton } from '../common/SubmitButton';
 import * as yup from 'yup';
@@ -20,6 +19,7 @@ import { useImmer } from 'use-immer';
 import { Hinted } from '../common/Hinted';
 import { toFormHint } from '../../LabelStore';
 import { TopRightCloseIcon } from '../common/icon/CloseIcon';
+import { useMedia } from '../../state/resources/hooks/useMedia';
 
 type MediaFormProps = {
   inEdit?: ResultMedia;
@@ -39,7 +39,7 @@ export function MediaForm(props: MediaFormProps) {
   const [form, setForm] = useImmer<FormMedia>(null);
   const { errors, setError } = useFormErrors<FormMedia>();
   const [isInit, setInit] = useImmer(false);
-
+  const { updateMedia, createMedia } = useMedia();
   useEffect(() => {
     const init = async () => {
       const inEdit = props.inEdit;

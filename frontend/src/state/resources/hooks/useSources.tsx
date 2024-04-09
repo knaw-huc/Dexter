@@ -5,11 +5,9 @@ import {
   ResultMetadataValue,
   ResultReference,
   ResultSource,
-  ResultSourceWithChildIds,
   ResultTag,
   Source,
   toResultSourceWithChildren,
-  UserResourceByIdMaps,
   UUID,
   WithId,
 } from '../../../model/DexterModel';
@@ -17,15 +15,7 @@ import { useBoundStore } from '../useBoundStore';
 import { findSourceWithChildIds } from '../utils/findSourceWithChildIds';
 import { linkSourceChildren } from '../utils/linkSourceChildren';
 import { toValueArray } from '../utils/toValueArray';
-import {
-  api,
-  media,
-  metadata,
-  references,
-  sources,
-  tags,
-  values,
-} from '../../../model/Resources';
+
 import {
   deleteValidated,
   postValidated,
@@ -43,13 +33,6 @@ export function useSources() {
   const store = useBoundStore();
   const { deleteMetadataValue } = useMetadata();
 
-  function getSourceFrom(
-    draft: UserResourceByIdMaps,
-    sourceId: string,
-  ): ResultSourceWithChildIds {
-    return draft.sources.get(sourceId);
-  }
-
   function getSource(sourceId: UUID): Source {
     return linkSourceChildren(findSourceWithChildIds(sourceId, store), store);
   }
@@ -61,7 +44,7 @@ export function useSources() {
   }
 
   const createSource = async (newSource: FormSource): Promise<ResultSource> => {
-    const created = await postValidated(`/${api}/${sources}`, newSource);
+    const created = await postValidated(`/api/sources`, newSource);
     updateUserResources(draft => {
       draft.sources.set(created.id, toResultSourceWithChildren(created));
     });
@@ -72,9 +55,9 @@ export function useSources() {
     id: string,
     form: FormSource,
   ): Promise<Source> => {
-    const updated = await putValidated(`/${api}/${sources}/${id}`, form);
+    const updated = await putValidated(`/api/sources/${id}`, form);
     updateUserResources(draft => {
-      assign(getSourceFrom(draft, id), updated);
+      assign(draft.sources.get(id), updated);
     });
     return updated;
   };
@@ -86,7 +69,7 @@ export function useSources() {
         removeIdsFrom(corpus.sources, id);
       }
     });
-    await deleteValidated(`/${api}/${sources}/${id}`);
+    await deleteValidated(`/api/sources/${id}`);
   };
 
   const addLanguagesToSource = async (
@@ -94,12 +77,9 @@ export function useSources() {
     languageId: string[],
   ): Promise<ResultLanguage[]> => {
     updateUserResources(draft => {
-      addIdsTo(getSourceFrom(draft, sourceId).languages, languageId);
+      addIdsTo(draft.sources.get(sourceId).languages, languageId);
     });
-    return postValidated(
-      `/${api}/${sources}/${sourceId}/languages`,
-      languageId,
-    );
+    return postValidated(`/api/sources/${sourceId}/languages`, languageId);
   };
 
   const deleteLanguageFromSource = async (
@@ -107,11 +87,9 @@ export function useSources() {
     languageId: string,
   ): Promise<void> => {
     updateUserResources(draft => {
-      removeIdsFrom(getSourceFrom(draft, sourceId).languages, languageId);
+      removeIdsFrom(draft.sources.get(sourceId).languages, languageId);
     });
-    await deleteValidated(
-      `/${api}/${sources}/${sourceId}/languages/${languageId}`,
-    );
+    await deleteValidated(`/api/sources/${sourceId}/languages/${languageId}`);
   };
 
   const addTagsToSource = async (
@@ -119,9 +97,9 @@ export function useSources() {
     tagId: number[],
   ): Promise<ResultTag[]> => {
     updateUserResources(draft => {
-      addIdsTo(getSourceFrom(draft, sourceId).tags, tagId);
+      addIdsTo(draft.sources.get(sourceId).tags, tagId);
     });
-    return postValidated(`/${api}/${sources}/${sourceId}/${tags}`, tagId);
+    return postValidated(`/api/sources/${sourceId}/tags`, tagId);
   };
 
   const deleteTagFromSource = async (
@@ -129,9 +107,9 @@ export function useSources() {
     tagId: string,
   ): Promise<void> => {
     updateUserResources(draft => {
-      removeIdsFrom(getSourceFrom(draft, sourceId).tags, tagId);
+      removeIdsFrom(draft.sources.get(sourceId).tags, tagId);
     });
-    await deleteValidated(`/${api}/${sources}/${sourceId}/${tags}/${tagId}`);
+    await deleteValidated(`/api/sources/${sourceId}/tags/${tagId}`);
   };
 
   const addReferencesToSource = async (
@@ -139,12 +117,9 @@ export function useSources() {
     referenceIds: string[],
   ): Promise<ResultReference[]> => {
     updateUserResources(draft => {
-      addIdsTo(getSourceFrom(draft, sourceId).references, referenceIds);
+      addIdsTo(draft.sources.get(sourceId).references, referenceIds);
     });
-    return postValidated(
-      `/${api}/${sources}/${sourceId}/${references}`,
-      referenceIds,
-    );
+    return postValidated(`/api/sources/${sourceId}/references`, referenceIds);
   };
 
   const deleteReferenceFromSource = async (
@@ -152,11 +127,9 @@ export function useSources() {
     referenceId: string,
   ): Promise<void> => {
     updateUserResources(draft => {
-      removeIdsFrom(getSourceFrom(draft, sourceId).languages, referenceId);
+      removeIdsFrom(draft.sources.get(sourceId).languages, referenceId);
     });
-    await deleteValidated(
-      `/${api}/${sources}/${sourceId}/${references}/${referenceId}`,
-    );
+    await deleteValidated(`/api/sources/${sourceId}/references/${referenceId}`);
   };
 
   const deleteMetadataValueFromSource = async (
@@ -165,7 +138,7 @@ export function useSources() {
   ): Promise<void> => {
     updateUserResources(draft => {
       removeIdsFrom(
-        getSourceFrom(draft, sourceId).metadataValues,
+        draft.sources.get(sourceId).metadataValues,
         metadataValueId,
       );
     });
@@ -177,10 +150,10 @@ export function useSources() {
     metadataValueIds: string[],
   ): Promise<ResultMetadataValue[]> => {
     updateUserResources(draft => {
-      addIdsTo(getSourceFrom(draft, sourceId).metadataValues, metadataValueIds);
+      addIdsTo(draft.sources.get(sourceId).metadataValues, metadataValueIds);
     });
     return postValidated(
-      `/${api}/${sources}/${sourceId}/${metadata}/${values}`,
+      `/api/sources/${sourceId}/metadata/values`,
       metadataValueIds,
     );
   };
@@ -190,9 +163,9 @@ export function useSources() {
     mediaIds: string[],
   ): Promise<ResultMedia[]> => {
     updateUserResources(draft => {
-      addIdsTo(getSourceFrom(draft, sourceId).media, mediaIds);
+      addIdsTo(draft.sources.get(sourceId).media, mediaIds);
     });
-    return postValidated(`/${api}/${sources}/${sourceId}/${media}`, mediaIds);
+    return postValidated(`/api/sources/${sourceId}/media`, mediaIds);
   };
 
   const deleteMediaFromSource = async (
@@ -200,9 +173,9 @@ export function useSources() {
     mediaId: string,
   ): Promise<void> => {
     updateUserResources(draft => {
-      removeIdsFrom(getSourceFrom(draft, sourceId).media, mediaId);
+      removeIdsFrom(draft.sources.get(sourceId).media, mediaId);
     });
-    await deleteValidated(`/${api}/${sources}/${sourceId}/${media}/${mediaId}`);
+    await deleteValidated(`/api/sources/${sourceId}/media/${mediaId}`);
   };
 
   const updateSourceMetadataValues = updateLinkedResourcesWith<WithId>(

@@ -1,16 +1,13 @@
 import {
-  FormMedia,
   FormReference,
   FormTag,
   ResultImport,
   ResultLanguage,
   ResultListLanguages,
-  ResultMedia,
   ResultMetadataKey,
   ResultReference,
   ResultTag,
   ResultUserResources,
-  SupportedMediaTypeType,
   User,
   UserSettings,
   UUID,
@@ -21,7 +18,6 @@ import {
   api,
   assets,
   keys,
-  media,
   metadata,
   references,
   resources,
@@ -184,9 +180,6 @@ export const getReferenceAutocomplete = async (
 ): Promise<ResultReference[]> =>
   postValidated(`/${api}/${references}/autocomplete`, input);
 
-export const getReferenceById = async (id: string): Promise<ResultReference> =>
-  getValidated(`/${api}/${references}/${id}`);
-
 /**
  * Import:
  */
@@ -209,29 +202,6 @@ export const getMetadataKeys = async (): Promise<ResultMetadataKey[]> =>
 /**
  * Media:
  */
-
-export const getMedia = async (
-  type?: SupportedMediaTypeType,
-): Promise<ResultMedia[]> => getValidated(`/${api}/${media}`, { type });
-
-export const getMediaEntry = async (id: UUID): Promise<ResultMedia> =>
-  getValidated(`/${api}/${media}/${id}`);
-
-export const createMedia = async (form: FormMedia): Promise<ResultMedia> =>
-  postValidated(`/${api}/${media}`, form);
-
-export const updateMedia = async (
-  id: UUID,
-  form: FormMedia,
-): Promise<ResultMedia> => putValidated(`/${api}/${media}/${id}`, form);
-
-export const deleteMedia = async (mediaId: UUID) =>
-  deleteValidated(`/${api}/${media}/${mediaId}`);
-
-export const getMediaAutocomplete = async (
-  input: string,
-): Promise<ResultMedia[]> =>
-  postValidated(`/${api}/${media}/autocomplete`, input);
 
 export const getUserResources = async (): Promise<ResultUserResources> => {
   return getValidated(`/${api}/${user}/${resources}`);
