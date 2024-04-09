@@ -14,17 +14,7 @@ import {
 } from '../model/DexterModel';
 import { validateResponse } from './validateResponse';
 import _ from 'lodash';
-import {
-  api,
-  assets,
-  keys,
-  metadata,
-  references,
-  resources,
-  settings,
-  tags,
-  user,
-} from '../model/Resources';
+
 import { ErrorWithMessage } from '../components/common/error/ErrorWithMessage';
 import { Any } from '../components/common/Any';
 
@@ -120,7 +110,7 @@ export async function getAssetValidated(
   cslFilename: string,
 ): Promise<Response> {
   const response = await fetch(
-    `${window.location.origin}/${api}/${assets}/${cslFilename}`,
+    `${window.location.origin}/api/assets/${cslFilename}`,
   );
   await validateResponse({ response });
   return response;
@@ -131,78 +121,77 @@ export async function getAssetValidated(
  */
 
 export const getLanguages = async (): Promise<ResultListLanguages> =>
-  getValidated(`/${api}/languages`);
+  getValidated(`/api/languages`);
 
 export const getLanguagesAutocomplete = async (
   input: string,
 ): Promise<ResultLanguage[]> =>
-  postValidated(`/${api}/languages/autocomplete`, input);
+  postValidated(`/api/languages/autocomplete`, input);
 
 /**
  * Tags:
  */
 
-export const getTags = async () => getValidated(`/${api}/${tags}`);
+export const getTags = async () => getValidated(`/api/tags`);
 
 export const createTag = async (newTag: FormTag): Promise<ResultTag> =>
-  postValidated(`/${api}/${tags}`, newTag);
+  postValidated(`/api/tags`, newTag);
 
 export const deleteTag = async (id: number): Promise<void> =>
-  deleteValidated(`/${api}/${tags}/${id}`);
+  deleteValidated(`/api/tags/${id}`);
 
 export const getTagsAutocomplete = async (
   input: string,
-): Promise<ResultTag[]> => postValidated(`/${api}/${tags}/autocomplete`, input);
+): Promise<ResultTag[]> => postValidated(`/api/tags/autocomplete`, input);
 
 /**
  * References:
  */
 
 export const getReferences = async (): Promise<ResultReference[]> =>
-  getValidated(`/${api}/${references}`);
+  getValidated(`/api/references`);
 
 export const createReference = async (
   newReference: FormReference,
-): Promise<ResultReference> =>
-  postValidated(`/${api}/${references}`, newReference);
+): Promise<ResultReference> => postValidated(`/api/references`, newReference);
 
 export const updateReference = async (
   id: UUID,
   newReference: FormReference,
 ): Promise<ResultReference> =>
-  putValidated(`/${api}/${references}/${id}`, newReference);
+  putValidated(`/api/references/${id}`, newReference);
 
 export const deleteReference = async (id: string): Promise<void> =>
-  deleteValidated(`/${api}/${references}/${id}`);
+  deleteValidated(`/api/references/${id}`);
 
 export const getReferenceAutocomplete = async (
   input: string,
 ): Promise<ResultReference[]> =>
-  postValidated(`/${api}/${references}/autocomplete`, input);
+  postValidated(`/api/references/autocomplete`, input);
 
 /**
  * Import:
  */
 
 export const postImport = async (url: URL): Promise<ResultImport> =>
-  postValidated(`/${api}/import/wereldculturen`, { url });
+  postValidated(`/api/import/wereldculturen`, { url });
 
 /**
  * User:
  */
 
 export const login = async (): Promise<User> =>
-  postValidated(`/${api}/${user}/login`);
+  postValidated(`/api/user/login`);
 export const updateUserSettings = async (
   userSettings: UserSettings,
-): Promise<void> => putValidated(`/${api}/${user}/${settings}`, userSettings);
+): Promise<void> => putValidated(`/api/user/settings`, userSettings);
 
 export const getMetadataKeys = async (): Promise<ResultMetadataKey[]> =>
-  getValidated(`/${api}/${metadata}/${keys}`);
+  getValidated(`/api/metadata/keys`);
 /**
  * Media:
  */
 
 export const getUserResources = async (): Promise<ResultUserResources> => {
-  return getValidated(`/${api}/${user}/${resources}`);
+  return getValidated(`/api/user/resources`);
 };

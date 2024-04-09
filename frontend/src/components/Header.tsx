@@ -12,20 +12,13 @@ import MenuItem from '@mui/material/MenuItem';
 import ScienceIcon from '@mui/icons-material/Science';
 import { useNavigate } from 'react-router-dom';
 import { LoginAvatar } from './LoginAvatar';
-import {
-  corpora,
-  media,
-  metadata,
-  references,
-  sources,
-  tags,
-} from '../model/Resources';
+
 import { Version } from './Version';
 import { useImmer } from 'use-immer';
 import ErrorBoundary from './common/error/ErrorBoundary';
 import { useUserStore } from '../state/UserStore';
 
-const pages = [corpora, sources, tags, metadata, media, references];
+const pages = ['corpora', 'sources', 'tags', 'metadata', 'media', 'references'];
 const settings: JSX.Element[] = [<Version key={1} />];
 
 export default function Header() {

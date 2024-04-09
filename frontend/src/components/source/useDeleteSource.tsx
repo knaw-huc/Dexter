@@ -1,4 +1,3 @@
-import { sources } from '../../model/Resources';
 import { Source } from '../../model/DexterModel';
 import { useNavigate } from 'react-router-dom';
 import { reject } from '../../utils/reject';
@@ -23,7 +22,7 @@ export function useDeleteSource(params: { onError: (error: Error) => void }): {
           await deleteMetadataValue(value.id);
         }
         await deleteSource(source.id);
-        navigate(`/${sources}`);
+        navigate(`/sources`);
       } catch (e) {
         params.onError(e);
       }

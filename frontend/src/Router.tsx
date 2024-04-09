@@ -8,14 +8,7 @@ import { TagIndex } from './components/tag/TagIndex';
 import { MetadataKeyIndex } from './components/metadata/MetadataKeyIndex';
 import React from 'react';
 import { MediaIndex } from './components/media/MediaIndex';
-import {
-  references,
-  corpora,
-  media,
-  metadata,
-  sources,
-  tags,
-} from './model/Resources';
+
 import { MediaPage } from './components/media/MediaPage';
 import { ReferenceIndex } from './components/reference/ReferenceIndex';
 
@@ -23,17 +16,17 @@ export function Router() {
   return (
     <Routes>
       <Route path="/" element={<Page />}>
-        <Route path="/" element={<Navigate to={`/${corpora}`} />} />
+        <Route path="/" element={<Navigate to={`/corpora`} />} />
 
-        <Route path={`/${corpora}`} element={<CorpusIndex />} />
-        <Route path={`/${corpora}/:corpusId`} element={<CorpusPage />} />
-        <Route path={`/${sources}`} element={<SourceIndex />} />
-        <Route path={`/${sources}/:sourceId`} element={<SourcePage />} />
-        <Route path={`/${tags}`} element={<TagIndex />} />
-        <Route path={`/${metadata}`} element={<MetadataKeyIndex />} />
-        <Route path={`/${media}`} element={<MediaIndex />} />
-        <Route path={`/${media}/:mediaId`} element={<MediaPage />} />
-        <Route path={`/${references}`} element={<ReferenceIndex />} />
+        <Route path={`/corpora`} element={<CorpusIndex />} />
+        <Route path={`/corpora/:corpusId`} element={<CorpusPage />} />
+        <Route path={`/sources`} element={<SourceIndex />} />
+        <Route path={`/sources/:sourceId`} element={<SourcePage />} />
+        <Route path={`/tags`} element={<TagIndex />} />
+        <Route path={`/metadata`} element={<MetadataKeyIndex />} />
+        <Route path={`/media`} element={<MediaIndex />} />
+        <Route path={`/media/:mediaId`} element={<MediaPage />} />
+        <Route path={`/references`} element={<ReferenceIndex />} />
         <Route
           path="*"
           element={

@@ -8,7 +8,6 @@ import { TagList } from '../tag/TagList';
 import { SourceIcon } from './SourceIcon';
 import { Title } from '../media/Title';
 import { CardHeaderImage } from '../common/CardHeaderImage';
-import { sources } from '../../model/Resources';
 import { TopRightCloseIcon } from '../common/icon/CloseIcon';
 
 interface SourceItemDropdownProps {
@@ -22,7 +21,7 @@ export const SourcePreview = (props: SourceItemDropdownProps) => {
   const headerImage = props.source.media.find(m => isImage(m.mediaType))?.url;
 
   function navigateToSource() {
-    return navigate(`/${sources}/${props.source.id}`);
+    return navigate(`/sources/${props.source.id}`);
   }
 
   return (

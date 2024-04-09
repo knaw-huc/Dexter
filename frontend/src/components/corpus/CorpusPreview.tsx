@@ -8,7 +8,6 @@ import { CorpusIcon } from './CorpusIcon';
 import { Title } from '../media/Title';
 import { CardHeaderImage } from '../common/CardHeaderImage';
 import { TagList } from '../tag/TagList';
-import { corpora } from '../../model/Resources';
 import { getCorpusTags } from './getCorpusTags';
 import _ from 'lodash';
 import { hasEqualId } from '../../utils/hasEqualId';
@@ -36,7 +35,7 @@ export function CorpusPreview(props: CorpusPreviewProps) {
 
   const corpus = props.corpus;
   function navigateToCorpus() {
-    return navigate(`/${corpora}/${corpus.id}`);
+    return navigate(`/corpora/${corpus.id}`);
   }
 
   const corpusTags = props.corpus.tags;

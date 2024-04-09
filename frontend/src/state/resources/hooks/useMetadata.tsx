@@ -9,7 +9,6 @@ import {
   WithMetadata,
 } from '../../../model/DexterModel';
 import { useBoundStore } from '../useBoundStore';
-import { api, keys, metadata, values } from '../../../model/Resources';
 import {
   deleteValidated,
   postValidated,
@@ -30,7 +29,7 @@ export function useMetadata() {
   const createMetadataKey = async (
     newTag: FormMetadataKey,
   ): Promise<ResultMetadataKey> => {
-    const created = await postValidated(`/${api}/${metadata}/${keys}`, newTag);
+    const created = await postValidated(`/api/metadata/keys`, newTag);
     updateUserResources(draft => {
       draft.metadataKeys.set(created.id, created);
     });
@@ -41,10 +40,7 @@ export function useMetadata() {
     id: UUID,
     form: FormMetadataKey,
   ): Promise<ResultMetadataKey> => {
-    const updated = await putValidated(
-      `/${api}/${metadata}/${keys}/${id}`,
-      form,
-    );
+    const updated = await putValidated(`/api/metadata/keys/${id}`, form);
     updateUserResources(draft => {
       assign(draft.metadataKeys.get(id), updated);
     });
@@ -55,17 +51,14 @@ export function useMetadata() {
     updateUserResources(draft => {
       draft.metadataKeys.delete(id);
     });
-    await deleteValidated(`/${api}/${metadata}/${keys}/${id}`);
+    await deleteValidated(`/api/metadata/keys/${id}`);
   };
 
   const updateMetadataValue = async (
     id: UUID,
     form: FormMetadataValue,
   ): Promise<ResultMetadataValue> => {
-    const updated = await putValidated(
-      `/${api}/${metadata}/${values}/${id}`,
-      form,
-    );
+    const updated = await putValidated(`/api/metadata/values/${id}`, form);
     updateUserResources(draft => {
       assign(draft.metadataValues.get(id), updated);
     });
@@ -75,7 +68,7 @@ export function useMetadata() {
   const createMetadataValue = async (
     form: FormMetadataValue,
   ): Promise<ResultMetadataValue> => {
-    const created = await postValidated(`/${api}/${metadata}/${values}`, form);
+    const created = await postValidated(`/api/metadata/values`, form);
     updateUserResources(draft => {
       draft.metadataValues.set(created.id, created);
     });
@@ -86,7 +79,7 @@ export function useMetadata() {
     updateUserResources(draft => {
       draft.metadataValues.delete(id);
     });
-    await deleteValidated(`/${api}/${metadata}/${values}/${id}`);
+    await deleteValidated(`/api/metadata/values/${id}`);
   };
 
   /**

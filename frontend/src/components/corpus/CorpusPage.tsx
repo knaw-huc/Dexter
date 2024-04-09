@@ -15,7 +15,6 @@ import { CorpusSources } from './CorpusSources';
 import { CorpusSubcorpora } from './CorpusSubcorpora';
 import { useImmer } from 'use-immer';
 import { DeleteButton } from '../common/DeleteButton';
-import { corpora } from '../../model/Resources';
 import { useThrowSync } from '../common/error/useThrowSync';
 import { ExportButton } from '../export/ExportButton';
 import { ExportForm } from '../export/ExportForm';
@@ -80,7 +79,7 @@ export function CorpusPage(): JSX.Element {
         await deleteMetadataValue(value.id);
       }
       await deleteCorpus(corpus.id);
-      navigate(`/${corpora}`);
+      navigate(`/corpora`);
     } catch (e) {
       throwSync(e);
     }

@@ -4,7 +4,6 @@ import { Card, CardActions, CardMedia, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { EditIcon } from '../common/icon/EditIcon';
 import { Title } from './Title';
-import { media } from '../../model/Resources';
 import { CloseIcon } from '../common/icon/CloseIcon';
 
 type MediaItemProps = {
@@ -17,7 +16,7 @@ export const MediaPreview = (props: MediaItemProps) => {
   const navigate = useNavigate();
 
   function handleSelect() {
-    navigate(`/${media}/${props.media.id}`);
+    navigate(`/media/${props.media.id}`);
   }
 
   function handleEdit(e: MouseEvent) {

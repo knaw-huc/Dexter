@@ -7,7 +7,6 @@ import { EditIcon } from '../common/icon/EditIcon';
 import { DeleteIcon } from '../common/icon/DeleteIcon';
 import { SourceIcon } from './SourceIcon';
 import { ListItemButtonStyled } from '../common/ListItemButtonStyled';
-import { sources } from '../../model/Resources';
 
 type SourceListItemProps = {
   source: Source;
@@ -19,7 +18,7 @@ export const SourceListItem = (props: SourceListItemProps) => {
   const navigate = useNavigate();
 
   function handleSelect() {
-    navigate(`/${sources}/${props.source.id}`);
+    navigate(`/sources/${props.source.id}`);
   }
 
   function handleDeleted(e: React.MouseEvent) {
