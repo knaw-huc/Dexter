@@ -1,7 +1,5 @@
 import {
   FormMedia,
-  FormMetadataKey,
-  FormMetadataValue,
   FormReference,
   FormTag,
   ResultImport,
@@ -9,7 +7,6 @@ import {
   ResultListLanguages,
   ResultMedia,
   ResultMetadataKey,
-  ResultMetadataValue,
   ResultReference,
   ResultTag,
   ResultUserResources,
@@ -31,7 +28,6 @@ import {
   settings,
   tags,
   user,
-  values,
 } from '../model/Resources';
 import { ErrorWithMessage } from '../components/common/error/ErrorWithMessage';
 import { Any } from '../components/common/Any';
@@ -208,41 +204,8 @@ export const updateUserSettings = async (
   userSettings: UserSettings,
 ): Promise<void> => putValidated(`/${api}/${user}/${settings}`, userSettings);
 
-/**
- * Metadata:
- */
-
 export const getMetadataKeys = async (): Promise<ResultMetadataKey[]> =>
   getValidated(`/${api}/${metadata}/${keys}`);
-
-export const deleteMetadataKey = async (id: string): Promise<void> =>
-  deleteValidated(`/${api}/${metadata}/${keys}/${id}`);
-
-export const deleteMetadataValue = async (id: string): Promise<void> =>
-  deleteValidated(`/${api}/${metadata}/${values}/${id}`);
-
-export const createMetadataKey = async (
-  newTag: FormMetadataKey,
-): Promise<ResultMetadataKey> =>
-  postValidated(`/${api}/${metadata}/${keys}`, newTag);
-
-export const updateMetadataKey = async (
-  id: UUID,
-  newTag: FormMetadataKey,
-): Promise<ResultMetadataKey> =>
-  putValidated(`/${api}/${metadata}/${keys}/${id}`, newTag);
-
-export const createMetadataValue = async (
-  form: FormMetadataValue,
-): Promise<ResultMetadataValue> =>
-  postValidated(`/${api}/${metadata}/${values}`, form);
-
-export const updateMetadataValue = (
-  id: UUID,
-  form: FormMetadataValue,
-): Promise<ResultMetadataValue> =>
-  putValidated(`/${api}/${metadata}/${values}/${id}`, form);
-
 /**
  * Media:
  */

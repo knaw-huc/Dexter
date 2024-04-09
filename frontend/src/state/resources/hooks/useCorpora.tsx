@@ -8,7 +8,7 @@ import {
   ResultTag,
   Source,
   toResultCorpusWithChildren,
-  UserResourceIdsMaps,
+  UserResourceByIdMaps,
   UUID,
   WithId,
 } from '../../../model/DexterModel';
@@ -21,7 +21,6 @@ import {
   values,
 } from '../../../model/Resources';
 import {
-  deleteMetadataValue,
   deleteValidated,
   postValidated,
   putValidated,
@@ -37,13 +36,15 @@ import { findCorpusOptions } from '../utils/findCorpusOptions';
 import { toValueArray } from '../utils/toValueArray';
 import { removeIdsFrom } from '../utils/recipe/removeIdsFrom';
 import { addIdsTo } from '../utils/recipe/addIdsTo';
+import { useMetadata } from './useMetadata';
 
 export function useCorpora() {
   const { updateUserResources } = useUserResourcesStore();
   const store = useBoundStore();
+  const { deleteMetadataValue } = useMetadata();
 
   function getCorpusFrom(
-    draft: UserResourceIdsMaps,
+    draft: UserResourceByIdMaps,
     corpusId: string,
   ): ResultCorpusWithChildIds {
     return draft.corpora.get(corpusId);
@@ -81,6 +82,15 @@ export function useCorpora() {
   const deleteCorpus = async (id: string): Promise<void> => {
     updateUserResources(draft => {
       draft.corpora.delete(id);
+      for (const [id, corpus] of draft.corpora) {
+        removeIdsFrom(corpus.subcorpora, id);
+        if (corpus.parentId === id) {
+          corpus.parentId = null;
+        }
+      }
+      for (const [id, source] of draft.sources) {
+        removeIdsFrom(source.corpora, id);
+      }
     });
     return deleteValidated(`/${api}/${corpora}/${id}`);
   };

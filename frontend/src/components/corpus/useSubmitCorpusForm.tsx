@@ -8,9 +8,9 @@ import {
   toResultMetadataValue,
   UUID,
 } from '../../model/DexterModel';
-import { createMetadataValues } from '../../utils/createMetadataValues';
 import { corpusFormValidator } from './corpusFormValidator';
 import { useCorpora } from '../../state/resources/hooks/useCorpora';
+import { useMetadata } from '../../state/resources/hooks/useMetadata';
 
 type UseSubmitCorpusFormResult = {
   submitCorpusForm: (
@@ -39,6 +39,7 @@ export function useSubmitCorpusForm(
     updateCorpusMetadataValues,
     createCorpus,
   } = useCorpora();
+  const { upsertMetadataValues } = useMetadata();
 
   async function submitCorpusForm(
     toSubmit: SubmitFormCorpus,
@@ -51,7 +52,7 @@ export function useSubmitCorpusForm(
       const id = corpusToEdit
         ? await updateExistingCorpus(serverForm)
         : await createNewCorpus(serverForm);
-      const metadataValues = await createMetadataValues(
+      const metadataValues = await upsertMetadataValues(
         corpusToEdit,
         keys,
         values,

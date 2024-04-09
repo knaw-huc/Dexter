@@ -1,5 +1,5 @@
 /**
- * Upsert: 'Update or insert'...
+ * Upsert: 'Update or insert'
  *
  * Create new array in which:
  * - update replaces first element that matches predicate, or:

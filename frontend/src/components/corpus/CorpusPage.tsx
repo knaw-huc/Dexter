@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Corpus } from '../../model/DexterModel';
 import { CorpusForm } from './CorpusForm';
-import { deleteMetadataValue } from '../../utils/API';
 import { EditButton } from '../common/EditButton';
 import _ from 'lodash';
 import { TagList } from '../tag/TagList';
@@ -27,11 +26,12 @@ import { jsx } from '@emotion/react';
 import { useCorpora } from '../../state/resources/hooks/useCorpora';
 import { findCorpus } from '../../state/resources/utils/findCorpus';
 import JSX = jsx.JSX;
+import { useMetadata } from '../../state/resources/hooks/useMetadata';
 
 export function CorpusPage(): JSX.Element {
   const corpusId = useParams().corpusId;
-
   const store = useBoundStore();
+  const { deleteMetadataValue } = useMetadata();
 
   useEffect(() => {
     if (store.userResources.isLoading) {

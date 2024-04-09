@@ -4,13 +4,13 @@ import { DraftSetter, Setter } from '../../utils/recipe/Setter';
 import {
   ID,
   ResultUserResources,
-  UserResourceIdsMaps,
+  UserResourceByIdMaps,
   WithId,
 } from '../../model/DexterModel';
 import { BoundState } from './BoundState';
 import { assign } from '../../utils/recipe/assign';
 
-export const defaultUserResources: UserResourceIdsMaps = {
+export const defaultUserResources: UserResourceByIdMaps = {
   corpora: new Map(),
   sources: new Map(),
   metadataValues: new Map(),
@@ -21,9 +21,9 @@ export const defaultUserResources: UserResourceIdsMaps = {
 };
 
 export type UserResourcesState = ResourceState &
-  UserResourceIdsMaps & {
+  UserResourceByIdMaps & {
     setUserResources: Setter<ResultUserResources>;
-    updateUserResources: DraftSetter<UserResourceIdsMaps>;
+    updateUserResources: DraftSetter<UserResourceByIdMaps>;
   };
 
 export const createUserResourceSlice: ImmerBoundStateCreator<
@@ -45,7 +45,7 @@ function toResourceByIdMap<T extends WithId<ID>>(update: T[]) {
   return new Map(update.map(e => [e.id, e]));
 }
 
-function toIdMaps(update: ResultUserResources): UserResourceIdsMaps {
+function toIdMaps(update: ResultUserResources): UserResourceByIdMaps {
   return {
     ...update,
     corpora: toResourceByIdMap(update.corpora),

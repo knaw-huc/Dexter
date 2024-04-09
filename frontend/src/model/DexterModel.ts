@@ -37,7 +37,6 @@ export type ResultCorpus = FormCorpus &
   };
 
 export type ResultCorpusWithChildIds = ResultCorpus & {
-  parent?: UUID;
   tags: number[];
   languages: string[];
   sources: UUID[];
@@ -51,7 +50,6 @@ export function toResultCorpusWithChildren(
 ): ResultCorpusWithChildIds {
   return {
     ...result,
-    parent: null,
     tags: [],
     languages: [],
     sources: [],
@@ -322,7 +320,7 @@ export type ResultUserResources = {
   tags: ResultTag[];
 };
 
-export type UserResourceIdsMaps = {
+export type UserResourceByIdMaps = {
   corpora: Map<ID, ResultCorpusWithChildIds>;
   sources: Map<ID, ResultSourceWithChildIds>;
   metadataValues: Map<ID, ResultMetadataValue>;

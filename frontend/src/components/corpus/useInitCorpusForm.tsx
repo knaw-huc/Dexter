@@ -5,9 +5,9 @@ import {
   ResultMetadataKey,
   toFormMetadataValue,
 } from '../../model/DexterModel';
-import { getMetadataKeys } from '../../utils/API';
 import { useImmer } from 'use-immer';
 import { defaultCorpus } from './defaultCorpus';
+import { useMetadata } from '../../state/resources/hooks/useMetadata';
 
 type UseInitCorpusFormResult = {
   init: () => void;
@@ -22,6 +22,8 @@ export function useInitCorpusForm(params: {
   parent?: Corpus;
 }): UseInitCorpusFormResult {
   const { corpusToEdit, setForm, setKeys, setValues, parent } = params;
+  const { getMetadataKeys } = useMetadata();
+
   const [isInit, setInit] = useImmer(false);
 
   function init() {

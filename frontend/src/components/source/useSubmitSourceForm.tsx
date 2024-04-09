@@ -4,10 +4,10 @@ import {
   SubmitFormSource,
   UUID,
 } from '../../model/DexterModel';
-import { createMetadataValues } from '../../utils/createMetadataValues';
 import { sourceFormValidator } from './sourceFormValidator';
 import { useCorpora } from '../../state/resources/hooks/useCorpora';
 import { useSources } from '../../state/resources/hooks/useSources';
+import { useMetadata } from '../../state/resources/hooks/useMetadata';
 
 type UseSubmitSourceFormResult = {
   submitSourceForm: (
@@ -37,6 +37,8 @@ export function useSubmitSourceForm(
 
   const { setError, sourceToEdit, corpusId, onSubmitted } = params;
   const { addSourcesToCorpus } = useCorpora();
+  const { upsertMetadataValues } = useMetadata();
+
   async function submitSourceForm(
     toSubmit: SubmitFormSource,
     keys: ResultMetadataKey[],
@@ -54,7 +56,7 @@ export function useSubmitSourceForm(
        * (All other resources can be viewed and deleted
        * at their resource page.)
        */
-      const metadataValues = await createMetadataValues(
+      const metadataValues = await upsertMetadataValues(
         sourceToEdit,
         keys,
         toSubmit.metadataValues,

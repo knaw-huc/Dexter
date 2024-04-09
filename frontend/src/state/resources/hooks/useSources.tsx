@@ -9,7 +9,7 @@ import {
   ResultTag,
   Source,
   toResultSourceWithChildren,
-  UserResourceIdsMaps,
+  UserResourceByIdMaps,
   UUID,
   WithId,
 } from '../../../model/DexterModel';
@@ -27,7 +27,6 @@ import {
   values,
 } from '../../../model/Resources';
 import {
-  deleteMetadataValue,
   deleteValidated,
   postValidated,
   putValidated,
@@ -37,13 +36,15 @@ import { assign } from '../../../utils/recipe/assign';
 import { addIdsTo } from '../utils/recipe/addIdsTo';
 import { removeIdsFrom } from '../utils/recipe/removeIdsFrom';
 import { updateLinkedResourcesWith } from '../../../utils/updateRemoteIds';
+import { useMetadata } from './useMetadata';
 
 export function useSources() {
   const { updateUserResources } = useUserResourcesStore();
   const store = useBoundStore();
+  const { deleteMetadataValue } = useMetadata();
 
   function getSourceFrom(
-    draft: UserResourceIdsMaps,
+    draft: UserResourceByIdMaps,
     sourceId: string,
   ): ResultSourceWithChildIds {
     return draft.sources.get(sourceId);
@@ -80,7 +81,10 @@ export function useSources() {
 
   const deleteSource = async (id: string): Promise<void> => {
     updateUserResources(draft => {
-      draft.corpora.delete(id);
+      draft.sources.delete(id);
+      for (const [id, corpus] of draft.corpora) {
+        removeIdsFrom(corpus.sources, id);
+      }
     });
     await deleteValidated(`/${api}/${sources}/${id}`);
   };

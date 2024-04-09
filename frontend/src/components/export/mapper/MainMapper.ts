@@ -2,7 +2,6 @@ import { isWithId, WithId } from '../../../model/DexterModel';
 import { RowWithTablesMapper, TablesMapper } from './Mapper';
 import { CorpusMapper } from './resource/CorpusMapper';
 import { MetadataValuesMapper } from './resource/MetadataValuesMapper';
-import { getMetadataKeys } from '../../../utils/API';
 import { TagsMapper } from './resource/TagsMapper';
 import { LanguagesMapper } from './resource/LanguagesMapper';
 import { ArrayMapper } from './resource/ArrayMapper';
@@ -16,6 +15,7 @@ import { FormattedReferenceMapper } from './resource/FormattedReferenceMapper';
 import { PrimitiveMapper } from './resource/PrimitiveMapper';
 import { ParentMapper } from './resource/ParentMapper';
 import { ReferenceStyle } from '../../reference/ReferenceStyle';
+import { getMetadataKeys } from '../../../utils/API';
 
 export class MainMapper implements TablesMapper<WithId> {
   name: string;

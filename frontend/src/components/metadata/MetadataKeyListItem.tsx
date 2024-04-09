@@ -1,6 +1,5 @@
 import { grey } from '@mui/material/colors';
 import { ResultMetadataKey } from '../../model/DexterModel';
-import { deleteMetadataKey } from '../../utils/API';
 import React, { ChangeEvent } from 'react';
 import { Avatar, ListItemAvatar, ListItemText } from '@mui/material';
 import { EditIcon } from '../common/icon/EditIcon';
@@ -11,6 +10,7 @@ import { reject } from '../../utils/reject';
 import { useImmer } from 'use-immer';
 import { ErrorAlert } from '../common/error/ErrorAlert';
 import { toMessage } from '../common/error/toMessage';
+import { useMetadata } from '../../state/resources/hooks/useMetadata';
 
 type MetadataKeyItemProps = {
   metadataKey: ResultMetadataKey;
@@ -20,6 +20,7 @@ type MetadataKeyItemProps = {
 
 export const MetadataKeyListItem = (props: MetadataKeyItemProps) => {
   const [error, setError] = useImmer<Error>(null);
+  const { deleteMetadataKey } = useMetadata();
 
   async function handleDelete(e: React.MouseEvent) {
     e.stopPropagation();

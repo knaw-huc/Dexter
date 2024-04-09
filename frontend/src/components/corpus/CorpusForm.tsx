@@ -16,7 +16,6 @@ import { TextFieldWithError } from '../common/TextFieldWithError';
 import { SubmitButton } from '../common/SubmitButton';
 import { MetadataValueFormFields } from '../metadata/MetadataValueFormFields';
 import { TextareaFieldProps } from '../common/TextareaFieldProps';
-import { useInitCorpusForm } from './useInitCorpusForm';
 import { useSubmitCorpusForm } from './useSubmitCorpusForm';
 import { onSubmit } from '../../utils/onSubmit';
 import { SelectCorpusField } from './SelectCorpusField';
@@ -29,6 +28,7 @@ import { assign } from '../../utils/recipe/assign';
 import { toFormHint } from '../../LabelStore';
 import { Hinted } from '../common/Hinted';
 import { TopRightCloseIcon } from '../common/icon/CloseIcon';
+import { useInitCorpusForm } from './useInitCorpusForm';
 
 type CorpusFormProps = {
   /**

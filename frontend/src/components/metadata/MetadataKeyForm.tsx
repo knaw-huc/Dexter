@@ -2,7 +2,6 @@ import styled from '@emotion/styled';
 import TextField from '@mui/material/TextField';
 import React, { ChangeEvent, useEffect } from 'react';
 import { FormMetadataKey, ResultMetadataKey } from '../../model/DexterModel';
-import { createMetadataKey, updateMetadataKey } from '../../utils/API';
 import ScrollableModal from '../common/ScrollableModal';
 import { SubmitButton } from '../common/SubmitButton';
 import { Label } from '../common/Label';
@@ -15,6 +14,7 @@ import { useImmer } from 'use-immer';
 import { Hinted } from '../common/Hinted';
 import { toFormHint } from '../../LabelStore';
 import { TopRightCloseIcon } from '../common/icon/CloseIcon';
+import { useMetadata } from '../../state/resources/hooks/useMetadata';
 
 type MetadataKeyFormProps = {
   inEdit?: ResultMetadataKey;
@@ -33,7 +33,7 @@ export function MetadataKeyForm(props: MetadataKeyFormProps) {
   const { errors, setError } = useFormErrors<FormMetadataKey>();
   const [keyField, setKeyField] = useImmer('');
   const [isInit, setInit] = useImmer(false);
-
+  const { updateMetadataKey, createMetadataKey } = useMetadata();
   useEffect(() => {
     const init = async () => {
       setKeyField(props.inEdit?.key || '');
