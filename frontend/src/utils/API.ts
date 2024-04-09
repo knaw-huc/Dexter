@@ -3,7 +3,6 @@ import {
   FormMetadataKey,
   FormMetadataValue,
   FormReference,
-  FormSource,
   FormTag,
   ResultImport,
   ResultLanguage,
@@ -12,10 +11,8 @@ import {
   ResultMetadataKey,
   ResultMetadataValue,
   ResultReference,
-  ResultSource,
   ResultTag,
   ResultUserResources,
-  Source,
   SupportedMediaTypeType,
   User,
   UserSettings,
@@ -32,11 +29,9 @@ import {
   references,
   resources,
   settings,
-  sources,
   tags,
   user,
   values,
-  withResources,
 } from '../model/Resources';
 import { ErrorWithMessage } from '../components/common/error/ErrorWithMessage';
 import { Any } from '../components/common/Any';
@@ -140,29 +135,6 @@ export async function getAssetValidated(
 }
 
 /**
- * Source:
- */
-
-export const getSourcesWithResources = async (): Promise<Source[]> => {
-  return getValidated(`/${api}/${sources}/${withResources}`);
-};
-
-export const getSourceWithResourcesById = async (id: string) =>
-  getValidated(`/${api}/${sources}/${id}/${withResources}`);
-
-export const createSource = async (
-  newSource: FormSource,
-): Promise<ResultSource> => postValidated(`/${api}/${sources}`, newSource);
-
-export const updateSource = async (
-  id: string,
-  updatedSource: FormSource,
-): Promise<Source> => putValidated(`/${api}/${sources}/${id}`, updatedSource);
-
-export const deleteSource = async (id: string): Promise<void> =>
-  deleteValidated(`/${api}/${sources}/${id}`);
-
-/**
  * Language:
  */
 
@@ -174,18 +146,6 @@ export const getLanguagesAutocomplete = async (
 ): Promise<ResultLanguage[]> =>
   postValidated(`/${api}/languages/autocomplete`, input);
 
-export const addLanguagesToSource = async (
-  sourceId: string,
-  languageId: string[],
-): Promise<ResultLanguage[]> =>
-  postValidated(`/${api}/${sources}/${sourceId}/languages`, languageId);
-
-export const deleteLanguageFromSource = async (
-  sourceId: string,
-  languageId: string,
-): Promise<void> =>
-  deleteValidated(`/${api}/${sources}/${sourceId}/languages/${languageId}`);
-
 /**
  * Tags:
  */
@@ -195,24 +155,12 @@ export const getTags = async () => getValidated(`/${api}/${tags}`);
 export const createTag = async (newTag: FormTag): Promise<ResultTag> =>
   postValidated(`/${api}/${tags}`, newTag);
 
-export const addTagsToSource = async (
-  sourceId: string,
-  tagId: string[],
-): Promise<ResultTag[]> =>
-  postValidated(`/${api}/${sources}/${sourceId}/${tags}`, tagId);
-
 export const deleteTag = async (id: number): Promise<void> =>
   deleteValidated(`/${api}/${tags}/${id}`);
 
 export const getTagsAutocomplete = async (
   input: string,
 ): Promise<ResultTag[]> => postValidated(`/${api}/${tags}/autocomplete`, input);
-
-export const deleteTagFromSource = async (
-  sourceId: string,
-  tagId: string,
-): Promise<void> =>
-  deleteValidated(`/${api}/${sources}/${sourceId}/${tags}/${tagId}`);
 
 /**
  * References:
@@ -232,12 +180,6 @@ export const updateReference = async (
 ): Promise<ResultReference> =>
   putValidated(`/${api}/${references}/${id}`, newReference);
 
-export const addReferencesToSource = async (
-  sourceId: string,
-  referenceId: string[],
-): Promise<ResultReference[]> =>
-  postValidated(`/${api}/${sources}/${sourceId}/${references}`, referenceId);
-
 export const deleteReference = async (id: string): Promise<void> =>
   deleteValidated(`/${api}/${references}/${id}`);
 
@@ -245,14 +187,6 @@ export const getReferenceAutocomplete = async (
   input: string,
 ): Promise<ResultReference[]> =>
   postValidated(`/${api}/${references}/autocomplete`, input);
-
-export const deleteReferenceFromSource = async (
-  sourceId: string,
-  referenceId: string,
-): Promise<void> =>
-  deleteValidated(
-    `/${api}/${sources}/${sourceId}/${references}/${referenceId}`,
-  );
 
 export const getReferenceById = async (id: string): Promise<ResultReference> =>
   getValidated(`/${api}/${references}/${id}`);
@@ -287,11 +221,6 @@ export const deleteMetadataKey = async (id: string): Promise<void> =>
 export const deleteMetadataValue = async (id: string): Promise<void> =>
   deleteValidated(`/${api}/${metadata}/${values}/${id}`);
 
-export const deleteMetadataValueFromSource = async (
-  _: string,
-  metadataValueId: string,
-): Promise<void> => deleteMetadataValue(metadataValueId);
-
 export const createMetadataKey = async (
   newTag: FormMetadataKey,
 ): Promise<ResultMetadataKey> =>
@@ -314,15 +243,6 @@ export const updateMetadataValue = (
 ): Promise<ResultMetadataValue> =>
   putValidated(`/${api}/${metadata}/${values}/${id}`, form);
 
-export const addMetadataValueToSource = async (
-  sourceId: string,
-  metadataValueIds: string[],
-): Promise<ResultMetadataValue[]> =>
-  postValidated(
-    `/${api}/${sources}/${sourceId}/${metadata}/${values}`,
-    metadataValueIds,
-  );
-
 /**
  * Media:
  */
@@ -344,18 +264,6 @@ export const updateMedia = async (
 
 export const deleteMedia = async (mediaId: UUID) =>
   deleteValidated(`/${api}/${media}/${mediaId}`);
-
-export const addMediaToSource = async (
-  sourceId: string,
-  mediaIds: string[],
-): Promise<ResultMedia[]> =>
-  postValidated(`/${api}/${sources}/${sourceId}/${media}`, mediaIds);
-
-export const deleteMediaFromSource = async (
-  sourceId: string,
-  mediaId: string,
-): Promise<void> =>
-  deleteValidated(`/${api}/${sources}/${sourceId}/${media}/${mediaId}`);
 
 export const getMediaAutocomplete = async (
   input: string,

@@ -1,22 +1,14 @@
 import { ID, UUID, WithId } from '../model/DexterModel';
-import {
-  addLanguagesToSource,
-  addMediaToSource,
-  addMetadataValueToSource,
-  addReferencesToSource,
-  addTagsToSource,
-  deleteLanguageFromSource,
-  deleteMediaFromSource,
-  deleteMetadataValueFromSource,
-  deleteReferenceFromSource,
-  deleteTagFromSource,
-} from './API';
 
 type UpdateLinkedResources<T extends WithId<ID>> = (
   parentId: UUID,
   linkedResources: T[],
 ) => Promise<void>;
 
+/**
+ * Update list of child resources linked to parent using
+ * the 'add' (POST) and 'delete' (DELETE) endpoint
+ */
 export function updateLinkedResourcesWith<T extends WithId<ID>>(
   addIdToParent: (parentId: ID, updateIds: ID[]) => Promise<T[]>,
   deleteIdFromParent: (parentId: ID, updateId: ID) => Promise<void | T[]>,
@@ -32,28 +24,3 @@ export function updateLinkedResourcesWith<T extends WithId<ID>>(
     }
   };
 }
-
-export const updateSourceMetadataValues = updateLinkedResourcesWith<WithId>(
-  addMetadataValueToSource,
-  deleteMetadataValueFromSource,
-);
-
-export const updateSourceLanguages = updateLinkedResourcesWith(
-  addLanguagesToSource,
-  deleteLanguageFromSource,
-);
-
-export const updateSourceTags = updateLinkedResourcesWith(
-  addTagsToSource,
-  deleteTagFromSource,
-);
-
-export const updateSourceMedia = updateLinkedResourcesWith(
-  addMediaToSource,
-  deleteMediaFromSource,
-);
-
-export const updateSourceReferences = updateLinkedResourcesWith(
-  addReferencesToSource,
-  deleteReferenceFromSource,
-);

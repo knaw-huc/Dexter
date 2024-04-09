@@ -18,25 +18,21 @@ import { SourceReferences } from './SourceReferences';
 import { useImmer } from 'use-immer';
 import { DeleteButton } from '../common/DeleteButton';
 import { useDeleteSource } from './useDeleteSource';
-import { useSourcePageStore } from './SourcePageStore';
 import { HintedTitle } from '../common/HintedTitle';
 import { useUserStore } from '../../state/UserStore';
-import { assign } from '../../utils/recipe/assign';
-import { useInitSourcePage } from './useInitSourcePage';
+import { useSources } from '../../state/resources/hooks/useSources';
 
 export const SourcePage = () => {
-  const sourceId = useParams().sourceId;
-  const { source, setSource } = useSourcePageStore();
-  const { isInit } = useInitSourcePage({ sourceId, setSource });
-
   const referenceStyle = useUserStore().getReferenceStyle();
+  const { getSource } = useSources();
+  const sourceId = useParams().sourceId;
+  const source = getSource(sourceId);
 
   const [showForm, setShowForm] = useImmer(false);
   const throwSync = useThrowSync();
   const { deleteSource } = useDeleteSource({ onError: throwSync });
 
-  const handleSavedForm = (update: Source) => {
-    setSource(source => assign(source, update));
+  const handleSavedForm = () => {
     setShowForm(false);
   };
 
@@ -51,7 +47,7 @@ export const SourcePage = () => {
     'creator',
   ];
 
-  if (!isInit) {
+  if (!source) {
     return null;
   }
   return (
@@ -103,9 +99,9 @@ export const SourcePage = () => {
         <MetadataValuePageFields values={source.metadataValues} />
       )}
 
-      <SourceMedia />
+      <SourceMedia sourceId={sourceId} />
 
-      <SourceReferences referenceStyle={referenceStyle} />
+      <SourceReferences sourceId={sourceId} referenceStyle={referenceStyle} />
 
       {showForm && (
         <SourceForm

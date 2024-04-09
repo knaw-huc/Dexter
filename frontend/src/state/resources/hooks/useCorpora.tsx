@@ -28,7 +28,6 @@ import {
 } from '../../../utils/API';
 import { updateLinkedResourcesWith } from '../../../utils/updateRemoteIds';
 import { useUserResourcesStore } from '../useUserResourcesStore';
-import _ from 'lodash';
 import { assign } from '../../../utils/recipe/assign';
 import { useBoundStore } from '../useBoundStore';
 import { findCorpusWithChildIds } from '../utils/findCorpusWithChildIds';
@@ -50,13 +49,48 @@ export function useCorpora() {
     return draft.corpora.get(corpusId);
   }
 
+  function getCorpus(corpusId: UUID): Corpus {
+    return linkCorpusChildren(findCorpusWithChildIds(corpusId, store), store);
+  }
+
+  function getCorpora(): Corpus[] {
+    return toValueArray(store.userResources.corpora).map(c =>
+      linkCorpusChildren(c, store),
+    );
+  }
+
+  const createCorpus = async (newCorpus: FormCorpus): Promise<ResultCorpus> => {
+    const created = await postValidated(`/${api}/${corpora}`, newCorpus);
+    updateUserResources(draft => {
+      draft.corpora.set(created.id, toResultCorpusWithChildren(created));
+    });
+    return created;
+  };
+
+  const updateCorpus = async (
+    id: string,
+    form: FormCorpus,
+  ): Promise<ResultCorpus> => {
+    const updated = await putValidated(`/${api}/${corpora}/${id}`, form);
+    updateUserResources(draft => {
+      assign(getCorpusFrom(draft, id), updated);
+    });
+    return updated;
+  };
+
+  const deleteCorpus = async (id: string): Promise<void> => {
+    updateUserResources(draft => {
+      draft.corpora.delete(id);
+    });
+    return deleteValidated(`/${api}/${corpora}/${id}`);
+  };
+
   const addSourcesToCorpus = async (
     corpusId: string,
     sourceIds: string[],
   ): Promise<Source[]> => {
     updateUserResources(draft => {
-      const corpus = getCorpusFrom(draft, corpusId);
-      corpus.sources = _.union(corpus.sources, sourceIds);
+      addIdsTo(getCorpusFrom(draft, corpusId).sources, sourceIds);
     });
     return postValidated(
       `/${api}/${corpora}/${corpusId}/${sources}`,
@@ -147,63 +181,36 @@ export function useCorpora() {
     return deleteValidated(`/${api}/${corpora}/${corpusId}/${tags}/${tagId}`);
   };
 
+  const updateCorpusMetadataValues = updateLinkedResourcesWith(
+    addMetadataValuesToCorpus,
+    deleteMetadataValueFromCorpus,
+  );
+
+  const updateSources = updateLinkedResourcesWith(
+    addSourcesToCorpus,
+    deleteSourceFromCorpus,
+  );
+
+  const updateCorpusLanguages = updateLinkedResourcesWith(
+    addLanguagesToCorpus,
+    deleteLanguageFromCorpus,
+  );
+
+  const updateCorpusTags = updateLinkedResourcesWith<WithId<number>>(
+    addTagsToCorpus,
+    deleteTagFromCorpus,
+  );
+
   return {
-    getCorpus(corpusId: UUID): Corpus {
-      return linkCorpusChildren(findCorpusWithChildIds(corpusId, store), store);
-    },
-
-    getCorpora(): Corpus[] {
-      return toValueArray(store.userResources.corpora).map(c =>
-        linkCorpusChildren(c, store),
-      );
-    },
-
-    createCorpus: async (newCorpus: FormCorpus): Promise<ResultCorpus> => {
-      const created = await postValidated(`/${api}/${corpora}`, newCorpus);
-      updateUserResources(draft => {
-        draft.corpora.set(created.id, toResultCorpusWithChildren(created));
-      });
-      return created;
-    },
-
-    updateCorpus: async (
-      id: string,
-      form: FormCorpus,
-    ): Promise<ResultCorpus> => {
-      const updated = await putValidated(`/${api}/${corpora}/${id}`, form);
-      updateUserResources(draft => {
-        assign(getCorpusFrom(draft, id), updated);
-      });
-      return updated;
-    },
-
-    deleteCorpus: async (id: string): Promise<void> => {
-      updateUserResources(draft => {
-        draft.corpora.delete(id);
-      });
-      return deleteValidated(`/${api}/${corpora}/${id}`);
-    },
-
-    updateCorpusMetadataValues: updateLinkedResourcesWith(
-      addMetadataValuesToCorpus,
-      deleteMetadataValueFromCorpus,
-    ),
-
-    updateSources: updateLinkedResourcesWith(
-      addSourcesToCorpus,
-      deleteSourceFromCorpus,
-    ),
-
-    updateCorpusLanguages: updateLinkedResourcesWith(
-      addLanguagesToCorpus,
-      deleteLanguageFromCorpus,
-    ),
-
-    updateCorpusTags: updateLinkedResourcesWith<WithId<number>>(
-      addTagsToCorpus,
-      deleteTagFromCorpus,
-    ),
-
+    getCorpus,
+    getCorpora,
+    createCorpus,
+    updateSources,
+    deleteCorpus,
+    updateCorpus,
+    updateCorpusTags,
+    updateCorpusLanguages,
+    updateCorpusMetadataValues,
     deleteSourceFromCorpus,
     addSourcesToCorpus,
     findSourceOptions: (corpusId: UUID) => findSourceOptions(corpusId, store),
