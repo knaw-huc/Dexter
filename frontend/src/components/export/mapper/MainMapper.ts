@@ -1,4 +1,8 @@
-import { isWithId, WithId } from '../../../model/DexterModel';
+import {
+  isWithId,
+  ResultMetadataKey,
+  WithId,
+} from '../../../model/DexterModel';
 import { RowWithTablesMapper, TablesMapper } from './Mapper';
 import { CorpusMapper } from './resource/CorpusMapper';
 import { MetadataValuesMapper } from './resource/MetadataValuesMapper';
@@ -15,7 +19,6 @@ import { FormattedReferenceMapper } from './resource/FormattedReferenceMapper';
 import { PrimitiveMapper } from './resource/PrimitiveMapper';
 import { ParentMapper } from './resource/ParentMapper';
 import { ReferenceStyle } from '../../reference/ReferenceStyle';
-import { getMetadataKeys } from '../../../utils/API';
 
 export class MainMapper implements TablesMapper<WithId> {
   name: string;
@@ -63,8 +66,10 @@ export class MainMapper implements TablesMapper<WithId> {
     this.mappers.corpus = corpusMapper;
   }
 
-  public static async init(referenceStyle: ReferenceStyle) {
-    const keys = await getMetadataKeys();
+  public static async init(
+    referenceStyle: ReferenceStyle,
+    keys: ResultMetadataKey[],
+  ) {
     return new MainMapper(
       keys.map(k => k.key),
       referenceStyle,

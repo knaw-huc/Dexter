@@ -5,9 +5,9 @@ import {
   SubmitFormSource,
   toFormMetadataValue,
 } from '../../model/DexterModel';
-import { getMetadataKeys } from '../../utils/API';
 import { useImmer } from 'use-immer';
 import { defaultSource } from './defaultSource';
+import { useMetadata } from '../../state/resources/hooks/useMetadata';
 
 type UseInitSourceFormResult = {
   init: () => void;
@@ -32,6 +32,7 @@ export function useInitSourceForm(
 ): UseInitSourceFormResult {
   const { sourceToEdit, setForm, setKeys } = params;
   const [isInit, setInit] = useImmer(false);
+  const { getMetadataKeys } = useMetadata();
 
   function init() {
     runOnce();
@@ -42,7 +43,7 @@ export function useInitSourceForm(
       }
 
       setForm(toSourceForm(sourceToEdit));
-      setKeys(await getMetadataKeys());
+      setKeys(getMetadataKeys());
       setInit(true);
     }
   }
