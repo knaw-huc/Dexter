@@ -1,8 +1,4 @@
-import {
-  ResultImport,
-  ResultLanguage,
-  ResultListLanguages,
-} from '../model/DexterModel';
+import { ResultImport } from '../model/DexterModel';
 import { validateResponse } from './validateResponse';
 import _ from 'lodash';
 
@@ -106,14 +102,6 @@ export async function getAssetValidated(
   await validateResponse({ response });
   return response;
 }
-
-export const getLanguages = async (): Promise<ResultListLanguages> =>
-  getValidated(`/api/languages`);
-
-export const getLanguagesAutocomplete = async (
-  input: string,
-): Promise<ResultLanguage[]> =>
-  postValidated(`/api/languages/autocomplete`, input);
 
 export const postImport = async (url: URL): Promise<ResultImport> =>
   postValidated(`/api/import/wereldculturen`, { url });

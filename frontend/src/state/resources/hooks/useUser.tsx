@@ -1,8 +1,4 @@
-import {
-  ResultUserResources,
-  User,
-  UserSettings,
-} from '../../../model/DexterModel';
+import { User, UserSettings } from '../../../model/DexterModel';
 import { getValidated, postValidated, putValidated } from '../../../utils/API';
 import { useBoundStore } from '../useBoundStore';
 import { useUserStore } from '../../UserStore';
@@ -29,16 +25,18 @@ export function useUser() {
     return user.settings.referenceStyle;
   };
 
-  const getUserResources = async (): Promise<ResultUserResources> => {
-    const result = await getValidated(`/api/user/resources`);
-    userResources.setUserResources(result);
-    userResources.setLoading(false);
-    return result;
+  const initUserResources = async () => {
+    await getValidated(`/api/user/resources`)
+      .then(r => {
+        userResources.setUserResources(r);
+        userResources.setLoading(false);
+      })
+      .catch(userResources.setError);
   };
 
   return {
     user,
-    getUserResources,
+    initUserResources,
     updateUserSettings,
     login,
     getReferenceStyle,

@@ -1,10 +1,10 @@
 import React from 'react';
 import { ResultLanguage } from '../../model/DexterModel';
-import { getLanguagesAutocomplete } from '../../utils/API';
 import { MultiAutocomplete } from '../common/MultiAutocomplete';
 import { FormFieldprops } from '../common/FormFieldProps';
 import { Label } from '../common/Label';
 import { FieldError } from '../common/error/FieldError';
+import { useLanguages } from '../../state/resources/hooks/useLanguages';
 
 export type LanguagesFieldProps = FormFieldprops & {
   selected: ResultLanguage[];
@@ -12,6 +12,8 @@ export type LanguagesFieldProps = FormFieldprops & {
 };
 
 export function SelectLanguagesField(props: LanguagesFieldProps) {
+  const { getLanguagesAutocomplete } = useLanguages();
+
   async function handleAutocompleteOptions(input: string) {
     return await getLanguagesAutocomplete(input);
   }
