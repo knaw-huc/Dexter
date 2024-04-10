@@ -65,7 +65,7 @@ export function useSources() {
   const deleteSource = async (id: string): Promise<void> => {
     updateUserResources(draft => {
       draft.sources.delete(id);
-      for (const [id, corpus] of draft.corpora) {
+      for (const corpus of draft.corpora.values()) {
         removeIdsFrom(corpus.sources, id);
       }
     });

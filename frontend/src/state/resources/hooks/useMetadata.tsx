@@ -48,10 +48,10 @@ export function useMetadata() {
   };
 
   const deleteMetadataKey = async (id: string): Promise<void> => {
+    await deleteValidated(`/api/metadata/keys/${id}`);
     updateUserResources(draft => {
       draft.metadataKeys.delete(id);
     });
-    await deleteValidated(`/api/metadata/keys/${id}`);
   };
 
   const updateMetadataValue = async (
@@ -76,10 +76,10 @@ export function useMetadata() {
   };
 
   const deleteMetadataValue = async (id: string): Promise<void> => {
+    await deleteValidated(`/api/metadata/values/${id}`);
     updateUserResources(draft => {
       draft.metadataValues.delete(id);
     });
-    await deleteValidated(`/api/metadata/values/${id}`);
   };
 
   /**

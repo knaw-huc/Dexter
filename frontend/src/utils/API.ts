@@ -1,12 +1,10 @@
 import {
   FormReference,
-  FormTag,
   ResultImport,
   ResultLanguage,
   ResultListLanguages,
   ResultMetadataKey,
   ResultReference,
-  ResultTag,
   ResultUserResources,
   User,
   UserSettings,
@@ -127,22 +125,6 @@ export const getLanguagesAutocomplete = async (
   input: string,
 ): Promise<ResultLanguage[]> =>
   postValidated(`/api/languages/autocomplete`, input);
-
-/**
- * Tags:
- */
-
-export const getTags = async () => getValidated(`/api/tags`);
-
-export const createTag = async (newTag: FormTag): Promise<ResultTag> =>
-  postValidated(`/api/tags`, newTag);
-
-export const deleteTag = async (id: number): Promise<void> =>
-  deleteValidated(`/api/tags/${id}`);
-
-export const getTagsAutocomplete = async (
-  input: string,
-): Promise<ResultTag[]> => postValidated(`/api/tags/autocomplete`, input);
 
 /**
  * References:

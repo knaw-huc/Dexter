@@ -75,13 +75,13 @@ export function useCorpora() {
   const deleteCorpus = async (id: string): Promise<void> => {
     updateUserResources(draft => {
       draft.corpora.delete(id);
-      for (const [id, corpus] of draft.corpora) {
+      for (const corpus of draft.corpora.values()) {
         removeIdsFrom(corpus.subcorpora, id);
         if (corpus.parentId === id) {
           corpus.parentId = null;
         }
       }
-      for (const [id, source] of draft.sources) {
+      for (const source of draft.sources.values()) {
         removeIdsFrom(source.corpora, id);
       }
     });

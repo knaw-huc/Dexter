@@ -40,13 +40,13 @@ export function useMedia() {
   };
 
   const deleteMedia = async (mediaId: UUID) => {
+    await deleteValidated(`/api/media/${mediaId}`);
     updateUserResources(draft => {
       draft.media.delete(mediaId);
-      for (const [id, source] of draft.sources) {
-        removeIdsFrom(source.media, id);
+      for (const source of draft.sources.values()) {
+        removeIdsFrom(source.media, mediaId);
       }
     });
-    return deleteValidated(`/api/media/${mediaId}`);
   };
 
   const getMediaAutocomplete = async (
