@@ -3,7 +3,6 @@ import { User, UserSettings } from '../model/DexterModel';
 import { Setter } from '../utils/recipe/Setter';
 import { immer } from 'zustand/middleware/immer';
 import { ReferenceStyle } from '../components/reference/ReferenceStyle';
-import { defaultUser } from './defaultUser';
 import _ from 'lodash';
 
 interface UserState {
@@ -13,11 +12,17 @@ interface UserState {
   user: User;
   setUserName: Setter<string>;
   setUserSettings: Setter<UserSettings>;
-  getReferenceStyle: () => ReferenceStyle;
 }
 
+const defaultUser: User = {
+  name: '',
+  settings: {
+    referenceStyle: ReferenceStyle.apa,
+  },
+};
+
 export const useUserStore = create<UserState>()(
-  immer((set, get) => {
+  immer(set => {
     function createSettings(update: Partial<UserSettings>) {
       const cleaned = _.omitBy(update, _.isNil);
       return { ...defaultUser.settings, ...cleaned };
@@ -30,9 +35,6 @@ export const useUserStore = create<UserState>()(
       },
       setUserSettings: (update: Partial<UserSettings>) => {
         set(state => void (state.user.settings = createSettings(update)));
-      },
-      getReferenceStyle: () => {
-        return get().user.settings.referenceStyle;
       },
     };
   }),

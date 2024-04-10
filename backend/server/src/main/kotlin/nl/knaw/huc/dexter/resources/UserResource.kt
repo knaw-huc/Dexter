@@ -25,6 +25,7 @@ class UserResource(
         log.info("login [${user.name}]")
         return UserResult(user.name, this.userSettings.getSettings(user.id))
     }
+
     @GET
     @Path(ResourcePaths.RESOURCES)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -38,9 +39,9 @@ class UserResource(
     fun updateSettings(
             settings: FormUserSettings,
             @Auth user: DexterUser
-    ): UserResult {
+    ): ResultUserSettings {
         log.info("updateSettings[${user.name}: formSettings=$settings")
-        return UserResult(user.name, this.userSettings.updateSettings(user.id, settings))
+        return this.userSettings.updateSettings(user.id, settings)
     }
 
 }

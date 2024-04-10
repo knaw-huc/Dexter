@@ -16,14 +16,14 @@ import { LoginAvatar } from './LoginAvatar';
 import { Version } from './Version';
 import { useImmer } from 'use-immer';
 import ErrorBoundary from './common/error/ErrorBoundary';
-import { useUserStore } from '../state/UserStore';
+import { useUser } from '../state/resources/hooks/useUser';
 
 const pages = ['corpora', 'sources', 'tags', 'metadata', 'media', 'references'];
 const settings: JSX.Element[] = [<Version key={1} />];
 
 export default function Header() {
   const navigate = useNavigate();
-  const { user } = useUserStore();
+  const { user } = useUser();
 
   return (
     <AppBar position="static">
@@ -73,7 +73,7 @@ export default function Header() {
 }
 
 function UserMenu() {
-  const { user } = useUserStore();
+  const { user } = useUser();
 
   const [anchorElUser, setAnchorElUser] = useImmer<HTMLElement>(null);
   const handleCloseUserMenu = () => {

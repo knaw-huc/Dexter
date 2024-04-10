@@ -19,11 +19,11 @@ import { useImmer } from 'use-immer';
 import { DeleteButton } from '../common/DeleteButton';
 import { useDeleteSource } from './useDeleteSource';
 import { HintedTitle } from '../common/HintedTitle';
-import { useUserStore } from '../../state/UserStore';
 import { useSources } from '../../state/resources/hooks/useSources';
+import { useUser } from '../../state/resources/hooks/useUser';
 
 export const SourcePage = () => {
-  const referenceStyle = useUserStore().getReferenceStyle();
+  const referenceStyle = useUser().getReferenceStyle();
   const { getSource } = useSources();
   const sourceId = useParams().sourceId;
   const source = getSource(sourceId);

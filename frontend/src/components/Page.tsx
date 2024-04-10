@@ -25,7 +25,7 @@ export const Page = () => {
       >
         <ErrorBoundary key={refreshOnPathChange}>
           {isLoading ? (
-            <CenteredSpinner label="User data loading..." />
+            <CenteredSpinner label="Loading user data..." />
           ) : (
             <Outlet />
           )}

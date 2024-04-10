@@ -4,48 +4,32 @@ import Avatar from '@mui/material/Avatar';
 import LoginIcon from '@mui/icons-material/Login';
 import * as React from 'react';
 import { useEffect } from 'react';
-import { login } from '../utils/API';
 import { useThrowSync } from './common/error/useThrowSync';
-import { useImmer } from 'use-immer';
-import { useUserStore } from '../state/UserStore';
 import { isResponseError } from './common/isResponseError';
+import { useUser } from '../state/resources/hooks/useUser';
+import _ from 'lodash';
 
 export function LoginAvatar() {
-  const [isLoggingIn, setLoggingIn] = useImmer(false);
-  const { setUserName, setUserSettings } = useUserStore();
   const throwSync = useThrowSync();
-
-  useEffect(() => {
-    if (!isLoggingIn) {
-      return;
-    }
-    tryLogin();
-  }, [isLoggingIn]);
+  const { login } = useUser();
 
   useEffect(() => {
     tryLogin();
   }, []);
 
   function tryLogin() {
-    login()
-      .then(user => {
-        setUserName(user.name);
-        setUserSettings(user.settings);
-      })
-      .catch(e => {
-        if (isResponseError(e) && e.response.status === 401) {
-          throwSync(
-            new Error('Could not login: username & password incorrect'),
-          );
-        } else {
-          throwSync(new Error('Could not login'));
-        }
-      });
+    login().catch(e => {
+      if (isResponseError(e) && e.response.status === 401) {
+        throwSync(new Error('Could not login: username & password incorrect'));
+      } else {
+        throwSync(new Error('Could not login'));
+      }
+    });
   }
 
   return (
     <Box sx={{ flexGrow: 0 }}>
-      <IconButton onClick={() => setLoggingIn(true)} sx={{ p: 0 }}>
+      <IconButton onClick={_.noop} sx={{ p: 0 }}>
         <Avatar>
           <LoginIcon />
         </Avatar>

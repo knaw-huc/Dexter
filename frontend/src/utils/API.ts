@@ -2,9 +2,6 @@ import {
   ResultImport,
   ResultLanguage,
   ResultListLanguages,
-  ResultUserResources,
-  User,
-  UserSettings,
 } from '../model/DexterModel';
 import { validateResponse } from './validateResponse';
 import _ from 'lodash';
@@ -110,10 +107,6 @@ export async function getAssetValidated(
   return response;
 }
 
-/**
- * Language:
- */
-
 export const getLanguages = async (): Promise<ResultListLanguages> =>
   getValidated(`/api/languages`);
 
@@ -122,27 +115,5 @@ export const getLanguagesAutocomplete = async (
 ): Promise<ResultLanguage[]> =>
   postValidated(`/api/languages/autocomplete`, input);
 
-/**
- * Import:
- */
-
 export const postImport = async (url: URL): Promise<ResultImport> =>
   postValidated(`/api/import/wereldculturen`, { url });
-
-/**
- * User:
- */
-
-export const login = async (): Promise<User> =>
-  postValidated(`/api/user/login`);
-export const updateUserSettings = async (
-  userSettings: UserSettings,
-): Promise<void> => putValidated(`/api/user/settings`, userSettings);
-
-/**
- * Media:
- */
-
-export const getUserResources = async (): Promise<ResultUserResources> => {
-  return getValidated(`/api/user/resources`);
-};
