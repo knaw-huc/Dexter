@@ -1,4 +1,3 @@
-import { ResultImport } from '../model/DexterModel';
 import { validateResponse } from './validateResponse';
 import _ from 'lodash';
 
@@ -102,6 +101,3 @@ export async function getAssetValidated(
   await validateResponse({ response });
   return response;
 }
-
-export const postImport = async (url: URL): Promise<ResultImport> =>
-  postValidated(`/api/import/wereldculturen`, { url });
