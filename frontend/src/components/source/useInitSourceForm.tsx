@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useEffect } from 'react';
 import {
   ResultMetadataKey,
   Source,
@@ -10,7 +10,6 @@ import { defaultSource } from './defaultSource';
 import { useMetadata } from '../../state/resources/hooks/useMetadata';
 
 type UseInitSourceFormResult = {
-  init: () => void;
   isInit: boolean;
 };
 
@@ -34,19 +33,17 @@ export function useInitSourceForm(
   const [isInit, setInit] = useImmer(false);
   const { getMetadataKeys } = useMetadata();
 
+  useEffect(init, []);
+
   function init() {
-    runOnce();
-
-    async function runOnce() {
-      if (isInit) {
-        return;
-      }
-
-      setForm(toSourceForm(sourceToEdit));
-      setKeys(getMetadataKeys());
-      setInit(true);
+    if (isInit) {
+      return;
     }
+
+    setForm(toSourceForm(sourceToEdit));
+    setKeys(getMetadataKeys());
+    setInit(true);
   }
 
-  return { init, isInit };
+  return { isInit };
 }

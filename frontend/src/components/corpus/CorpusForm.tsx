@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   Access,
   AccessOptions,
@@ -58,7 +58,7 @@ export function CorpusForm(props: CorpusFormProps) {
   const [keys, setKeys] = useImmer<ResultMetadataKey[]>([]);
   const [values, setValues] = useImmer<FormMetadataValue[]>([]);
 
-  const { init, isInit } = useInitCorpusForm({
+  const { isInit } = useInitCorpusForm({
     corpusToEdit,
     parent: props.parentCorpus,
     setForm,
@@ -70,8 +70,6 @@ export function CorpusForm(props: CorpusFormProps) {
     setError,
     onSubmitted: props.onSaved,
   });
-
-  useEffect(init, []);
 
   const toHint = toFormHint('corpus');
 

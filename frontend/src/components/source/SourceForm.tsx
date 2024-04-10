@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   Access,
   AccessOptions,
@@ -42,7 +42,7 @@ export function SourceForm(props: SourceFormProps) {
   const { errors, setError, setFieldError } = useFormErrors<Source>();
   const [keys, setKeys] = useImmer<ResultMetadataKey[]>([]);
 
-  const { init, isInit } = useInitSourceForm({
+  const { isInit } = useInitSourceForm({
     sourceToEdit,
     setForm,
     setKeys,
@@ -56,8 +56,6 @@ export function SourceForm(props: SourceFormProps) {
     setError,
     setFieldError,
   });
-
-  useEffect(init, []);
 
   const toHint = toFormHint('source');
 

@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useEffect } from 'react';
 import {
   Corpus,
   FormMetadataValue,
@@ -10,7 +10,6 @@ import { defaultCorpus } from './defaultCorpus';
 import { useMetadata } from '../../state/resources/hooks/useMetadata';
 
 type UseInitCorpusFormResult = {
-  init: () => void;
   isInit: boolean;
 };
 
@@ -26,26 +25,24 @@ export function useInitCorpusForm(params: {
 
   const [isInit, setInit] = useImmer(false);
 
+  useEffect(init, []);
+
   function init() {
-    runOnce();
-
-    async function runOnce() {
-      if (isInit) {
-        return;
-      }
-
-      const toEdit = corpusToEdit;
-      setForm({
-        ...(toEdit || defaultCorpus),
-        parent,
-      });
-      setKeys(await getMetadataKeys());
-      if (toEdit?.metadataValues.length) {
-        setValues(toEdit.metadataValues.map(toFormMetadataValue));
-      }
-      setInit(true);
+    if (isInit) {
+      return;
     }
+
+    const toEdit = corpusToEdit;
+    setForm({
+      ...(toEdit || defaultCorpus),
+      parent,
+    });
+    setKeys(getMetadataKeys());
+    if (toEdit?.metadataValues.length) {
+      setValues(toEdit.metadataValues.map(toFormMetadataValue));
+    }
+    setInit(true);
   }
 
-  return { init, isInit };
+  return { isInit };
 }
