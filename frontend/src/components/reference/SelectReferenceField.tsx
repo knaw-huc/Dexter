@@ -1,6 +1,5 @@
 import React from 'react';
 import { Reference } from '../../model/DexterModel';
-import { getReferenceAutocomplete } from '../../utils/API';
 import { MultiAutocomplete } from '../common/MultiAutocomplete';
 import { FormFieldprops } from '../common/FormFieldProps';
 import { Label } from '../common/Label';
@@ -12,6 +11,8 @@ import { ReferenceFormat } from './ReferenceFormat';
 import { ListItemText } from '@mui/material';
 
 import { truncateInput } from './truncateInput';
+import { useReferences } from '../../state/resources/hooks/useReferences';
+import { normalize } from '../../utils/normalize';
 
 export type SelectReferenceFieldProps = FormFieldprops & {
   selected: Reference[];
@@ -25,11 +26,15 @@ const MIN_AUTOCOMPLETE_LENGTH = 1;
  * Create, link and unlink reference
  */
 export const SelectReferenceField = (props: SelectReferenceFieldProps) => {
+  const { getReferenceAutocomplete } = useReferences();
+
   async function handleAutocompleteOptions(
     inputValue: string,
   ): Promise<Reference[]> {
     const canAutocomplete = inputValue.length >= MIN_AUTOCOMPLETE_LENGTH;
-    return canAutocomplete ? await getReferenceAutocomplete(inputValue) : [];
+    return canAutocomplete
+      ? await getReferenceAutocomplete(normalize(inputValue))
+      : [];
   }
 
   function toSelectedLabel(reference: Reference): JSX.Element {

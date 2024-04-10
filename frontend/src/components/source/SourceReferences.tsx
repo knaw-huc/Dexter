@@ -73,7 +73,6 @@ export function SourceReferences(props: {
   }
 
   const hasReferences = !_.isEmpty(references);
-
   return (
     <>
       <H2Styled>

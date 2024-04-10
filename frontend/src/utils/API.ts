@@ -1,14 +1,10 @@
 import {
-  FormReference,
   ResultImport,
   ResultLanguage,
   ResultListLanguages,
-  ResultMetadataKey,
-  ResultReference,
   ResultUserResources,
   User,
   UserSettings,
-  UUID,
 } from '../model/DexterModel';
 import { validateResponse } from './validateResponse';
 import _ from 'lodash';
@@ -127,31 +123,6 @@ export const getLanguagesAutocomplete = async (
   postValidated(`/api/languages/autocomplete`, input);
 
 /**
- * References:
- */
-
-export const getReferences = async (): Promise<ResultReference[]> =>
-  getValidated(`/api/references`);
-
-export const createReference = async (
-  newReference: FormReference,
-): Promise<ResultReference> => postValidated(`/api/references`, newReference);
-
-export const updateReference = async (
-  id: UUID,
-  newReference: FormReference,
-): Promise<ResultReference> =>
-  putValidated(`/api/references/${id}`, newReference);
-
-export const deleteReference = async (id: string): Promise<void> =>
-  deleteValidated(`/api/references/${id}`);
-
-export const getReferenceAutocomplete = async (
-  input: string,
-): Promise<ResultReference[]> =>
-  postValidated(`/api/references/autocomplete`, input);
-
-/**
  * Import:
  */
 
@@ -168,8 +139,6 @@ export const updateUserSettings = async (
   userSettings: UserSettings,
 ): Promise<void> => putValidated(`/api/user/settings`, userSettings);
 
-export const getMetadataKeys = async (): Promise<ResultMetadataKey[]> =>
-  getValidated(`/api/metadata/keys`);
 /**
  * Media:
  */

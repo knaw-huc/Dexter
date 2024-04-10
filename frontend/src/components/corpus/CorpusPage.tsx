@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Corpus } from '../../model/DexterModel';
 import { CorpusForm } from './CorpusForm';
@@ -20,30 +20,12 @@ import { ExportButton } from '../export/ExportButton';
 import { ExportForm } from '../export/ExportForm';
 import { HintedTitle } from '../common/HintedTitle';
 import { reject } from '../../utils/reject';
-import { useBoundStore } from '../../state/resources/useBoundStore';
-import { jsx } from '@emotion/react';
 import { useCorpora } from '../../state/resources/hooks/useCorpora';
-import { findCorpus } from '../../state/resources/utils/findCorpus';
-import JSX = jsx.JSX;
 import { useMetadata } from '../../state/resources/hooks/useMetadata';
 
-export function CorpusPage(): JSX.Element {
+export function CorpusPage() {
   const corpusId = useParams().corpusId;
-  const store = useBoundStore();
   const { deleteMetadataValue } = useMetadata();
-
-  useEffect(() => {
-    if (store.userResources.isLoading) {
-      console.log('boundStore is loading');
-      return;
-    }
-    console.log('boundStore has loaded', {
-      isLoading: store.userResources.isLoading,
-      error: store.userResources.error,
-      userResources: store.userResources,
-      corpus: findCorpus(corpusId, store),
-    });
-  }, [store, store.userResources, store.userResources.isLoading]);
 
   const { getCorpus, deleteCorpus, findSourceOptions, findCorpusOptions } =
     useCorpora();

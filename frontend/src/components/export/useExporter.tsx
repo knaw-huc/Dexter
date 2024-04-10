@@ -34,7 +34,6 @@ export function useExporter(): {
     const filename = `dexter-export-${toExport.id}.zip`;
     FileSaver.saveAs(content, filename);
     setExporting(false);
-    console.log('finished exporting', toExport);
   }
 
   return { isExporting, runExport };

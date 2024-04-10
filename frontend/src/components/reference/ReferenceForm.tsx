@@ -5,7 +5,6 @@ import {
   SubmitFormReference,
   UUID,
 } from '../../model/DexterModel';
-import { createReference, updateReference } from '../../utils/API';
 import * as yup from 'yup';
 import { useFormErrors } from '../common/error/useFormErrors';
 import { FormErrorMessage } from '../common/error/FormError';
@@ -21,6 +20,7 @@ import { useImmer } from 'use-immer';
 import { Hinted } from '../common/Hinted';
 import { toFormHint } from '../../LabelStore';
 import { TopRightCloseIcon } from '../common/icon/CloseIcon';
+import { useReferences } from '../../state/resources/hooks/useReferences';
 
 const referenceSchema = yup.object({
   input: yup.string().required('Reference input cannot be empty'),
@@ -40,6 +40,7 @@ type ReferenceFormProps = {
 };
 
 export function ReferenceForm(props: ReferenceFormProps) {
+  const { updateReference, createReference } = useReferences();
   const toEdit = props.inEdit;
   const [initialInput] = useImmer<string>(props.inEdit?.input);
   const [form, setForm] = useImmer<SubmitFormReference>(toForm(toEdit));

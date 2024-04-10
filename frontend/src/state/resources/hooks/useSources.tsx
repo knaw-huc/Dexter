@@ -63,13 +63,13 @@ export function useSources() {
   };
 
   const deleteSource = async (id: string): Promise<void> => {
+    await deleteValidated(`/api/sources/${id}`);
     updateUserResources(draft => {
       draft.sources.delete(id);
       for (const corpus of draft.corpora.values()) {
         removeIdsFrom(corpus.sources, id);
       }
     });
-    await deleteValidated(`/api/sources/${id}`);
   };
 
   const addLanguagesToSource = async (
@@ -127,7 +127,7 @@ export function useSources() {
     referenceId: string,
   ): Promise<void> => {
     updateUserResources(draft => {
-      removeIdsFrom(draft.sources.get(sourceId).languages, referenceId);
+      removeIdsFrom(draft.sources.get(sourceId).references, referenceId);
     });
     await deleteValidated(`/api/sources/${sourceId}/references/${referenceId}`);
   };
