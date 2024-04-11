@@ -10,7 +10,7 @@ import { useMetadata } from '../../resources/useMetadata';
 import _ from 'lodash';
 import { ResultMetadataKey } from '../../model/Metadata';
 
-export function MetadataKeyIndex() {
+export default function MetadataKeyIndex() {
   const [isFormOpen, setFormOpen] = useImmer(false);
   const [toEdit, setToEdit] = useImmer<ResultMetadataKey>(null);
   const keys = useMetadata().getMetadataKeys();

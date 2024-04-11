@@ -11,7 +11,7 @@ import { reject } from '../../utils/reject';
 import { useMedia } from '../../resources/useMedia';
 import { ResultMedia } from '../../model/Media';
 
-export function MediaIndex() {
+export default function MediaIndex() {
   const [showForm, setShowForm] = useImmer(false);
   const [mediaToEdit, setMediaToEdit] = useImmer<ResultMedia>(null);
   const { getMedia, deleteMedia } = useMedia();

@@ -9,7 +9,7 @@ import { reject } from '../../utils/reject';
 import { useTags } from '../../resources/useTags';
 import { ResultTag } from '../../model/Tag';
 
-export const TagIndex = () => {
+export default function TagIndex() {
   const throwSync = useThrowSync();
   const { getTags, deleteTag } = useTags();
   const tags = getTags();
@@ -38,4 +38,4 @@ export const TagIndex = () => {
       </div>
     </>
   );
-};
+}

@@ -17,7 +17,7 @@ import { useUser } from '../../resources/useUser';
 import { Reference, ResultReference } from '../../model/Reference';
 import { UserSettings } from '../../model/User';
 
-export function ReferenceIndex() {
+export default function ReferenceIndex() {
   const { getReferences, deleteReference } = useReferences();
   const references = getReferences();
   const [showForm, setShowForm] = useImmer(false);

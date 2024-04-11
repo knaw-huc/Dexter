@@ -13,7 +13,7 @@ import { HintedTitle } from '../common/HintedTitle';
 import { useSources } from '../../resources/useSources';
 import { Source } from '../../model/Source';
 
-export function SourceIndex() {
+export default function SourceIndex() {
   const sources = useSources().getSources();
   const [showForm, setShowForm] = useImmer(false);
   const [sourceToEdit, setSourceToEdit] = useImmer<Source>(null);

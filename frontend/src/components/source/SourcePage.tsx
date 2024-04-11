@@ -22,7 +22,7 @@ import { useSources } from '../../resources/useSources';
 import { useUser } from '../../resources/useUser';
 import { Source } from '../../model/Source';
 
-export const SourcePage = () => {
+export default function SourcePage() {
   const referenceStyle = useUser().getReferenceStyle();
   const { getSource } = useSources();
   const sourceId = useParams().sourceId;
@@ -114,4 +114,4 @@ export const SourcePage = () => {
       )}
     </div>
   );
-};
+}

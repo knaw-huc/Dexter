@@ -12,7 +12,7 @@ import { useImmer } from 'use-immer';
 import { HintedTitle } from '../common/HintedTitle';
 import { useMedia } from '../../resources/useMedia';
 
-export function MediaPage() {
+export default function MediaPage() {
   const mediaId = useParams().mediaId;
   const { getMediaItem } = useMedia();
   const media = getMediaItem(mediaId);

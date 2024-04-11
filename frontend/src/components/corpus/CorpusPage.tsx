@@ -23,7 +23,7 @@ import { useCorpora } from '../../resources/useCorpora';
 import { useMetadata } from '../../resources/useMetadata';
 import { Corpus } from '../../model/Corpus';
 
-export function CorpusPage() {
+export default function CorpusPage() {
   const corpusId = useParams().corpusId;
   const { deleteMetadataValue } = useMetadata();
 

@@ -11,7 +11,7 @@ import { useCorpora } from '../../resources/useCorpora';
 import { useSources } from '../../resources/useSources';
 import { Corpus } from '../../model/Corpus';
 
-export function CorpusIndex() {
+export default function CorpusIndex() {
   const [showForm, setShowForm] = useImmer(false);
 
   const corpora = useCorpora().getCorpora();
