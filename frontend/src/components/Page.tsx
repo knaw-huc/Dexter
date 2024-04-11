@@ -4,12 +4,12 @@ import { Outlet, useLocation } from 'react-router-dom';
 import Header from './/Header';
 import ErrorBoundary from './common/error/ErrorBoundary';
 import { CenteredSpinner } from './common/CenteredSpinner';
-import { useIsUserResourcesLoading } from '../resources/useLoading';
+import { useIsResourcesLoading } from '../resources/useLoading';
 
 export const Page = () => {
   const location = useLocation();
   const refreshOnPathChange = location.pathname;
-  const isLoading = useIsUserResourcesLoading();
+  const isLoading = useIsResourcesLoading();
 
   return (
     <div
