@@ -9,17 +9,15 @@ import { useImmer } from 'use-immer';
 import { defaultCorpus } from './defaultCorpus';
 import { useMetadata } from '../../state/resources/hooks/useMetadata';
 
-type UseInitCorpusFormResult = {
-  isInit: boolean;
-};
-
 export function useInitCorpusForm(params: {
   corpusToEdit?: Corpus;
   setForm: Dispatch<SetStateAction<Corpus>>;
   setKeys: Dispatch<ResultMetadataKey[]>;
   setValues: Dispatch<SetStateAction<FormMetadataValue[]>>;
   parent?: Corpus;
-}): UseInitCorpusFormResult {
+}): {
+  isInit: boolean;
+} {
   const { corpusToEdit, setForm, setKeys, setValues, parent } = params;
   const { getMetadataKeys } = useMetadata();
 

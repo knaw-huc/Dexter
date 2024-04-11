@@ -9,26 +9,13 @@ import { useImmer } from 'use-immer';
 import { defaultSource } from './defaultSource';
 import { useMetadata } from '../../state/resources/hooks/useMetadata';
 
-type UseInitSourceFormResult = {
-  isInit: boolean;
-};
-
-type UseInitSourceFormParams = {
+export function useInitSourceForm(params: {
   sourceToEdit?: Source;
   setForm: Dispatch<SetStateAction<SubmitFormSource>>;
   setKeys: Dispatch<ResultMetadataKey[]>;
-};
-
-function toSourceForm(toEdit?: Source): SubmitFormSource {
-  return {
-    ...(toEdit || defaultSource),
-    metadataValues: toEdit?.metadataValues.map(toFormMetadataValue) || [],
-  };
-}
-
-export function useInitSourceForm(
-  params: UseInitSourceFormParams,
-): UseInitSourceFormResult {
+}): {
+  isInit: boolean;
+} {
   const { sourceToEdit, setForm, setKeys } = params;
   const [isInit, setInit] = useImmer(false);
   const { getMetadataKeys } = useMetadata();
@@ -46,4 +33,11 @@ export function useInitSourceForm(
   }
 
   return { isInit };
+}
+
+function toSourceForm(toEdit?: Source): SubmitFormSource {
+  return {
+    ...(toEdit || defaultSource),
+    metadataValues: toEdit?.metadataValues.map(toFormMetadataValue) || [],
+  };
 }
