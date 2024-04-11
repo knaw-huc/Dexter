@@ -12,7 +12,7 @@ import {
 import { FormFieldprops } from '../common/FormFieldProps';
 import { Label } from '../common/Label';
 import { FieldError } from '../common/error/FieldError';
-import { useMedia } from '../../state/resources/hooks/useMedia';
+import { useMedia } from '../../resources/useMedia';
 
 export type SelectMediaFieldProps = FormFieldprops & {
   selected: ResultMedia[];

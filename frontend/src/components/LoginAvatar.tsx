@@ -6,7 +6,7 @@ import * as React from 'react';
 import { useEffect } from 'react';
 import { useThrowSync } from './common/error/useThrowSync';
 import { isResponseError } from './common/isResponseError';
-import { useUser } from '../state/resources/hooks/useUser';
+import { useUser } from '../resources/useUser';
 import _ from 'lodash';
 
 export function LoginAvatar() {

@@ -16,7 +16,7 @@ import { LoginAvatar } from './LoginAvatar';
 import { Version } from './Version';
 import { useImmer } from 'use-immer';
 import ErrorBoundary from './common/error/ErrorBoundary';
-import { useUser } from '../state/resources/hooks/useUser';
+import { useUser } from '../resources/useUser';
 
 const pages = ['corpora', 'sources', 'tags', 'metadata', 'media', 'references'];
 const settings: JSX.Element[] = [<Version key={1} />];

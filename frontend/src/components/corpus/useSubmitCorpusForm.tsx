@@ -9,8 +9,8 @@ import {
   UUID,
 } from '../../model/DexterModel';
 import { corpusFormValidator } from './corpusFormValidator';
-import { useCorpora } from '../../state/resources/hooks/useCorpora';
-import { useMetadata } from '../../state/resources/hooks/useMetadata';
+import { useCorpora } from '../../resources/useCorpora';
+import { useMetadata } from '../../resources/useMetadata';
 
 type UseSubmitCorpusFormResult = {
   submitCorpusForm: (

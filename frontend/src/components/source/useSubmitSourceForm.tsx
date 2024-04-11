@@ -5,9 +5,9 @@ import {
   UUID,
 } from '../../model/DexterModel';
 import { sourceFormValidator } from './sourceFormValidator';
-import { useCorpora } from '../../state/resources/hooks/useCorpora';
-import { useSources } from '../../state/resources/hooks/useSources';
-import { useMetadata } from '../../state/resources/hooks/useMetadata';
+import { useCorpora } from '../../resources/useCorpora';
+import { useSources } from '../../resources/useSources';
+import { useMetadata } from '../../resources/useMetadata';
 
 type UseSubmitSourceFormResult = {
   submitSourceForm: (

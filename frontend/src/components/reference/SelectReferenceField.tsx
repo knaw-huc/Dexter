@@ -11,7 +11,7 @@ import { ReferenceFormat } from './ReferenceFormat';
 import { ListItemText } from '@mui/material';
 
 import { truncateInput } from './truncateInput';
-import { useReferences } from '../../state/resources/hooks/useReferences';
+import { useReferences } from '../../resources/useReferences';
 import { normalize } from '../../utils/normalize';
 
 export type SelectReferenceFieldProps = FormFieldprops & {

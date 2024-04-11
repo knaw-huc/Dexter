@@ -7,7 +7,7 @@ import {
 } from '../../model/DexterModel';
 import { useImmer } from 'use-immer';
 import { defaultSource } from './defaultSource';
-import { useMetadata } from '../../state/resources/hooks/useMetadata';
+import { useMetadata } from '../../resources/useMetadata';
 
 export function useInitSourceForm(params: {
   sourceToEdit?: Source;

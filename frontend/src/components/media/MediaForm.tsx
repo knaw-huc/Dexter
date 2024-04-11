@@ -19,7 +19,7 @@ import { useImmer } from 'use-immer';
 import { Hinted } from '../common/Hinted';
 import { toFormHint } from '../../LabelStore';
 import { TopRightCloseIcon } from '../common/icon/CloseIcon';
-import { useMedia } from '../../state/resources/hooks/useMedia';
+import { useMedia } from '../../resources/useMedia';
 
 type MediaFormProps = {
   inEdit?: ResultMedia;

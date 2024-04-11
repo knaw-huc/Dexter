@@ -4,7 +4,7 @@ import { MultiAutocomplete } from '../common/MultiAutocomplete';
 import { FormFieldprops } from '../common/FormFieldProps';
 import { Label } from '../common/Label';
 import { FieldError } from '../common/error/FieldError';
-import { useLanguages } from '../../state/resources/hooks/useLanguages';
+import { useLanguages } from '../../resources/useLanguages';
 
 export type LanguagesFieldProps = FormFieldprops & {
   selected: ResultLanguage[];

@@ -7,7 +7,7 @@ import {
 } from '../../model/DexterModel';
 import { useImmer } from 'use-immer';
 import { defaultCorpus } from './defaultCorpus';
-import { useMetadata } from '../../state/resources/hooks/useMetadata';
+import { useMetadata } from '../../resources/useMetadata';
 
 export function useInitCorpusForm(params: {
   corpusToEdit?: Corpus;

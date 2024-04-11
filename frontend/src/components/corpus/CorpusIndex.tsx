@@ -8,8 +8,8 @@ import { CorpusIcon } from './CorpusIcon';
 import { useImmer } from 'use-immer';
 import { HintedTitle } from '../common/HintedTitle';
 import { AddNewButton } from '../common/AddNewButton';
-import { useCorpora } from '../../state/resources/hooks/useCorpora';
-import { useSources } from '../../state/resources/hooks/useSources';
+import { useCorpora } from '../../resources/useCorpora';
+import { useSources } from '../../resources/useSources';
 
 export function CorpusIndex() {
   const [showForm, setShowForm] = useImmer(false);

@@ -4,7 +4,7 @@ import { ErrorWithMessage } from '../common/error/ErrorWithMessage';
 import { Any } from '../common/Any';
 import { useImmer } from 'use-immer';
 import { reject } from '../../utils/reject';
-import { useImport } from '../../state/resources/hooks/useImport';
+import { useImport } from '../../resources/useImport';
 
 type WithExternalRef = {
   externalRef?: string;

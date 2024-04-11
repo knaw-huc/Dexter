@@ -20,7 +20,7 @@ import { useImmer } from 'use-immer';
 import { Hinted } from '../common/Hinted';
 import { toFormHint } from '../../LabelStore';
 import { TopRightCloseIcon } from '../common/icon/CloseIcon';
-import { useReferences } from '../../state/resources/hooks/useReferences';
+import { useReferences } from '../../resources/useReferences';
 
 const referenceSchema = yup.object({
   input: yup.string().required('Reference input cannot be empty'),

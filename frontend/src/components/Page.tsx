@@ -4,7 +4,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import Header from './/Header';
 import ErrorBoundary from './common/error/ErrorBoundary';
 import { CenteredSpinner } from './common/CenteredSpinner';
-import { useIsUserResourcesLoading } from '../state/resources/hooks/useLoading';
+import { useIsUserResourcesLoading } from '../resources/useLoading';
 
 export const Page = () => {
   const location = useLocation();

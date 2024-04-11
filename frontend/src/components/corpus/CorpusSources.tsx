@@ -13,7 +13,7 @@ import { SourceForm } from '../source/SourceForm';
 import { SelectSourcesForm } from './SelectSourcesForm';
 import { getAllRelevantTags } from './getAllRelevantTags';
 import { reject } from '../../utils/reject';
-import { useCorpora } from '../../state/resources/hooks/useCorpora';
+import { useCorpora } from '../../resources/useCorpora';
 
 export function CorpusSources(props: { corpusId: UUID }) {
   const {

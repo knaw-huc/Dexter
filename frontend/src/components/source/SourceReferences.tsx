@@ -12,7 +12,7 @@ import { SelectReferenceForm } from '../reference/SelectReferenceForm';
 import { useImmer } from 'use-immer';
 import _ from 'lodash';
 import { reject } from '../../utils/reject';
-import { useSources } from '../../state/resources/hooks/useSources';
+import { useSources } from '../../resources/useSources';
 
 export function SourceReferences(props: {
   sourceId: UUID;

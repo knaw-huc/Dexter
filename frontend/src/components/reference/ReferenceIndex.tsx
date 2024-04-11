@@ -17,8 +17,8 @@ import { useImmer } from 'use-immer';
 import { HintedTitle } from '../common/HintedTitle';
 import { ValidatedSelectField } from '../common/ValidatedSelectField';
 import { reject } from '../../utils/reject';
-import { useReferences } from '../../state/resources/hooks/useReferences';
-import { useUser } from '../../state/resources/hooks/useUser';
+import { useReferences } from '../../resources/useReferences';
+import { useUser } from '../../resources/useUser';
 
 export function ReferenceIndex() {
   const { getReferences, deleteReference } = useReferences();

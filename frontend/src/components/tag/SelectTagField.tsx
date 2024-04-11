@@ -8,7 +8,7 @@ import { FormFieldprops } from '../common/FormFieldProps';
 import { FieldError } from '../common/error/FieldError';
 import { Label } from '../common/Label';
 import _ from 'lodash';
-import { useTags } from '../../state/resources/hooks/useTags';
+import { useTags } from '../../resources/useTags';
 
 type TagsFieldProps = FormFieldprops & {
   selected: ResultTag[];

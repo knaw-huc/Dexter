@@ -14,7 +14,7 @@ import { useImmer } from 'use-immer';
 import { Hinted } from '../common/Hinted';
 import { toFormHint } from '../../LabelStore';
 import { TopRightCloseIcon } from '../common/icon/CloseIcon';
-import { useMetadata } from '../../state/resources/hooks/useMetadata';
+import { useMetadata } from '../../resources/useMetadata';
 
 type MetadataKeyFormProps = {
   inEdit?: ResultMetadataKey;

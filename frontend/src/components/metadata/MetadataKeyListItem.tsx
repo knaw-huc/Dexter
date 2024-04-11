@@ -10,7 +10,7 @@ import { reject } from '../../utils/reject';
 import { useImmer } from 'use-immer';
 import { ErrorAlert } from '../common/error/ErrorAlert';
 import { toMessage } from '../common/error/toMessage';
-import { useMetadata } from '../../state/resources/hooks/useMetadata';
+import { useMetadata } from '../../resources/useMetadata';
 
 type MetadataKeyItemProps = {
   metadataKey: ResultMetadataKey;

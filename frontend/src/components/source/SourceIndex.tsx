@@ -11,7 +11,7 @@ import { useImmer } from 'use-immer';
 import _ from 'lodash';
 import { useDeleteSource } from './useDeleteSource';
 import { HintedTitle } from '../common/HintedTitle';
-import { useSources } from '../../state/resources/hooks/useSources';
+import { useSources } from '../../resources/useSources';
 
 export function SourceIndex() {
   const sources = useSources().getSources();

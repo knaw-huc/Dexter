@@ -5,8 +5,8 @@ import { Router } from './Router';
 import { LABEL_FILE, useLabelStore } from './LabelStore';
 import { getAssetValidated } from './utils/API';
 import { enableMapSet } from 'immer';
-import { useUser } from './state/resources/hooks/useUser';
-import { useLanguages } from './state/resources/hooks/useLanguages';
+import { useUser } from './resources/useUser';
+import { useLanguages } from './resources/useLanguages';
 
 export function App() {
   // Use maps and sets with Immer:

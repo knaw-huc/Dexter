@@ -9,7 +9,7 @@ import { MediaIcon } from './MediaIcon';
 import { useImmer } from 'use-immer';
 import { HintedTitle } from '../common/HintedTitle';
 import { reject } from '../../utils/reject';
-import { useMedia } from '../../state/resources/hooks/useMedia';
+import { useMedia } from '../../resources/useMedia';
 
 export function MediaIndex() {
   const [showForm, setShowForm] = useImmer(false);

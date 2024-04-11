@@ -14,7 +14,7 @@ import { getCorpusTags } from './getCorpusTags';
 import _ from 'lodash';
 import { reject } from '../../utils/reject';
 import { SelectSubcorporaForm } from './SelectSubcorporaForm';
-import { useCorpora } from '../../state/resources/hooks/useCorpora';
+import { useCorpora } from '../../resources/useCorpora';
 
 export function CorpusSubcorpora(props: { corpusId: UUID }) {
   const { getCorpus, updateCorpus, findCorpusOptions, findSourceOptions } =

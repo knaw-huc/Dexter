@@ -7,7 +7,7 @@ import { useFormErrors } from '../common/error/useFormErrors';
 import { FormErrorMessage } from '../common/error/FormError';
 import { FieldError } from '../common/error/FieldError';
 import { useImmer } from 'use-immer';
-import { useTags } from '../../state/resources/hooks/useTags';
+import { useTags } from '../../resources/useTags';
 
 const tagSchema = yup.object({
   val: yup.string().required('Tag cannot be empty'),

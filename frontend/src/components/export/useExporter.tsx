@@ -6,8 +6,8 @@ import { MainMapper } from './mapper/MainMapper';
 import { toCsv } from './mapper/toCsv';
 import { useEffect } from 'react';
 import { useThrowSync } from '../common/error/useThrowSync';
-import { useMetadata } from '../../state/resources/hooks/useMetadata';
-import { useUser } from '../../state/resources/hooks/useUser';
+import { useMetadata } from '../../resources/useMetadata';
+import { useUser } from '../../resources/useUser';
 
 export function useExporter(): {
   runExport: (toExport: Exportable) => Promise<void>;

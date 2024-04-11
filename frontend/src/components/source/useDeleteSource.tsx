@@ -1,8 +1,8 @@
 import { Source } from '../../model/DexterModel';
 import { useNavigate } from 'react-router-dom';
 import { reject } from '../../utils/reject';
-import { useSources } from '../../state/resources/hooks/useSources';
-import { useMetadata } from '../../state/resources/hooks/useMetadata';
+import { useSources } from '../../resources/useSources';
+import { useMetadata } from '../../resources/useMetadata';
 
 export function useDeleteSource(params: { onError: (error: Error) => void }): {
   deleteSource: (source: Source) => void;

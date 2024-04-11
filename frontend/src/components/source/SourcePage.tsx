@@ -19,8 +19,8 @@ import { useImmer } from 'use-immer';
 import { DeleteButton } from '../common/DeleteButton';
 import { useDeleteSource } from './useDeleteSource';
 import { HintedTitle } from '../common/HintedTitle';
-import { useSources } from '../../state/resources/hooks/useSources';
-import { useUser } from '../../state/resources/hooks/useUser';
+import { useSources } from '../../resources/useSources';
+import { useUser } from '../../resources/useUser';
 
 export const SourcePage = () => {
   const referenceStyle = useUser().getReferenceStyle();

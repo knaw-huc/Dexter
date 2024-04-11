@@ -10,7 +10,7 @@ import { Grid } from '@mui/material';
 import { ExternalLink } from '../common/ExternalLink';
 import { useImmer } from 'use-immer';
 import { HintedTitle } from '../common/HintedTitle';
-import { useMedia } from '../../state/resources/hooks/useMedia';
+import { useMedia } from '../../resources/useMedia';
 
 export function MediaPage() {
   const mediaId = useParams().mediaId;

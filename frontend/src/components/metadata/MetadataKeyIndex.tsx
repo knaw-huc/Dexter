@@ -7,7 +7,7 @@ import { MetadataKeyForm } from './MetadataKeyForm';
 import { MetadataKeyIcon } from './MetadataKeyIcon';
 import { useImmer } from 'use-immer';
 import { HintedTitle } from '../common/HintedTitle';
-import { useMetadata } from '../../state/resources/hooks/useMetadata';
+import { useMetadata } from '../../resources/useMetadata';
 import _ from 'lodash';
 
 export function MetadataKeyIndex() {

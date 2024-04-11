@@ -20,8 +20,8 @@ import { ExportButton } from '../export/ExportButton';
 import { ExportForm } from '../export/ExportForm';
 import { HintedTitle } from '../common/HintedTitle';
 import { reject } from '../../utils/reject';
-import { useCorpora } from '../../state/resources/hooks/useCorpora';
-import { useMetadata } from '../../state/resources/hooks/useMetadata';
+import { useCorpora } from '../../resources/useCorpora';
+import { useMetadata } from '../../resources/useMetadata';
 
 export function CorpusPage() {
   const corpusId = useParams().corpusId;

@@ -7,7 +7,7 @@ import { TagIcon } from './tagIcon';
 import { useThrowSync } from '../common/error/useThrowSync';
 import { HintedTitle } from '../common/HintedTitle';
 import { reject } from '../../utils/reject';
-import { useTags } from '../../state/resources/hooks/useTags';
+import { useTags } from '../../resources/useTags';
 
 export const TagIndex = () => {
   const throwSync = useThrowSync();
