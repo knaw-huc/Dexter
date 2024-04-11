@@ -1,9 +1,9 @@
-import { ResultReference, SubmitFormReference } from '../../model/DexterModel';
 import { ReferenceStyle } from './ReferenceStyle';
 import { ErrorWithMessage } from '../common/error/ErrorWithMessage';
 import { createTerms } from './createTerms';
 import { createCsl } from './createCsl';
 import { truncateInput } from './truncateInput';
+import { ResultReference, SubmitFormReference } from '../../model/Reference';
 
 type Params = {
   /**

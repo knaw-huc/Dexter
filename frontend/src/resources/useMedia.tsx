@@ -1,9 +1,10 @@
 import { useUserResourcesStore } from './store/useUserResourcesStore';
-import { FormMedia, ResultMedia, UUID } from '../model/DexterModel';
 import { deleteValidated, postValidated, putValidated } from '../utils/API';
 import { toValueArray } from './utils/toValueArray';
 import { assign } from '../utils/recipe/assign';
 import { removeIdsFrom } from './utils/recipe/removeIdsFrom';
+import { FormMedia, ResultMedia } from '../model/Media';
+import { UUID } from '../model/Id';
 
 export function useMedia() {
   const { updateUserResources, media } = useUserResourcesStore();

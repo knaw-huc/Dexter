@@ -1,9 +1,9 @@
-import { ResultTag } from '../../model/DexterModel';
 import { Stack } from '@mui/material';
 import { ResourceChip } from './ResourceChip';
 import React from 'react';
 import { SxProps } from '@mui/system';
 import { Theme } from '@mui/material/styles/createTheme';
+import { ResultTag } from '../../model/Tag';
 
 export function TagList(props: {
   tags: ResultTag[];

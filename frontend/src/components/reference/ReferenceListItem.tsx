@@ -1,5 +1,4 @@
 import { grey } from '@mui/material/colors';
-import { Reference } from '../../model/DexterModel';
 import React from 'react';
 import { Avatar, ListItemAvatar } from '@mui/material';
 import { DeleteIcon } from '../common/icon/DeleteIcon';
@@ -8,6 +7,7 @@ import { ListItemButtonStyled } from '../common/ListItemButtonStyled';
 import { FormattedReference } from './FormattedReference';
 import { ReferenceStyle } from './ReferenceStyle';
 import { CloseIcon } from '../common/icon/CloseIcon';
+import { Reference } from '../../model/Reference';
 
 type SourceListItemProps = {
   referenceStyle: ReferenceStyle;

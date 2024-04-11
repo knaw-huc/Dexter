@@ -4,7 +4,6 @@ import { Grid } from '@mui/material';
 import { AddNewButton } from '../common/AddNewButton';
 import { SelectExistingButton } from './SelectExistingButton';
 import React from 'react';
-import { Reference, ResultReference, UUID } from '../../model/DexterModel';
 import { ReferenceStyle } from '../reference/ReferenceStyle';
 import { ReferenceListItem } from '../reference/ReferenceListItem';
 import { ReferenceForm } from '../reference/ReferenceForm';
@@ -13,6 +12,8 @@ import { useImmer } from 'use-immer';
 import _ from 'lodash';
 import { reject } from '../../utils/reject';
 import { useSources } from '../../resources/useSources';
+import { Reference, ResultReference } from '../../model/Reference';
+import { UUID } from '../../model/Id';
 
 export function SourceReferences(props: {
   sourceId: UUID;

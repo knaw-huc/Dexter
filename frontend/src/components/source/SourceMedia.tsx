@@ -5,13 +5,14 @@ import { AddNewButton } from '../common/AddNewButton';
 import { SelectExistingButton } from './SelectExistingButton';
 import { MediaPreview } from '../media/MediaPreview';
 import React from 'react';
-import { ResultMedia, UUID } from '../../model/DexterModel';
 import { MediaForm } from '../media/MediaForm';
 import { SelectMediaForm } from './SelectMediaForm';
 import { useImmer } from 'use-immer';
 import _ from 'lodash';
 import { reject } from '../../utils/reject';
 import { useSources } from '../../resources/useSources';
+import { ResultMedia } from '../../model/Media';
+import { UUID } from '../../model/Id';
 
 export function SourceMedia(props: { sourceId: UUID }) {
   const {

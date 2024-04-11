@@ -1,12 +1,4 @@
 import React from 'react';
-import {
-  Access,
-  AccessOptions,
-  Corpus,
-  FormMetadataValue,
-  ResultMetadataKey,
-  Source,
-} from '../../model/DexterModel';
 import { SelectTagField } from '../tag/SelectTagField';
 import { SelectLanguagesField } from '../language/SelectLanguagesField';
 import ScrollableModal from '../common/ScrollableModal';
@@ -29,6 +21,10 @@ import { toFormHint } from '../../LabelStore';
 import { Hinted } from '../common/Hinted';
 import { TopRightCloseIcon } from '../common/icon/CloseIcon';
 import { useInitCorpusForm } from './useInitCorpusForm';
+import { Corpus } from '../../model/Corpus';
+import { Source } from '../../model/Source';
+import { FormMetadataValue, ResultMetadataKey } from '../../model/Metadata';
+import { Access, AccessOptions } from '../../model/Access';
 
 type CorpusFormProps = {
   /**

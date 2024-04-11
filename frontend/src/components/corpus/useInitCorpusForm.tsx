@@ -1,13 +1,13 @@
 import { Dispatch, SetStateAction, useEffect } from 'react';
-import {
-  Corpus,
-  FormMetadataValue,
-  ResultMetadataKey,
-  toFormMetadataValue,
-} from '../../model/DexterModel';
 import { useImmer } from 'use-immer';
 import { defaultCorpus } from './defaultCorpus';
 import { useMetadata } from '../../resources/useMetadata';
+import { Corpus } from '../../model/Corpus';
+import {
+  FormMetadataValue,
+  ResultMetadataKey,
+  toFormMetadataValue,
+} from '../../model/Metadata';
 
 export function useInitCorpusForm(params: {
   corpusToEdit?: Corpus;

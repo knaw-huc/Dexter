@@ -1,16 +1,3 @@
-import {
-  Corpus,
-  FormCorpus,
-  ResultCorpus,
-  ResultLanguage,
-  ResultMetadataValue,
-  ResultTag,
-  Source,
-  toResultCorpusWithChildren,
-  UUID,
-  WithId,
-} from '../model/DexterModel';
-
 import { deleteValidated, postValidated, putValidated } from '../utils/API';
 import { updateLinkedResourcesWith } from '../utils/updateRemoteIds';
 import { useUserResourcesStore } from './store/useUserResourcesStore';
@@ -24,6 +11,17 @@ import { toValueArray } from './utils/toValueArray';
 import { removeIdsFrom } from './utils/recipe/removeIdsFrom';
 import { addIdsTo } from './utils/recipe/addIdsTo';
 import { useMetadata } from './useMetadata';
+import {
+  Corpus,
+  FormCorpus,
+  ResultCorpus,
+  toResultCorpusWithChildren,
+} from '../model/Corpus';
+import { Source } from '../model/Source';
+import { ResultTag } from '../model/Tag';
+import { ResultMetadataValue } from '../model/Metadata';
+import { ResultLanguage } from '../model/Language';
+import { UUID, WithId } from '../model/Id';
 
 export function useCorpora() {
   const { updateUserResources } = useUserResourcesStore();

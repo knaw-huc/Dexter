@@ -1,5 +1,4 @@
 import React from 'react';
-import { isImage, Source } from '../../model/DexterModel';
 import { HeaderLinkClamped } from '../common/HeaderLinkClamped';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, Grid } from '@mui/material';
@@ -9,6 +8,8 @@ import { SourceIcon } from './SourceIcon';
 import { Title } from '../media/Title';
 import { CardHeaderImage } from '../common/CardHeaderImage';
 import { TopRightCloseIcon } from '../common/icon/CloseIcon';
+import { Source } from '../../model/Source';
+import { isImage } from '../../model/Media';
 
 interface SourceItemDropdownProps {
   source: Source;

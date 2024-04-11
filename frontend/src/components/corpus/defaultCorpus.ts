@@ -1,4 +1,4 @@
-import { Corpus } from '../../model/DexterModel';
+import { Corpus } from '../../model/Corpus';
 
 export const defaultCorpus: Corpus = {
   parent: undefined,

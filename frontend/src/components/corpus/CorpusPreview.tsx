@@ -1,5 +1,4 @@
 import React from 'react';
-import { Corpus, isImage } from '../../model/DexterModel';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, Grid } from '@mui/material';
 import { HeaderLinkClamped } from '../common/HeaderLinkClamped';
@@ -14,6 +13,8 @@ import { hasEqualId } from '../../utils/hasEqualId';
 import styled from '@emotion/styled';
 import ScatterPlotIcon from '@mui/icons-material/ScatterPlot';
 import { TopRightCloseIcon } from '../common/icon/CloseIcon';
+import { Corpus } from '../../model/Corpus';
+import { isImage } from '../../model/Media';
 
 type CorpusPreviewProps = {
   corpus: Corpus;

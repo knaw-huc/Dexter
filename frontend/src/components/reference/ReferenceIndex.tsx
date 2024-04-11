@@ -1,9 +1,4 @@
 import React from 'react';
-import {
-  Reference,
-  ResultReference,
-  UserSettings,
-} from '../../model/DexterModel';
 import { ReferenceListItem } from './ReferenceListItem';
 import { AddNewButton } from '../common/AddNewButton';
 import { List } from '@mui/material';
@@ -19,6 +14,8 @@ import { ValidatedSelectField } from '../common/ValidatedSelectField';
 import { reject } from '../../utils/reject';
 import { useReferences } from '../../resources/useReferences';
 import { useUser } from '../../resources/useUser';
+import { Reference, ResultReference } from '../../model/Reference';
+import { UserSettings } from '../../model/User';
 
 export function ReferenceIndex() {
   const { getReferences, deleteReference } = useReferences();

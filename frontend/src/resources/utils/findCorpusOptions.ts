@@ -1,8 +1,9 @@
-import { Corpus, UUID } from '../../model/DexterModel';
 import { BoundState } from '../store/BoundState';
 import { linkCorpusChildren } from './linkCorpusChildren';
 import { findCorpus } from './findCorpus';
 import { toValueArray } from './toValueArray';
+import { Corpus } from '../../model/Corpus';
+import { UUID } from '../../model/Id';
 
 export function findCorpusOptions(corpusId: UUID, state: BoundState): Corpus[] {
   const corpora = toValueArray(state.userResources.corpora);

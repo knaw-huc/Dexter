@@ -1,5 +1,5 @@
 import Cite from 'citation-js';
-import { CslJson } from './CslJson';
+import { CslJson } from '../../model/CslJson';
 
 export async function createCsl(referenceJsData: string): Promise<string> {
   const parsed: Cite = await Cite.async(referenceJsData);

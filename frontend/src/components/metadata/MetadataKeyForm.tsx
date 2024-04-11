@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
 import TextField from '@mui/material/TextField';
 import React, { ChangeEvent, useEffect } from 'react';
-import { FormMetadataKey, ResultMetadataKey } from '../../model/DexterModel';
 import ScrollableModal from '../common/ScrollableModal';
 import { SubmitButton } from '../common/SubmitButton';
 import { Label } from '../common/Label';
@@ -15,6 +14,7 @@ import { Hinted } from '../common/Hinted';
 import { toFormHint } from '../../LabelStore';
 import { TopRightCloseIcon } from '../common/icon/CloseIcon';
 import { useMetadata } from '../../resources/useMetadata';
+import { FormMetadataKey, ResultMetadataKey } from '../../model/Metadata';
 
 type MetadataKeyFormProps = {
   inEdit?: ResultMetadataKey;

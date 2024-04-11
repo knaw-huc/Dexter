@@ -1,9 +1,3 @@
-import {
-  isSource,
-  Reference,
-  ResultMedia,
-  Source,
-} from '../../../../model/DexterModel';
 import { Any } from '../../../common/Any';
 import { TagsMapper } from './TagsMapper';
 import { LanguagesMapper } from './LanguagesMapper';
@@ -15,6 +9,9 @@ import { isTables, RowWithTablesMapper } from '../Mapper';
 import { RowWithTables } from '../RowWithTables';
 import { createPrefixRow, prefixTable } from '../MapperUtils';
 import _ from 'lodash';
+import { isSource, Source } from '../../../../model/Source';
+import { ResultMedia } from '../../../../model/Media';
+import { Reference } from '../../../../model/Reference';
 
 export class SourceMapper implements RowWithTablesMapper<Source> {
   private helper: RowWithTablesMapperHelper<Source>;

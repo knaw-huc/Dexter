@@ -1,10 +1,4 @@
 import React, { useEffect } from 'react';
-import {
-  FormReference,
-  ResultReference,
-  SubmitFormReference,
-  UUID,
-} from '../../model/DexterModel';
 import * as yup from 'yup';
 import { useFormErrors } from '../common/error/useFormErrors';
 import { FormErrorMessage } from '../common/error/FormError';
@@ -21,6 +15,12 @@ import { Hinted } from '../common/Hinted';
 import { toFormHint } from '../../LabelStore';
 import { TopRightCloseIcon } from '../common/icon/CloseIcon';
 import { useReferences } from '../../resources/useReferences';
+import {
+  FormReference,
+  ResultReference,
+  SubmitFormReference,
+} from '../../model/Reference';
+import { UUID } from '../../model/Id';
 
 const referenceSchema = yup.object({
   input: yup.string().required('Reference input cannot be empty'),

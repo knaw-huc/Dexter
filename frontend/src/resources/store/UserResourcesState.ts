@@ -1,14 +1,10 @@
 import { ResourceState } from './ResourceState';
 import { ImmerBoundStateCreator } from './ImmerBoundStateCreator';
 import { DraftSetter, Setter } from '../../utils/recipe/Setter';
-import {
-  ID,
-  ResultUserResources,
-  UserResourceByIdMaps,
-  WithId,
-} from '../../model/DexterModel';
 import { BoundState } from './BoundState';
 import { assign } from '../../utils/recipe/assign';
+import { ResultUserResources, UserResourceByIdMaps } from '../../model/User';
+import { ID, WithId } from '../../model/Id';
 
 export const defaultUserResources: UserResourceByIdMaps = {
   corpora: new Map(),

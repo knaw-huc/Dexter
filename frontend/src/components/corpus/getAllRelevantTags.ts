@@ -1,5 +1,5 @@
-import { ResultTag } from '../../model/DexterModel';
 import _ from 'lodash';
+import { ResultTag } from '../../model/Tag';
 
 type WithTags = { tags: ResultTag[] };
 

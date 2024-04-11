@@ -1,9 +1,9 @@
 import { describe, expect, it } from '@jest/globals';
 import { MainMapper } from './MainMapper';
-import { Corpus } from '../../../model/DexterModel';
 import corpus from '../../../test/resources/corpus.json';
 import { ReferenceStyle } from '../../reference/ReferenceStyle';
 import { ArrayTable } from './Table';
+import { Corpus } from '../../../model/Corpus';
 
 describe('MainCsvMapper', () => {
   const customMetadataKeys = ['my custom field', 'other field'];

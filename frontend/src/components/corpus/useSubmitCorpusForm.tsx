@@ -1,16 +1,14 @@
+import { corpusFormValidator } from './corpusFormValidator';
+import { useCorpora } from '../../resources/useCorpora';
+import { useMetadata } from '../../resources/useMetadata';
+import { Corpus, FormCorpus, SubmitFormCorpus } from '../../model/Corpus';
 import {
-  Corpus,
-  SubmitFormCorpus,
-  FormCorpus,
   FormMetadataValue,
   ResultMetadataKey,
   ResultMetadataValue,
   toResultMetadataValue,
-  UUID,
-} from '../../model/DexterModel';
-import { corpusFormValidator } from './corpusFormValidator';
-import { useCorpora } from '../../resources/useCorpora';
-import { useMetadata } from '../../resources/useMetadata';
+} from '../../model/Metadata';
+import { UUID } from '../../model/Id';
 
 type UseSubmitCorpusFormResult = {
   submitCorpusForm: (

@@ -1,6 +1,6 @@
 import { BoundState } from '../store/BoundState';
-import { MetadataValue, toMetadataValue } from '../../model/DexterModel';
 import { toValueArray } from './toValueArray';
+import { MetadataValue, toMetadataValue } from '../../model/Metadata';
 
 export function findMetadataValues(
   id: string,

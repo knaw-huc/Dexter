@@ -1,5 +1,6 @@
-import { ResultSourceWithChildIds, UUID } from '../../model/DexterModel';
 import { BoundState } from '../store/BoundState';
+import { ResultSourceWithChildIds } from '../../model/Source';
+import { UUID } from '../../model/Id';
 
 export function findSourceWithChildIds(
   id: UUID,

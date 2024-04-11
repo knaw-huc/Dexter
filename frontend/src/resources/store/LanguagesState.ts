@@ -1,8 +1,8 @@
 import { ResourceState } from './ResourceState';
 import { ImmerBoundStateCreator } from './ImmerBoundStateCreator';
 import { Setter } from '../../utils/recipe/Setter';
-import { ResultLanguage, ResultListLanguages } from '../../model/DexterModel';
 import { BoundState } from './BoundState';
+import { ResultLanguage, ResultListLanguages } from '../../model/Language';
 
 export const defaultLanguages = {
   languages: new Map(),

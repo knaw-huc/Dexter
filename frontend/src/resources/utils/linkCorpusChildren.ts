@@ -1,4 +1,3 @@
-import { Corpus, ResultCorpusWithChildIds } from '../../model/DexterModel';
 import { BoundState } from '../store/BoundState';
 import { findCorpusWithChildIds } from './findCorpusWithChildIds';
 import { findTag } from './findTag';
@@ -6,6 +5,7 @@ import { findLanguage } from './findLanguage';
 import { findMetadataValues } from './findMetadataValues';
 import { findSourceWithChildIds } from './findSourceWithChildIds';
 import { linkSourceChildren } from './linkSourceChildren';
+import { Corpus, ResultCorpusWithChildIds } from '../../model/Corpus';
 
 export function linkCorpusChildren(
   corpus: ResultCorpusWithChildIds,

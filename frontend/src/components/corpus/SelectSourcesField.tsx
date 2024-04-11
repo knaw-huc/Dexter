@@ -1,10 +1,10 @@
-import { ResultSource } from '../../model/DexterModel';
 import React from 'react';
 import { normalize } from '../../utils/normalize';
 import { MultiAutocomplete } from '../common/MultiAutocomplete';
 import { FieldError } from '../common/error/FieldError';
 import { Label } from '../common/Label';
 import { FormFieldprops } from '../common/FormFieldProps';
+import { ResultSource } from '../../model/Source';
 
 export type SelectSourcesFieldProps = FormFieldprops & {
   options: ResultSource[];

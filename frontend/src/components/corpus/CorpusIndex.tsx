@@ -1,5 +1,4 @@
 import React from 'react';
-import { Corpus } from '../../model/DexterModel';
 import { CorpusPreview } from './CorpusPreview';
 import { CorpusForm } from './CorpusForm';
 import { Grid } from '@mui/material';
@@ -10,6 +9,7 @@ import { HintedTitle } from '../common/HintedTitle';
 import { AddNewButton } from '../common/AddNewButton';
 import { useCorpora } from '../../resources/useCorpora';
 import { useSources } from '../../resources/useSources';
+import { Corpus } from '../../model/Corpus';
 
 export function CorpusIndex() {
   const [showForm, setShowForm] = useImmer(false);

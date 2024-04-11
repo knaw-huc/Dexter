@@ -1,13 +1,10 @@
-import {
-  ResultMetadataKey,
-  Source,
-  SubmitFormSource,
-  UUID,
-} from '../../model/DexterModel';
 import { sourceFormValidator } from './sourceFormValidator';
 import { useCorpora } from '../../resources/useCorpora';
 import { useSources } from '../../resources/useSources';
 import { useMetadata } from '../../resources/useMetadata';
+import { Source, SubmitFormSource } from '../../model/Source';
+import { ResultMetadataKey } from '../../model/Metadata';
+import { UUID } from '../../model/Id';
 
 type UseSubmitSourceFormResult = {
   submitSourceForm: (

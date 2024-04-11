@@ -92,11 +92,9 @@ export async function deleteValidated(url: string): Promise<void> {
   await validateResponse({ response });
 }
 
-export async function getAssetValidated(
-  cslFilename: string,
-): Promise<Response> {
+export async function getAssetValidated(filename: string): Promise<Response> {
   const response = await fetch(
-    `${window.location.origin}/api/assets/${cslFilename}`,
+    `${window.location.origin}/api/assets/${filename}`,
   );
   await validateResponse({ response });
   return response;

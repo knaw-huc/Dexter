@@ -1,5 +1,6 @@
 import { BoundState } from '../store/BoundState';
-import { ResultLanguage } from '../../model/DexterModel';
+
+import { ResultLanguage } from '../../model/Language';
 
 export function findLanguage(
   languageId: string,

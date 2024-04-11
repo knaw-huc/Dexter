@@ -1,5 +1,4 @@
 import { grey } from '@mui/material/colors';
-import { isImage, Source } from '../../model/DexterModel';
 import React from 'react';
 import { Avatar, ListItemAvatar, ListItemText } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
@@ -7,6 +6,8 @@ import { EditIcon } from '../common/icon/EditIcon';
 import { DeleteIcon } from '../common/icon/DeleteIcon';
 import { SourceIcon } from './SourceIcon';
 import { ListItemButtonStyled } from '../common/ListItemButtonStyled';
+import { Source } from '../../model/Source';
+import { isImage } from '../../model/Media';
 
 type SourceListItemProps = {
   source: Source;

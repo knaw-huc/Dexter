@@ -1,6 +1,5 @@
 import TextField from '@mui/material/TextField';
 import React from 'react';
-import { FormTag } from '../../model/DexterModel';
 import { Button, Grid } from '@mui/material';
 import * as yup from 'yup';
 import { useFormErrors } from '../common/error/useFormErrors';
@@ -8,6 +7,7 @@ import { FormErrorMessage } from '../common/error/FormError';
 import { FieldError } from '../common/error/FieldError';
 import { useImmer } from 'use-immer';
 import { useTags } from '../../resources/useTags';
+import { FormTag } from '../../model/Tag';
 
 const tagSchema = yup.object({
   val: yup.string().required('Tag cannot be empty'),

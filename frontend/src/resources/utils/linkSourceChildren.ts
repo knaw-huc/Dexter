@@ -1,4 +1,3 @@
-import { ResultSourceWithChildIds, Source } from '../../model/DexterModel';
 import { BoundState } from '../store/BoundState';
 import { findCorpusWithChildIds } from './findCorpusWithChildIds';
 import { findLanguage } from './findLanguage';
@@ -6,6 +5,7 @@ import { findMetadataValues } from './findMetadataValues';
 import { findTag } from './findTag';
 import { findReference } from './findReference';
 import { findMedia } from './findMedia';
+import { ResultSourceWithChildIds, Source } from '../../model/Source';
 
 export function linkSourceChildren(
   source: ResultSourceWithChildIds,

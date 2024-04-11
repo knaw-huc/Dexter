@@ -1,6 +1,5 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { Source } from '../../model/DexterModel';
 import { SourceForm } from './SourceForm';
 import { EditButton } from '../common/EditButton';
 import { TagList } from '../tag/TagList';
@@ -21,6 +20,7 @@ import { useDeleteSource } from './useDeleteSource';
 import { HintedTitle } from '../common/HintedTitle';
 import { useSources } from '../../resources/useSources';
 import { useUser } from '../../resources/useUser';
+import { Source } from '../../model/Source';
 
 export const SourcePage = () => {
   const referenceStyle = useUser().getReferenceStyle();

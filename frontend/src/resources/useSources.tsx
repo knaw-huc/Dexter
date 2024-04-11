@@ -1,16 +1,3 @@
-import {
-  FormSource,
-  ResultLanguage,
-  ResultMedia,
-  ResultMetadataValue,
-  ResultReference,
-  ResultSource,
-  ResultTag,
-  Source,
-  toResultSourceWithChildren,
-  UUID,
-  WithId,
-} from '../model/DexterModel';
 import { useBoundStore } from './store/useBoundStore';
 import { findSourceWithChildIds } from './utils/findSourceWithChildIds';
 import { linkSourceChildren } from './utils/linkSourceChildren';
@@ -23,6 +10,18 @@ import { addIdsTo } from './utils/recipe/addIdsTo';
 import { removeIdsFrom } from './utils/recipe/removeIdsFrom';
 import { updateLinkedResourcesWith } from '../utils/updateRemoteIds';
 import { useMetadata } from './useMetadata';
+import {
+  FormSource,
+  ResultSource,
+  Source,
+  toResultSourceWithChildren,
+} from '../model/Source';
+import { ResultTag } from '../model/Tag';
+import { ResultMetadataValue } from '../model/Metadata';
+import { ResultMedia } from '../model/Media';
+import { ResultLanguage } from '../model/Language';
+import { ResultReference } from '../model/Reference';
+import { UUID, WithId } from '../model/Id';
 
 export function useSources() {
   const { updateUserResources } = useUserResourcesStore();

@@ -6,7 +6,6 @@ import { SelectExistingButton } from '../source/SelectExistingButton';
 import { TagsFilter } from '../tag/TagsFilter';
 import { CorpusPreview } from './CorpusPreview';
 import React from 'react';
-import { Corpus, ResultTag, UUID } from '../../model/DexterModel';
 import { useImmer } from 'use-immer';
 import { CorpusForm } from './CorpusForm';
 import { isRelevantResource } from './getAllRelevantTags';
@@ -15,6 +14,9 @@ import _ from 'lodash';
 import { reject } from '../../utils/reject';
 import { SelectSubcorporaForm } from './SelectSubcorporaForm';
 import { useCorpora } from '../../resources/useCorpora';
+import { Corpus } from '../../model/Corpus';
+import { ResultTag } from '../../model/Tag';
+import { UUID } from '../../model/Id';
 
 export function CorpusSubcorpora(props: { corpusId: UUID }) {
   const { getCorpus, updateCorpus, findCorpusOptions, findSourceOptions } =

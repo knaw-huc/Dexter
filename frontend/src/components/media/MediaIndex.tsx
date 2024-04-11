@@ -1,5 +1,4 @@
 import React from 'react';
-import { ResultMedia } from '../../model/DexterModel';
 import { MediaPreview } from './MediaPreview';
 import { MediaForm } from './MediaForm';
 import { AddNewButton } from '../common/AddNewButton';
@@ -10,6 +9,7 @@ import { useImmer } from 'use-immer';
 import { HintedTitle } from '../common/HintedTitle';
 import { reject } from '../../utils/reject';
 import { useMedia } from '../../resources/useMedia';
+import { ResultMedia } from '../../model/Media';
 
 export function MediaIndex() {
   const [showForm, setShowForm] = useImmer(false);

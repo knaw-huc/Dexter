@@ -3,11 +3,12 @@ import TextField from '@mui/material/TextField';
 import match from 'autosuggest-highlight/match';
 import parse from 'autosuggest-highlight/parse';
 import React from 'react';
-import { ResultCorpus, ResultSource } from '../../model/DexterModel';
 import { Label } from '../common/Label';
 import { FormFieldprops } from '../common/FormFieldProps';
 import { FieldError } from '../common/error/FieldError';
 import { useImmer } from 'use-immer';
+import { ResultCorpus } from '../../model/Corpus';
+import { ResultSource } from '../../model/Source';
 
 export type SelectCorpusFieldProps = FormFieldprops & {
   options: ResultCorpus[];

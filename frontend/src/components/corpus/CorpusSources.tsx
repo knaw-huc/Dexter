@@ -7,13 +7,15 @@ import { TagsFilter } from '../tag/TagsFilter';
 import _ from 'lodash';
 import { SourcePreview } from '../source/SourcePreview';
 import React from 'react';
-import { ResultTag, Source, UUID } from '../../model/DexterModel';
 import { useImmer } from 'use-immer';
 import { SourceForm } from '../source/SourceForm';
 import { SelectSourcesForm } from './SelectSourcesForm';
 import { getAllRelevantTags } from './getAllRelevantTags';
 import { reject } from '../../utils/reject';
 import { useCorpora } from '../../resources/useCorpora';
+import { Source } from '../../model/Source';
+import { ResultTag } from '../../model/Tag';
+import { UUID } from '../../model/Id';
 
 export function CorpusSources(props: { corpusId: UUID }) {
   const {

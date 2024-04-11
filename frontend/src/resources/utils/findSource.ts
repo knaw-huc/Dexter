@@ -1,6 +1,7 @@
-import { Source, UUID } from '../../model/DexterModel';
 import { BoundState } from '../store/BoundState';
 import { linkSourceChildren } from './linkSourceChildren';
+import { Source } from '../../model/Source';
+import { UUID } from '../../model/Id';
 
 export function findSource(id: UUID, state: BoundState): Source {
   return linkSourceChildren(

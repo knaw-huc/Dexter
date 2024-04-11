@@ -1,4 +1,4 @@
-import { WithId } from '../../model/DexterModel';
+import { WithId } from '../../model/Id';
 
 /**
  * Add element to array

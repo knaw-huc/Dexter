@@ -1,11 +1,6 @@
 import styled from '@emotion/styled';
 import TextField from '@mui/material/TextField';
 import React, { useEffect } from 'react';
-import {
-  FormMedia,
-  ResultMedia,
-  supportedMediaTypes,
-} from '../../model/DexterModel';
 import ScrollableModal from '../common/ScrollableModal';
 import { SubmitButton } from '../common/SubmitButton';
 import * as yup from 'yup';
@@ -20,6 +15,7 @@ import { Hinted } from '../common/Hinted';
 import { toFormHint } from '../../LabelStore';
 import { TopRightCloseIcon } from '../common/icon/CloseIcon';
 import { useMedia } from '../../resources/useMedia';
+import { FormMedia, ResultMedia, supportedMediaTypes } from '../../model/Media';
 
 type MediaFormProps = {
   inEdit?: ResultMedia;

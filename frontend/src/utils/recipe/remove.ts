@@ -1,5 +1,5 @@
-import { UUID, WithId } from '../../model/DexterModel';
 import _ from 'lodash';
+import { UUID, WithId } from '../../model/Id';
 
 /**
  * Remove element from array

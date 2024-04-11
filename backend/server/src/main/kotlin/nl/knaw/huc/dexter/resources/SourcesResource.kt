@@ -5,15 +5,14 @@ import ResultMetadataValue
 import UnauthorizedException
 import io.dropwizard.auth.Auth
 import nl.knaw.huc.dexter.api.*
-import nl.knaw.huc.dexter.api.ResourcePaths.REFERENCES
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PARAM
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PATH
-import nl.knaw.huc.dexter.api.ResourcePaths.TAGS
 import nl.knaw.huc.dexter.api.ResourcePaths.LANGUAGES
 import nl.knaw.huc.dexter.api.ResourcePaths.MEDIA
 import nl.knaw.huc.dexter.api.ResourcePaths.METADATA
+import nl.knaw.huc.dexter.api.ResourcePaths.REFERENCES
+import nl.knaw.huc.dexter.api.ResourcePaths.TAGS
 import nl.knaw.huc.dexter.api.ResourcePaths.VALUES
-import nl.knaw.huc.dexter.api.ResourcePaths.WITH_RESOURCES
 import nl.knaw.huc.dexter.auth.DexterUser
 import nl.knaw.huc.dexter.auth.RoleNames
 import nl.knaw.huc.dexter.db.DaoBlock
@@ -21,7 +20,6 @@ import nl.knaw.huc.dexter.db.HandleBlock
 import nl.knaw.huc.dexter.db.SourcesDao
 import nl.knaw.huc.dexter.db.SourcesDao.Companion.sourceNotFound
 import nl.knaw.huc.dexter.helpers.PsqlDiagnosticsHelper.Companion.diagnoseViolations
-import nl.knaw.huc.dexter.helpers.WithResourcesHelper.Companion.addSourceResources
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel.REPEATABLE_READ
 import org.slf4j.LoggerFactory
@@ -44,38 +42,11 @@ class SourcesResource(private val jdbi: Jdbi) {
     ) = sources().listByUser(user.id)
 
     @GET
-    @Path(WITH_RESOURCES)
-    fun getSourceWithResourcesList(
-        @Auth user: DexterUser
-    ): List<ResultSourceWithResources> {
-        log.info("get all sources with resources")
-
-        return jdbi.inTransaction<List<ResultSourceWithResources>, Exception>(REPEATABLE_READ) { handle ->
-            handle.attach(SourcesDao::class.java).let { sourceDao ->
-                sourceDao.listByUser(user.id).map { source ->
-                        addSourceResources(source, handle)
-                    }
-            }
-        }
-    }
-
-    @GET
     @Path(ID_PATH)
     fun getSource(
         @PathParam(ID_PARAM) id: UUID, @Auth user: DexterUser
     ): ResultSource {
         return sources().findByUser(id, user.id) ?: sourceNotFound(id)
-    }
-
-    @GET
-    @Path("$ID_PATH/$WITH_RESOURCES")
-    fun getSourceWithResources(
-        @PathParam(ID_PARAM) id: UUID, @Auth user: DexterUser
-    ): ResultSourceWithResources {
-        log.info("get source $id with resources")
-        return onAccessibleSourceWithHandle(id, user.id) { handle, source ->
-            addSourceResources(source, handle)
-        }
     }
 
     @POST

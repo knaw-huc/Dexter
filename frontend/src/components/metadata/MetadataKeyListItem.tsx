@@ -1,5 +1,4 @@
 import { grey } from '@mui/material/colors';
-import { ResultMetadataKey } from '../../model/DexterModel';
 import React, { ChangeEvent } from 'react';
 import { Avatar, ListItemAvatar, ListItemText } from '@mui/material';
 import { EditIcon } from '../common/icon/EditIcon';
@@ -11,6 +10,7 @@ import { useImmer } from 'use-immer';
 import { ErrorAlert } from '../common/error/ErrorAlert';
 import { toMessage } from '../common/error/toMessage';
 import { useMetadata } from '../../resources/useMetadata';
+import { ResultMetadataKey } from '../../model/Metadata';
 
 type MetadataKeyItemProps = {
   metadataKey: ResultMetadataKey;

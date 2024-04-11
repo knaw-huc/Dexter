@@ -1,4 +1,4 @@
-import { ID, UUID, WithId } from '../model/DexterModel';
+import { ID, UUID, WithId } from '../model/Id';
 
 type UpdateLinkedResources<T extends WithId<ID>> = (
   parentId: UUID,

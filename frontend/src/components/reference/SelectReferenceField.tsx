@@ -1,5 +1,4 @@
 import React from 'react';
-import { Reference } from '../../model/DexterModel';
 import { MultiAutocomplete } from '../common/MultiAutocomplete';
 import { FormFieldprops } from '../common/FormFieldProps';
 import { Label } from '../common/Label';
@@ -13,6 +12,7 @@ import { ListItemText } from '@mui/material';
 import { truncateInput } from './truncateInput';
 import { useReferences } from '../../resources/useReferences';
 import { normalize } from '../../utils/normalize';
+import { Reference } from '../../model/Reference';
 
 export type SelectReferenceFieldProps = FormFieldprops & {
   selected: Reference[];

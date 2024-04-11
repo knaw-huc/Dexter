@@ -1,8 +1,9 @@
-import { Source, UUID } from '../../model/DexterModel';
 import { BoundState } from '../store/BoundState';
 import { linkSourceChildren } from './linkSourceChildren';
 import { findCorpus } from './findCorpus';
 import { toValueArray } from './toValueArray';
+import { Source } from '../../model/Source';
+import { UUID } from '../../model/Id';
 
 export function findSourceOptions(corpusId: UUID, state: BoundState): Source[] {
   const corpus = findCorpus(corpusId, state);

@@ -1,5 +1,4 @@
 import React from 'react';
-import { ResultMedia, SupportedMediaType } from '../../model/DexterModel';
 import _ from 'lodash';
 import { grey } from '@mui/material/colors';
 import { truncateMiddle } from '../../utils/truncateMiddle';
@@ -13,6 +12,7 @@ import { FormFieldprops } from '../common/FormFieldProps';
 import { Label } from '../common/Label';
 import { FieldError } from '../common/error/FieldError';
 import { useMedia } from '../../resources/useMedia';
+import { ResultMedia, SupportedMediaType } from '../../model/Media';
 
 export type SelectMediaFieldProps = FormFieldprops & {
   selected: ResultMedia[];

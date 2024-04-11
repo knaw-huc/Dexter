@@ -1,11 +1,4 @@
 import React from 'react';
-import {
-  Access,
-  AccessOptions,
-  ResultMetadataKey,
-  Source,
-  SubmitFormSource,
-} from '../../model/DexterModel';
 import ScrollableModal from '../common/ScrollableModal';
 import { SelectTagField } from '../tag/SelectTagField';
 import { SelectLanguagesField } from '../language/SelectLanguagesField';
@@ -27,6 +20,9 @@ import { assign } from '../../utils/recipe/assign';
 import { Hinted } from '../common/Hinted';
 import { toFormHint } from '../../LabelStore';
 import { TopRightCloseIcon } from '../common/icon/CloseIcon';
+import { Source, SubmitFormSource } from '../../model/Source';
+import { ResultMetadataKey } from '../../model/Metadata';
+import { Access, AccessOptions } from '../../model/Access';
 
 type SourceFormProps = {
   sourceToEdit?: Source;

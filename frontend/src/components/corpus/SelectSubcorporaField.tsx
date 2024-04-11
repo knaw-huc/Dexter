@@ -1,10 +1,10 @@
-import { ResultCorpus } from '../../model/DexterModel';
 import React from 'react';
 import { normalize } from '../../utils/normalize';
 import { MultiAutocomplete } from '../common/MultiAutocomplete';
 import { FieldError } from '../common/error/FieldError';
 import { Label } from '../common/Label';
 import { FormFieldprops } from '../common/FormFieldProps';
+import { ResultCorpus } from '../../model/Corpus';
 
 export type SelectSubcorporaFieldProps = FormFieldprops & {
   options: ResultCorpus[];

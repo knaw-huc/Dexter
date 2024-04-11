@@ -1,5 +1,6 @@
 import { BoundState } from '../store/BoundState';
-import { ResultTag } from '../../model/DexterModel';
+
+import { ResultTag } from '../../model/Tag';
 
 export function findTag(
   id: number,

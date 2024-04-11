@@ -1,8 +1,8 @@
 import { useUserResourcesStore } from './store/useUserResourcesStore';
-import { FormTag, ResultTag } from '../model/DexterModel';
 import { deleteValidated, postValidated } from '../utils/API';
 import { removeIdsFrom } from './utils/recipe/removeIdsFrom';
 import { toValueArray } from './utils/toValueArray';
+import { FormTag, ResultTag } from '../model/Tag';
 
 export function useTags() {
   const { updateUserResources, tags } = useUserResourcesStore();

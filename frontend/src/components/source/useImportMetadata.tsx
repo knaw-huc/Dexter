@@ -1,10 +1,11 @@
 import isUrl from '../../utils/isUrl';
-import { ResultImport, Source } from '../../model/DexterModel';
 import { ErrorWithMessage } from '../common/error/ErrorWithMessage';
 import { Any } from '../common/Any';
 import { useImmer } from 'use-immer';
 import { reject } from '../../utils/reject';
 import { useImport } from '../../resources/useImport';
+import { Source } from '../../model/Source';
+import { ResultImport } from '../../model/Import';
 
 type WithExternalRef = {
   externalRef?: string;

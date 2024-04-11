@@ -1,5 +1,4 @@
 import React from 'react';
-import { Source } from '../../model/DexterModel';
 import { SourceListItem } from './SourceListItem';
 import { SourceForm } from './SourceForm';
 import { AddNewButton } from '../common/AddNewButton';
@@ -12,6 +11,7 @@ import _ from 'lodash';
 import { useDeleteSource } from './useDeleteSource';
 import { HintedTitle } from '../common/HintedTitle';
 import { useSources } from '../../resources/useSources';
+import { Source } from '../../model/Source';
 
 export function SourceIndex() {
   const sources = useSources().getSources();

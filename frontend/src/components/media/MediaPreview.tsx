@@ -1,10 +1,10 @@
-import { ResultMedia } from '../../model/DexterModel';
 import React from 'react';
 import { Card, CardActions, CardMedia, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { EditIcon } from '../common/icon/EditIcon';
 import { Title } from './Title';
 import { CloseIcon } from '../common/icon/CloseIcon';
+import { ResultMedia } from '../../model/Media';
 
 type MediaItemProps = {
   media: ResultMedia;

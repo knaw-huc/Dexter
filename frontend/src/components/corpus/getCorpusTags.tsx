@@ -1,5 +1,6 @@
-import { Corpus, ResultTag } from '../../model/DexterModel';
 import _ from 'lodash';
+import { Corpus } from '../../model/Corpus';
+import { ResultTag } from '../../model/Tag';
 
 export function getCorpusTags(subcorpus: Corpus): ResultTag[] {
   const all = [

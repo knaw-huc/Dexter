@@ -1,5 +1,4 @@
 import React from 'react';
-import { ResultTag } from '../../model/DexterModel';
 import {
   CREATE_NEW_OPTION,
   MultiAutocomplete,
@@ -9,6 +8,7 @@ import { FieldError } from '../common/error/FieldError';
 import { Label } from '../common/Label';
 import _ from 'lodash';
 import { useTags } from '../../resources/useTags';
+import { ResultTag } from '../../model/Tag';
 
 type TagsFieldProps = FormFieldprops & {
   selected: ResultTag[];

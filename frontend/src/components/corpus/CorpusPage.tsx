@@ -1,6 +1,5 @@
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Corpus } from '../../model/DexterModel';
 import { CorpusForm } from './CorpusForm';
 import { EditButton } from '../common/EditButton';
 import _ from 'lodash';
@@ -22,6 +21,7 @@ import { HintedTitle } from '../common/HintedTitle';
 import { reject } from '../../utils/reject';
 import { useCorpora } from '../../resources/useCorpora';
 import { useMetadata } from '../../resources/useMetadata';
+import { Corpus } from '../../model/Corpus';
 
 export function CorpusPage() {
   const corpusId = useParams().corpusId;

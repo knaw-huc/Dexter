@@ -1,5 +1,4 @@
 import React from 'react';
-import { ResultMetadataKey } from '../../model/DexterModel';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
 import { AddNewButton } from '../common/AddNewButton';
 import { MetadataKeyListItem } from './MetadataKeyListItem';
@@ -9,6 +8,7 @@ import { useImmer } from 'use-immer';
 import { HintedTitle } from '../common/HintedTitle';
 import { useMetadata } from '../../resources/useMetadata';
 import _ from 'lodash';
+import { ResultMetadataKey } from '../../model/Metadata';
 
 export function MetadataKeyIndex() {
   const [isFormOpen, setFormOpen] = useImmer(false);

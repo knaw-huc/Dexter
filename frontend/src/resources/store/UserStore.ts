@@ -1,9 +1,9 @@
 import { create } from 'zustand';
-import { User, UserSettings } from '../../model/DexterModel';
 import { Setter } from '../../utils/recipe/Setter';
 import { immer } from 'zustand/middleware/immer';
 import { ReferenceStyle } from '../../components/reference/ReferenceStyle';
 import _ from 'lodash';
+import { User, UserSettings } from '../../model/User';
 
 interface UserState {
   /**

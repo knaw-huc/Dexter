@@ -1,5 +1,4 @@
 import React, { ChangeEvent } from 'react';
-import { FormMetadataValue, ResultMetadataKey } from '../../model/DexterModel';
 import { Button, FormControl, Select } from '@mui/material';
 import { Label } from '../common/Label';
 import { SplitRow } from '../common/SplitRow';
@@ -11,6 +10,7 @@ import { FormFieldprops } from '../common/FormFieldProps';
 import { FieldError } from '../common/error/FieldError';
 import { useImmer } from 'use-immer';
 import { reject } from '../../utils/reject';
+import { FormMetadataValue, ResultMetadataKey } from '../../model/Metadata';
 
 type MetadataValueFormFieldsProps = FormFieldprops & {
   keys: ResultMetadataKey[];

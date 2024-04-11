@@ -4,23 +4,25 @@ import ResultMedia
 import ResultMetadataValue
 import UnauthorizedException
 import io.dropwizard.auth.Auth
-import nl.knaw.huc.dexter.api.*
-import nl.knaw.huc.dexter.api.ResourcePaths.REFERENCES
+import nl.knaw.huc.dexter.api.FormCorpus
+import nl.knaw.huc.dexter.api.ResourcePaths
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PARAM
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PATH
-import nl.knaw.huc.dexter.api.ResourcePaths.TAGS
 import nl.knaw.huc.dexter.api.ResourcePaths.LANGUAGES
 import nl.knaw.huc.dexter.api.ResourcePaths.MEDIA
 import nl.knaw.huc.dexter.api.ResourcePaths.METADATA
+import nl.knaw.huc.dexter.api.ResourcePaths.REFERENCES
 import nl.knaw.huc.dexter.api.ResourcePaths.SOURCES
+import nl.knaw.huc.dexter.api.ResourcePaths.TAGS
 import nl.knaw.huc.dexter.api.ResourcePaths.VALUES
-import nl.knaw.huc.dexter.api.ResourcePaths.WITH_RESOURCES
+import nl.knaw.huc.dexter.api.ResultCorpus
 import nl.knaw.huc.dexter.auth.DexterUser
 import nl.knaw.huc.dexter.auth.RoleNames
-import nl.knaw.huc.dexter.db.*
+import nl.knaw.huc.dexter.db.CorporaDao
 import nl.knaw.huc.dexter.db.CorporaDao.Companion.corpusNotFound
+import nl.knaw.huc.dexter.db.DaoBlock
+import nl.knaw.huc.dexter.db.HandleBlock
 import nl.knaw.huc.dexter.helpers.PsqlDiagnosticsHelper.Companion.diagnoseViolations
-import nl.knaw.huc.dexter.helpers.WithResourcesHelper.Companion.addCorpusResources
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel.REPEATABLE_READ
 import org.slf4j.LoggerFactory
@@ -43,37 +45,12 @@ class CorporaResource(private val jdbi: Jdbi) {
     }
 
     @GET
-    @Path(WITH_RESOURCES)
-    fun getCorporaWithResourcesList(@Auth user: DexterUser): List<ResultCorpusWithResources> {
-        log.info("get all corpora with resources")
-        return jdbi.inTransaction<List<ResultCorpusWithResources>, Exception>(REPEATABLE_READ) { handle ->
-            handle.attach(CorporaDao::class.java).let { corporaDao ->
-                corporaDao.listByUser(user.id).map { corpus ->
-                    addCorpusResources(corpus, handle)
-                }
-            }
-        }
-    }
-
-    @GET
     @Path(ID_PATH)
     fun getCorpus(
         @PathParam(ID_PARAM) id: UUID,
         @Auth user: DexterUser
     ): ResultCorpus =
         corpora().findByUser(id, user.id) ?: corpusNotFound(id)
-
-    @GET
-    @Path("$ID_PATH/$WITH_RESOURCES")
-    fun findCorpusWithResources(
-        @PathParam(ID_PARAM) id: UUID,
-        @Auth user: DexterUser
-    ): ResultCorpusWithResources {
-        log.info("get corpus $id with resources")
-        return onAccessibleCorpusWithHandle(id, user.id) { handle, corpus ->
-            addCorpusResources(corpus, handle)
-        }
-    }
 
     @POST
     @Consumes(APPLICATION_JSON)

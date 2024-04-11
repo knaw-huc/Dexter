@@ -1,3 +1,8 @@
+import { useBoundStore } from './store/useBoundStore';
+import { deleteValidated, postValidated, putValidated } from '../utils/API';
+import { useUserResourcesStore } from './store/useUserResourcesStore';
+import { toValueArray } from './utils/toValueArray';
+import { assign } from '../utils/recipe/assign';
 import {
   FormMetadataKey,
   FormMetadataValue,
@@ -5,14 +10,9 @@ import {
   ResultMetadataKey,
   ResultMetadataValue,
   toMetadataValue,
-  UUID,
   WithMetadata,
-} from '../model/DexterModel';
-import { useBoundStore } from './store/useBoundStore';
-import { deleteValidated, postValidated, putValidated } from '../utils/API';
-import { useUserResourcesStore } from './store/useUserResourcesStore';
-import { toValueArray } from './utils/toValueArray';
-import { assign } from '../utils/recipe/assign';
+} from '../model/Metadata';
+import { UUID } from '../model/Id';
 
 export function useMetadata() {
   const { updateUserResources } = useUserResourcesStore();

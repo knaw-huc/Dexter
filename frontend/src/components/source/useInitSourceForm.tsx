@@ -1,13 +1,9 @@
 import { Dispatch, SetStateAction, useEffect } from 'react';
-import {
-  ResultMetadataKey,
-  Source,
-  SubmitFormSource,
-  toFormMetadataValue,
-} from '../../model/DexterModel';
 import { useImmer } from 'use-immer';
 import { defaultSource } from './defaultSource';
 import { useMetadata } from '../../resources/useMetadata';
+import { Source, SubmitFormSource } from '../../model/Source';
+import { ResultMetadataKey, toFormMetadataValue } from '../../model/Metadata';
 
 export function useInitSourceForm(params: {
   sourceToEdit?: Source;

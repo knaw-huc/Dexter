@@ -1,4 +1,4 @@
-import { Any } from '../common/Any';
+import { Any } from '../components/common/Any';
 import _ from 'lodash';
 
 export type CslJson = {

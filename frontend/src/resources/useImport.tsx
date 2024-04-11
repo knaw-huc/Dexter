@@ -1,5 +1,5 @@
-import { ResultImport } from '../model/DexterModel';
 import { postValidated } from '../utils/API';
+import { ResultImport } from '../model/Import';
 
 export function useImport() {
   const postImport = async (url: URL): Promise<ResultImport> => {

@@ -1,10 +1,10 @@
-import { isReference, Reference } from '../../../../model/DexterModel';
 import { Any } from '../../../common/Any';
 import { RowWithHeader } from '../RowWithHeader';
 import { RowMapper } from '../Mapper';
 import { appendCell } from '../MapperUtils';
 import { FormattedReferenceMapper } from './FormattedReferenceMapper';
 import { PrimitiveMapper } from './PrimitiveMapper';
+import { isReference, Reference } from '../../../../model/Reference';
 
 export class ReferenceMapper implements RowMapper<Reference> {
   constructor(

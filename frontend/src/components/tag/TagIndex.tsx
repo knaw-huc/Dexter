@@ -1,5 +1,4 @@
 import React from 'react';
-import { ResultTag } from '../../model/DexterModel';
 import { TagForm } from './TagForm';
 import { TagList } from './TagList';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
@@ -8,6 +7,7 @@ import { useThrowSync } from '../common/error/useThrowSync';
 import { HintedTitle } from '../common/HintedTitle';
 import { reject } from '../../utils/reject';
 import { useTags } from '../../resources/useTags';
+import { ResultTag } from '../../model/Tag';
 
 export const TagIndex = () => {
   const throwSync = useThrowSync();

@@ -1,9 +1,10 @@
 import { useUserResourcesStore } from './store/useUserResourcesStore';
-import { FormReference, ResultReference, UUID } from '../model/DexterModel';
 import { deleteValidated, postValidated, putValidated } from '../utils/API';
 import { toValueArray } from './utils/toValueArray';
 import { assign } from '../utils/recipe/assign';
 import { removeIdsFrom } from './utils/recipe/removeIdsFrom';
+import { FormReference, ResultReference } from '../model/Reference';
+import { UUID } from '../model/Id';
 
 export function useReferences() {
   const { updateUserResources, references } = useUserResourcesStore();

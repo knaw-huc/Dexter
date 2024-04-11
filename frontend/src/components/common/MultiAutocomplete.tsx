@@ -3,9 +3,9 @@ import React, { useEffect } from 'react';
 import { useDebounce } from '../../utils/useDebounce';
 import { HighlightedLabel } from './HighlightedLabel';
 import { AutocompleteRenderGetTagProps } from '@mui/material/Autocomplete/Autocomplete';
-import { ID, WithId } from '../../model/DexterModel';
 import _ from 'lodash';
 import { useImmer } from 'use-immer';
+import { ID, WithId } from '../../model/Id';
 
 export type MultiAutocompleteProps<T> = {
   size?: 'medium' | 'small';

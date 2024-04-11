@@ -1,7 +1,7 @@
-import { ResultLanguage } from '../model/DexterModel';
 import { getValidated, postValidated } from '../utils/API';
 import { useBoundStore } from './store/useBoundStore';
 import { toValueArray } from './utils/toValueArray';
+import { ResultLanguage } from '../model/Language';
 
 export function useLanguages() {
   const { languages } = useBoundStore();

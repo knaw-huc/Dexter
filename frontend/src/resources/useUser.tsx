@@ -1,7 +1,7 @@
-import { User, UserSettings } from '../model/DexterModel';
 import { getValidated, postValidated, putValidated } from '../utils/API';
 import { useBoundStore } from './store/useBoundStore';
 import { useUserStore } from './store/UserStore';
+import { User, UserSettings } from '../model/User';
 
 export function useUser() {
   const { userResources } = useBoundStore();

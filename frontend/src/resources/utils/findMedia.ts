@@ -1,5 +1,6 @@
-import { ResultMedia, UUID } from '../../model/DexterModel';
 import { BoundState } from '../store/BoundState';
+import { ResultMedia } from '../../model/Media';
+import { UUID } from '../../model/Id';
 
 export function findMedia(
   id: UUID,

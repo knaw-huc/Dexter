@@ -1,8 +1,3 @@
-import {
-  isWithId,
-  ResultMetadataKey,
-  WithId,
-} from '../../../model/DexterModel';
 import { RowWithTablesMapper, TablesMapper } from './Mapper';
 import { CorpusMapper } from './resource/CorpusMapper';
 import { MetadataValuesMapper } from './resource/MetadataValuesMapper';
@@ -19,6 +14,8 @@ import { FormattedReferenceMapper } from './resource/FormattedReferenceMapper';
 import { PrimitiveMapper } from './resource/PrimitiveMapper';
 import { ParentMapper } from './resource/ParentMapper';
 import { ReferenceStyle } from '../../reference/ReferenceStyle';
+import { ResultMetadataKey } from '../../../model/Metadata';
+import { isWithId, WithId } from '../../../model/Id';
 
 export class MainMapper implements TablesMapper<WithId> {
   name: string;
