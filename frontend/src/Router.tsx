@@ -2,17 +2,33 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { Page } from './components/Page';
 import React, { lazy } from 'react';
 
-const CorpusIndex = lazy(() => import('./components/corpus/CorpusIndex'));
-const CorpusPage = lazy(() => import('./components/corpus/CorpusPage'));
-const SourceIndex = lazy(() => import('./components/source/SourceIndex'));
-const SourcePage = lazy(() => import('./components/source/SourcePage'));
-const TagIndex = lazy(() => import('./components/tag/TagIndex'));
+const CorpusIndex = lazy(
+  /* webpackPrefetch: true */ () => import('./components/corpus/CorpusIndex'),
+);
+const CorpusPage = lazy(
+  /* webpackPrefetch: true */ () => import('./components/corpus/CorpusPage'),
+);
+const SourceIndex = lazy(
+  /* webpackPrefetch: true */ () => import('./components/source/SourceIndex'),
+);
+const SourcePage = lazy(
+  /* webpackPrefetch: true */ () => import('./components/source/SourcePage'),
+);
+const TagIndex = lazy(
+  /* webpackPrefetch: true */ () => import('./components/tag/TagIndex'),
+);
 const MetadataKeyIndex = lazy(
+  /* webpackPrefetch: true */
   () => import('./components/metadata/MetadataKeyIndex'),
 );
-const MediaIndex = lazy(() => import('./components/media/MediaIndex'));
-const MediaPage = lazy(() => import('./components/media/MediaPage'));
+const MediaIndex = lazy(
+  () => import(/* webpackPrefetch: true */ './components/media/MediaIndex'),
+);
+const MediaPage = lazy(
+  () => import(/* webpackPrefetch: true */ './components/media/MediaPage'),
+);
 const ReferenceIndex = lazy(
+  /* webpackPrefetch: true */
   () => import('./components/reference/ReferenceIndex'),
 );
 
