@@ -1,0 +1,323 @@
+{
+  "id": "71fa2f87-61fe-4ff8-940d-c2db1bbcd53e",
+  "title": "Oefen",
+  "description": "Art by Test",
+  "rights": "CC BY-NC-ND",
+  "access": "Open",
+  "location": "",
+  "earliest": null,
+  "latest": null,
+  "contributor": "",
+  "notes": "",
+  "ethics": null,
+  "createdBy": "f5d31d72-2e8f-4205-b359-af4aabeab7cf",
+  "createdAt": "2024-01-23T13:23:53",
+  "updatedAt": "2024-04-04T07:42:59",
+  "parent": null,
+  "tags": [],
+  "languages": [],
+  "sources": [
+    {
+      "id": "e17a3c10-bd5c-4205-aca3-61ecbae0e92d",
+      "externalRef": "https://hdl.handle.net/20.500.11840/1047020",
+      "title": "Unwritten",
+      "description": "Tekening, Drukwerk, Materiële cultuurcollectie",
+      "rights": "CC BY-NC-ND",
+      "access": "Open",
+      "creator": "Test artist",
+      "location": null,
+      "earliest": "2011-01-01",
+      "latest": "2011-01-01",
+      "notes": null,
+      "ethics": null,
+      "createdBy": "f5d31d72-2e8f-4205-b359-af4aabeab7cf",
+      "createdAt": "2024-02-27T10:40:39",
+      "updatedAt": "2024-02-27T10:40:39",
+      "references": [],
+      "corpora": [
+        {
+          "id": "71fa2f87-61fe-4ff8-940d-c2db1bbcd53e",
+          "parentId": null,
+          "title": "Oefen Sterre",
+          "description": "Art by Test Artist over the years",
+          "rights": "CC BY-NC-ND",
+          "access": "Open",
+          "location": "",
+          "earliest": null,
+          "latest": null,
+          "contributor": "",
+          "notes": "",
+          "ethics": null,
+          "createdBy": "f5d31d72-2e8f-4205-b359-af4aabeab7cf",
+          "createdAt": "2024-01-23T13:23:53",
+          "updatedAt": "2024-04-04T07:42:59"
+        }
+      ],
+      "languages": [],
+      "media": [
+        {
+          "id": "dd7fad8e-e810-44ce-84c1-4cdf7da4484b",
+          "title": "Unwritten - Test Artist",
+          "url": "https://www.artgallery.nsw.gov.au/media/collection_images/1/160.jpg",
+          "mediaType": "image/jpeg",
+          "createdBy": "f5d31d72-2e8f-4205-b359-af4aabeab7cf"
+        }
+      ],
+      "metadataValues": [],
+      "tags": []
+    },
+    {
+      "id": "391c09b3-b547-4939-98fe-04ecfcad3927",
+      "externalRef": null,
+      "title": "Test Artist 3",
+      "description": null,
+      "rights": null,
+      "access": null,
+      "creator": null,
+      "location": null,
+      "earliest": null,
+      "latest": null,
+      "notes": null,
+      "ethics": null,
+      "createdBy": "f5d31d72-2e8f-4205-b359-af4aabeab7cf",
+      "createdAt": "2024-03-14T14:31:57",
+      "updatedAt": "2024-03-14T14:31:57",
+      "references": [],
+      "corpora": [
+        {
+          "id": "71fa2f87-61fe-4ff8-940d-c2db1bbcd53e",
+          "parentId": null,
+          "title": "Oefen",
+          "description": "Art by Test Artist over the years",
+          "rights": "CC BY-NC-ND",
+          "access": "Open",
+          "location": "",
+          "earliest": null,
+          "latest": null,
+          "contributor": "",
+          "notes": "",
+          "ethics": null,
+          "createdBy": "f5d31d72-2e8f-4205-b359-af4aabeab7cf",
+          "createdAt": "2024-01-23T13:23:53",
+          "updatedAt": "2024-04-04T07:42:59"
+        }
+      ],
+      "languages": [],
+      "media": [
+        {
+          "id": "39fb1ff2-7e75-45db-ab1d-296e161ac8d5",
+          "title": "",
+          "url": "https://artguide.com.au/assets/files/2017/01/1-Test Artist-095.jpg",
+          "mediaType": "image/jpeg",
+          "createdBy": "f5d31d72-2e8f-4205-b359-af4aabeab7cf"
+        }
+      ],
+      "metadataValues": [],
+      "tags": []
+    },
+    {
+      "id": "f7c97045-8f7c-4f80-a0c3-7976ed1793dc",
+      "externalRef": null,
+      "title": "Test Artist 4",
+      "description": null,
+      "rights": null,
+      "access": null,
+      "creator": null,
+      "location": null,
+      "earliest": null,
+      "latest": null,
+      "notes": null,
+      "ethics": null,
+      "createdBy": "f5d31d72-2e8f-4205-b359-af4aabeab7cf",
+      "createdAt": "2024-03-14T14:33:39",
+      "updatedAt": "2024-03-14T14:33:39",
+      "references": [],
+      "corpora": [
+        {
+          "id": "71fa2f87-61fe-4ff8-940d-c2db1bbcd53e",
+          "parentId": null,
+          "title": "Oefen",
+          "description": "Art by Test Artist over the years",
+          "rights": "CC BY-NC-ND",
+          "access": "Open",
+          "location": "",
+          "earliest": null,
+          "latest": null,
+          "contributor": "",
+          "notes": "",
+          "ethics": null,
+          "createdBy": "f5d31d72-2e8f-4205-b359-af4aabeab7cf",
+          "createdAt": "2024-01-23T13:23:53",
+          "updatedAt": "2024-04-04T07:42:59"
+        }
+      ],
+      "languages": [],
+      "media": [
+        {
+          "id": "e9508be0-423a-48d9-ad5d-40d6891132d8",
+          "title": "",
+          "url": "https://artguide.com.au/assets/files/2017/01/3-Test Artist.jpg",
+          "mediaType": "image/jpeg",
+          "createdBy": "f5d31d72-2e8f-4205-b359-af4aabeab7cf"
+        }
+      ],
+      "metadataValues": [],
+      "tags": []
+    }
+  ],
+  "metadataValues": [],
+  "media": [],
+  "subcorpora": [
+    {
+      "id": "e15512ec-407c-4e9e-b2e6-f17d52f9a87e",
+      "title": "Languages test",
+      "description": "Is het belangrijk dat er meer talen kiesbaar worden of is het mogelijk om talen handmatig toe te laten voegen door gebruikers?",
+      "rights": null,
+      "access": null,
+      "location": null,
+      "earliest": null,
+      "latest": null,
+      "contributor": null,
+      "notes": null,
+      "ethics": null,
+      "createdBy": "f5d31d72-2e8f-4205-b359-af4aabeab7cf",
+      "createdAt": "2024-04-04T08:18:01",
+      "updatedAt": "2024-04-04T08:37:24",
+      "parent": {
+        "id": "71fa2f87-61fe-4ff8-940d-c2db1bbcd53e",
+        "parentId": null,
+        "title": "Oefen Sterre",
+        "description": "Art by Test Artist over the years",
+        "rights": "CC BY-NC-ND",
+        "access": "Open",
+        "location": "",
+        "earliest": null,
+        "latest": null,
+        "contributor": "",
+        "notes": "",
+        "ethics": null,
+        "createdBy": "f5d31d72-2e8f-4205-b359-af4aabeab7cf",
+        "createdAt": "2024-01-23T13:23:53",
+        "updatedAt": "2024-04-04T07:42:59"
+      },
+      "tags": [],
+      "languages": [
+        {
+          "id": "eng",
+          "part2b": "eng",
+          "part2t": "eng",
+          "part1": "en",
+          "scope": "I",
+          "type": "L",
+          "refName": "English",
+          "comment": null
+        },
+        {
+          "id": "nld",
+          "part2b": "dut",
+          "part2t": "nld",
+          "part1": "nl",
+          "scope": "I",
+          "type": "L",
+          "refName": "Dutch",
+          "comment": null
+        },
+        {
+          "id": "fra",
+          "part2b": "fre",
+          "part2t": "fra",
+          "part1": "fr",
+          "scope": "I",
+          "type": "L",
+          "refName": "French",
+          "comment": null
+        },
+        {
+          "id": "mop",
+          "part2b": null,
+          "part2t": null,
+          "part1": null,
+          "scope": "I",
+          "type": "L",
+          "refName": "Mopán Maya",
+          "comment": null
+        },
+        {
+          "id": "que",
+          "part2b": "que",
+          "part2t": "que",
+          "part1": "qu",
+          "scope": "M",
+          "type": "L",
+          "refName": "Quechua",
+          "comment": null
+        },
+        {
+          "id": "wbp",
+          "part2b": null,
+          "part2t": null,
+          "part1": null,
+          "scope": "I",
+          "type": "L",
+          "refName": "Warlpiri",
+          "comment": null
+        },
+        {
+          "id": "piu",
+          "part2b": null,
+          "part2t": null,
+          "part1": null,
+          "scope": "I",
+          "type": "L",
+          "refName": "Pintupi-Luritja",
+          "comment": null
+        },
+        {
+          "id": "tiw",
+          "part2b": null,
+          "part2t": null,
+          "part1": null,
+          "scope": "I",
+          "type": "L",
+          "refName": "Tiwi",
+          "comment": null
+        },
+        {
+          "id": "xmh",
+          "part2b": null,
+          "part2t": null,
+          "part1": null,
+          "scope": "I",
+          "type": "L",
+          "refName": "Kugu-Muminh",
+          "comment": null
+        },
+        {
+          "id": "bvr",
+          "part2b": null,
+          "part2t": null,
+          "part1": null,
+          "scope": "I",
+          "type": "L",
+          "refName": "Burarra",
+          "comment": null
+        }
+      ],
+      "sources": [],
+      "metadataValues": [
+        {
+          "id": "aab8ea12-c824-4f66-b992-79def93c5fc8",
+          "value": "",
+          "createdBy": "f5d31d72-2e8f-4205-b359-af4aabeab7cf",
+          "key": {
+            "id": "1af484d3-77d9-432b-badb-65611ad3d3ee",
+            "key": "Copyright status",
+            "createdBy": "f5d31d72-2e8f-4205-b359-af4aabeab7cf"
+          }
+        }
+      ],
+      "media": [],
+      "subcorpora": []
+    }
+  ]
+}

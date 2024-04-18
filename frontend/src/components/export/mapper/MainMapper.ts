@@ -17,10 +17,12 @@ import { PrimitiveMapper } from './resource/PrimitiveMapper';
 import { ParentMapper } from './resource/ParentMapper';
 import { ReferenceStyle } from '../../reference/ReferenceStyle';
 
+type NamedMapper = { name: string; mapper: RowWithTablesMapper<WithId> };
+
 export class MainMapper implements TablesMapper<WithId> {
   name: string;
 
-  private mappers: Record<string, RowWithTablesMapper<WithId>> = {};
+  private mappers: NamedMapper[] = [];
 
   constructor(allMetadataKeys: string[], referenceStyle: ReferenceStyle) {
     const primitiveMapper = new PrimitiveMapper();
@@ -60,7 +62,7 @@ export class MainMapper implements TablesMapper<WithId> {
       ['id', 'title'],
     );
 
-    this.mappers.corpus = corpusMapper;
+    this.mappers.push({ name: 'corpus', mapper: corpusMapper });
   }
 
   public static async init(referenceStyle: ReferenceStyle) {
@@ -76,9 +78,13 @@ export class MainMapper implements TablesMapper<WithId> {
   }
 
   map(resource: WithId): Table[] {
-    const [name, mapper] = _.entries(this.mappers).find(([, mapper]) =>
-      mapper.canMap(resource),
+    const found = this.mappers.find(namedMapper =>
+      namedMapper.mapper.canMap(resource),
     );
+    if (!found) {
+      throw Error('Could not find mapper for resource: ' + resource.id);
+    }
+    const { name, mapper } = found;
     const mapped = mapper.map(resource, name);
     const allTables = [mapped, ...mapped.tables];
     const groupedTables: Record<string, Table[]> = _.groupBy(

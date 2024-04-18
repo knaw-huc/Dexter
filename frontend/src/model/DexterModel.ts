@@ -1,5 +1,6 @@
 import { Any } from '../components/common/Any';
 import { ReferenceStyle } from '../components/reference/ReferenceStyle';
+import _ from 'lodash';
 
 export type UUID = string;
 /**
@@ -49,7 +50,13 @@ export type Corpus = Omit<ResultCorpus, 'parentId'> & {
 };
 
 export function isCorpus(toTest: Any): toTest is Corpus {
-  return !!((toTest as Corpus)?.title && (toTest as Corpus)?.contributor);
+  if (!toTest) {
+    return false;
+  }
+  return (
+    !_.isUndefined((toTest as Corpus)?.title) &&
+    !_.isUndefined((toTest as Corpus)?.contributor)
+  );
 }
 
 export type SubmitFormCorpus = Omit<Corpus, 'id'>;
@@ -91,10 +98,13 @@ export type Source = ResultSource & {
 };
 
 export function isSource(toTest: Any): toTest is Source {
-  return !!(
-    (toTest as Source)?.description &&
-    (toTest as Source)?.media &&
-    (toTest as Source)?.references
+  if (!toTest) {
+    return false;
+  }
+  return (
+    !_.isUndefined((toTest as Source)?.description) &&
+    !_.isUndefined((toTest as Source)?.media) &&
+    !_.isUndefined((toTest as Source)?.references)
   );
 }
 
@@ -109,7 +119,10 @@ export type FormTag = {
 export type ResultTag = FormTag & WithId<number> & WithCreatedBy;
 
 export function isTag(toTest: Any): toTest is ResultTag {
-  return !!(toTest as ResultTag)?.val;
+  if (!toTest) {
+    return false;
+  }
+  return !_.isUndefined((toTest as ResultTag).val);
 }
 
 export type FormReference = {
@@ -123,8 +136,12 @@ export type ResultReference = Omit<FormReference, 'terms'> & WithId;
 export type Reference = ResultReference;
 
 export function isReference(toTest: Any): toTest is Reference {
-  return !!(
-    (toTest as Reference)?.input && (toTest as Reference).csl !== undefined
+  if (!toTest) {
+    return false;
+  }
+  return (
+    !_.isUndefined((toTest as Reference).input) &&
+    !_.isUndefined((toTest as Reference).csl)
   );
 }
 
@@ -164,7 +181,14 @@ export type MetadataValue = Omit<ResultMetadataValue, 'keyId'> & {
 };
 
 export function isMetadataValue(toTest: Any): toTest is MetadataValue {
-  return !!((toTest as MetadataValue)?.value && (toTest as MetadataValue)?.key);
+  if (!toTest) {
+    return false;
+  }
+
+  return (
+    !_.isUndefined((toTest as MetadataValue).value) &&
+    !_.isUndefined((toTest as MetadataValue).key)
+  );
 }
 
 export function toFormMetadataValue(value: MetadataValue): FormMetadataValue {
@@ -216,7 +240,13 @@ export type ResultMedia = FormMedia &
   };
 
 export function isMedia(toTest: Any): toTest is ResultMedia {
-  return !!((toTest as ResultMedia)?.mediaType && (toTest as ResultMedia)?.url);
+  if (!toTest) {
+    return false;
+  }
+  return (
+    !_.isUndefined((toTest as ResultMedia).mediaType) &&
+    !_.isUndefined((toTest as ResultMedia).url)
+  );
 }
 
 export type ResultDublinCoreMetadata = Record<string, string>;
@@ -238,7 +268,10 @@ export interface ResultLanguage {
 }
 
 export function isLanguage(toTest: Any): toTest is ResultLanguage {
-  return !!(toTest as ResultLanguage)?.refName;
+  if (!toTest) {
+    return false;
+  }
+  return !_.isUndefined((toTest as ResultLanguage).refName);
 }
 
 export type WithId<T extends ID = UUID> = {

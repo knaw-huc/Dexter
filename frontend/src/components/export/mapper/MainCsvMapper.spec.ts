@@ -2,6 +2,7 @@ import { describe, expect, it } from '@jest/globals';
 import { MainMapper } from './MainMapper';
 import { Corpus } from '../../../model/DexterModel';
 import corpus from '../../../test/resources/corpus.json';
+import corpusWithEmptyValues from '../../../test/resources/corpusWithEmptyValues.json';
 import { ReferenceStyle } from '../../reference/ReferenceStyle';
 import { ArrayTable } from './Table';
 
@@ -68,6 +69,12 @@ describe('MainCsvMapper', () => {
     expect(mediaTable.rows.length).toEqual(18);
     expect(csvMediaTable[0]).toEqual(expected[0]);
     expect(csvMediaTable[1]).toEqual(expected[1]);
+  });
+
+  it('can map corpus with null values and empty strings', async () => {
+    const toTest = new MainMapper(customMetadataKeys, apa);
+    const result = toTest.map(corpusWithEmptyValues);
+    expect(result.length).toBe(3);
   });
 
   it('can map corpus source references', async () => {
