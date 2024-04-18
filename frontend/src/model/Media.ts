@@ -1,5 +1,6 @@
 import { Any } from '../components/common/Any';
 import { UUID, WithId } from './Id';
+import _ from 'lodash';
 
 export type SupportedMediaType = 'image/jpeg' | 'image/png';
 export const supportedMediaTypes = ['image/jpeg', 'image/png'];
@@ -20,5 +21,11 @@ export type ResultMedia = FormMedia &
   };
 
 export function isMedia(toTest: Any): toTest is ResultMedia {
-  return !!((toTest as ResultMedia)?.mediaType && (toTest as ResultMedia)?.url);
+  if (!toTest) {
+    return false;
+  }
+  return (
+    !_.isUndefined((toTest as ResultMedia).mediaType) &&
+    !_.isUndefined((toTest as ResultMedia).url)
+  );
 }

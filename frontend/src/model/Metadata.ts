@@ -1,6 +1,7 @@
 import { Any } from '../components/common/Any';
 import { UUID, WithId } from './Id';
 import { WithCreatedBy } from './CreatedBy';
+import _ from 'lodash';
 
 export type FormMetadataKey = {
   key: string;
@@ -16,7 +17,14 @@ export type MetadataValue = Omit<ResultMetadataValue, 'keyId'> & {
 };
 
 export function isMetadataValue(toTest: Any): toTest is MetadataValue {
-  return !!((toTest as MetadataValue)?.value && (toTest as MetadataValue)?.key);
+  if (!toTest) {
+    return false;
+  }
+
+  return (
+    !_.isUndefined((toTest as MetadataValue).value) &&
+    !_.isUndefined((toTest as MetadataValue).key)
+  );
 }
 
 export function toFormMetadataValue(value: MetadataValue): FormMetadataValue {

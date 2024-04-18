@@ -6,6 +6,7 @@ import { ResultLanguage } from './Language';
 import { UUID, WithId } from './Id';
 import { Access } from './Access';
 import { LocalDate, LocalDateTime } from './Date';
+import _ from 'lodash';
 
 /**
  * Corpus form as required by server
@@ -68,7 +69,13 @@ export type Corpus = Omit<ResultCorpus, 'parentId'> & {
 };
 
 export function isCorpus(toTest: Any): toTest is Corpus {
-  return !!((toTest as Corpus)?.title && (toTest as Corpus)?.contributor);
+  if (!toTest) {
+    return false;
+  }
+  return (
+    !_.isUndefined((toTest as Corpus)?.title) &&
+    !_.isUndefined((toTest as Corpus)?.contributor)
+  );
 }
 
 export type SubmitFormCorpus = Omit<Corpus, 'id'>;

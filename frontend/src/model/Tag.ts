@@ -1,6 +1,7 @@
 import { Any } from '../components/common/Any';
 import { WithId } from './Id';
 import { WithCreatedBy } from './CreatedBy';
+import _ from 'lodash';
 
 export type FormTag = {
   val: string;
@@ -9,5 +10,8 @@ export type FormTag = {
 export type ResultTag = FormTag & WithId<number> & WithCreatedBy;
 
 export function isTag(toTest: Any): toTest is ResultTag {
-  return !!(toTest as ResultTag)?.val;
+  if (!toTest) {
+    return false;
+  }
+  return !_.isUndefined((toTest as ResultTag).val);
 }

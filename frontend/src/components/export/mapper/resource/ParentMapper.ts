@@ -14,7 +14,7 @@ export class ParentMapper implements RowMapper<Corpus> {
   map(parent: Corpus) {
     return new RowWithHeader('prefix', [
       ['parent_id', 'parent_title'],
-      [parent?.id, parent?.title],
+      [parent?.id || '', parent?.title || ''],
     ]);
   }
 }

@@ -1,4 +1,5 @@
 import { Any } from '../components/common/Any';
+import _ from 'lodash';
 
 export type ResultListLanguage = {
   id: string;
@@ -12,5 +13,8 @@ export type ResultListLanguages = {
 };
 
 export function isLanguage(toTest: Any): toTest is ResultLanguage {
-  return !!(toTest as ResultLanguage)?.refName;
+  if (!toTest) {
+    return false;
+  }
+  return !_.isUndefined((toTest as ResultLanguage).refName);
 }

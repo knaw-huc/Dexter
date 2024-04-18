@@ -8,6 +8,7 @@ import { ResultReference } from './Reference';
 import { UUID, WithId } from './Id';
 import { Access } from './Access';
 import { LocalDate, LocalDateTime } from './Date';
+import _ from 'lodash';
 
 export type FormSource = {
   title: string;
@@ -67,10 +68,13 @@ export type Source = ResultSource & {
 };
 
 export function isSource(toTest: Any): toTest is Source {
-  return !!(
-    (toTest as Source)?.description &&
-    (toTest as Source)?.media &&
-    (toTest as Source)?.references
+  if (!toTest) {
+    return false;
+  }
+  return (
+    !_.isUndefined((toTest as Source)?.description) &&
+    !_.isUndefined((toTest as Source)?.media) &&
+    !_.isUndefined((toTest as Source)?.references)
   );
 }
 
