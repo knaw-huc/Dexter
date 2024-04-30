@@ -2,7 +2,7 @@ package nl.knaw.huc.dexter.resources
 
 import FormTmsImport
 import ResultImport
-import WereldCulturenDublinCoreImporter
+import WereldCulturenImporter
 import io.dropwizard.auth.Auth
 import nl.knaw.huc.dexter.api.ResourcePaths
 import nl.knaw.huc.dexter.auth.DexterUser
@@ -19,7 +19,7 @@ import javax.ws.rs.core.MediaType.APPLICATION_JSON
 @RolesAllowed(RoleNames.USER)
 @Produces(APPLICATION_JSON)
 class ImportResource(
-    private val importer: WereldCulturenDublinCoreImporter
+    private val importer: WereldCulturenImporter
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
     private val wereldculturenHandleUrlMatcher = Regex("https://hdl\\.handle\\.net/20\\.500\\.11840/([0-9]*)")

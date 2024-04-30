@@ -1,4 +1,3 @@
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.w3c.dom.NodeList
 import org.xml.sax.InputSource
 import java.io.StringReader
@@ -18,7 +17,7 @@ data class Tms2Dexter(
     val tmsPath: String
 )
 
-class WereldCulturenDublinCoreImporter {
+class WereldCulturenImporter {
     private val client: Client = ClientBuilder.newClient()
     private val xpath: XPath
     private val tms2DexterFields: List<Tms2Dexter>

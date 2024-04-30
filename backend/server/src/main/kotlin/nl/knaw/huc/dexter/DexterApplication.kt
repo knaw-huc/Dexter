@@ -6,7 +6,7 @@ import SupportedMediaTypeSerializer
 import UnauthorizedExceptionMapper
 import UserResource
 import UserSettingsHelper
-import WereldCulturenDublinCoreImporter
+import WereldCulturenImporter
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import `in`.vectorpro.dropwizard.swagger.SwaggerBundle
@@ -76,7 +76,7 @@ class DexterApplication : Application<DexterConfiguration>() {
         migrateDatabase(configuration.dataSourceFactory, configuration.flyway)
         customizeObjectMapper(environment)
         val jdbi = setupJdbi(environment, configuration.dataSourceFactory)
-        val wereldCulturenDublinCoreMapper = WereldCulturenDublinCoreImporter()
+        val wereldCulturenDublinCoreMapper = WereldCulturenImporter()
 
         // TODO: why is implementationVersion null in dev mode?
         val appVersion = javaClass.getPackage().implementationVersion ?: "no-implementation-version-found";

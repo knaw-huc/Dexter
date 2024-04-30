@@ -1,13 +1,13 @@
 package nl.knaw.huc.dexter.helpers
 
-import WereldCulturenDublinCoreImporter
+import WereldCulturenImporter
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 
-class WereldCulturenDublinCoreImporterTest {
+class WereldCulturenImporterTest {
 
-    val toTest = WereldCulturenDublinCoreImporter()
+    val toTest = WereldCulturenImporter()
 
     @Test
     @Throws(Exception::class)
