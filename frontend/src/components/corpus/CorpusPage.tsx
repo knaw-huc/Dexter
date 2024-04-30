@@ -6,7 +6,11 @@ import { deleteCorpus, deleteMetadataValue } from '../../utils/API';
 import { EditButton } from '../common/EditButton';
 import _ from 'lodash';
 import { TagList } from '../tag/TagList';
-import { FieldLabel, ShortFieldsSummary } from '../common/ShortFieldsSummary';
+import {
+  FieldLabel,
+  KeyLabel,
+  ShortFieldsSummary,
+} from '../common/ShortFieldsSummary';
 import { CorpusIcon } from './CorpusIcon';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
 import { CorporaBreadCrumbLink } from './CorporaBreadCrumbLink';
@@ -78,15 +82,15 @@ export const CorpusPage = () => {
     }
   }
 
-  const shortCorpusFields: (keyof Corpus)[] = [
-    'location',
-    'languages',
-    'earliest',
-    'latest',
-    'rights',
-    'ethics',
-    'access',
-    'contributor',
+  const shortCorpusFields: KeyLabel<Corpus>[] = [
+    { key: 'location' },
+    { key: 'languages' },
+    { key: 'earliest' },
+    { key: 'latest' },
+    { key: 'rights' },
+    { key: 'ethics' },
+    { key: 'access' },
+    { key: 'contributor' },
   ];
 
   function handleExported() {
@@ -129,7 +133,7 @@ export const CorpusPage = () => {
       )}
       <ShortFieldsSummary<Corpus>
         resource={corpus}
-        fieldNames={shortCorpusFields}
+        fields={shortCorpusFields}
         fieldMapper={(corpus, field) =>
           field === 'languages' && corpus[field].map(l => l.refName).join(', ')
         }

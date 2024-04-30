@@ -8,12 +8,13 @@ import java.time.LocalDateTime
 import java.util.*
 
 data class FormSource(
+    val externalRef: String? = null,
+    val externalId: String? = null,
     val title: String,
     val description: String? = null,
     val rights: String? = null,
     val access: AccessType? = null,
     val creator: String? = null,
-    val externalRef: String? = null,
     val location: String? = null,
     val earliest: LocalDate? = null,
     val latest: LocalDate? = null,
@@ -24,6 +25,7 @@ data class FormSource(
 data class ResultSource(
     val id: UUID,
     val externalRef: String? = null,
+    val externalId: String? = null,
     val title: String,
     val description: String? = null,
     val rights: String? = null,
@@ -45,6 +47,7 @@ data class ResultSource(
 data class ResultSourceWithResources (
     val id: UUID,
     val externalRef: String? = null,
+    val externalId: String? = null,
     val title: String,
     val description: String? = null,
     val rights: String? = null,
@@ -77,6 +80,7 @@ fun ResultSource.toResultSourceWithResources(
 ) = ResultSourceWithResources(
     id = id,
     externalRef = externalRef,
+    externalId = externalId,
     title = title,
     description = description,
     rights = rights,

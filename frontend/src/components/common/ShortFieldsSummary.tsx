@@ -2,6 +2,7 @@ import React from 'react';
 import { grey } from '@mui/material/colors';
 import _ from 'lodash';
 import styled from '@emotion/styled';
+
 type FieldMapper<T> = (resource: T, fieldName: keyof T) => string | undefined;
 
 export const SummaryP = styled.p`
@@ -9,21 +10,23 @@ export const SummaryP = styled.p`
   margin-top: 1.5em;
 `;
 
+export type KeyLabel<T> = { key: keyof T; label?: string };
+
 export function ShortFieldsSummary<T>(props: {
-  fieldNames: (keyof T)[];
+  fields: KeyLabel<T>[];
   resource: T;
   fieldMapper?: FieldMapper<T>;
 }) {
-  const fieldsToShow = props.fieldNames.filter(
-    name => !_.isEmpty(props.resource[name]),
+  const fieldsToShow = props.fields.filter(
+    field => !_.isEmpty(props.resource[field.key]),
   );
   return (
     <SummaryP>
-      {fieldsToShow.map((field: keyof T, i) => [
+      {fieldsToShow.map((field: KeyLabel<T>, i) => [
         i > 0 && <Spacer key={`spacer-${i}`} />,
         <ShortField<T>
           key={i}
-          fieldName={field}
+          field={field}
           resource={props.resource}
           fieldMapper={props.fieldMapper}
         />,
@@ -33,20 +36,21 @@ export function ShortFieldsSummary<T>(props: {
 }
 
 export function ShortField<T>(props: {
-  fieldName: keyof T;
+  field: KeyLabel<T>;
   resource: T;
   fieldMapper: FieldMapper<T>;
 }) {
-  const label = String(props.fieldName);
+  const field = props.field;
+  const label = String(field.label || field.key);
 
   let value: string;
-
   if (props.fieldMapper) {
-    value = props.fieldMapper(props.resource, props.fieldName);
+    value = props.fieldMapper(props.resource, field.key);
   }
   if (!value) {
-    value = String(props.resource[props.fieldName]);
+    value = String(props.resource[field.key]);
   }
+
   if (!value) {
     return null;
   }

@@ -107,6 +107,16 @@ export function SourceForm(props: SourceFormProps) {
         />
 
         {renderFormField('title')}
+
+        <TextFieldWithError
+          label={
+            <Hinted txt="External Identifier" hint={toHint('externalId')} />
+          }
+          error={errors['externalId']}
+          value={form['externalId']}
+          onChange={value => setForm(f => assign(f, { externalId: value }))}
+        />
+
         {renderFormField('description', { rows: 6, multiline: true })}
         {renderFormField('creator')}
         {renderFormField('rights')}

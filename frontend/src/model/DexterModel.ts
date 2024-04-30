@@ -68,6 +68,7 @@ export type FormSource = {
   access?: Access;
   creator?: string;
   externalRef?: string;
+  externalId?: string;
   location?: string;
   earliest?: LocalDate;
   latest?: LocalDate;

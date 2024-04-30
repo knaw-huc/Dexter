@@ -5,7 +5,11 @@ import { SourceForm } from './SourceForm';
 import { EditButton } from '../common/EditButton';
 import { TagList } from '../tag/TagList';
 import _ from 'lodash';
-import { FieldLabel, ShortFieldsSummary } from '../common/ShortFieldsSummary';
+import {
+  FieldLabel,
+  KeyLabel,
+  ShortFieldsSummary,
+} from '../common/ShortFieldsSummary';
 import { SourceIcon } from './SourceIcon';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
 import { SourcesBreadCrumbLink } from './SourcesBreadCrumbLink';
@@ -40,15 +44,16 @@ export const SourcePage = () => {
     setShowForm(false);
   };
 
-  const shortSourceFields: (keyof Source)[] = [
-    'location',
-    'languages',
-    'earliest',
-    'latest',
-    'rights',
-    'ethics',
-    'access',
-    'creator',
+  const shortSourceFields: KeyLabel<Source>[] = [
+    { key: 'externalId', label: 'external ID' },
+    { key: 'location' },
+    { key: 'languages' },
+    { key: 'earliest' },
+    { key: 'latest' },
+    { key: 'rights' },
+    { key: 'ethics' },
+    { key: 'access' },
+    { key: 'creator' },
   ];
 
   if (!isInit) {
@@ -80,10 +85,11 @@ export const SourcePage = () => {
       )}
       <ShortFieldsSummary<Source>
         resource={source}
-        fieldNames={shortSourceFields}
-        fieldMapper={(source, field) =>
-          field === 'languages' && source[field].map(l => l.refName).join(', ')
-        }
+        fields={shortSourceFields}
+        fieldMapper={(source, field) => {
+          if (field === 'languages')
+            return source[field].map(l => l.refName).join(', ');
+        }}
       />
       {source.externalRef && (
         <ExternalLink

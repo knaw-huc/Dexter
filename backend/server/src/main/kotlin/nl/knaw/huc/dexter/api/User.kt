@@ -1,7 +1,5 @@
 package nl.knaw.huc.dexter.api
 
-import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.annotation.JsonValue
 import java.util.*
 
 data class User(val id: UUID, val name: String)

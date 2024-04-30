@@ -1,0 +1,1 @@
+alter table sources add column external_id text;
