@@ -15,7 +15,6 @@ import { LoginAvatar } from './LoginAvatar';
 
 import { Version } from './Version';
 import { useImmer } from 'use-immer';
-import ErrorBoundary from './common/error/ErrorBoundary';
 import { useUser } from '../resources/useUser';
 
 const pages = ['corpora', 'sources', 'tags', 'metadata', 'media', 'references'];
@@ -63,9 +62,7 @@ export default function Header() {
                 </Button>
               ))}
           </Box>
-          <ErrorBoundary>
-            {user?.name ? <UserMenu /> : <LoginAvatar />}
-          </ErrorBoundary>
+          {user?.name ? <UserMenu /> : <LoginAvatar />}
         </Toolbar>
       </Container>
     </AppBar>

@@ -7,18 +7,30 @@ import { getAssetValidated } from './utils/API';
 import { enableMapSet } from 'immer';
 import { useUser } from './resources/useUser';
 import { useLanguages } from './resources/useLanguages';
+import { useThrowSync } from './components/common/error/useThrowSync';
+
+// Use maps and sets with Immer:
+enableMapSet();
 
 export function App() {
-  // Use maps and sets with Immer:
-  enableMapSet();
-
   const { initLanguages } = useLanguages();
   const { initUserResources } = useUser();
   const { setLabels } = useLabelStore();
+  const throwSync = useThrowSync();
+  const { login } = useUser();
 
-  useEffect(init, []);
+  useEffect(() => void init(), []);
 
-  function init() {
+  async function init() {
+    try {
+      await login();
+    } catch (e) {
+      if (e.response?.status === 401) {
+        throwSync(new Error('Could not login: username & password incorrect'));
+      } else {
+        throwSync(new Error('Could not login'));
+      }
+    }
     initUserResources();
     initLanguages();
     getAssetValidated(LABEL_FILE).then(r => r.json().then(setLabels));
