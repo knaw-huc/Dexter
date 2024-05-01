@@ -13,6 +13,7 @@ import {
   WithMetadata,
 } from '../model/Metadata';
 import { UUID } from '../model/Id';
+import { UserResourceByIdMaps } from '../model/User';
 
 export function useMetadata() {
   const { updateUserResources } = useUserResourcesStore();
@@ -71,11 +72,12 @@ export function useMetadata() {
     return created;
   };
 
-  const deleteMetadataValue = async (id: string): Promise<void> => {
+  const deleteMetadataValue = async (
+    id: string,
+    draft: UserResourceByIdMaps,
+  ): Promise<void> => {
     await deleteValidated(`/api/metadata/values/${id}`);
-    updateUserResources(draft => {
-      draft.metadataValues.delete(id);
-    });
+    draft.metadataValues.delete(id);
   };
 
   /**

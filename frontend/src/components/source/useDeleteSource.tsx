@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { reject } from '../../utils/reject';
 import { useSources } from '../../resources/useSources';
-import { useMetadata } from '../../resources/useMetadata';
 import { Source } from '../../model/Source';
 
 export function useDeleteSource(params: { onError: (error: Error) => void }): {
@@ -9,7 +8,6 @@ export function useDeleteSource(params: { onError: (error: Error) => void }): {
 } {
   const { deleteSource } = useSources();
   const navigate = useNavigate();
-  const { deleteMetadataValue } = useMetadata();
 
   return {
     deleteSource: async (source: Source) => {
@@ -18,9 +16,6 @@ export function useDeleteSource(params: { onError: (error: Error) => void }): {
       }
 
       try {
-        for (const value of source.metadataValues) {
-          await deleteMetadataValue(value.id);
-        }
         await deleteSource(source.id);
         navigate(`/sources`);
       } catch (e) {

@@ -20,12 +20,10 @@ import { ExportForm } from '../export/ExportForm';
 import { HintedTitle } from '../common/HintedTitle';
 import { reject } from '../../utils/reject';
 import { useCorpora } from '../../resources/useCorpora';
-import { useMetadata } from '../../resources/useMetadata';
 import { Corpus } from '../../model/Corpus';
 
 export default function CorpusPage() {
   const corpusId = useParams().corpusId;
-  const { deleteMetadataValue } = useMetadata();
 
   const { getCorpus, deleteCorpus, findSourceOptions, findCorpusOptions } =
     useCorpora();
@@ -57,9 +55,6 @@ export default function CorpusPage() {
     }
 
     try {
-      for (const value of corpus.metadataValues) {
-        await deleteMetadataValue(value.id);
-      }
       await deleteCorpus(corpus.id);
       navigate(`/corpora`);
     } catch (e) {

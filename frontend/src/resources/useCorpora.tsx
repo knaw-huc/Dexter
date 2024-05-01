@@ -23,7 +23,7 @@ import { ResultMetadataValue } from '../model/Metadata';
 import { ResultLanguage } from '../model/Language';
 import { UUID, WithId } from '../model/Id';
 import { UserResourceByIdMaps } from '../model/User';
-import { current } from 'immer';
+import { createDraft, current } from 'immer';
 import { Any } from '../components/common/Any';
 
 export function useCorpora() {
@@ -89,19 +89,22 @@ export function useCorpora() {
   }
 
   const deleteCorpus = async (id: string): Promise<void> => {
+    const batch = createDraft(store.userResources);
+    for (const valueId of batch.corpora.get(id).metadataValues) {
+      await deleteMetadataValue(valueId, batch);
+    }
     await deleteValidated(`/api/corpora/${id}`);
-    updateUserResources(draft => {
-      draft.corpora.delete(id);
-      for (const corpus of draft.corpora.values()) {
-        removeIdFrom(corpus.subcorpora, id);
-        if (corpus.parentId === id) {
-          corpus.parentId = null;
-        }
+    batch.corpora.delete(id);
+    for (const corpus of batch.corpora.values()) {
+      removeIdFrom(corpus.subcorpora, id);
+      if (corpus.parentId === id) {
+        corpus.parentId = null;
       }
-      for (const source of draft.sources.values()) {
-        removeIdFrom(source.corpora, id);
-      }
-    });
+    }
+    for (const source of batch.sources.values()) {
+      removeIdFrom(source.corpora, id);
+    }
+    updateUserResources(draft => assign(draft, batch));
   };
 
   const addSourcesToCorpus = async (
@@ -170,10 +173,10 @@ export function useCorpora() {
     corpusId: string,
     metadataValueId: string,
   ): Promise<void> => {
-    await deleteMetadataValue(metadataValueId);
-    updateUserResources(draft => {
-      removeIdFrom(draft.corpora.get(corpusId).metadataValues, metadataValueId);
-    });
+    const batch = createDraft(store.userResources);
+    await deleteMetadataValue(metadataValueId, batch);
+    removeIdFrom(batch.corpora.get(corpusId).metadataValues, metadataValueId);
+    updateUserResources(draft => assign(draft, batch));
   };
 
   const addTagsToCorpus = async (

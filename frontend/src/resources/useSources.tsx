@@ -22,6 +22,7 @@ import { ResultMedia } from '../model/Media';
 import { ResultLanguage } from '../model/Language';
 import { ResultReference } from '../model/Reference';
 import { UUID, WithId } from '../model/Id';
+import { createDraft } from 'immer';
 
 export function useSources() {
   const { updateUserResources } = useUserResourcesStore();
@@ -58,13 +59,17 @@ export function useSources() {
   };
 
   const deleteSource = async (id: string): Promise<void> => {
+    const batch = createDraft(store.userResources);
+    const source = batch.sources.get(id);
+    for (const valueId of source.metadataValues) {
+      await deleteMetadataValue(valueId, batch);
+    }
     await deleteValidated(`/api/sources/${id}`);
-    updateUserResources(draft => {
-      draft.sources.delete(id);
-      for (const corpus of draft.corpora.values()) {
-        removeIdFrom(corpus.sources, id);
-      }
-    });
+    batch.sources.delete(id);
+    for (const corpus of batch.corpora.values()) {
+      removeIdFrom(corpus.sources, id);
+    }
+    updateUserResources(draft => assign(draft, batch));
   };
 
   const addLanguagesToSource = async (
@@ -140,10 +145,10 @@ export function useSources() {
     sourceId: string,
     metadataValueId: string,
   ): Promise<void> => {
-    await deleteMetadataValue(metadataValueId);
-    updateUserResources(draft => {
-      removeIdFrom(draft.sources.get(sourceId).metadataValues, metadataValueId);
-    });
+    const batch = createDraft(store.userResources);
+    await deleteMetadataValue(metadataValueId, batch);
+    removeIdFrom(batch.sources.get(sourceId).metadataValues, metadataValueId);
+    updateUserResources(draft => assign(draft, batch));
   };
 
   const addMetadataValueToSource = async (
