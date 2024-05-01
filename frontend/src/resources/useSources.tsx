@@ -59,17 +59,17 @@ export function useSources() {
   };
 
   const deleteSource = async (id: string): Promise<void> => {
-    const batch = createDraft(store.userResources);
-    const source = batch.sources.get(id);
+    const draft = createDraft(store.userResources);
+    const source = draft.sources.get(id);
     for (const valueId of source.metadataValues) {
-      await deleteMetadataValue(valueId, batch);
+      await deleteMetadataValue(valueId, draft);
     }
     await deleteValidated(`/api/sources/${id}`);
-    batch.sources.delete(id);
-    for (const corpus of batch.corpora.values()) {
+    draft.sources.delete(id);
+    for (const corpus of draft.corpora.values()) {
       removeIdFrom(corpus.sources, id);
     }
-    updateUserResources(draft => assign(draft, batch));
+    updateUserResources(result => assign(result, draft));
   };
 
   const addLanguagesToSource = async (
@@ -145,10 +145,10 @@ export function useSources() {
     sourceId: string,
     metadataValueId: string,
   ): Promise<void> => {
-    const batch = createDraft(store.userResources);
-    await deleteMetadataValue(metadataValueId, batch);
-    removeIdFrom(batch.sources.get(sourceId).metadataValues, metadataValueId);
-    updateUserResources(draft => assign(draft, batch));
+    const draft = createDraft(store.userResources);
+    await deleteMetadataValue(metadataValueId, draft);
+    removeIdFrom(draft.sources.get(sourceId).metadataValues, metadataValueId);
+    updateUserResources(result => assign(result, draft));
   };
 
   const addMetadataValueToSource = async (

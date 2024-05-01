@@ -89,22 +89,22 @@ export function useCorpora() {
   }
 
   const deleteCorpus = async (id: string): Promise<void> => {
-    const batch = createDraft(store.userResources);
-    for (const valueId of batch.corpora.get(id).metadataValues) {
-      await deleteMetadataValue(valueId, batch);
+    const draft = createDraft(store.userResources);
+    for (const valueId of draft.corpora.get(id).metadataValues) {
+      await deleteMetadataValue(valueId, draft);
     }
     await deleteValidated(`/api/corpora/${id}`);
-    batch.corpora.delete(id);
-    for (const corpus of batch.corpora.values()) {
+    draft.corpora.delete(id);
+    for (const corpus of draft.corpora.values()) {
       removeIdFrom(corpus.subcorpora, id);
       if (corpus.parentId === id) {
         corpus.parentId = null;
       }
     }
-    for (const source of batch.sources.values()) {
+    for (const source of draft.sources.values()) {
       removeIdFrom(source.corpora, id);
     }
-    updateUserResources(draft => assign(draft, batch));
+    updateUserResources(result => assign(result, draft));
   };
 
   const addSourcesToCorpus = async (
@@ -173,10 +173,10 @@ export function useCorpora() {
     corpusId: string,
     metadataValueId: string,
   ): Promise<void> => {
-    const batch = createDraft(store.userResources);
-    await deleteMetadataValue(metadataValueId, batch);
-    removeIdFrom(batch.corpora.get(corpusId).metadataValues, metadataValueId);
-    updateUserResources(draft => assign(draft, batch));
+    const draft = createDraft(store.userResources);
+    await deleteMetadataValue(metadataValueId, draft);
+    removeIdFrom(draft.corpora.get(corpusId).metadataValues, metadataValueId);
+    updateUserResources(result => assign(result, draft));
   };
 
   const addTagsToCorpus = async (

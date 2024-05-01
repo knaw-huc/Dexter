@@ -55,8 +55,8 @@ export default function CorpusPage() {
     }
 
     try {
-      await deleteCorpus(corpus.id);
       navigate(`/corpora`);
+      await deleteCorpus(corpus.id);
     } catch (e) {
       throwSync(e);
     }

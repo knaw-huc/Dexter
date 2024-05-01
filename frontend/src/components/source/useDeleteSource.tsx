@@ -16,8 +16,8 @@ export function useDeleteSource(params: { onError: (error: Error) => void }): {
       }
 
       try {
-        await deleteSource(source.id);
         navigate(`/sources`);
+        await deleteSource(source.id);
       } catch (e) {
         params.onError(e);
       }
