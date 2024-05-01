@@ -28,11 +28,9 @@ export const createUserResourceSlice: ImmerBoundStateCreator<
 > = set => ({
   ...defaultUserResources,
   isLoading: true,
-  error: null,
   setUserResources: update =>
     set(state => assign(state.userResources, toIdMaps(update))),
   updateUserResources: recipe => set(state => recipe(state.userResources)),
-  setError: update => set(state => void (state.userResources.error = update)),
   setLoading: update =>
     set(state => void (state.userResources.isLoading = update)),
 });

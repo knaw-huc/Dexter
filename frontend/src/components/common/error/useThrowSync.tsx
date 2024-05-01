@@ -3,7 +3,7 @@ import { ErrorWithMessage } from './ErrorWithMessage';
 import { useImmer } from 'use-immer';
 
 /**
- * Allow async errors to be caught by error boundaries
+ * Allow errors in async calls to be caught by error boundaries
  */
 export const useThrowSync = () => {
   const [, setError] = useImmer(null);

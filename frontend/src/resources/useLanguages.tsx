@@ -2,9 +2,11 @@ import { getValidated, postValidated } from '../utils/API';
 import { useBoundStore } from './store/useBoundStore';
 import { toValueArray } from './utils/toValueArray';
 import { ResultLanguage } from '../model/Language';
+import { useThrowSync } from '../components/common/error/useThrowSync';
 
 export function useLanguages() {
   const { languages } = useBoundStore();
+  const throwSync = useThrowSync();
 
   const getLanguages = (): ResultLanguage[] => {
     return toValueArray(languages.languages);
@@ -22,7 +24,7 @@ export function useLanguages() {
         languages.setLanguages(l);
         languages.setLoading(false);
       })
-      .catch(languages.setError);
+      .catch(throwSync);
   };
 
   return {

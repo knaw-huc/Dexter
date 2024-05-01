@@ -2,10 +2,12 @@ import { getValidated, postValidated, putValidated } from '../utils/API';
 import { useBoundStore } from './store/useBoundStore';
 import { useUserStore } from './store/UserStore';
 import { User, UserSettings } from '../model/User';
+import { useThrowSync } from '../components/common/error/useThrowSync';
 
 export function useUser() {
   const { userResources } = useBoundStore();
   const { user, setUserName, setUserSettings } = useUserStore();
+  const throwSync = useThrowSync();
 
   const login = async (): Promise<User> => {
     const user = await postValidated(`/api/user/login`);
@@ -31,7 +33,7 @@ export function useUser() {
         userResources.setUserResources(r);
         userResources.setLoading(false);
       })
-      .catch(userResources.setError);
+      .catch(throwSync);
   };
 
   return {
