@@ -7,7 +7,7 @@ import { deleteValidated, postValidated, putValidated } from '../utils/API';
 import { useUserResourcesStore } from './store/useUserResourcesStore';
 import { assign } from '../utils/recipe/assign';
 import { addIdsTo } from './utils/recipe/addIdsTo';
-import { removeIdsFrom } from './utils/recipe/removeIdsFrom';
+import { removeIdFrom } from './utils/recipe/removeIdFrom';
 import { updateLinkedResourcesWith } from '../utils/updateRemoteIds';
 import { useMetadata } from './useMetadata';
 import {
@@ -62,7 +62,7 @@ export function useSources() {
     updateUserResources(draft => {
       draft.sources.delete(id);
       for (const corpus of draft.corpora.values()) {
-        removeIdsFrom(corpus.sources, id);
+        removeIdFrom(corpus.sources, id);
       }
     });
   };
@@ -82,7 +82,7 @@ export function useSources() {
     languageId: string,
   ): Promise<void> => {
     updateUserResources(draft => {
-      removeIdsFrom(draft.sources.get(sourceId).languages, languageId);
+      removeIdFrom(draft.sources.get(sourceId).languages, languageId);
     });
     await deleteValidated(`/api/sources/${sourceId}/languages/${languageId}`);
   };
@@ -102,7 +102,7 @@ export function useSources() {
     tagId: string,
   ): Promise<void> => {
     updateUserResources(draft => {
-      removeIdsFrom(draft.sources.get(sourceId).tags, tagId);
+      removeIdFrom(draft.sources.get(sourceId).tags, tagId);
     });
     await deleteValidated(`/api/sources/${sourceId}/tags/${tagId}`);
   };
@@ -122,7 +122,7 @@ export function useSources() {
     referenceId: string,
   ): Promise<void> => {
     updateUserResources(draft => {
-      removeIdsFrom(draft.sources.get(sourceId).references, referenceId);
+      removeIdFrom(draft.sources.get(sourceId).references, referenceId);
     });
     await deleteValidated(`/api/sources/${sourceId}/references/${referenceId}`);
   };
@@ -132,10 +132,7 @@ export function useSources() {
     metadataValueId: string,
   ): Promise<void> => {
     updateUserResources(draft => {
-      removeIdsFrom(
-        draft.sources.get(sourceId).metadataValues,
-        metadataValueId,
-      );
+      removeIdFrom(draft.sources.get(sourceId).metadataValues, metadataValueId);
     });
     await deleteMetadataValue(metadataValueId);
   };
@@ -168,7 +165,7 @@ export function useSources() {
     mediaId: string,
   ): Promise<void> => {
     updateUserResources(draft => {
-      removeIdsFrom(draft.sources.get(sourceId).media, mediaId);
+      removeIdFrom(draft.sources.get(sourceId).media, mediaId);
     });
     await deleteValidated(`/api/sources/${sourceId}/media/${mediaId}`);
   };

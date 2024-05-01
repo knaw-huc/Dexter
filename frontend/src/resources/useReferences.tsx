@@ -2,7 +2,7 @@ import { useUserResourcesStore } from './store/useUserResourcesStore';
 import { deleteValidated, postValidated, putValidated } from '../utils/API';
 import { toValueArray } from './utils/toValueArray';
 import { assign } from '../utils/recipe/assign';
-import { removeIdsFrom } from './utils/recipe/removeIdsFrom';
+import { removeIdFrom } from './utils/recipe/removeIdFrom';
 import { FormReference, ResultReference } from '../model/Reference';
 import { UUID } from '../model/Id';
 
@@ -39,7 +39,7 @@ export function useReferences() {
     updateUserResources(draft => {
       draft.references.delete(id);
       for (const source of draft.sources.values()) {
-        removeIdsFrom(source.references, id);
+        removeIdFrom(source.references, id);
       }
     });
   };

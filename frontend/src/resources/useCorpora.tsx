@@ -8,7 +8,7 @@ import { linkCorpusChildren } from './utils/linkCorpusChildren';
 import { findSourceOptions } from './utils/findSourceOptions';
 import { findCorpusOptions } from './utils/findCorpusOptions';
 import { toValueArray } from './utils/toValueArray';
-import { removeIdsFrom } from './utils/recipe/removeIdsFrom';
+import { removeIdFrom } from './utils/recipe/removeIdFrom';
 import { addIdsTo } from './utils/recipe/addIdsTo';
 import { useMetadata } from './useMetadata';
 import {
@@ -22,6 +22,7 @@ import { ResultTag } from '../model/Tag';
 import { ResultMetadataValue } from '../model/Metadata';
 import { ResultLanguage } from '../model/Language';
 import { UUID, WithId } from '../model/Id';
+import { UserResourceByIdMaps } from '../model/User';
 
 export function useCorpora() {
   const { updateUserResources } = useUserResourcesStore();
@@ -39,9 +40,15 @@ export function useCorpora() {
   }
 
   const createCorpus = async (newCorpus: FormCorpus): Promise<ResultCorpus> => {
-    const created = await postValidated(`/api/corpora`, newCorpus);
+    const created: ResultCorpus = await postValidated(
+      `/api/corpora`,
+      newCorpus,
+    );
     updateUserResources(draft => {
       draft.corpora.set(created.id, toResultCorpusWithChildren(created));
+      if (created.parentId) {
+        addIdsTo(draft.corpora.get(created.parentId).subcorpora, [created.id]);
+      }
     });
     return created;
   };
@@ -50,25 +57,47 @@ export function useCorpora() {
     id: string,
     form: FormCorpus,
   ): Promise<ResultCorpus> => {
-    const updated = await putValidated(`/api/corpora/${id}`, form);
+    const updated: ResultCorpus = await putValidated(
+      `/api/corpora/${id}`,
+      form,
+    );
     updateUserResources(draft => {
-      assign(draft.corpora.get(id), updated);
+      const prev = draft.corpora.get(id);
+      assign(prev, updated);
+      updateParentSubcorpora(draft, id, prev.parentId, updated.parentId);
     });
     return updated;
   };
+
+  function updateParentSubcorpora(
+    draft: UserResourceByIdMaps,
+    subcorpusId: UUID,
+    prevParentId: UUID,
+    nextParentId: UUID,
+  ) {
+    if (prevParentId === nextParentId) {
+      return;
+    }
+    if (nextParentId) {
+      addIdsTo(draft.corpora.get(nextParentId).subcorpora, [subcorpusId]);
+    }
+    if (prevParentId) {
+      removeIdFrom(draft.corpora.get(prevParentId).subcorpora, prevParentId);
+    }
+  }
 
   const deleteCorpus = async (id: string): Promise<void> => {
     await deleteValidated(`/api/corpora/${id}`);
     updateUserResources(draft => {
       draft.corpora.delete(id);
       for (const corpus of draft.corpora.values()) {
-        removeIdsFrom(corpus.subcorpora, id);
+        removeIdFrom(corpus.subcorpora, id);
         if (corpus.parentId === id) {
           corpus.parentId = null;
         }
       }
       for (const source of draft.sources.values()) {
-        removeIdsFrom(source.corpora, id);
+        removeIdFrom(source.corpora, id);
       }
     });
   };
@@ -88,7 +117,7 @@ export function useCorpora() {
     sourceId: string,
   ): Promise<void> => {
     updateUserResources(draft => {
-      removeIdsFrom(draft.corpora.get(corpusId).sources, sourceId);
+      removeIdFrom(draft.corpora.get(corpusId).sources, sourceId);
     });
     return deleteValidated(`/api/corpora/${corpusId}/sources/${sourceId}`);
   };
@@ -108,7 +137,7 @@ export function useCorpora() {
     languageId: string,
   ): Promise<void> => {
     updateUserResources(draft => {
-      removeIdsFrom(draft.corpora.get(corpusId).languages, languageId);
+      removeIdFrom(draft.corpora.get(corpusId).languages, languageId);
     });
     return deleteValidated(`/api/corpora/${corpusId}/languages/${languageId}`);
   };
@@ -131,10 +160,7 @@ export function useCorpora() {
     metadataValueId: string,
   ): Promise<void> => {
     updateUserResources(draft => {
-      removeIdsFrom(
-        draft.corpora.get(corpusId).metadataValues,
-        metadataValueId,
-      );
+      removeIdFrom(draft.corpora.get(corpusId).metadataValues, metadataValueId);
     });
     return deleteMetadataValue(metadataValueId);
   };
@@ -154,7 +180,7 @@ export function useCorpora() {
     tagId: number,
   ): Promise<void> => {
     updateUserResources(draft => {
-      removeIdsFrom(draft.corpora.get(corpusId).tags, tagId);
+      removeIdFrom(draft.corpora.get(corpusId).tags, tagId);
     });
     return deleteValidated(`/api/corpora/${corpusId}/tags/${tagId}`);
   };

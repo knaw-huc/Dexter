@@ -2,7 +2,7 @@ import { useUserResourcesStore } from './store/useUserResourcesStore';
 import { deleteValidated, postValidated, putValidated } from '../utils/API';
 import { toValueArray } from './utils/toValueArray';
 import { assign } from '../utils/recipe/assign';
-import { removeIdsFrom } from './utils/recipe/removeIdsFrom';
+import { removeIdFrom } from './utils/recipe/removeIdFrom';
 import { FormMedia, ResultMedia } from '../model/Media';
 import { UUID } from '../model/Id';
 
@@ -41,7 +41,7 @@ export function useMedia() {
     updateUserResources(draft => {
       draft.media.delete(mediaId);
       for (const source of draft.sources.values()) {
-        removeIdsFrom(source.media, mediaId);
+        removeIdFrom(source.media, mediaId);
       }
     });
   };

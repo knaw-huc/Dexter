@@ -1,6 +1,6 @@
 import { useUserResourcesStore } from './store/useUserResourcesStore';
 import { deleteValidated, postValidated } from '../utils/API';
-import { removeIdsFrom } from './utils/recipe/removeIdsFrom';
+import { removeIdFrom } from './utils/recipe/removeIdFrom';
 import { toValueArray } from './utils/toValueArray';
 import { FormTag, ResultTag } from '../model/Tag';
 
@@ -22,10 +22,10 @@ export function useTags() {
     updateUserResources(draft => {
       draft.tags.delete(tagId);
       for (const corpus of draft.corpora.values()) {
-        removeIdsFrom(corpus.tags, tagId);
+        removeIdFrom(corpus.tags, tagId);
       }
       for (const source of draft.sources.values()) {
-        removeIdsFrom(source.tags, tagId);
+        removeIdFrom(source.tags, tagId);
       }
     });
   };
