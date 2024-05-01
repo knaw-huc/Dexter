@@ -71,103 +71,117 @@ export function useSources() {
     sourceId: string,
     languageId: string[],
   ): Promise<ResultLanguage[]> => {
+    const updated = await postValidated(
+      `/api/sources/${sourceId}/languages`,
+      languageId,
+    );
     updateUserResources(draft => {
       addIdsTo(draft.sources.get(sourceId).languages, languageId);
     });
-    return postValidated(`/api/sources/${sourceId}/languages`, languageId);
+    return updated;
   };
 
   const deleteLanguageFromSource = async (
     sourceId: string,
     languageId: string,
   ): Promise<void> => {
+    await deleteValidated(`/api/sources/${sourceId}/languages/${languageId}`);
     updateUserResources(draft => {
       removeIdFrom(draft.sources.get(sourceId).languages, languageId);
     });
-    await deleteValidated(`/api/sources/${sourceId}/languages/${languageId}`);
   };
 
   const addTagsToSource = async (
     sourceId: string,
     tagId: number[],
   ): Promise<ResultTag[]> => {
+    const updated = await postValidated(`/api/sources/${sourceId}/tags`, tagId);
     updateUserResources(draft => {
       addIdsTo(draft.sources.get(sourceId).tags, tagId);
     });
-    return postValidated(`/api/sources/${sourceId}/tags`, tagId);
+    return updated;
   };
 
   const deleteTagFromSource = async (
     sourceId: string,
     tagId: string,
   ): Promise<void> => {
+    await deleteValidated(`/api/sources/${sourceId}/tags/${tagId}`);
     updateUserResources(draft => {
       removeIdFrom(draft.sources.get(sourceId).tags, tagId);
     });
-    await deleteValidated(`/api/sources/${sourceId}/tags/${tagId}`);
   };
 
   const addReferencesToSource = async (
     sourceId: string,
     referenceIds: string[],
   ): Promise<ResultReference[]> => {
+    const updated = await postValidated(
+      `/api/sources/${sourceId}/references`,
+      referenceIds,
+    );
     updateUserResources(draft => {
       addIdsTo(draft.sources.get(sourceId).references, referenceIds);
     });
-    return postValidated(`/api/sources/${sourceId}/references`, referenceIds);
+    return updated;
   };
 
   const deleteReferenceFromSource = async (
     sourceId: string,
     referenceId: string,
   ): Promise<void> => {
+    await deleteValidated(`/api/sources/${sourceId}/references/${referenceId}`);
     updateUserResources(draft => {
       removeIdFrom(draft.sources.get(sourceId).references, referenceId);
     });
-    await deleteValidated(`/api/sources/${sourceId}/references/${referenceId}`);
   };
 
   const deleteMetadataValueFromSource = async (
     sourceId: string,
     metadataValueId: string,
   ): Promise<void> => {
+    await deleteMetadataValue(metadataValueId);
     updateUserResources(draft => {
       removeIdFrom(draft.sources.get(sourceId).metadataValues, metadataValueId);
     });
-    await deleteMetadataValue(metadataValueId);
   };
 
   const addMetadataValueToSource = async (
     sourceId: string,
     metadataValueIds: string[],
   ): Promise<ResultMetadataValue[]> => {
-    updateUserResources(draft => {
-      addIdsTo(draft.sources.get(sourceId).metadataValues, metadataValueIds);
-    });
-    return postValidated(
+    const updated = await postValidated(
       `/api/sources/${sourceId}/metadata/values`,
       metadataValueIds,
     );
+    updateUserResources(draft => {
+      addIdsTo(draft.sources.get(sourceId).metadataValues, metadataValueIds);
+    });
+    return updated;
   };
 
   const addMediaToSource = async (
     sourceId: string,
     mediaIds: string[],
   ): Promise<ResultMedia[]> => {
+    const updated = await postValidated(
+      `/api/sources/${sourceId}/media`,
+      mediaIds,
+    );
     updateUserResources(draft => {
       addIdsTo(draft.sources.get(sourceId).media, mediaIds);
     });
-    return postValidated(`/api/sources/${sourceId}/media`, mediaIds);
+    return updated;
   };
 
   const deleteMediaFromSource = async (
     sourceId: string,
     mediaId: string,
   ): Promise<void> => {
+    await deleteValidated(`/api/sources/${sourceId}/media/${mediaId}`);
     updateUserResources(draft => {
       removeIdFrom(draft.sources.get(sourceId).media, mediaId);
     });
-    await deleteValidated(`/api/sources/${sourceId}/media/${mediaId}`);
   };
 
   const updateSourceMetadataValues = updateLinkedResourcesWith<WithId>(

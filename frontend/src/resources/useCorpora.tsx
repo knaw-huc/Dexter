@@ -106,83 +106,96 @@ export function useCorpora() {
     id: string,
     sourceIds: string[],
   ): Promise<Source[]> => {
+    const updated = await postValidated(
+      `/api/corpora/${id}/sources`,
+      sourceIds,
+    );
     updateUserResources(draft => {
       addIdsTo(draft.corpora.get(id).sources, sourceIds);
     });
-    return postValidated(`/api/corpora/${id}/sources`, sourceIds);
+    return updated;
   };
 
   const deleteSourceFromCorpus = async (
     corpusId: string,
     sourceId: string,
   ): Promise<void> => {
+    await deleteValidated(`/api/corpora/${corpusId}/sources/${sourceId}`);
     updateUserResources(draft => {
       removeIdFrom(draft.corpora.get(corpusId).sources, sourceId);
     });
-    return deleteValidated(`/api/corpora/${corpusId}/sources/${sourceId}`);
   };
 
   const addLanguagesToCorpus = async (
     corpusId: string,
     languageIds: string[],
   ): Promise<ResultLanguage[]> => {
+    const updated = await postValidated(
+      `/api/corpora/${corpusId}/languages`,
+      languageIds,
+    );
     updateUserResources(draft => {
       addIdsTo(draft.corpora.get(corpusId).languages, languageIds);
     });
-    return postValidated(`/api/corpora/${corpusId}/languages`, languageIds);
+    return updated;
   };
 
   const deleteLanguageFromCorpus = async (
     corpusId: string,
     languageId: string,
   ): Promise<void> => {
+    await deleteValidated(`/api/corpora/${corpusId}/languages/${languageId}`);
     updateUserResources(draft => {
       removeIdFrom(draft.corpora.get(corpusId).languages, languageId);
     });
-    return deleteValidated(`/api/corpora/${corpusId}/languages/${languageId}`);
   };
 
   const addMetadataValuesToCorpus = async (
     corpusId: string,
     metadataValueIds: string[],
   ): Promise<ResultMetadataValue[]> => {
-    updateUserResources(draft => {
-      addIdsTo(draft.corpora.get(corpusId).metadataValues, metadataValueIds);
-    });
-    return postValidated(
+    const updated = await postValidated(
       `/api/corpora/${corpusId}/metadata/values`,
       metadataValueIds,
     );
+    updateUserResources(draft => {
+      addIdsTo(draft.corpora.get(corpusId).metadataValues, metadataValueIds);
+    });
+    return updated;
   };
 
   const deleteMetadataValueFromCorpus = async (
     corpusId: string,
     metadataValueId: string,
   ): Promise<void> => {
+    await deleteMetadataValue(metadataValueId);
     updateUserResources(draft => {
       removeIdFrom(draft.corpora.get(corpusId).metadataValues, metadataValueId);
     });
-    return deleteMetadataValue(metadataValueId);
   };
 
   const addTagsToCorpus = async (
     corpusId: string,
     tagIds: number[],
   ): Promise<ResultTag[]> => {
+    const updated = await postValidated(
+      `/api/corpora/${corpusId}/tags`,
+      tagIds,
+    );
     updateUserResources(draft => {
       addIdsTo(draft.corpora.get(corpusId).tags, tagIds);
     });
-    return postValidated(`/api/corpora/${corpusId}/tags`, tagIds);
+    return updated;
   };
 
   const deleteTagFromCorpus = async (
     corpusId: string,
     tagId: number,
   ): Promise<void> => {
+    await deleteValidated(`/api/corpora/${corpusId}/tags/${tagId}`);
     updateUserResources(draft => {
       removeIdFrom(draft.corpora.get(corpusId).tags, tagId);
     });
-    return deleteValidated(`/api/corpora/${corpusId}/tags/${tagId}`);
   };
 
   const updateCorpusMetadataValues = updateLinkedResourcesWith(
@@ -190,7 +203,7 @@ export function useCorpora() {
     deleteMetadataValueFromCorpus,
   );
 
-  const updateSources = updateLinkedResourcesWith(
+  const updateCorpusSources = updateLinkedResourcesWith(
     addSourcesToCorpus,
     deleteSourceFromCorpus,
   );
@@ -209,9 +222,9 @@ export function useCorpora() {
     getCorpus,
     getCorpora,
     createCorpus,
-    updateSources,
     deleteCorpus,
     updateCorpus,
+    updateCorpusSources,
     updateCorpusTags,
     updateCorpusLanguages,
     updateCorpusMetadataValues,

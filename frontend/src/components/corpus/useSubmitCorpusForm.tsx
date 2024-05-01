@@ -31,7 +31,7 @@ export function useSubmitCorpusForm(
   const { corpusToEdit, onSubmitted, setError } = params;
   const {
     updateCorpus,
-    updateSources,
+    updateCorpusSources,
     updateCorpusTags,
     updateCorpusLanguages,
     updateCorpusMetadataValues,
@@ -89,7 +89,7 @@ export function useSubmitCorpusForm(
     await updateCorpusMetadataValues(id, metadataValues);
     await updateCorpusTags(id, data.tags);
     await updateCorpusLanguages(id, data.languages);
-    await updateSources(id, data.sources);
+    await updateCorpusSources(id, data.sources);
   }
 
   return { submitCorpusForm };
