@@ -49,7 +49,7 @@ export function CorpusSubcorpora(props: { corpusId: UUID }) {
     }
 
     const subcorpus = corpus.subcorpora.find(c => c.id === subcorpusId);
-    await updateCorpus(subcorpusId, { ...subcorpus, parentId: undefined });
+    await updateCorpus(subcorpusId, { ...subcorpus, parentId: null });
   };
 
   /**

@@ -23,6 +23,8 @@ import { ResultMetadataValue } from '../model/Metadata';
 import { ResultLanguage } from '../model/Language';
 import { UUID, WithId } from '../model/Id';
 import { UserResourceByIdMaps } from '../model/User';
+import { current } from 'immer';
+import { Any } from '../components/common/Any';
 
 export function useCorpora() {
   const { updateUserResources } = useUserResourcesStore();
@@ -63,8 +65,8 @@ export function useCorpora() {
     );
     updateUserResources(draft => {
       const prev = draft.corpora.get(id);
-      assign(prev, updated);
       updateParentSubcorpora(draft, id, prev.parentId, updated.parentId);
+      assign(prev, updated);
     });
     return updated;
   };
@@ -82,7 +84,7 @@ export function useCorpora() {
       addIdsTo(draft.corpora.get(nextParentId).subcorpora, [subcorpusId]);
     }
     if (prevParentId) {
-      removeIdFrom(draft.corpora.get(prevParentId).subcorpora, prevParentId);
+      removeIdFrom(draft.corpora.get(prevParentId).subcorpora, subcorpusId);
     }
   }
 
@@ -234,3 +236,5 @@ export function useCorpora() {
     findCorpusOptions: (corpusId: UUID) => findCorpusOptions(corpusId, store),
   };
 }
+
+(window as Any).current = current;
