@@ -112,7 +112,7 @@ export function CorpusSubcorpora(props: { corpusId: UUID }) {
 
       {showSubcorpusForm && (
         <CorpusForm
-          parentCorpus={corpus}
+          fixedParentCorpus={corpus}
           sourceOptions={findSourceOptions(props.corpusId)}
           onClose={handleCloseCorpusForm}
           onSaved={handleSavedSubcorpus}
