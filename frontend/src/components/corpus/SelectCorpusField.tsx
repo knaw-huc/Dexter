@@ -38,7 +38,7 @@ export const SelectCorpusField = (props: SelectCorpusFieldProps) => {
           if (selectedCorpus?.id) {
             props.onSelectCorpus(selectedCorpus.id);
           } else {
-            props.onDeselectCorpus(selectedCorpus.id);
+            props.onDeselectCorpus(props.selected.id);
           }
         }}
         options={props.options}

@@ -88,7 +88,7 @@ export function CorpusForm(props: CorpusFormProps) {
   }
 
   async function handleDeleteParentCorpus() {
-    setForm(f => delete f.parent);
+    setForm(f => void delete f.parent);
   }
 
   function renderTextField(
