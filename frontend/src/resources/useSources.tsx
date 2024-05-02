@@ -3,13 +3,17 @@ import { findSourceWithChildIds } from './utils/findSourceWithChildIds';
 import { linkSourceChildren } from './utils/linkSourceChildren';
 import { toValueArray } from './utils/toValueArray';
 
-import { deleteValidated, postValidated, putValidated } from '../utils/API';
+import {
+  deleteMetadataValueApi,
+  deleteValidated,
+  postValidated,
+  putValidated,
+} from '../utils/API';
 import { useUserResourcesStore } from './store/useUserResourcesStore';
 import { assign } from '../utils/recipe/assign';
 import { addIdsTo } from './utils/recipe/addIdsTo';
 import { removeIdFrom } from './utils/recipe/removeIdFrom';
 import { updateLinkedResourcesWith } from '../utils/updateRemoteIds';
-import { useMetadata } from './useMetadata';
 import {
   FormSource,
   ResultSource,
@@ -22,12 +26,10 @@ import { ResultMedia } from '../model/Media';
 import { ResultLanguage } from '../model/Language';
 import { ResultReference } from '../model/Reference';
 import { UUID, WithId } from '../model/Id';
-import { createDraft } from 'immer';
 
 export function useSources() {
   const { updateUserResources } = useUserResourcesStore();
   const store = useBoundStore();
-  const { deleteMetadataValue } = useMetadata();
 
   function getSource(sourceId: UUID): Source {
     return linkSourceChildren(findSourceWithChildIds(sourceId, store), store);
@@ -59,17 +61,21 @@ export function useSources() {
   };
 
   const deleteSource = async (id: string): Promise<void> => {
-    const draft = createDraft(store.userResources);
-    const source = draft.sources.get(id);
+    const source = store.userResources.sources.get(id);
     for (const valueId of source.metadataValues) {
-      await deleteMetadataValue(valueId, draft);
+      await deleteMetadataValueApi(valueId);
     }
     await deleteValidated(`/api/sources/${id}`);
-    draft.sources.delete(id);
-    for (const corpus of draft.corpora.values()) {
-      removeIdFrom(corpus.sources, id);
-    }
-    updateUserResources(result => assign(result, draft));
+
+    updateUserResources(draft => {
+      for (const valueId of source.metadataValues) {
+        draft.metadataValues.delete(valueId);
+      }
+      for (const corpus of draft.corpora.values()) {
+        removeIdFrom(corpus.sources, id);
+      }
+      draft.sources.delete(id);
+    });
   };
 
   const addLanguagesToSource = async (
@@ -145,10 +151,11 @@ export function useSources() {
     sourceId: string,
     metadataValueId: string,
   ): Promise<void> => {
-    const draft = createDraft(store.userResources);
-    await deleteMetadataValue(metadataValueId, draft);
-    removeIdFrom(draft.sources.get(sourceId).metadataValues, metadataValueId);
-    updateUserResources(result => assign(result, draft));
+    await deleteMetadataValueApi(metadataValueId);
+    updateUserResources(draft => {
+      draft.metadataValues.delete(metadataValueId);
+      removeIdFrom(draft.sources.get(sourceId).metadataValues, metadataValueId);
+    });
   };
 
   const addMetadataValueToSource = async (

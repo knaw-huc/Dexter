@@ -99,3 +99,6 @@ export async function getAssetValidated(filename: string): Promise<Response> {
   await validateResponse({ response });
   return response;
 }
+
+export const deleteMetadataValueApi = async (metadataValueId: string) =>
+  await deleteValidated(`/api/metadata/values/${metadataValueId}`);
