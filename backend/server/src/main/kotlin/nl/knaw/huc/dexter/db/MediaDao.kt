@@ -47,7 +47,7 @@ interface MediaDao {
             "  lower(url) like lower(:needle) " +
             "  or " +
             "  lower(title) like lower(:needle)" +
-            ")")
+            ") limit 10")
     fun like(needle: String, userId: UUID): List<ResultMedia>
 
     /**

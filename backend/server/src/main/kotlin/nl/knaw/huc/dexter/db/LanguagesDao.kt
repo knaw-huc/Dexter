@@ -37,7 +37,7 @@ interface LanguagesDao {
     )
     fun findByLength3(key: String): List<ResultLanguage>
 
-    @SqlQuery("select * from iso_639_3 where lower(ref_name) like lower(:refName)")
+    @SqlQuery("select * from iso_639_3 where lower(ref_name) like lower(:refName) limit 10")
     fun findByRefName(refName: String): List<ResultLanguage>
 
     @SqlBatch(

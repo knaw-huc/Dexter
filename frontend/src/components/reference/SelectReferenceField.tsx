@@ -12,6 +12,7 @@ import { ReferenceFormat } from './ReferenceFormat';
 import { ListItemText } from '@mui/material';
 
 import { truncateInput } from './truncateInput';
+import { normalize } from '../../utils/normalize';
 
 export type SelectReferenceFieldProps = FormFieldprops & {
   selected: Reference[];
@@ -28,8 +29,11 @@ export const SelectReferenceField = (props: SelectReferenceFieldProps) => {
   async function handleAutocompleteOptions(
     inputValue: string,
   ): Promise<Reference[]> {
-    const canAutocomplete = inputValue.length >= MIN_AUTOCOMPLETE_LENGTH;
-    return canAutocomplete ? await getReferenceAutocomplete(inputValue) : [];
+    const normalizedInput = normalize(inputValue);
+    const canAutocomplete = normalizedInput.length >= MIN_AUTOCOMPLETE_LENGTH;
+    return canAutocomplete
+      ? await getReferenceAutocomplete(normalizedInput)
+      : [];
   }
 
   function toSelectedLabel(reference: Reference): JSX.Element {

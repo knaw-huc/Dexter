@@ -88,7 +88,6 @@ class ReferencesResource(private val jdbi: Jdbi) {
             throw BadRequestException("No special characters or punctuation allowed")
         }
         val termsToMatch = terms.split(" ").map { t -> "%$t%" }
-        println("terms: $terms; termsToMatch: $termsToMatch")
         return references().like(termsToMatch, user.id)
     }
 

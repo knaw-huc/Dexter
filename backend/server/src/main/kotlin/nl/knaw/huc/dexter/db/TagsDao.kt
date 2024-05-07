@@ -23,6 +23,6 @@ interface TagsDao {
     @SqlUpdate("delete from tags where id = :id")
     fun delete(id: Int)
 
-    @SqlQuery("select * from tags where created_by = :userId and lower(val) like lower(:key)")
+    @SqlQuery("select * from tags where created_by = :userId and lower(val) like lower(:key) limit 10")
     fun like(key: String, userId: UUID): List<ResultTag>
 }

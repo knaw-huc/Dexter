@@ -22,7 +22,7 @@ interface ReferencesDao {
     fun update(id: UUID, @BindKotlin reference: FormReference): ResultReference
 
     @SqlQuery(
-        "select * from \"references\" where  created_by = :userId and terms like all (array[ <terms> ])"
+        "select * from \"references\" where  created_by = :userId and terms like all (array[ <terms> ]) limit 10"
     )
     fun like(@BindList("terms") terms: List<String>, userId: UUID): List<ResultReference>
 
