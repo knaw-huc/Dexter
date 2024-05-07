@@ -89,7 +89,7 @@ export const SelectTagField = (props: TagsFieldProps) => {
     <>
       {props.label && <Label>{props.label}</Label>}
       <MultiAutocomplete<ResultTag>
-        size="small"
+        size={props.size}
         placeholder={props.placeholder ?? 'Add and create tags'}
         selected={props.selected}
         onAutocompleteOptions={handleAutocompleteOptions}

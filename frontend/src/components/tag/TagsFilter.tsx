@@ -24,6 +24,7 @@ export function TagsFilter(props: {
       options={props.options}
       placeholder={props.placeholder}
       useAutocomplete={false}
+      size="small"
     />
   );
 }
