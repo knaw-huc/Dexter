@@ -27,8 +27,6 @@ import { ResultMetadataValue } from '../model/Metadata';
 import { ResultLanguage } from '../model/Language';
 import { UUID, WithId } from '../model/Id';
 import { UserResourceByIdMaps } from '../model/User';
-import { current } from 'immer';
-import { Any } from '../components/common/Any';
 
 export function useCorpora() {
   const { updateUserResources } = useUserResourcesStore();
@@ -248,5 +246,3 @@ export function useCorpora() {
     findCorpusOptions: (corpusId: UUID) => findCorpusOptions(corpusId, store),
   };
 }
-
-(window as Any).current = current;
