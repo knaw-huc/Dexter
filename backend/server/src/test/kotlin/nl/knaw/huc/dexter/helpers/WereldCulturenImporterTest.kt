@@ -10,7 +10,6 @@ class WereldCulturenImporterTest {
     val toTest = WereldCulturenImporter()
 
     @Test
-    @Throws(Exception::class)
     fun convertsTmsIntoDexter() {
         val xml = getResource("1046366.xml")
         val result = toTest.mapTmsToDexter(xml)
@@ -24,6 +23,8 @@ class WereldCulturenImporterTest {
             .isEqualToIgnoringWhitespace("1998-01-02")
         assertThat(result["title"])
             .isEqualToIgnoringWhitespace("High Tide at Progress Bay")
+        assertThat(result["externalId"])
+            .isEqualToIgnoringWhitespace("7106-28")
     }
 
     private fun getResource(path: String): String {

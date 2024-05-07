@@ -25,7 +25,7 @@ class WereldCulturenImporter {
     init {
         val factory: XPathFactory = XPathFactory.newInstance()
         val xpath: XPath = factory.newXPath()
-        xpath.namespaceContext = WereldCollectieContext()
+        xpath.namespaceContext = WereldCulturenNsContext()
         this.xpath = xpath
         this.tms2DexterFields = listOf(
             Tms2Dexter(
@@ -47,6 +47,10 @@ class WereldCulturenImporter {
             Tms2Dexter(
                 "latest",
                 "//crm:P4_has_time-span//crm:P82b_end_of_the_end//text()"
+            ),
+            Tms2Dexter(
+                "externalId",
+                "//crm:E42_Identifier//crm:P190_has_symbolic_content//text()"
             )
         )
     }
@@ -77,7 +81,7 @@ class WereldCulturenImporter {
     }
 }
 
-class WereldCollectieContext : NamespaceContext {
+class WereldCulturenNsContext : NamespaceContext {
     override fun getNamespaceURI(prefix: String): String {
         return when (prefix) {
             "crm" -> "http://www.cidoc-crm.org/cidoc-crm/"
