@@ -143,6 +143,7 @@ export function MultiAutocomplete<T extends WithId<ID>>(
       filterOptions={removeSelected}
       renderTags={renderSelected}
       noOptionsText={inputValue.length ? 'No options' : 'Start typing...'}
+      disableClearable
     />
   );
 }
