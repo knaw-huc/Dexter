@@ -17,7 +17,7 @@ export type SelectCorpusFieldProps = FormFieldprops & {
 };
 
 export const SelectCorpusField = (props: SelectCorpusFieldProps) => {
-  const [inputValue, setInputValue] = useImmer('');
+  const [inputValue, setInputValue] = useImmer(props.selected?.title ?? '');
 
   return (
     <>

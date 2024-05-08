@@ -37,11 +37,11 @@ type CorpusFormProps = {
   corpusToEdit?: Corpus;
 
   /**
-   * When a parentCorpus is provided, hide the parent corpus field
+   * When a fixed parent corpus is provided, hide the parent select field
    */
-  parentCorpus?: Corpus;
+  fixedParentCorpus?: Corpus;
   /**
-   * Without a parentCorpus, parentOptions should be provided
+   * When the parent corpus is not fixed, parentOptions should be provided
    */
   parentOptions?: Corpus[];
 
@@ -60,7 +60,7 @@ export function CorpusForm(props: CorpusFormProps) {
 
   const { init, isInit } = useInitCorpusForm({
     corpusToEdit,
-    parent: props.parentCorpus,
+    fixedParent: props.fixedParentCorpus,
     setForm,
     setKeys,
     setValues,
@@ -166,7 +166,7 @@ export function CorpusForm(props: CorpusFormProps) {
             onDeselectSource={handleUnlinkSource}
           />
 
-          {!props.parentCorpus && (
+          {!props.fixedParentCorpus && (
             <SelectCorpusField
               label={<Hinted txt="Add to corpus" hint={toHint('parent')} />}
               error={errors.parent}

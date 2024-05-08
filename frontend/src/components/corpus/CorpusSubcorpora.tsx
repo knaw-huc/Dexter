@@ -115,7 +115,7 @@ export function CorpusSubcorpora() {
 
       {showSubcorpusForm && (
         <CorpusForm
-          parentCorpus={corpus}
+          fixedParentCorpus={corpus}
           sourceOptions={getSourceOptions()}
           onClose={handleCloseCorpusForm}
           onSaved={handleSavedSubcorpus}
