@@ -8,6 +8,7 @@
 - Export corpus and its subcorpora, sources, media and references to a zip with csv files
 - Add tooltips to form fields and page headers with descriptions (loaded from backend `assets/labels.json`)
 - Add dropdown that allows users to change their reference style 
+- Add 'external identifier' field to sources
 
 ### ✨ Enhancements 
 - On the corpus page in the subcorpora section: show the tags of sources and subcorpora of a corpus   
