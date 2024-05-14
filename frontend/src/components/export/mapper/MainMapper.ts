@@ -19,8 +19,6 @@ import { isWithId, WithId } from '../../../model/Id';
 
 type NamedMapper = { name: string; mapper: RowWithTablesMapper<WithId> };
 
-type NamedMapper = { name: string; mapper: RowWithTablesMapper<WithId> };
-
 export class MainMapper implements TablesMapper<WithId> {
   name: string;
 
