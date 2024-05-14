@@ -6,7 +6,7 @@ import isUrl from './isUrl';
 export const validDate = {
   message: 'Invalid ISO date  format (e.g. 1911-11-11)',
   test: (earliest: string) => {
-    return DateTime.fromISO(earliest).isValid;
+    return DateTime.fromFormat(earliest, 'yyyy-MM-dd').isValid;
   },
 };
 
