@@ -1,41 +1,23 @@
-import React, { useEffect } from 'react';
-import { Corpus, Source } from '../../model/DexterModel';
+import React from 'react';
 import { CorpusPreview } from './CorpusPreview';
 import { CorpusForm } from './CorpusForm';
-import {
-  getCorporaWithResources,
-  getSourcesWithResources,
-} from '../../utils/API';
 import { Grid } from '@mui/material';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
 import { CorpusIcon } from './CorpusIcon';
-import { useThrowSync } from '../common/error/useThrowSync';
 import { useImmer } from 'use-immer';
-import { push } from '../../utils/draft/push';
 import { HintedTitle } from '../common/HintedTitle';
 import { AddNewButton } from '../common/AddNewButton';
+import { useCorpora } from '../../resources/useCorpora';
+import { useSources } from '../../resources/useSources';
+import { Corpus } from '../../model/Corpus';
 
-export function CorpusIndex() {
-  const [corpora, setCorpora] = useImmer<Corpus[]>([]);
+export default function CorpusIndex() {
   const [showForm, setShowForm] = useImmer(false);
-  const [sourceOptions, setSourceOptions] = useImmer<Source[]>([]);
-  const throwSync = useThrowSync();
 
-  useEffect(() => {
-    init();
+  const corpora = useCorpora().getCorpora();
+  const sources = useSources().getSources();
 
-    async function init() {
-      try {
-        setCorpora(await getCorporaWithResources());
-        setSourceOptions(await getSourcesWithResources());
-      } catch (e) {
-        throwSync(e);
-      }
-    }
-  }, []);
-
-  function handleSave(update: Corpus) {
-    setCorpora(corpora => push(corpora, update));
+  function handleSave() {
     setShowForm(false);
   }
 
@@ -58,7 +40,7 @@ export function CorpusIndex() {
       {showForm && (
         <CorpusForm
           parentOptions={corpora}
-          sourceOptions={sourceOptions}
+          sourceOptions={sources}
           onSaved={handleSave}
           onClose={() => setShowForm(false)}
         />

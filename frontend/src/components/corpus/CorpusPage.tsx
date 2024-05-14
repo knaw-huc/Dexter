@@ -1,8 +1,6 @@
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Corpus } from '../../model/DexterModel';
 import { CorpusForm } from './CorpusForm';
-import { deleteCorpus, deleteMetadataValue } from '../../utils/API';
 import { EditButton } from '../common/EditButton';
 import _ from 'lodash';
 import { TagList } from '../tag/TagList';
@@ -20,31 +18,21 @@ import { CorpusSources } from './CorpusSources';
 import { CorpusSubcorpora } from './CorpusSubcorpora';
 import { useImmer } from 'use-immer';
 import { DeleteButton } from '../common/DeleteButton';
-import { corpora } from '../../model/Resources';
-import { useCorpusPageStore } from './CorpusPageStore';
 import { useThrowSync } from '../common/error/useThrowSync';
 import { ExportButton } from '../export/ExportButton';
 import { ExportForm } from '../export/ExportForm';
 import { HintedTitle } from '../common/HintedTitle';
 import { reject } from '../../utils/reject';
-import { useInitCorpusPage } from './useInitCorpusPage';
+import { useCorpora } from '../../resources/useCorpora';
+import { Corpus } from '../../model/Corpus';
 
-export const CorpusPage = () => {
+export default function CorpusPage() {
   const corpusId = useParams().corpusId;
-  const {
-    corpus,
-    setCorpus,
-    setAllSources,
-    setAllCorpora,
-    getCorpusOptions,
-    getSourceOptions,
-  } = useCorpusPageStore();
-  const { isInit } = useInitCorpusPage({
-    corpusId,
-    setCorpus,
-    setAllCorpora,
-    setAllSources,
-  });
+
+  const { getCorpus, deleteCorpus, findSourceOptions, findCorpusOptions } =
+    useCorpora();
+
+  const corpus = getCorpus(corpusId);
 
   const [showCorpusForm, setShowCorpusForm] = useImmer(false);
   const [showExporter, setShowExporter] = useImmer(false);
@@ -53,12 +41,11 @@ export const CorpusPage = () => {
   const throwSync = useThrowSync();
   const navigate = useNavigate();
 
-  const handleSavedCorpusForm = (corpus: Corpus) => {
-    handleSavedCorpus(corpus);
+  const handleSavedCorpusForm = () => {
+    handleSavedCorpus();
   };
 
-  const handleSavedCorpus = (corpus: Corpus) => {
-    setCorpus(corpus);
+  const handleSavedCorpus = () => {
     setShowCorpusForm(false);
   };
 
@@ -72,11 +59,8 @@ export const CorpusPage = () => {
     }
 
     try {
-      for (const value of corpus.metadataValues) {
-        await deleteMetadataValue(value.id);
-      }
+      navigate(`/corpora`);
       await deleteCorpus(corpus.id);
-      navigate(`/${corpora}`);
     } catch (e) {
       throwSync(e);
     }
@@ -98,8 +82,8 @@ export const CorpusPage = () => {
     setExported(true);
   }
 
-  if (!isInit) {
-    return null;
+  if (!corpus) {
+    return;
   }
   return (
     <div>
@@ -150,15 +134,15 @@ export const CorpusPage = () => {
         <MetadataValuePageFields values={corpus.metadataValues} />
       )}
 
-      <CorpusSubcorpora />
+      <CorpusSubcorpora corpusId={corpusId} />
 
-      <CorpusSources />
+      <CorpusSources corpusId={corpusId} />
 
       {showCorpusForm && (
         <CorpusForm
           corpusToEdit={corpus}
-          parentOptions={getCorpusOptions()}
-          sourceOptions={getSourceOptions()}
+          parentOptions={findCorpusOptions(corpusId)}
+          sourceOptions={findSourceOptions(corpusId)}
           onClose={handleCloseCorpusForm}
           onSaved={handleSavedCorpusForm}
         />
@@ -172,4 +156,4 @@ export const CorpusPage = () => {
       )}
     </div>
   );
-};
+}

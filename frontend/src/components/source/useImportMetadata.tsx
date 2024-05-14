@@ -1,10 +1,11 @@
 import isUrl from '../../utils/isUrl';
-import { ResultImport, Source } from '../../model/DexterModel';
-import { postImport } from '../../utils/API';
 import { ErrorWithMessage } from '../common/error/ErrorWithMessage';
 import { Any } from '../common/Any';
 import { useImmer } from 'use-immer';
 import { reject } from '../../utils/reject';
+import { useImport } from '../../resources/useImport';
+import { Source } from '../../model/Source';
+import { ResultImport } from '../../model/Import';
 
 type WithExternalRef = {
   externalRef?: string;
@@ -25,6 +26,7 @@ export function useImportMetadata<T extends WithExternalRef>(
 ): UseImportMetadataResult<T> {
   const { setError, setFieldError } = params;
   const [isImportLoading, setImportLoading] = useImmer(false);
+  const { postImport } = useImport();
 
   function checkCanImporting(externalRef: string) {
     if (reject('Importing overwrites existing values. Continue?')) {

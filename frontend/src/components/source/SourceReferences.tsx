@@ -4,30 +4,32 @@ import { Grid } from '@mui/material';
 import { AddNewButton } from '../common/AddNewButton';
 import { SelectExistingButton } from './SelectExistingButton';
 import React from 'react';
-import { Reference, ResultReference } from '../../model/DexterModel';
 import { ReferenceStyle } from '../reference/ReferenceStyle';
 import { ReferenceListItem } from '../reference/ReferenceListItem';
 import { ReferenceForm } from '../reference/ReferenceForm';
 import { SelectReferenceForm } from '../reference/SelectReferenceForm';
 import { useImmer } from 'use-immer';
-import {
-  addReferencesToSource,
-  deleteReferenceFromSource,
-} from '../../utils/API';
-import { remove } from '../../utils/draft/remove';
-import { replace } from '../../utils/draft/replace';
-import { push } from '../../utils/draft/push';
-import { updateSourceReferences } from '../../utils/updateRemoteIds';
-import { useSourcePageStore } from './SourcePageStore';
-import { assign } from '../../utils/draft/assign';
 import _ from 'lodash';
 import { reject } from '../../utils/reject';
+import { useSources } from '../../resources/useSources';
+import { Reference, ResultReference } from '../../model/Reference';
+import { UUID } from '../../model/Id';
 
-export function SourceReferences(props: { referenceStyle: ReferenceStyle }) {
-  const { referenceStyle } = props;
-  const { source, setSource } = useSourcePageStore();
-  const sourceId = source.id;
+export function SourceReferences(props: {
+  sourceId: UUID;
+  referenceStyle: ReferenceStyle;
+}) {
+  const {
+    getSource,
+    updateSourceReferences,
+    addReferencesToSource,
+    deleteReferenceFromSource,
+  } = useSources();
+  const sourceId = props.sourceId;
+  const source = getSource(sourceId);
   const references = source.references;
+
+  const { referenceStyle } = props;
   const [showSelectReferenceForm, setShowSelectReferenceForm] = useImmer(null);
   const [showReferenceForm, setShowReferenceForm] = useImmer(false);
   const [referenceToEdit, setReferenceToEdit] = useImmer<Reference>(null);
@@ -36,9 +38,7 @@ export function SourceReferences(props: { referenceStyle: ReferenceStyle }) {
     if (reject('Remove this reference from this source?')) {
       return;
     }
-
     await deleteReferenceFromSource(sourceId, reference.id);
-    setSource(s => remove(s.references, reference.id));
   }
 
   function handleClickEditReference(reference: Reference) {
@@ -48,21 +48,19 @@ export function SourceReferences(props: { referenceStyle: ReferenceStyle }) {
 
   async function handleSavedReference(reference: ResultReference) {
     if (referenceToEdit) {
-      handleEditReference(reference);
+      handleEditReference();
     } else {
       await addCreatedReference(reference);
     }
   }
 
-  function handleEditReference(reference: ResultReference) {
-    setSource(s => replace(s.references, reference));
+  function handleEditReference() {
     setReferenceToEdit(null);
     setShowReferenceForm(false);
   }
 
   async function addCreatedReference(reference: ResultReference) {
     await addReferencesToSource(sourceId, [reference.id]);
-    setSource(s => push(s.references, reference));
     setShowReferenceForm(false);
   }
 
@@ -73,11 +71,9 @@ export function SourceReferences(props: { referenceStyle: ReferenceStyle }) {
 
   async function handleChangeSelectedReferences(references: Reference[]) {
     await updateSourceReferences(sourceId, references);
-    setSource(source => assign(source, { references }));
   }
 
   const hasReferences = !_.isEmpty(references);
-
   return (
     <>
       <H2Styled>

@@ -6,7 +6,8 @@ import { MainMapper } from './mapper/MainMapper';
 import { toCsv } from './mapper/toCsv';
 import { useEffect } from 'react';
 import { useThrowSync } from '../common/error/useThrowSync';
-import { useUserStore } from '../../state/UserStore';
+import { useMetadata } from '../../resources/useMetadata';
+import { useUser } from '../../resources/useUser';
 
 export function useExporter(): {
   runExport: (toExport: Exportable) => Promise<void>;
@@ -15,10 +16,11 @@ export function useExporter(): {
   const [isExporting, setExporting] = useImmer(false);
   const [mapper, setMapper] = useImmer<MainMapper>(null);
   const throwSync = useThrowSync();
-  const referenceStyle = useUserStore().getReferenceStyle();
-
+  const referenceStyle = useUser().getReferenceStyle();
+  const { getMetadataKeys } = useMetadata();
+  const keys = getMetadataKeys();
   useEffect(() => {
-    MainMapper.init(referenceStyle).then(setMapper).catch(throwSync);
+    MainMapper.init(referenceStyle, keys).then(setMapper).catch(throwSync);
   }, []);
 
   async function runExport(toExport: Exportable) {
@@ -32,7 +34,6 @@ export function useExporter(): {
     const filename = `dexter-export-${toExport.id}.zip`;
     FileSaver.saveAs(content, filename);
     setExporting(false);
-    console.log('finished exporting', toExport);
   }
 
   return { isExporting, runExport };

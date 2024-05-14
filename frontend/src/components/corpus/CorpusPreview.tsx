@@ -1,20 +1,20 @@
 import React from 'react';
-import { Corpus, isImage } from '../../model/DexterModel';
 import { useNavigate } from 'react-router-dom';
-import { Card, CardContent, Grid, Tooltip } from '@mui/material';
+import { Card, CardContent, Grid } from '@mui/material';
 import { HeaderLinkClamped } from '../common/HeaderLinkClamped';
 import { PClamped } from '../common/PClamped';
 import { CorpusIcon } from './CorpusIcon';
 import { Title } from '../media/Title';
 import { CardHeaderImage } from '../common/CardHeaderImage';
 import { TagList } from '../tag/TagList';
-import { corpora } from '../../model/Resources';
 import { getCorpusTags } from './getCorpusTags';
 import _ from 'lodash';
 import { hasEqualId } from '../../utils/hasEqualId';
 import styled from '@emotion/styled';
 import ScatterPlotIcon from '@mui/icons-material/ScatterPlot';
 import { TopRightCloseIcon } from '../common/icon/CloseIcon';
+import { Corpus } from '../../model/Corpus';
+import { isImage } from '../../model/Media';
 
 type CorpusPreviewProps = {
   corpus: Corpus;
@@ -36,7 +36,7 @@ export function CorpusPreview(props: CorpusPreviewProps) {
 
   const corpus = props.corpus;
   function navigateToCorpus() {
-    return navigate(`/${corpora}/${corpus.id}`);
+    return navigate(`/corpora/${corpus.id}`);
   }
 
   const corpusTags = props.corpus.tags;
@@ -62,11 +62,12 @@ export function CorpusPreview(props: CorpusPreviewProps) {
               tags={uniqueChildTags}
               sx={{ opacity: '0.5' }}
               renderLabel={tag => (
-                <span style={{ marginRight: '1.25em' }}>
+                <span
+                  style={{ marginRight: '1.25em' }}
+                  title="Tags from subcorpora and sources"
+                >
                   {tag.val}
-                  <Tooltip title="Tags from subcorpora and sources">
-                    <NestedIconStyled />
-                  </Tooltip>
+                  <NestedIconStyled />
                 </span>
               )}
             />

@@ -1,39 +1,27 @@
-import React, { useEffect } from 'react';
-import { image, ResultMedia } from '../../model/DexterModel';
+import React from 'react';
 import { MediaPreview } from './MediaPreview';
 import { MediaForm } from './MediaForm';
 import { AddNewButton } from '../common/AddNewButton';
 import { Grid } from '@mui/material';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
-import { deleteMedia, getMedia } from '../../utils/API';
 import { MediaIcon } from './MediaIcon';
-import { useThrowSync } from '../common/error/useThrowSync';
 import { useImmer } from 'use-immer';
-import { remove } from '../../utils/draft/remove';
-import { replace } from '../../utils/draft/replace';
-import { push } from '../../utils/draft/push';
 import { HintedTitle } from '../common/HintedTitle';
 import { reject } from '../../utils/reject';
+import { useMedia } from '../../resources/useMedia';
+import { ResultMedia } from '../../model/Media';
 
-export function MediaIndex() {
-  const [media, setMedia] = useImmer<ResultMedia[]>([]);
+export default function MediaIndex() {
   const [showForm, setShowForm] = useImmer(false);
   const [mediaToEdit, setMediaToEdit] = useImmer<ResultMedia>(null);
-
-  const throwSync = useThrowSync();
-
-  useEffect(() => {
-    // TODO: support multiple media types
-    getMedia(image).then(setMedia).catch(throwSync);
-  }, []);
-
+  const { getMedia, deleteMedia } = useMedia();
+  const media = getMedia();
   async function handleDelete(media: ResultMedia) {
     if (reject('Delete this media entry?')) {
       return;
     }
 
     await deleteMedia(media.id);
-    setMedia(prev => remove(prev, media.id));
   }
 
   const handleEdit = (media: ResultMedia) => {
@@ -41,12 +29,9 @@ export function MediaIndex() {
     setShowForm(true);
   };
 
-  function handleSaveMedia(media: ResultMedia) {
+  function handleSaveMedia() {
     if (mediaToEdit) {
-      setMedia(prev => replace(prev, media));
       setMediaToEdit(null);
-    } else {
-      setMedia(prev => push(prev, media));
     }
     setShowForm(false);
   }

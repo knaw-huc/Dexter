@@ -1,7 +1,7 @@
-import { isTag, ResultTag } from '../../../../model/DexterModel';
 import { Any } from '../../../common/Any';
 import { CellMapper } from '../Mapper';
 import _ from 'lodash';
+import { isTag, ResultTag } from '../../../../model/Tag';
 
 export class TagsMapper implements CellMapper<ResultTag[]> {
   canMap(resources: Any): resources is ResultTag[] {

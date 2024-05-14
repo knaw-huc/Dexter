@@ -1,5 +1,5 @@
 import { normalize } from '../../utils/normalize';
-import { CslJson } from './CslJson';
+import { CslJson } from '../../model/CslJson';
 
 export function createTerms(csl: string): string | undefined {
   let parsed: CslJson;

@@ -14,6 +14,9 @@ interface MetadataValuesDao {
     @SqlQuery("select * from metadata_values where id = :id")
     fun find(id: UUID): ResultMetadataValue?
 
+    @SqlQuery("select * from metadata_values where created_by = :user")
+    fun findAllByUser(user: UUID): List<ResultMetadataValue>
+
     @SqlQuery("insert into metadata_values (key_id, value, created_by) values (:keyId, :value, :createdBy) returning *")
     fun insert(
         @BindKotlin metadataValue: FormMetadataValue,

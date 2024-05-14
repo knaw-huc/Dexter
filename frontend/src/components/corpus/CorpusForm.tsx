@@ -1,12 +1,4 @@
-import React, { useEffect } from 'react';
-import {
-  Access,
-  AccessOptions,
-  Corpus,
-  FormMetadataValue,
-  ResultMetadataKey,
-  Source,
-} from '../../model/DexterModel';
+import React from 'react';
 import { SelectTagField } from '../tag/SelectTagField';
 import { SelectLanguagesField } from '../language/SelectLanguagesField';
 import ScrollableModal from '../common/ScrollableModal';
@@ -16,19 +8,23 @@ import { TextFieldWithError } from '../common/TextFieldWithError';
 import { SubmitButton } from '../common/SubmitButton';
 import { MetadataValueFormFields } from '../metadata/MetadataValueFormFields';
 import { TextareaFieldProps } from '../common/TextareaFieldProps';
-import { useInitCorpusForm } from './useInitCorpusForm';
 import { useSubmitCorpusForm } from './useSubmitCorpusForm';
 import { onSubmit } from '../../utils/onSubmit';
 import { SelectCorpusField } from './SelectCorpusField';
 import { useFormErrors } from '../common/error/useFormErrors';
 import { FormErrorMessage } from '../common/error/FormError';
 import { useImmer } from 'use-immer';
-import { push } from '../../utils/draft/push';
-import { remove } from '../../utils/draft/remove';
-import { assign } from '../../utils/draft/assign';
+import { push } from '../../utils/recipe/push';
+import { remove } from '../../utils/recipe/remove';
+import { assign } from '../../utils/recipe/assign';
 import { toFormHint } from '../../LabelStore';
 import { Hinted } from '../common/Hinted';
 import { TopRightCloseIcon } from '../common/icon/CloseIcon';
+import { useInitCorpusForm } from './useInitCorpusForm';
+import { Corpus } from '../../model/Corpus';
+import { Source } from '../../model/Source';
+import { FormMetadataValue, ResultMetadataKey } from '../../model/Metadata';
+import { Access, AccessOptions } from '../../model/Access';
 
 type CorpusFormProps = {
   /**
@@ -37,11 +33,11 @@ type CorpusFormProps = {
   corpusToEdit?: Corpus;
 
   /**
-   * When a parentCorpus is provided, hide the parent corpus field
+   * When a fixed parent corpus is provided, hide the parent select field
    */
-  parentCorpus?: Corpus;
+  fixedParentCorpus?: Corpus;
   /**
-   * Without a parentCorpus, parentOptions should be provided
+   * When the parent corpus is not fixed, parentOptions should be provided
    */
   parentOptions?: Corpus[];
 
@@ -58,9 +54,9 @@ export function CorpusForm(props: CorpusFormProps) {
   const [keys, setKeys] = useImmer<ResultMetadataKey[]>([]);
   const [values, setValues] = useImmer<FormMetadataValue[]>([]);
 
-  const { init, isInit } = useInitCorpusForm({
+  const { isInit } = useInitCorpusForm({
     corpusToEdit,
-    parent: props.parentCorpus,
+    fixedParent: props.fixedParentCorpus,
     setForm,
     setKeys,
     setValues,
@@ -70,8 +66,6 @@ export function CorpusForm(props: CorpusFormProps) {
     setError,
     onSubmitted: props.onSaved,
   });
-
-  useEffect(init, []);
 
   const toHint = toFormHint('corpus');
 
@@ -94,7 +88,7 @@ export function CorpusForm(props: CorpusFormProps) {
   }
 
   async function handleDeleteParentCorpus() {
-    setForm(f => delete f.parent);
+    setForm(f => void delete f.parent);
   }
 
   function renderTextField(
@@ -166,7 +160,7 @@ export function CorpusForm(props: CorpusFormProps) {
             onDeselectSource={handleUnlinkSource}
           />
 
-          {!props.parentCorpus && (
+          {!props.fixedParentCorpus && (
             <SelectCorpusField
               label={<Hinted txt="Add to corpus" hint={toHint('parent')} />}
               error={errors.parent}

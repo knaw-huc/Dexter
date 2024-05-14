@@ -3,7 +3,7 @@ import { CellMapper } from '../Mapper';
 import { formatReference } from '../../../reference/formatReference';
 import { ReferenceStyle } from '../../../reference/ReferenceStyle';
 import { ReferenceType } from '../../../reference/ReferenceType';
-import { CslString, isCsl } from '../../../reference/CslJson';
+import { CslString, isCsl } from '../../../../model/CslJson';
 import { ReferenceFormat } from '../../../reference/ReferenceFormat';
 
 export class FormattedReferenceMapper implements CellMapper<CslString> {

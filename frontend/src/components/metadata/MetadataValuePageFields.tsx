@@ -1,9 +1,9 @@
 import React from 'react';
-import { MetadataValue } from '../../model/DexterModel';
 import { Label } from '../common/Label';
 import styled from '@emotion/styled';
 import { H2Styled } from '../common/H2Styled';
 import _ from 'lodash';
+import { MetadataValue } from '../../model/Metadata';
 
 type MetadataValuePageFieldsProps = {
   values: MetadataValue[];

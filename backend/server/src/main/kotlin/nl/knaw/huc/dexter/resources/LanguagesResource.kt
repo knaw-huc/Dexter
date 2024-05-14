@@ -1,6 +1,7 @@
 package nl.knaw.huc.dexter.resources
 
 import io.swagger.v3.oas.annotations.Operation
+import nl.knaw.huc.dexter.api.ResultListLanguage
 import nl.knaw.huc.dexter.api.ResourcePaths.AUTOCOMPLETE
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PARAM
 import nl.knaw.huc.dexter.api.ResourcePaths.ID_PATH
@@ -33,7 +34,7 @@ class LanguagesResource(private val jdbi: Jdbi) {
         "source" to "ISO 639-3 Downloads from: $ISO_639_URL",
         "termsOfUse" to "$ISO_639_URL#termsofuse",
         "languages" to languages().list()
-            .map { it.refName }
+            .map { ResultListLanguage(it.id, it.refName) }
             .ifEmpty {
                 throw NotFoundException(LANGUAGE_SEED_DESCRIPTION)
             })

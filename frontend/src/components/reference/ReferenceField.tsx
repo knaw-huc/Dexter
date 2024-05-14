@@ -5,10 +5,10 @@ import { ReferenceStyle } from './ReferenceStyle';
 import { TextFieldStyled } from '../common/TextFieldStyled';
 import { Label } from '../common/Label';
 import { ReferenceToolTipHelp } from './ReferenceToolTipHelp';
-import { SubmitFormReference } from '../../model/DexterModel';
 import { formatReference } from './formatReference';
 import { useImmer } from 'use-immer';
 import React from 'react';
+import { SubmitFormReference } from '../../model/Reference';
 
 type ReferenceFieldProps = FormFieldprops & {
   toEdit: SubmitFormReference;

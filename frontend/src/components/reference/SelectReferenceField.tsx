@@ -1,6 +1,4 @@
 import React from 'react';
-import { Reference } from '../../model/DexterModel';
-import { getReferenceAutocomplete } from '../../utils/API';
 import { MultiAutocomplete } from '../common/MultiAutocomplete';
 import { FormFieldprops } from '../common/FormFieldProps';
 import { Label } from '../common/Label';
@@ -13,6 +11,8 @@ import { ListItemText } from '@mui/material';
 
 import { truncateInput } from './truncateInput';
 import { normalize } from '../../utils/normalize';
+import { useReferences } from '../../resources/useReferences';
+import { Reference } from '../../model/Reference';
 
 export type SelectReferenceFieldProps = FormFieldprops & {
   selected: Reference[];
@@ -26,6 +26,8 @@ const MIN_AUTOCOMPLETE_LENGTH = 1;
  * Create, link and unlink reference
  */
 export const SelectReferenceField = (props: SelectReferenceFieldProps) => {
+  const { getReferenceAutocomplete } = useReferences();
+
   async function handleAutocompleteOptions(
     inputValue: string,
   ): Promise<Reference[]> {

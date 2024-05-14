@@ -12,25 +12,17 @@ import MenuItem from '@mui/material/MenuItem';
 import ScienceIcon from '@mui/icons-material/Science';
 import { useNavigate } from 'react-router-dom';
 import { LoginAvatar } from './LoginAvatar';
-import {
-  corpora,
-  media,
-  metadata,
-  references,
-  sources,
-  tags,
-} from '../model/Resources';
+
 import { Version } from './Version';
 import { useImmer } from 'use-immer';
-import ErrorBoundary from './common/error/ErrorBoundary';
-import { useUserStore } from '../state/UserStore';
+import { useUser } from '../resources/useUser';
 
-const pages = [corpora, sources, tags, metadata, media, references];
+const pages = ['corpora', 'sources', 'tags', 'metadata', 'media', 'references'];
 const settings: JSX.Element[] = [<Version key={1} />];
 
 export default function Header() {
   const navigate = useNavigate();
-  const { user } = useUserStore();
+  const { user } = useUser();
 
   return (
     <AppBar position="static">
@@ -70,9 +62,7 @@ export default function Header() {
                 </Button>
               ))}
           </Box>
-          <ErrorBoundary>
-            {user?.name ? <UserMenu /> : <LoginAvatar />}
-          </ErrorBoundary>
+          {user?.name ? <UserMenu /> : <LoginAvatar />}
         </Toolbar>
       </Container>
     </AppBar>
@@ -80,7 +70,7 @@ export default function Header() {
 }
 
 function UserMenu() {
-  const { user } = useUserStore();
+  const { user } = useUser();
 
   const [anchorElUser, setAnchorElUser] = useImmer<HTMLElement>(null);
   const handleCloseUserMenu = () => {

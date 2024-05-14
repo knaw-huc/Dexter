@@ -7,19 +7,24 @@ import { TagsFilter } from '../tag/TagsFilter';
 import _ from 'lodash';
 import { SourcePreview } from '../source/SourcePreview';
 import React from 'react';
-import { ResultTag, Source } from '../../model/DexterModel';
 import { useImmer } from 'use-immer';
 import { SourceForm } from '../source/SourceForm';
-import { addSourcesToCorpus, deleteSourceFromCorpus } from '../../utils/API';
 import { SelectSourcesForm } from './SelectSourcesForm';
 import { getAllRelevantTags } from './getAllRelevantTags';
-import { useCorpusPageStore } from './CorpusPageStore';
-import { push } from '../../utils/draft/push';
-import { remove } from '../../utils/draft/remove';
 import { reject } from '../../utils/reject';
+import { useCorpora } from '../../resources/useCorpora';
+import { Source } from '../../model/Source';
+import { ResultTag } from '../../model/Tag';
+import { UUID } from '../../model/Id';
 
-export function CorpusSources() {
-  const { corpus, setSources, allSources } = useCorpusPageStore();
+export function CorpusSources(props: { corpusId: UUID }) {
+  const {
+    getCorpus,
+    deleteSourceFromCorpus,
+    addSourcesToCorpus,
+    findSourceOptions,
+  } = useCorpora();
+  const corpus = getCorpus(props.corpusId);
   const corpusId = corpus.id;
   const sources = corpus.sources;
   const [filterTags, setFilterTags] = useImmer<ResultTag[]>([]);
@@ -29,13 +34,10 @@ export function CorpusSources() {
   async function handleSavedSource(update: Source) {
     await addSourcesToCorpus(corpusId, [update.id]);
     setShowSourceForm(false);
-    setSources(s => push(s, update));
   }
 
   const handleSelectSource = async (corpusId: string, sourceId: string) => {
     await addSourcesToCorpus(corpusId, [sourceId]);
-    const toLink = allSources.find(s => s.id === sourceId);
-    setSources(s => push(s, toLink));
   };
 
   const handleDeselectSource = async (corpusId: string, sourceId: string) => {
@@ -44,7 +46,6 @@ export function CorpusSources() {
     }
 
     await deleteSourceFromCorpus(corpusId, sourceId);
-    setSources(s => remove(s, sourceId));
   };
 
   const hasSources = !_.isEmpty(sources);
@@ -92,7 +93,7 @@ export function CorpusSources() {
       )}
       {showSelectSourceForm && (
         <SelectSourcesForm
-          options={allSources}
+          options={findSourceOptions(corpusId)}
           selected={sources}
           onSelectSource={sourceId => handleSelectSource(corpusId, sourceId)}
           onDeselectSource={sourceId =>

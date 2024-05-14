@@ -1,4 +1,4 @@
-import { Source } from '../../model/DexterModel';
+import { Source } from '../../model/Source';
 
 export const defaultSource: Source = {
   title: '',

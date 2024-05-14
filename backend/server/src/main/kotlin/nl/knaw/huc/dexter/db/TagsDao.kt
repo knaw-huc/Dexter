@@ -14,6 +14,9 @@ interface TagsDao {
     @SqlQuery("select * from tags where id = :id")
     fun find(id: Int): ResultTag?
 
+    @SqlQuery("select * from tags where created_by = :user")
+    fun findAllByUser(user: UUID): List<ResultTag>
+
     @SqlQuery("insert into tags (val, created_by) values (:val, :userId) returning *")
     fun insert(@BindKotlin tag: FormTag, userId: UUID): ResultTag
 

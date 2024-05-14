@@ -15,6 +15,9 @@ interface ReferencesDao {
     @SqlQuery("select * from \"references\" where id = :id")
     fun find(id: UUID): ResultReference?
 
+    @SqlQuery("select * from \"references\" where created_by = :user")
+    fun findAllByUser(user: UUID): List<ResultReference>
+
     @SqlQuery("insert into \"references\" (input, terms, csl, created_by) values (:input, :terms, :csl, :userId) returning *")
     fun insert(@BindKotlin reference: FormReference, userId: UUID): ResultReference
 

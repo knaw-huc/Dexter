@@ -1,6 +1,4 @@
 import React from 'react';
-import { ResultTag } from '../../model/DexterModel';
-import { createTag, getTagsAutocomplete } from '../../utils/API';
 import {
   CREATE_NEW_OPTION,
   MultiAutocomplete,
@@ -9,6 +7,8 @@ import { FormFieldprops } from '../common/FormFieldProps';
 import { FieldError } from '../common/error/FieldError';
 import { Label } from '../common/Label';
 import _ from 'lodash';
+import { useTags } from '../../resources/useTags';
+import { ResultTag } from '../../model/Tag';
 
 type TagsFieldProps = FormFieldprops & {
   selected: ResultTag[];
@@ -41,6 +41,8 @@ const MIN_AUTOCOMPLETE_LENGTH = 1;
  * Create, link and unlink tags
  */
 export const SelectTagField = (props: TagsFieldProps) => {
+  const { getTagsAutocomplete, createTag } = useTags();
+
   const handleDeleteTag = (tag: ResultTag) => {
     const newSelected = props.selected.filter(t => t.id !== tag.id);
     props.onChangeSelected(newSelected);

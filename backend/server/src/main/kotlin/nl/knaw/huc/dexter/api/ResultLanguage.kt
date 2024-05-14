@@ -10,3 +10,8 @@ data class ResultLanguage(
     val refName: String,
     val comment: String?
 )
+
+data class ResultListLanguage(
+    val id: String,
+    val refName: String
+)

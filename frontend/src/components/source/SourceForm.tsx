@@ -1,11 +1,4 @@
-import React, { useEffect } from 'react';
-import {
-  Access,
-  AccessOptions,
-  ResultMetadataKey,
-  Source,
-  SubmitFormSource,
-} from '../../model/DexterModel';
+import React from 'react';
 import ScrollableModal from '../common/ScrollableModal';
 import { SelectTagField } from '../tag/SelectTagField';
 import { SelectLanguagesField } from '../language/SelectLanguagesField';
@@ -23,10 +16,13 @@ import { SelectMediaField } from '../media/SelectMediaField';
 import { useFormErrors } from '../common/error/useFormErrors';
 import { FormErrorMessage } from '../common/error/FormError';
 import { useImmer } from 'use-immer';
-import { assign } from '../../utils/draft/assign';
+import { assign } from '../../utils/recipe/assign';
 import { Hinted } from '../common/Hinted';
 import { toFormHint } from '../../LabelStore';
 import { TopRightCloseIcon } from '../common/icon/CloseIcon';
+import { Source, SubmitFormSource } from '../../model/Source';
+import { ResultMetadataKey } from '../../model/Metadata';
+import { Access, AccessOptions } from '../../model/Access';
 
 type SourceFormProps = {
   sourceToEdit?: Source;
@@ -42,7 +38,7 @@ export function SourceForm(props: SourceFormProps) {
   const { errors, setError, setFieldError } = useFormErrors<Source>();
   const [keys, setKeys] = useImmer<ResultMetadataKey[]>([]);
 
-  const { init, isInit } = useInitSourceForm({
+  const { isInit } = useInitSourceForm({
     sourceToEdit,
     setForm,
     setKeys,
@@ -56,8 +52,6 @@ export function SourceForm(props: SourceFormProps) {
     setError,
     setFieldError,
   });
-
-  useEffect(init, []);
 
   const toHint = toFormHint('source');
 

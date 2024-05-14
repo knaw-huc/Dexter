@@ -1,31 +1,27 @@
 import TextField from '@mui/material/TextField';
 import React from 'react';
-import { FormTag, ResultTag } from '../../model/DexterModel';
-import { createTag } from '../../utils/API';
 import { Button, Grid } from '@mui/material';
 import * as yup from 'yup';
 import { useFormErrors } from '../common/error/useFormErrors';
 import { FormErrorMessage } from '../common/error/FormError';
 import { FieldError } from '../common/error/FieldError';
 import { useImmer } from 'use-immer';
-
-type NewTagsProps = {
-  onSaved: (newTag: ResultTag) => void;
-};
+import { useTags } from '../../resources/useTags';
+import { FormTag } from '../../model/Tag';
 
 const tagSchema = yup.object({
   val: yup.string().required('Tag cannot be empty'),
 });
-export function TagForm(props: NewTagsProps) {
+export function TagForm() {
   const [form, setForm] = useImmer<FormTag>({ val: '' });
   const { errors, setError } = useFormErrors<FormTag>();
+  const { createTag } = useTags();
 
   async function handleCreateTag() {
     try {
       await tagSchema.validate(form);
-      const newTag = await createTag(form);
+      await createTag(form);
       setForm(f => ({ ...f, val: '' }));
-      props.onSaved(newTag);
     } catch (error) {
       await setError(error);
     }

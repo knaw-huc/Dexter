@@ -5,22 +5,25 @@ import { AddNewButton } from '../common/AddNewButton';
 import { SelectExistingButton } from './SelectExistingButton';
 import { MediaPreview } from '../media/MediaPreview';
 import React from 'react';
-import { ResultMedia } from '../../model/DexterModel';
 import { MediaForm } from '../media/MediaForm';
 import { SelectMediaForm } from './SelectMediaForm';
 import { useImmer } from 'use-immer';
-import { addMediaToSource, deleteMediaFromSource } from '../../utils/API';
-import { remove } from '../../utils/draft/remove';
-import { replace } from '../../utils/draft/replace';
-import { push } from '../../utils/draft/push';
-import { useSourcePageStore } from './SourcePageStore';
-import { updateSourceMedia } from '../../utils/updateRemoteIds';
 import _ from 'lodash';
 import { reject } from '../../utils/reject';
+import { useSources } from '../../resources/useSources';
+import { ResultMedia } from '../../model/Media';
+import { UUID } from '../../model/Id';
 
-export function SourceMedia() {
-  const { source, setSource } = useSourcePageStore();
-  const sourceId = source.id;
+export function SourceMedia(props: { sourceId: UUID }) {
+  const {
+    deleteMediaFromSource,
+    updateSourceMedia,
+    addMediaToSource,
+    getSource,
+  } = useSources();
+
+  const sourceId = props.sourceId;
+  const source = getSource(sourceId);
   const media = source.media;
 
   const [showMediaForm, setShowMediaForm] = useImmer(false);
@@ -33,7 +36,6 @@ export function SourceMedia() {
     }
 
     await deleteMediaFromSource(sourceId, media.id);
-    setSource(s => remove(s.media, media.id));
   }
 
   function handleClickEditMedia(media: ResultMedia) {
@@ -43,21 +45,19 @@ export function SourceMedia() {
 
   async function handleSavedMedia(media: ResultMedia) {
     if (mediaToEdit) {
-      handleEditedMedia(media);
+      handleEditedMedia();
     } else {
       await addCreatedMedia(media);
     }
   }
 
-  function handleEditedMedia(media: ResultMedia) {
-    setSource(s => replace(s.media, media));
+  function handleEditedMedia() {
     setMediaToEdit(null);
     setShowMediaForm(false);
   }
 
   async function addCreatedMedia(media: ResultMedia) {
     await addMediaToSource(sourceId, [media.id]);
-    setSource(s => push(s.media, media));
     setShowMediaForm(false);
   }
 
@@ -68,7 +68,6 @@ export function SourceMedia() {
 
   async function handleChangeSelectedMedia(media: ResultMedia[]) {
     await updateSourceMedia(sourceId, media);
-    setSource(s => void (s.media = media));
   }
 
   const hasMedia = !_.isEmpty(media);

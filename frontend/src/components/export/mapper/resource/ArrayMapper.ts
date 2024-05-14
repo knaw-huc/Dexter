@@ -4,10 +4,10 @@ import {
   RowWithTablesMapper,
   TablesMapper,
 } from '../Mapper';
-import { WithId } from '../../../../model/DexterModel';
 import _ from 'lodash';
 import { BasicTable } from '../Table';
 import { Any } from '../../../common/Any';
+import { WithId } from '../../../../model/Id';
 
 /**
  * Move all mapped resource rows into a single table

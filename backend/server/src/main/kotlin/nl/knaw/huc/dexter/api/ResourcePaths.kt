@@ -24,6 +24,7 @@ object ResourcePaths {
     const val VALUES = "values"
 
     const val WITH_RESOURCES = "with-resources"
+    const val RESOURCES = "resources"
 
     // params
     const val ID_PARAM = "id"

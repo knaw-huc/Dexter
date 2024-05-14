@@ -6,39 +6,37 @@ import { SelectExistingButton } from '../source/SelectExistingButton';
 import { TagsFilter } from '../tag/TagsFilter';
 import { CorpusPreview } from './CorpusPreview';
 import React from 'react';
-import { Corpus, ResultTag } from '../../model/DexterModel';
 import { useImmer } from 'use-immer';
 import { CorpusForm } from './CorpusForm';
-import { updateCorpus } from '../../utils/API';
 import { isRelevantResource } from './getAllRelevantTags';
 import { getCorpusTags } from './getCorpusTags';
-import { useCorpusPageStore } from './CorpusPageStore';
-import { push } from '../../utils/draft/push';
-import { remove } from '../../utils/draft/remove';
 import _ from 'lodash';
 import { reject } from '../../utils/reject';
 import { SelectSubcorporaForm } from './SelectSubcorporaForm';
+import { useCorpora } from '../../resources/useCorpora';
+import { Corpus } from '../../model/Corpus';
+import { ResultTag } from '../../model/Tag';
+import { UUID } from '../../model/Id';
 
-export function CorpusSubcorpora() {
-  const { corpus, setSubcorpora, getCorpusOptions, getSourceOptions } =
-    useCorpusPageStore();
+export function CorpusSubcorpora(props: { corpusId: UUID }) {
+  const { getCorpus, updateCorpus, findCorpusOptions, findSourceOptions } =
+    useCorpora();
 
+  const corpus = getCorpus(props.corpusId);
   const [filterTags, setFilterTags] = useImmer<ResultTag[]>([]);
   const [showSubcorpusForm, setShowSubcorpusForm] = useImmer(false);
   const [showSelectSubcorpusForm, setShowSelectSubcorpusForm] = useImmer(false);
 
-  const handleSavedSubcorpus = async (subcorpus: Corpus) => {
-    setSubcorpora(subcorpora => push(subcorpora, subcorpus));
+  const handleSavedSubcorpus = async () => {
     setShowSubcorpusForm(false);
   };
 
   const handleSelectSubcorpus = async (subcorpusId: string) => {
-    const newSubcorpus = getCorpusOptions().find(c => c.id === subcorpusId);
+    const newSubcorpus = getCorpus(subcorpusId);
     await updateCorpus(subcorpusId, {
       ...newSubcorpus,
       parentId: corpus.id,
     });
-    setSubcorpora(subcorpora => push(subcorpora, newSubcorpus));
   };
 
   function handleCloseCorpusForm() {
@@ -51,8 +49,7 @@ export function CorpusSubcorpora() {
     }
 
     const subcorpus = corpus.subcorpora.find(c => c.id === subcorpusId);
-    await updateCorpus(subcorpusId, { ...subcorpus, parentId: undefined });
-    setSubcorpora(subcorpora => remove(subcorpora, subcorpus.id));
+    await updateCorpus(subcorpusId, { ...subcorpus, parentId: null });
   };
 
   /**
@@ -115,8 +112,8 @@ export function CorpusSubcorpora() {
 
       {showSubcorpusForm && (
         <CorpusForm
-          parentCorpus={corpus}
-          sourceOptions={getSourceOptions()}
+          fixedParentCorpus={corpus}
+          sourceOptions={findSourceOptions(props.corpusId)}
           onClose={handleCloseCorpusForm}
           onSaved={handleSavedSubcorpus}
         />
@@ -124,7 +121,7 @@ export function CorpusSubcorpora() {
 
       {showSelectSubcorpusForm && (
         <SelectSubcorporaForm
-          options={getCorpusOptions()}
+          options={findCorpusOptions(corpus.id)}
           selected={corpus.subcorpora}
           onSelectCorpus={handleSelectSubcorpus}
           onDeselectCorpus={handleDeselectSubcorpus}

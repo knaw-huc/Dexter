@@ -1,38 +1,27 @@
-import React, { useEffect } from 'react';
-import { getMetadataKeys } from '../../utils/API';
-import { ResultMetadataKey } from '../../model/DexterModel';
+import React from 'react';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
 import { AddNewButton } from '../common/AddNewButton';
 import { MetadataKeyListItem } from './MetadataKeyListItem';
 import { MetadataKeyForm } from './MetadataKeyForm';
 import { MetadataKeyIcon } from './MetadataKeyIcon';
-import { useThrowSync } from '../common/error/useThrowSync';
 import { useImmer } from 'use-immer';
-import { replace } from '../../utils/draft/replace';
-import { push } from '../../utils/draft/push';
 import { HintedTitle } from '../common/HintedTitle';
+import { useMetadata } from '../../resources/useMetadata';
+import _ from 'lodash';
+import { ResultMetadataKey } from '../../model/Metadata';
 
-export function MetadataKeyIndex() {
-  const [keys, setKeys] = useImmer<ResultMetadataKey[]>([]);
+export default function MetadataKeyIndex() {
   const [isFormOpen, setFormOpen] = useImmer(false);
   const [toEdit, setToEdit] = useImmer<ResultMetadataKey>(null);
-  const throwSync = useThrowSync();
-
-  useEffect(() => {
-    getMetadataKeys().then(setKeys).catch(throwSync);
-  }, []);
-
+  const keys = useMetadata().getMetadataKeys();
   function handleEditClick(toEdit: ResultMetadataKey) {
     setFormOpen(true);
     setToEdit(toEdit);
   }
 
-  function handleSavedKey(key: ResultMetadataKey) {
+  function handleSavedKey() {
     if (toEdit) {
-      setKeys(keys => replace(keys, key));
       setToEdit(null);
-    } else {
-      setKeys(keys => push(keys, key));
     }
     setFormOpen(false);
   }
@@ -64,7 +53,7 @@ export function MetadataKeyIndex() {
         <MetadataKeyListItem
           key={i}
           metadataKey={key}
-          onDeleted={() => setKeys(keys.filter(k => k.id !== key.id))}
+          onDeleted={_.noop}
           onEditClick={() => handleEditClick(key)}
         />
       ))}

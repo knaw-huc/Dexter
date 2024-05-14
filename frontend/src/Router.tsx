@@ -1,39 +1,52 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { Page } from './components/Page';
-import { CorpusIndex } from './components/corpus/CorpusIndex';
-import { CorpusPage } from './components/corpus/CorpusPage';
-import { SourceIndex } from './components/source/SourceIndex';
-import { SourcePage } from './components/source/SourcePage';
-import { TagIndex } from './components/tag/TagIndex';
-import { MetadataKeyIndex } from './components/metadata/MetadataKeyIndex';
-import React from 'react';
-import { MediaIndex } from './components/media/MediaIndex';
-import {
-  references,
-  corpora,
-  media,
-  metadata,
-  sources,
-  tags,
-} from './model/Resources';
-import { MediaPage } from './components/media/MediaPage';
-import { ReferenceIndex } from './components/reference/ReferenceIndex';
+import React, { lazy } from 'react';
+
+const CorpusIndex = lazy(
+  /* webpackPrefetch: true */ () => import('./components/corpus/CorpusIndex'),
+);
+const CorpusPage = lazy(
+  /* webpackPrefetch: true */ () => import('./components/corpus/CorpusPage'),
+);
+const SourceIndex = lazy(
+  /* webpackPrefetch: true */ () => import('./components/source/SourceIndex'),
+);
+const SourcePage = lazy(
+  /* webpackPrefetch: true */ () => import('./components/source/SourcePage'),
+);
+const TagIndex = lazy(
+  /* webpackPrefetch: true */ () => import('./components/tag/TagIndex'),
+);
+const MetadataKeyIndex = lazy(
+  /* webpackPrefetch: true */
+  () => import('./components/metadata/MetadataKeyIndex'),
+);
+const MediaIndex = lazy(
+  () => import(/* webpackPrefetch: true */ './components/media/MediaIndex'),
+);
+const MediaPage = lazy(
+  () => import(/* webpackPrefetch: true */ './components/media/MediaPage'),
+);
+const ReferenceIndex = lazy(
+  /* webpackPrefetch: true */
+  () => import('./components/reference/ReferenceIndex'),
+);
 
 export function Router() {
   return (
     <Routes>
       <Route path="/" element={<Page />}>
-        <Route path="/" element={<Navigate to={`/${corpora}`} />} />
+        <Route path="/" element={<Navigate to={`/corpora`} />} />
 
-        <Route path={`/${corpora}`} element={<CorpusIndex />} />
-        <Route path={`/${corpora}/:corpusId`} element={<CorpusPage />} />
-        <Route path={`/${sources}`} element={<SourceIndex />} />
-        <Route path={`/${sources}/:sourceId`} element={<SourcePage />} />
-        <Route path={`/${tags}`} element={<TagIndex />} />
-        <Route path={`/${metadata}`} element={<MetadataKeyIndex />} />
-        <Route path={`/${media}`} element={<MediaIndex />} />
-        <Route path={`/${media}/:mediaId`} element={<MediaPage />} />
-        <Route path={`/${references}`} element={<ReferenceIndex />} />
+        <Route path={`/corpora`} element={<CorpusIndex />} />
+        <Route path={`/corpora/:corpusId`} element={<CorpusPage />} />
+        <Route path={`/sources`} element={<SourceIndex />} />
+        <Route path={`/sources/:sourceId`} element={<SourcePage />} />
+        <Route path={`/tags`} element={<TagIndex />} />
+        <Route path={`/metadata`} element={<MetadataKeyIndex />} />
+        <Route path={`/media`} element={<MediaIndex />} />
+        <Route path={`/media/:mediaId`} element={<MediaPage />} />
+        <Route path={`/references`} element={<ReferenceIndex />} />
         <Route
           path="*"
           element={

@@ -1,8 +1,8 @@
-import { Reference } from '../../model/DexterModel';
 import { ListItemText } from '@mui/material';
 import React from 'react';
 import { formatReference } from './formatReference';
 import { ReferenceStyle } from './ReferenceStyle';
+import { Reference } from '../../model/Reference';
 
 type Props = {
   reference: Reference;

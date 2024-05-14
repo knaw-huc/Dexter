@@ -1,6 +1,0 @@
-FROM node:18.19-alpine
-
-WORKDIR /dexter
-COPY ./package.json /dexter/package.json
-
-RUN npm install

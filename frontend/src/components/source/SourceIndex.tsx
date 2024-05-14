@@ -1,7 +1,5 @@
-import React, { useEffect } from 'react';
-import { Source } from '../../model/DexterModel';
+import React from 'react';
 import { SourceListItem } from './SourceListItem';
-import { getSourcesWithResources } from '../../utils/API';
 import { SourceForm } from './SourceForm';
 import { AddNewButton } from '../common/AddNewButton';
 import { List } from '@mui/material';
@@ -9,27 +7,21 @@ import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
 import { SourceIcon } from './SourceIcon';
 import { useThrowSync } from '../common/error/useThrowSync';
 import { useImmer } from 'use-immer';
-import { replace } from '../../utils/draft/replace';
-import { push } from '../../utils/draft/push';
 import _ from 'lodash';
 import { useDeleteSource } from './useDeleteSource';
-import { remove } from '../../utils/draft/remove';
 import { HintedTitle } from '../common/HintedTitle';
+import { useSources } from '../../resources/useSources';
+import { Source } from '../../model/Source';
 
-export function SourceIndex() {
-  const [sources, setSources] = useImmer<Source[]>([]);
+export default function SourceIndex() {
+  const sources = useSources().getSources();
   const [showForm, setShowForm] = useImmer(false);
   const [sourceToEdit, setSourceToEdit] = useImmer<Source>(null);
   const throwSync = useThrowSync();
   const { deleteSource } = useDeleteSource({ onError: throwSync });
 
-  useEffect(() => {
-    getSourcesWithResources().then(setSources).catch(throwSync);
-  }, []);
-
   const handleDelete = async (source: Source) => {
     deleteSource(source);
-    setSources(sources => remove(sources, source.id));
   };
 
   const handleEdit = (source: Source) => {
@@ -37,12 +29,9 @@ export function SourceIndex() {
     setShowForm(true);
   };
 
-  function handleSaveSource(source: Source) {
+  function handleSaveSource() {
     if (sourceToEdit) {
-      setSources(sources => replace(sources, source));
       setSourceToEdit(null);
-    } else {
-      setSources(sources => push(sources, source));
     }
     setShowForm(false);
   }
@@ -78,7 +67,7 @@ export function SourceIndex() {
       )}
       {sources && (
         <List sx={{ mt: '1em' }}>
-          {_.sortBy(sources, ['updatedAt']).map(source => (
+          {_.orderBy(sources, ['updatedAt'], ['desc']).map(source => (
             <SourceListItem
               key={source.id}
               source={source}

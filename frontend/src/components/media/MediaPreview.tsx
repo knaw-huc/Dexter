@@ -1,11 +1,10 @@
-import { ResultMedia } from '../../model/DexterModel';
 import React from 'react';
 import { Card, CardActions, CardMedia, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { EditIcon } from '../common/icon/EditIcon';
 import { Title } from './Title';
-import { media } from '../../model/Resources';
 import { CloseIcon } from '../common/icon/CloseIcon';
+import { ResultMedia } from '../../model/Media';
 
 type MediaItemProps = {
   media: ResultMedia;
@@ -17,7 +16,7 @@ export const MediaPreview = (props: MediaItemProps) => {
   const navigate = useNavigate();
 
   function handleSelect() {
-    navigate(`/${media}/${props.media.id}`);
+    navigate(`/media/${props.media.id}`);
   }
 
   function handleEdit(e: MouseEvent) {

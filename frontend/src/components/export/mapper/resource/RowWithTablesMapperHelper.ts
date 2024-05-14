@@ -9,7 +9,8 @@ import {
 import { Any } from '../../../common/Any';
 import { RowWithTables } from '../RowWithTables';
 import { PrimitiveMapper } from './PrimitiveMapper';
-import { WithId } from '../../../../model/DexterModel';
+
+import { WithId } from '../../../../model/Id';
 
 type KeyToMapper<RESOURCE> = Partial<
   Record<keyof RESOURCE, Mapper<Any, AnyMapperResult>>

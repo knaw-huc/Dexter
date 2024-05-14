@@ -22,10 +22,10 @@ interface LanguagesDao {
     @SqlQuery("select * from iso_639_3 where id = :id")
     fun findById(id: String): ResultLanguage?
 
-    @SqlQuery("select * from iso_639_3 where lower(ref_name) = lower(:key)")
+    @SqlQuery("select * from iso_639_3 where lower(ref_name) = lower(:key) limit 10")
     fun findByLength1(key: String): List<ResultLanguage>
 
-    @SqlQuery("select * from iso_639_3 where lower(part_1) = lower(:key) or lower(ref_name) = lower(:key)")
+    @SqlQuery("select * from iso_639_3 where lower(part_1) = lower(:key) or lower(ref_name) = lower(:key) limit 10")
     fun findByLength2(key: String): List<ResultLanguage>
 
     @SqlQuery(
@@ -33,7 +33,8 @@ interface LanguagesDao {
                 "lower(id) = lower(:key) " +
                 "or lower(part_2b) = lower(:key) " +
                 "or lower(part_2t) = lower(:key) " +
-                "or lower(ref_name) = lower(:key)"
+                "or lower(ref_name) = lower(:key) " +
+                "limit 10"
     )
     fun findByLength3(key: String): List<ResultLanguage>
 

@@ -1,7 +1,7 @@
-import { isLanguage, ResultLanguage } from '../../../../model/DexterModel';
 import { Any } from '../../../common/Any';
 import { CellMapper } from '../Mapper';
 import _ from 'lodash';
+import { isLanguage, ResultLanguage } from '../../../../model/Language';
 
 export class LanguagesMapper implements CellMapper<ResultLanguage[]> {
   canMap(resources: Any): resources is ResultLanguage[] {

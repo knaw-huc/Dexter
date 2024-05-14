@@ -1,22 +1,14 @@
+import { corpusFormValidator } from './corpusFormValidator';
+import { useCorpora } from '../../resources/useCorpora';
+import { useMetadata } from '../../resources/useMetadata';
+import { Corpus, FormCorpus, SubmitFormCorpus } from '../../model/Corpus';
 import {
-  Corpus,
-  SubmitFormCorpus,
-  FormCorpus,
   FormMetadataValue,
   ResultMetadataKey,
   ResultMetadataValue,
   toResultMetadataValue,
-  UUID,
-} from '../../model/DexterModel';
-import { createCorpus, updateCorpus } from '../../utils/API';
-import { createMetadataValues } from '../../utils/createMetadataValues';
-import {
-  updateCorpusLanguages,
-  updateCorpusMetadataValues,
-  updateCorpusTags,
-  updateSources,
-} from '../../utils/updateRemoteIds';
-import { corpusFormValidator } from './corpusFormValidator';
+} from '../../model/Metadata';
+import { UUID } from '../../model/Id';
 
 type UseSubmitCorpusFormResult = {
   submitCorpusForm: (
@@ -37,6 +29,15 @@ export function useSubmitCorpusForm(
   params: UseSubmitCorpusFormParams,
 ): UseSubmitCorpusFormResult {
   const { corpusToEdit, onSubmitted, setError } = params;
+  const {
+    updateCorpus,
+    updateCorpusSources,
+    updateCorpusTags,
+    updateCorpusLanguages,
+    updateCorpusMetadataValues,
+    createCorpus,
+  } = useCorpora();
+  const { upsertMetadataValues } = useMetadata();
 
   async function submitCorpusForm(
     toSubmit: SubmitFormCorpus,
@@ -49,7 +50,7 @@ export function useSubmitCorpusForm(
       const id = corpusToEdit
         ? await updateExistingCorpus(serverForm)
         : await createNewCorpus(serverForm);
-      const metadataValues = await createMetadataValues(
+      const metadataValues = await upsertMetadataValues(
         corpusToEdit,
         keys,
         values,
@@ -88,7 +89,7 @@ export function useSubmitCorpusForm(
     await updateCorpusMetadataValues(id, metadataValues);
     await updateCorpusTags(id, data.tags);
     await updateCorpusLanguages(id, data.languages);
-    await updateSources(id, data.sources);
+    await updateCorpusSources(id, data.sources);
   }
 
   return { submitCorpusForm };

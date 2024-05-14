@@ -1,6 +1,5 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { Source } from '../../model/DexterModel';
 import { SourceForm } from './SourceForm';
 import { EditButton } from '../common/EditButton';
 import { TagList } from '../tag/TagList';
@@ -22,25 +21,22 @@ import { SourceReferences } from './SourceReferences';
 import { useImmer } from 'use-immer';
 import { DeleteButton } from '../common/DeleteButton';
 import { useDeleteSource } from './useDeleteSource';
-import { useSourcePageStore } from './SourcePageStore';
 import { HintedTitle } from '../common/HintedTitle';
-import { useUserStore } from '../../state/UserStore';
-import { assign } from '../../utils/draft/assign';
-import { useInitSourcePage } from './useInitSourcePage';
+import { useSources } from '../../resources/useSources';
+import { useUser } from '../../resources/useUser';
+import { Source } from '../../model/Source';
 
-export const SourcePage = () => {
+export default function SourcePage() {
+  const referenceStyle = useUser().getReferenceStyle();
+  const { getSource } = useSources();
   const sourceId = useParams().sourceId;
-  const { source, setSource } = useSourcePageStore();
-  const { isInit } = useInitSourcePage({ sourceId, setSource });
-
-  const referenceStyle = useUserStore().getReferenceStyle();
+  const source = getSource(sourceId);
 
   const [showForm, setShowForm] = useImmer(false);
   const throwSync = useThrowSync();
   const { deleteSource } = useDeleteSource({ onError: throwSync });
 
-  const handleSavedForm = (update: Source) => {
-    setSource(source => assign(source, update));
+  const handleSavedForm = () => {
     setShowForm(false);
   };
 
@@ -56,7 +52,7 @@ export const SourcePage = () => {
     { key: 'creator' },
   ];
 
-  if (!isInit) {
+  if (!source) {
     return null;
   }
   return (
@@ -109,9 +105,9 @@ export const SourcePage = () => {
         <MetadataValuePageFields values={source.metadataValues} />
       )}
 
-      <SourceMedia />
+      <SourceMedia sourceId={sourceId} />
 
-      <SourceReferences referenceStyle={referenceStyle} />
+      <SourceReferences sourceId={sourceId} referenceStyle={referenceStyle} />
 
       {showForm && (
         <SourceForm
@@ -124,4 +120,4 @@ export const SourcePage = () => {
       )}
     </div>
   );
-};
+}

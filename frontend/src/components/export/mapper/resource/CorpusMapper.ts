@@ -1,5 +1,4 @@
 import { isTables, RowWithTablesMapper } from '../Mapper';
-import { Corpus, isCorpus, Source } from '../../../../model/DexterModel';
 import { Any } from '../../../common/Any';
 import { TagsMapper } from './TagsMapper';
 import { LanguagesMapper } from './LanguagesMapper';
@@ -11,6 +10,8 @@ import { ParentMapper } from './ParentMapper';
 import { RowWithTables } from '../RowWithTables';
 import { createPrefixRow, prefixTable } from '../MapperUtils';
 import _ from 'lodash';
+import { Corpus, isCorpus } from '../../../../model/Corpus';
+import { Source } from '../../../../model/Source';
 
 export class CorpusMapper implements RowWithTablesMapper<Corpus> {
   private helper: RowWithTablesMapperHelper<Corpus>;

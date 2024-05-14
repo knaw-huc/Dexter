@@ -3,11 +3,12 @@ import TextField from '@mui/material/TextField';
 import match from 'autosuggest-highlight/match';
 import parse from 'autosuggest-highlight/parse';
 import React from 'react';
-import { ResultCorpus, ResultSource } from '../../model/DexterModel';
 import { Label } from '../common/Label';
 import { FormFieldprops } from '../common/FormFieldProps';
 import { FieldError } from '../common/error/FieldError';
 import { useImmer } from 'use-immer';
+import { ResultCorpus } from '../../model/Corpus';
+import { ResultSource } from '../../model/Source';
 
 export type SelectCorpusFieldProps = FormFieldprops & {
   options: ResultCorpus[];
@@ -17,7 +18,7 @@ export type SelectCorpusFieldProps = FormFieldprops & {
 };
 
 export const SelectCorpusField = (props: SelectCorpusFieldProps) => {
-  const [inputValue, setInputValue] = useImmer('');
+  const [inputValue, setInputValue] = useImmer(props.selected?.title ?? '');
 
   return (
     <>
@@ -37,7 +38,7 @@ export const SelectCorpusField = (props: SelectCorpusFieldProps) => {
           if (selectedCorpus?.id) {
             props.onSelectCorpus(selectedCorpus.id);
           } else {
-            props.onDeselectCorpus(selectedCorpus.id);
+            props.onDeselectCorpus(props.selected.id);
           }
         }}
         options={props.options}

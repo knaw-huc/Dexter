@@ -1,22 +1,10 @@
-import {
-  ResultMetadataKey,
-  Source,
-  SubmitFormSource,
-  UUID,
-} from '../../model/DexterModel';
-import {
-  addSourcesToCorpus,
-  createSource,
-  updateSource,
-} from '../../utils/API';
-import { createMetadataValues } from '../../utils/createMetadataValues';
-import {
-  updateSourceLanguages,
-  updateSourceMedia,
-  updateSourceMetadataValues,
-  updateSourceTags,
-} from '../../utils/updateRemoteIds';
 import { sourceFormValidator } from './sourceFormValidator';
+import { useCorpora } from '../../resources/useCorpora';
+import { useSources } from '../../resources/useSources';
+import { useMetadata } from '../../resources/useMetadata';
+import { Source, SubmitFormSource } from '../../model/Source';
+import { ResultMetadataKey } from '../../model/Metadata';
+import { UUID } from '../../model/Id';
 
 type UseSubmitSourceFormResult = {
   submitSourceForm: (
@@ -35,7 +23,18 @@ type UseSubmitSourceFormParams = {
 export function useSubmitSourceForm(
   params: UseSubmitSourceFormParams,
 ): UseSubmitSourceFormResult {
+  const {
+    createSource,
+    updateSource,
+    updateSourceMedia,
+    updateSourceLanguages,
+    updateSourceTags,
+    updateSourceMetadataValues,
+  } = useSources();
+
   const { setError, sourceToEdit, corpusId, onSubmitted } = params;
+  const { addSourcesToCorpus } = useCorpora();
+  const { upsertMetadataValues } = useMetadata();
 
   async function submitSourceForm(
     toSubmit: SubmitFormSource,
@@ -54,7 +53,7 @@ export function useSubmitSourceForm(
        * (All other resources can be viewed and deleted
        * at their resource page.)
        */
-      const metadataValues = await createMetadataValues(
+      const metadataValues = await upsertMetadataValues(
         sourceToEdit,
         keys,
         toSubmit.metadataValues,

@@ -14,6 +14,9 @@ interface MetadataKeysDao {
     @SqlQuery("select * from metadata_keys where id = :id")
     fun find(id: UUID): ResultMetadataKey?
 
+    @SqlQuery("select * from metadata_keys where created_by = :user")
+    fun findAllByUser(user: UUID): List<ResultMetadataKey>
+
     @SqlQuery("insert into metadata_keys (key, created_by) values (:key, :createdBy) returning *")
     fun insert(@BindKotlin metadataKey: FormMetadataKey, createdBy: UUID): ResultMetadataKey
 

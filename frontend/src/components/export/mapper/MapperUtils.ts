@@ -1,9 +1,9 @@
 import { RowWithHeader } from './RowWithHeader';
 import { ArrayTable, BasicTable, Table } from './Table';
-import { WithId } from '../../../model/DexterModel';
 import { CellMapper } from './Mapper';
 import { Any } from '../../common/Any';
 import _ from 'lodash';
+import { WithId } from '../../../model/Id';
 
 export function createRowFrom<T extends WithId>(
   name: string,

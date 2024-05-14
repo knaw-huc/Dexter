@@ -6,7 +6,7 @@ import { ErrorWithMessage } from './ErrorWithMessage';
 import { scrollToError } from './scrollToError';
 import { isResponseError } from '../isResponseError';
 import { useImmer } from 'use-immer';
-import { set } from '../../../utils/draft/set';
+import { set } from '../../../utils/recipe/set';
 
 type UseFormErrorsResult<T> = {
   errors: FormErrors<T>;

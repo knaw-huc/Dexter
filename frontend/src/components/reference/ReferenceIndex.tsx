@@ -1,15 +1,5 @@
-import React, { useEffect } from 'react';
-import {
-  Reference,
-  ResultReference,
-  UserSettings,
-} from '../../model/DexterModel';
+import React from 'react';
 import { ReferenceListItem } from './ReferenceListItem';
-import {
-  deleteReference,
-  getReferences,
-  updateUserSettings,
-} from '../../utils/API';
 import { AddNewButton } from '../common/AddNewButton';
 import { List } from '@mui/material';
 import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
@@ -21,20 +11,20 @@ import { ReferenceStyle } from './ReferenceStyle';
 import { useImmer } from 'use-immer';
 import { HintedTitle } from '../common/HintedTitle';
 import { ValidatedSelectField } from '../common/ValidatedSelectField';
-import { useUserStore } from '../../state/UserStore';
 import { reject } from '../../utils/reject';
+import { useReferences } from '../../resources/useReferences';
+import { useUser } from '../../resources/useUser';
+import { Reference, ResultReference } from '../../model/Reference';
+import { UserSettings } from '../../model/User';
 
-export function ReferenceIndex() {
-  const [references, setReferences] = useImmer<ResultReference[]>([]);
+export default function ReferenceIndex() {
+  const { getReferences, deleteReference } = useReferences();
+  const references = getReferences();
   const [showForm, setShowForm] = useImmer(false);
   const [referenceToEdit, setReferenceToEdit] = useImmer<ResultReference>(null);
-
+  const { user, updateUserSettings } = useUser();
   const throwSync = useThrowSync();
-  const { user, getReferenceStyle, setUserSettings } = useUserStore();
-
-  useEffect(() => {
-    getReferences().then(setReferences).catch(throwSync);
-  }, []);
+  const { getReferenceStyle } = useUser();
 
   const handleDelete = async (reference: ResultReference) => {
     if (reject('Delete this reference?')) {
@@ -46,7 +36,6 @@ export function ReferenceIndex() {
     } catch (e) {
       throwSync(e);
     }
-    setReferences(references => references.filter(s => s.id !== reference.id));
   };
 
   const handleEdit = (reference: Reference) => {
@@ -54,14 +43,9 @@ export function ReferenceIndex() {
     setShowForm(true);
   };
 
-  function handleSavedReference(reference: Reference) {
+  function handleSavedReference() {
     if (referenceToEdit) {
-      setReferences(prev =>
-        prev.map(c => (c.id === reference.id ? reference : c)),
-      );
       setReferenceToEdit(null);
-    } else {
-      setReferences(references => [...references, reference]);
     }
     setShowForm(false);
   }
@@ -78,12 +62,7 @@ export function ReferenceIndex() {
 
   async function handleSelectReferenceStyle(selected: ReferenceStyle) {
     const update: UserSettings = { ...user.settings, referenceStyle: selected };
-    try {
-      await updateUserSettings(update);
-    } catch (e) {
-      throwSync(e);
-    }
-    setUserSettings(update);
+    await updateUserSettings(update);
   }
 
   return (
