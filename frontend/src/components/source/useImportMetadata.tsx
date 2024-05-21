@@ -76,5 +76,5 @@ export function isImportableUrl(externalRef?: string): boolean {
 }
 
 const IMPORTABLE_URL = new RegExp(
-  'https://hdl\\.handle\\.net/[0-9.]*/([0-9]*)',
+  'https://hdl\\.handle\\.net/[0-9.]+/([0-9]+)',
 );
