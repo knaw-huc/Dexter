@@ -1,29 +1,32 @@
 import isUrl from '../../utils/isUrl';
-import { ResultImport, Source } from '../../model/DexterModel';
+import {
+  ResultImport,
+  Source,
+  SubmitFormSource,
+} from '../../model/DexterModel';
 import { postImport } from '../../utils/API';
 import { ErrorWithMessage } from '../common/error/ErrorWithMessage';
 import { Any } from '../common/Any';
 import { useImmer } from 'use-immer';
 import { reject } from '../../utils/reject';
+import { Dispatch, SetStateAction } from 'react';
 
-type WithExternalRef = {
-  externalRef?: string;
-};
-
-type UseImportMetadataResult<T extends WithExternalRef> = {
+type UseImportMetadataResult = {
   isImportLoading: boolean;
-  loadImport: (form: T) => Promise<T>;
+  loadImport: () => void;
 };
 
 type UseImportMetadataParams = {
   setError: (error: ErrorWithMessage) => Promise<void>;
   setFieldError: (field: keyof Source, error: ErrorWithMessage) => void;
+  form: SubmitFormSource;
+  setForm: Dispatch<SetStateAction<SubmitFormSource>>;
 };
 
-export function useImportMetadata<T extends WithExternalRef>(
+export function useImportMetadata(
   params: UseImportMetadataParams,
-): UseImportMetadataResult<T> {
-  const { setError, setFieldError } = params;
+): UseImportMetadataResult {
+  const { setError, setFieldError, form, setForm } = params;
   const [isImportLoading, setImportLoading] = useImmer(false);
 
   function checkCanImporting(externalRef: string) {
@@ -37,7 +40,7 @@ export function useImportMetadata<T extends WithExternalRef>(
     return isUrl(externalRef);
   }
 
-  async function loadImport(form: T): Promise<T> {
+  async function loadImport(): Promise<void> {
     if (!checkCanImporting(form.externalRef)) {
       return;
     }
@@ -53,16 +56,16 @@ export function useImportMetadata<T extends WithExternalRef>(
         message: 'External reference could not be imported',
       });
       setImportLoading(false);
-      return form;
+      return;
     }
 
-    const update: T = { ...form };
+    const update = { ...form };
     Object.keys(tmsImport.imported).forEach((key: keyof Source) => {
       (update as Any)[key] = tmsImport.imported[key];
     });
 
     setImportLoading(false);
-    return update;
+    setForm(update);
   }
 
   return {

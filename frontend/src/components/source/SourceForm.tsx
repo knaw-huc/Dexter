@@ -52,9 +52,11 @@ export function SourceForm(props: SourceFormProps) {
     setError,
     onSubmitted: props.onSaved,
   });
-  const { isImportLoading, loadImport } = useImportMetadata<SubmitFormSource>({
+  const { isImportLoading, loadImport } = useImportMetadata({
     setError,
     setFieldError,
+    form,
+    setForm,
   });
 
   useEffect(init, []);
@@ -62,7 +64,7 @@ export function SourceForm(props: SourceFormProps) {
   const toHint = toFormHint('source');
 
   async function handleImportMetadata() {
-    setForm(await loadImport(form));
+    loadImport();
   }
 
   async function handleSubmit() {
