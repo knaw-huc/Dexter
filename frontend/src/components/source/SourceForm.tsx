@@ -27,6 +27,7 @@ import { assign } from '../../utils/draft/assign';
 import { Hinted } from '../common/Hinted';
 import { toFormHint } from '../../LabelStore';
 import { TopRightCloseIcon } from '../common/icon/CloseIcon';
+import { reject } from '../../utils/reject';
 
 type SourceFormProps = {
   sourceToEdit?: Source;
@@ -85,13 +86,17 @@ export function SourceForm(props: SourceFormProps) {
       />
     );
   }
+  function handleClose() {
+    if (reject('Discard changes?')) return;
+    props.onClose();
+  }
 
   if (!isInit) {
     return null;
   }
   return (
-    <ScrollableModal handleClose={props.onClose}>
-      <TopRightCloseIcon onClick={props.onClose} />
+    <ScrollableModal handleClose={handleClose}>
+      <TopRightCloseIcon onClick={handleClose} />
 
       <h1>{sourceToEdit ? 'Edit source' : 'Create new source'}</h1>
       <FormErrorMessage error={errors.generic} />
