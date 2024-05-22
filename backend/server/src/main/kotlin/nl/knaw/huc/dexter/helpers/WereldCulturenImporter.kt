@@ -1,3 +1,4 @@
+import org.slf4j.LoggerFactory
 import org.w3c.dom.NodeList
 import org.xml.sax.InputSource
 import java.io.StringReader
@@ -21,6 +22,7 @@ class WereldCulturenImporter {
     private val client: Client = ClientBuilder.newClient()
     private val xpath: XPath
     private val tms2DexterFields: List<Tms2Dexter>
+    private val log = LoggerFactory.getLogger(javaClass)
 
     init {
         val factory: XPathFactory = XPathFactory.newInstance()
@@ -56,6 +58,7 @@ class WereldCulturenImporter {
     }
 
     fun import(url: String): ImportedFields {
+        log.info("Importing: $url")
         val xmlResponse: String = client
             .target(url)
             .request()

@@ -4,27 +4,26 @@ import { Any } from '../common/Any';
 import { useImmer } from 'use-immer';
 import { reject } from '../../utils/reject';
 import { useImport } from '../../resources/useImport';
-import { Source } from '../../model/Source';
+import { Dispatch, SetStateAction } from 'react';
+import { Source, SubmitFormSource } from '../../model/Source';
 import { ResultImport } from '../../model/Import';
 
-type WithExternalRef = {
-  externalRef?: string;
-};
-
-type UseImportMetadataResult<T extends WithExternalRef> = {
+type UseImportMetadataResult = {
   isImportLoading: boolean;
-  loadImport: (form: T) => Promise<T>;
+  loadImport: () => void;
 };
 
 type UseImportMetadataParams = {
   setError: (error: ErrorWithMessage) => Promise<void>;
   setFieldError: (field: keyof Source, error: ErrorWithMessage) => void;
+  form: SubmitFormSource;
+  setForm: Dispatch<SetStateAction<SubmitFormSource>>;
 };
 
-export function useImportMetadata<T extends WithExternalRef>(
+export function useImportMetadata(
   params: UseImportMetadataParams,
-): UseImportMetadataResult<T> {
-  const { setError, setFieldError } = params;
+): UseImportMetadataResult {
+  const { setError, setFieldError, form, setForm } = params;
   const [isImportLoading, setImportLoading] = useImmer(false);
   const { postImport } = useImport();
 
@@ -39,7 +38,7 @@ export function useImportMetadata<T extends WithExternalRef>(
     return isUrl(externalRef);
   }
 
-  async function loadImport(form: T): Promise<T> {
+  async function loadImport(): Promise<void> {
     if (!checkCanImporting(form.externalRef)) {
       return;
     }
@@ -55,16 +54,16 @@ export function useImportMetadata<T extends WithExternalRef>(
         message: 'External reference could not be imported',
       });
       setImportLoading(false);
-      return form;
+      return;
     }
 
-    const update: T = { ...form };
+    const update = { ...form };
     Object.keys(tmsImport.imported).forEach((key: keyof Source) => {
       (update as Any)[key] = tmsImport.imported[key];
     });
 
     setImportLoading(false);
-    return update;
+    setForm(update);
   }
 
   return {
@@ -78,5 +77,5 @@ export function isImportableUrl(externalRef?: string): boolean {
 }
 
 const IMPORTABLE_URL = new RegExp(
-  'https://hdl\\.handle\\.net/[0-9.]*/([0-9]*)',
+  'https://hdl\\.handle\\.net/[0-9.]+/([0-9]+)',
 );

@@ -3,11 +3,12 @@
 ## [Development](https://github.com/knaw-huc/Dexter/tree/development)
 🧪 Features / ✨ Enhancements / 🔧 Technical / 🐛 Bug Fixes
 
-## [v0.14](https://github.com/knaw-huc/Dexter/releases/tag/v0.14.7)
+## [v0.14](https://github.com/knaw-huc/Dexter/releases/tag/v0.14.9)
 ### 🧪 Features 
 - Export corpus and its subcorpora, sources, media and references to a zip with csv files
 - Add tooltips to form fields and page headers with descriptions (loaded from backend `assets/labels.json`)
 - Add dropdown that allows users to change their reference style 
+- Add 'external identifier' field to sources
 
 ### ✨ Enhancements 
 - On the corpus page in the subcorpora section: show the tags of sources and subcorpora of a corpus   

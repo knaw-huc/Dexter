@@ -23,6 +23,7 @@ import { TopRightCloseIcon } from '../common/icon/CloseIcon';
 import { Source, SubmitFormSource } from '../../model/Source';
 import { ResultMetadataKey } from '../../model/Metadata';
 import { Access, AccessOptions } from '../../model/Access';
+import { reject } from '../../utils/reject';
 
 type SourceFormProps = {
   sourceToEdit?: Source;
@@ -48,15 +49,17 @@ export function SourceForm(props: SourceFormProps) {
     setError,
     onSubmitted: props.onSaved,
   });
-  const { isImportLoading, loadImport } = useImportMetadata<SubmitFormSource>({
+  const { isImportLoading, loadImport } = useImportMetadata({
     setError,
     setFieldError,
+    form,
+    setForm,
   });
 
   const toHint = toFormHint('source');
 
   async function handleImportMetadata() {
-    setForm(await loadImport(form));
+    loadImport();
   }
 
   async function handleSubmit() {
@@ -77,13 +80,17 @@ export function SourceForm(props: SourceFormProps) {
       />
     );
   }
+  function handleClose() {
+    if (reject('Discard changes?')) return;
+    props.onClose();
+  }
 
   if (!isInit) {
     return null;
   }
   return (
-    <ScrollableModal handleClose={props.onClose}>
-      <TopRightCloseIcon onClick={props.onClose} />
+    <ScrollableModal handleClose={handleClose}>
+      <TopRightCloseIcon onClick={handleClose} />
 
       <h1>{sourceToEdit ? 'Edit source' : 'Create new source'}</h1>
       <FormErrorMessage error={errors.generic} />

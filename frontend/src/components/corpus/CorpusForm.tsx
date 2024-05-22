@@ -25,6 +25,7 @@ import { Corpus } from '../../model/Corpus';
 import { Source } from '../../model/Source';
 import { FormMetadataValue, ResultMetadataKey } from '../../model/Metadata';
 import { Access, AccessOptions } from '../../model/Access';
+import { reject } from '../../utils/reject';
 
 type CorpusFormProps = {
   /**
@@ -106,13 +107,18 @@ export function CorpusForm(props: CorpusFormProps) {
     );
   }
 
+  function handleClose() {
+    if (reject('Discard changes?')) return;
+    props.onClose();
+  }
+
   if (!isInit) {
     return null;
   }
   return (
     <>
-      <ScrollableModal handleClose={props.onClose}>
-        <TopRightCloseIcon onClick={props.onClose} />
+      <ScrollableModal handleClose={handleClose}>
+        <TopRightCloseIcon onClick={handleClose} />
         <h1>{corpusToEdit ? 'Edit corpus' : 'Create new corpus'}</h1>
         <FormErrorMessage error={errors.generic} />
         <form onSubmit={onSubmit(handleSubmit)}>
