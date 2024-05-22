@@ -3,6 +3,14 @@
 ## [Development](https://github.com/knaw-huc/Dexter/tree/development)
 🧪 Features / ✨ Enhancements / 🔧 Technical / 🐛 Bug Fixes
 
+## [v0.15](https://github.com/knaw-huc/Dexter/releases/tag/v0.15.0)
+
+### 🔧 Technical 
+- Introduce user resource store in frontend to speed up page changes by loading user resources once when starting frontend, and keeping it in sync with the backend database after that
+
+### 🐛 Bug Fixes
+- Fix importing of handles of non-sources (e.g. projects or collections)
+
 ## [v0.14](https://github.com/knaw-huc/Dexter/releases/tag/v0.14.9)
 ### 🧪 Features 
 - Export corpus and its subcorpora, sources, media and references to a zip with csv files
@@ -14,7 +22,7 @@
 - On the corpus page in the subcorpora section: show the tags of sources and subcorpora of a corpus   
 - Remove 'restricted' access option
 - Align texts and styling of button icons and texts
-- 
+
 ### 🔧 Technical 
 - Manage the state of corpus and source pages with zustand
 - Store user settings in the backend (only contains configured reference style atm)

@@ -23,7 +23,7 @@ class ImportResource(
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
     private val wereldculturenHandleUrlMatcher = Regex("https://hdl\\.handle\\.net/[0-9.]+/([0-9]+)")
-    private val wereldculturenQueryUrl = "https://collectie.wereldculturen.nl/ccrdf/ccrdf.py?command=search&query="
+    private val wereldculturenQueryUrl = "https://collectie.wereldculturen.nl/ccrdf/ccrdf.py?command=search&query=objectid="
 
     @POST
     @Path("/${ResourcePaths.WERELDCULTUREN}")
@@ -37,7 +37,8 @@ class ImportResource(
         return if (found == null || found.groups.isEmpty()) {
             ResultImport(false)
         } else {
-            val url = wereldculturenQueryUrl + form.url
+            val sourceId = found.groups[1]?.value
+            val url = wereldculturenQueryUrl + sourceId
             ResultImport(true, importer.import(url))
         }
     }
