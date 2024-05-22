@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { reject } from '../../utils/reject';
+import { cancel } from '../../utils/cancel';
 import { useSources } from '../../resources/useSources';
 import { Source } from '../../model/Source';
 
@@ -11,7 +11,7 @@ export function useDeleteSource(params: { onError: (error: Error) => void }): {
 
   return {
     deleteSource: async (source: Source) => {
-      if (reject('Delete this source?')) {
+      if (cancel('Delete this source?')) {
         return;
       }
 

@@ -11,7 +11,7 @@ import { ReferenceStyle } from './ReferenceStyle';
 import { useImmer } from 'use-immer';
 import { HintedTitle } from '../common/HintedTitle';
 import { ValidatedSelectField } from '../common/ValidatedSelectField';
-import { reject } from '../../utils/reject';
+import { cancel } from '../../utils/cancel';
 import { useReferences } from '../../resources/useReferences';
 import { useUser } from '../../resources/useUser';
 import { Reference, ResultReference } from '../../model/Reference';
@@ -27,7 +27,7 @@ export default function ReferenceIndex() {
   const { getReferenceStyle } = useUser();
 
   const handleDelete = async (reference: ResultReference) => {
-    if (reject('Delete this reference?')) {
+    if (cancel('Delete this reference?')) {
       return;
     }
 

@@ -23,7 +23,7 @@ import { TopRightCloseIcon } from '../common/icon/CloseIcon';
 import { Source, SubmitFormSource } from '../../model/Source';
 import { ResultMetadataKey } from '../../model/Metadata';
 import { Access, AccessOptions } from '../../model/Access';
-import { reject } from '../../utils/reject';
+import { cancel } from '../../utils/cancel';
 
 type SourceFormProps = {
   sourceToEdit?: Source;
@@ -36,7 +36,8 @@ export function SourceForm(props: SourceFormProps) {
   const sourceToEdit = props.sourceToEdit;
 
   const [form, setForm] = useImmer<SubmitFormSource>(null);
-  const { errors, setError, setFieldError } = useFormErrors<Source>();
+  const { errors, setError, setFieldError, clearErrors } =
+    useFormErrors<Source>();
   const [keys, setKeys] = useImmer<ResultMetadataKey[]>([]);
 
   const { isInit } = useInitSourceForm({
@@ -46,6 +47,7 @@ export function SourceForm(props: SourceFormProps) {
   });
   const { submitSourceForm } = useSubmitSourceForm({
     sourceToEdit,
+    clearErrors,
     setError,
     onSubmitted: props.onSaved,
   });
@@ -81,7 +83,9 @@ export function SourceForm(props: SourceFormProps) {
     );
   }
   function handleClose() {
-    if (reject('Discard changes?')) return;
+    if (cancel('Discard changes?')) {
+      return;
+    }
     props.onClose();
   }
 

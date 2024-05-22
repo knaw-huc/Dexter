@@ -2,7 +2,7 @@ import isUrl from '../../utils/isUrl';
 import { ErrorWithMessage } from '../common/error/ErrorWithMessage';
 import { Any } from '../common/Any';
 import { useImmer } from 'use-immer';
-import { reject } from '../../utils/reject';
+import { cancel } from '../../utils/cancel';
 import { useImport } from '../../resources/useImport';
 import { Dispatch, SetStateAction } from 'react';
 import { Source, SubmitFormSource } from '../../model/Source';
@@ -28,7 +28,7 @@ export function useImportMetadata(
   const { postImport } = useImport();
 
   function checkCanImporting(externalRef: string) {
-    if (reject('Importing overwrites existing values. Continue?')) {
+    if (cancel('Importing overwrites existing values. Continue?')) {
       return;
     }
 

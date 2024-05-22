@@ -9,7 +9,7 @@ import { MediaForm } from '../media/MediaForm';
 import { SelectMediaForm } from './SelectMediaForm';
 import { useImmer } from 'use-immer';
 import _ from 'lodash';
-import { reject } from '../../utils/reject';
+import { cancel } from '../../utils/cancel';
 import { useSources } from '../../resources/useSources';
 import { ResultMedia } from '../../model/Media';
 import { UUID } from '../../model/Id';
@@ -31,7 +31,7 @@ export function SourceMedia(props: { sourceId: UUID }) {
   const [mediaToEdit, setMediaToEdit] = useImmer(null);
 
   async function handleUnlinkMedia(media: ResultMedia) {
-    if (reject('Remove this media from this source?')) {
+    if (cancel('Remove this media from this source?')) {
       return;
     }
 

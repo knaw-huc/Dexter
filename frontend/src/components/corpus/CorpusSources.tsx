@@ -11,7 +11,7 @@ import { useImmer } from 'use-immer';
 import { SourceForm } from '../source/SourceForm';
 import { SelectSourcesForm } from './SelectSourcesForm';
 import { getAllRelevantTags } from './getAllRelevantTags';
-import { reject } from '../../utils/reject';
+import { cancel } from '../../utils/cancel';
 import { useCorpora } from '../../resources/useCorpora';
 import { Source } from '../../model/Source';
 import { ResultTag } from '../../model/Tag';
@@ -41,7 +41,7 @@ export function CorpusSources(props: { corpusId: UUID }) {
   };
 
   const handleDeselectSource = async (corpusId: string, sourceId: string) => {
-    if (reject('Remove this source from this corpus?')) {
+    if (cancel('Remove this source from this corpus?')) {
       return;
     }
 

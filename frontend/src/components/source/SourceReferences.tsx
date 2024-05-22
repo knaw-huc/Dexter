@@ -10,7 +10,7 @@ import { ReferenceForm } from '../reference/ReferenceForm';
 import { SelectReferenceForm } from '../reference/SelectReferenceForm';
 import { useImmer } from 'use-immer';
 import _ from 'lodash';
-import { reject } from '../../utils/reject';
+import { cancel } from '../../utils/cancel';
 import { useSources } from '../../resources/useSources';
 import { Reference, ResultReference } from '../../model/Reference';
 import { UUID } from '../../model/Id';
@@ -35,7 +35,7 @@ export function SourceReferences(props: {
   const [referenceToEdit, setReferenceToEdit] = useImmer<Reference>(null);
 
   async function handleUnlinkReference(reference: ResultReference) {
-    if (reject('Remove this reference from this source?')) {
+    if (cancel('Remove this reference from this source?')) {
       return;
     }
     await deleteReferenceFromSource(sourceId, reference.id);

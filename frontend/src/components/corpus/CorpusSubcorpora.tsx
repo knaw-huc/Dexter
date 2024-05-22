@@ -11,7 +11,7 @@ import { CorpusForm } from './CorpusForm';
 import { isRelevantResource } from './getAllRelevantTags';
 import { getCorpusTags } from './getCorpusTags';
 import _ from 'lodash';
-import { reject } from '../../utils/reject';
+import { cancel } from '../../utils/cancel';
 import { SelectSubcorporaForm } from './SelectSubcorporaForm';
 import { useCorpora } from '../../resources/useCorpora';
 import { Corpus } from '../../model/Corpus';
@@ -44,7 +44,7 @@ export function CorpusSubcorpora(props: { corpusId: UUID }) {
   }
 
   const handleDeselectSubcorpus = async (subcorpusId: string) => {
-    if (reject('Remove this subcorpus from this corpus?')) {
+    if (cancel('Remove this subcorpus from this corpus?')) {
       return;
     }
 
