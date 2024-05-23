@@ -17,7 +17,7 @@ declare module 'citation-js' {
         template?: 'apa' | 'vancouver' | 'harvard1' | 'chicago';
         lang?: 'en-US';
       },
-    ) => string | import('./components/reference/CslJson').CslJson;
+    ) => string | import('./model/CslJson').CslJson;
 
     static plugins: {
       config: {
