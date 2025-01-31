@@ -4,6 +4,8 @@ Collect, organize and annotate sources from external digital collections and phy
 
 _Note_: Dexter is work in progress. Please see the [changelog](./CHANGELOG.md) for an overview of the latest features.
 
+For more information, see [Dexter](https://github.com/knaw-huc/Dexter/wiki/Dexter)
+
 **Table of contents**
 - [Issues and feature requests](#issues-and-feature-requests)
 - [Development](#development)
