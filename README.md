@@ -21,7 +21,7 @@ You can create new issues at [Dexter/issues](https://github.com/knaw-huc/Dexter/
 
 - Start database:
 ```shell
-VERSION=latest docker-compose up -d postgres
+VERSION=latest docker compose up -d postgres
 ```
 
 - Start backend:
