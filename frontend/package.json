@@ -10,7 +10,7 @@
     "docker:tag": "./docker-tag.sh",
     "docker:push": "./docker-push.sh",
     "docker:all": "./docker-all.sh",
-    "prepare": "cd .. && husky install frontend/.husky",
+    "prepare": "cd .. && husky frontend/.husky",
     "test": "npx jest",
     "test-verbose": "npm test --  --verbose=false"
   },
