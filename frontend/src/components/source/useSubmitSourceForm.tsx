@@ -15,6 +15,7 @@ type UseSubmitSourceFormResult = {
 
 type UseSubmitSourceFormParams = {
   sourceToEdit?: Source;
+  clearErrors: () => void;
   setError: (error: Error) => Promise<void>;
   onSubmitted: (submitted: Source) => void;
   corpusId?: UUID;
@@ -32,7 +33,7 @@ export function useSubmitSourceForm(
     updateSourceMetadataValues,
   } = useSources();
 
-  const { setError, sourceToEdit, corpusId, onSubmitted } = params;
+  const { setError, clearErrors, sourceToEdit, corpusId, onSubmitted } = params;
   const { addSourcesToCorpus } = useCorpora();
   const { upsertMetadataValues } = useMetadata();
 
@@ -41,6 +42,7 @@ export function useSubmitSourceForm(
     keys: ResultMetadataKey[],
   ): Promise<void> {
     try {
+      clearErrors();
       await sourceFormValidator.validate(toSubmit);
       const id: UUID = sourceToEdit
         ? await updateExistingSource(toSubmit)

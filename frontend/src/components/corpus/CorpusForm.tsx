@@ -25,7 +25,7 @@ import { Corpus } from '../../model/Corpus';
 import { Source } from '../../model/Source';
 import { FormMetadataValue, ResultMetadataKey } from '../../model/Metadata';
 import { Access, AccessOptions } from '../../model/Access';
-import { reject } from '../../utils/reject';
+import { cancel } from '../../utils/cancel';
 
 type CorpusFormProps = {
   /**
@@ -51,7 +51,7 @@ export function CorpusForm(props: CorpusFormProps) {
   const corpusToEdit = props.corpusToEdit;
 
   const [form, setForm] = useImmer<Corpus>(null);
-  const { errors, setError } = useFormErrors<Corpus>();
+  const { errors, setError, clearErrors } = useFormErrors<Corpus>();
   const [keys, setKeys] = useImmer<ResultMetadataKey[]>([]);
   const [values, setValues] = useImmer<FormMetadataValue[]>([]);
 
@@ -64,6 +64,7 @@ export function CorpusForm(props: CorpusFormProps) {
   });
   const { submitCorpusForm } = useSubmitCorpusForm({
     corpusToEdit,
+    clearErrors,
     setError,
     onSubmitted: props.onSaved,
   });
@@ -108,7 +109,9 @@ export function CorpusForm(props: CorpusFormProps) {
   }
 
   function handleClose() {
-    if (reject('Discard changes?')) return;
+    if (cancel('Discard changes?')) {
+      return;
+    }
     props.onClose();
   }
 

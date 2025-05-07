@@ -21,6 +21,7 @@ type UseSubmitCorpusFormResult = {
 type UseSubmitCorpusFormParams = {
   corpusToEdit?: Corpus;
   setError: (error: Error) => Promise<void>;
+  clearErrors: () => void;
   onSubmitted: (submitted: Corpus) => void;
   corpusId?: UUID;
 };
@@ -28,7 +29,7 @@ type UseSubmitCorpusFormParams = {
 export function useSubmitCorpusForm(
   params: UseSubmitCorpusFormParams,
 ): UseSubmitCorpusFormResult {
-  const { corpusToEdit, onSubmitted, setError } = params;
+  const { corpusToEdit, onSubmitted, setError, clearErrors } = params;
   const {
     updateCorpus,
     updateCorpusSources,
@@ -45,6 +46,7 @@ export function useSubmitCorpusForm(
     values: ResultMetadataValue[],
   ): Promise<void> {
     try {
+      clearErrors();
       await corpusFormValidator.validate(toSubmit);
       const serverForm = toServerForm(toSubmit);
       const id = corpusToEdit

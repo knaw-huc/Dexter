@@ -5,7 +5,7 @@ import { EditIcon } from '../common/icon/EditIcon';
 import { DeleteIcon } from '../common/icon/DeleteIcon';
 import { MetadataKeyIcon } from './MetadataKeyIcon';
 import { ListItemButtonStyled } from '../common/ListItemButtonStyled';
-import { reject } from '../../utils/reject';
+import { cancel } from '../../utils/cancel';
 import { useImmer } from 'use-immer';
 import { ErrorAlert } from '../common/error/ErrorAlert';
 import { toMessage } from '../common/error/toMessage';
@@ -24,7 +24,7 @@ export const MetadataKeyListItem = (props: MetadataKeyItemProps) => {
 
   async function handleDelete(e: React.MouseEvent) {
     e.stopPropagation();
-    if (reject('Delete this metadata field?')) {
+    if (cancel('Delete this metadata field?')) {
       return;
     }
 

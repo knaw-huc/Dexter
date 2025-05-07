@@ -22,7 +22,7 @@ import { useThrowSync } from '../common/error/useThrowSync';
 import { ExportButton } from '../export/ExportButton';
 import { ExportForm } from '../export/ExportForm';
 import { HintedTitle } from '../common/HintedTitle';
-import { reject } from '../../utils/reject';
+import { cancel } from '../../utils/cancel';
 import { useCorpora } from '../../resources/useCorpora';
 import { Corpus } from '../../model/Corpus';
 
@@ -54,7 +54,7 @@ export default function CorpusPage() {
   }
 
   async function handleDeleteCorpus() {
-    if (reject('Are you sure you wish to delete this corpus?')) {
+    if (cancel('Are you sure you wish to delete this corpus?')) {
       return;
     }
 

@@ -21,7 +21,7 @@ export const afterEarliest = {
   message: 'Latest date should be after earliest date',
   test: (latest: string, context: AnyObject) => {
     const { earliest } = context.parent;
-    if (!earliest) {
+    if (!earliest || !validDate.test(earliest)) {
       return true;
     }
     return DateTime.fromISO(latest) >= DateTime.fromISO(earliest);

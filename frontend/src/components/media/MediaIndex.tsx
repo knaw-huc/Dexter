@@ -7,7 +7,7 @@ import { HeaderBreadCrumb } from '../common/breadcrumb/HeaderBreadCrumb';
 import { MediaIcon } from './MediaIcon';
 import { useImmer } from 'use-immer';
 import { HintedTitle } from '../common/HintedTitle';
-import { reject } from '../../utils/reject';
+import { cancel } from '../../utils/cancel';
 import { useMedia } from '../../resources/useMedia';
 import { ResultMedia } from '../../model/Media';
 
@@ -17,7 +17,7 @@ export default function MediaIndex() {
   const { getMedia, deleteMedia } = useMedia();
   const media = getMedia();
   async function handleDelete(media: ResultMedia) {
-    if (reject('Delete this media entry?')) {
+    if (cancel('Delete this media entry?')) {
       return;
     }
 
