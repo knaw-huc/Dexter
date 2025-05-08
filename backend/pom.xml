@@ -34,7 +34,7 @@
         <dropwizard-swagger.version>2.0.28-1</dropwizard-swagger.version>
         <dropwizard.version>2.1.2</dropwizard.version>
         <flyway.version>9.4.0</flyway.version>
-        <jackson-module-kotlin.version>2.16.0</jackson-module-kotlin.version>
+        <jackson-module-kotlin.version>2.18.0</jackson-module-kotlin.version>
         <json-path.version>2.7.0</json-path.version>
         <json-unit-assertj.version>2.35.0</json-unit-assertj.version>
         <json.version>20220320</json.version>
