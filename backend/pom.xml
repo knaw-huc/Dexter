@@ -31,7 +31,7 @@
 
         <assertj-core.version>3.23.1</assertj-core.version>
         <dropwizard-swagger-ui.version>4.6.2</dropwizard-swagger-ui.version>
-        <dropwizard-swagger.version>2.0.28-1</dropwizard-swagger.version>
+        <dropwizard-swagger.version>5.0.0-1-rc.1</dropwizard-swagger.version>
         <dropwizard.version>2.1.2</dropwizard.version>
         <flyway.version>9.4.0</flyway.version>
         <jackson-module-kotlin.version>2.16.0</jackson-module-kotlin.version>
